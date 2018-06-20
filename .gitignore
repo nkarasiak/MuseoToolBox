@@ -1,0 +1,6 @@
+# Files to ignore
+*.pyc
+*.py~
+*_filtered*
+__pycache__
+
