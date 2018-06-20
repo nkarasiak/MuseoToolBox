@@ -20,7 +20,7 @@ import numpy as np
 import glob
 import sys,argparse
 
-def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,OTBPythonBinding=True,nbcore=1,ram=256):
+def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,OTBPythonBinding=True,checkOutliers=False,nbcore=1,ram=256):
     """
     Compute Satellite Image Time Series from Sentinel-2 A/B.
     
@@ -174,6 +174,7 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
                 sixBandsToVrt.append(glob.glob(os.path.join(i,'*FRE_B{}.tif'.format(k)))[0])
                 refBands.append(glob.glob(os.path.join(i,'*FRE_B8.tif'))[0])
                 
+                
     if OTBPythonBinding :
         appTempSITS = otbApplication.Registry.CreateApplication("ConcatenateImages")
         
@@ -181,6 +182,22 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         
         appTempSITS.Execute()
         
+        if checkOutliers:
+            # =============================================================================
+            #             Look for outliers (values below 0, here in red band)
+            # =============================================================================            
+            removeExp = ''
+            for idx in range(1,len(cloudsToMask)+1):
+                removeExp += 'im1b{1} < 0 ? im2b{0} = 1 : im2b{0};'.format(idx,idx*4)
+            removeExp = removeExp[:-1]
+            
+            appRemoveOutliers = otbApplication.Registry.CreateApplication("BandMathX")
+            appRemoveOutliers.AddImageToParameterInputImageList('il',appTempSITS.GetParameterOutputImage("out"))
+            appRemoveOutliers.AddImageToParameterInputImageList('il',appMask.GetParameterOutputImage("out"))
+            appRemoveOutliers.SetParameterString('exp',removeExp)
+            
+            appRemoveOutliers.Execute()
+            
         if resample20mBands:
             # Concatenate Band 8 as reference
             appReference = otbApplication.Registry.CreateApplication("ConcatenateImages")
@@ -245,8 +262,11 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
             app.SetParameterInputImage("in",appConcatenatePerDate.GetParameterOutputImage("out"))
         else:
             app.SetParameterInputImage("in",appTempSITS.GetParameterOutputImage("out"))
-            
-        app.SetParameterInputImage("mask",appMask.GetParameterOutputImage("out"))
+        
+        if checkOutliers:
+            app.SetParameterInputImage("mask",appRemoveOutliers.GetParameterOutputImage("out"))
+        else:
+            app.SetParameterInputImage("mask",appMask.GetParameterOutputImage("out"))
         app.SetParameterString("out",outSITS)
         app.SetParameterOutputImagePixelType("out", otbApplication.ImagePixelType_int16) #int16 = 1
         app.SetParameterString("it",'linear')
@@ -308,6 +328,9 @@ if __name__ == "__main__":
         parser.add_argument("-OTBPythonBinding","--otb", dest="OTBPythonBinding", action="store", \
         help="If False, Compute VRT instead of using OTB Python Binding", required = False, default = True)
         
+        parser.add_argument("-checkOutliers","--c", dest="checkOutliers", action="store", \
+        help="If True, will look for outliers (values below 0)", required = False, default = False)
+
         parser.add_argument("-nbcore","--n", dest="nbcore", action="store", \
         help="Number of CPU / Threads to use for OTB applications (ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS)", \
         default = "1", required = False, type = int)                                   
@@ -319,4 +342,4 @@ if __name__ == "__main__":
     
         
         computeSITS(S2Dir=args.s2dir,outSITS=args.outSITS,resample20mBands=args.resample20mBands,\
-                    resampleCSV=args.resampleCSV,unzip = args.unzip,OTBPythonBinding=args.OTBPythonBinding,nbcore=args.nbcore,ram=args.ram)
+                    resampleCSV=args.resampleCSV,unzip = args.unzip,OTBPythonBinding=args.OTBPythonBinding,checkOutliers=args.checkOutliers,nbcore=args.nbcore,ram=args.ram)
