@@ -146,7 +146,6 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         appMask.Execute()
             
     else :
-        # We print the keys of all its parameter
         print('building temporary cloud mask')    
         def listToStr(fileName,sep=' '):
             strList =''
@@ -250,8 +249,6 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
             
         app.SetParameterInputImage("mask",appMask.GetParameterOutputImage("out"))
         app.SetParameterString("out",outSITS)
-        #app.SetParameterString("in",SITS_temp)
-        #app.SetParameterString("mask",CLOUDS_temp)
         app.SetParameterOutputImagePixelType("out", otbApplication.ImagePixelType_int16) #int16 = 1
         app.SetParameterString("it",'linear')
         app.SetParameterString("id",sampleTimeCsv)
