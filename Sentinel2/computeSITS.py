@@ -10,7 +10,7 @@
 #                                             
 #                                             
 # 
-# @author:  Nicolas Knkarasiak
+# @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/rstoolkit 
 # =============================================================================
@@ -20,8 +20,7 @@ import numpy as np
 import glob
 import sys,argparse
 
-def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,OTBPythonBinding=True,\
-                nbcore=1,ram=256):
+def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,OTBPythonBinding=True,nbcore=1,ram=256):
     """
     Compute Satellite Image Time Series from Sentinel-2 A/B.
     
@@ -311,14 +310,13 @@ if __name__ == "__main__":
         
         parser.add_argument("-nbcore","--n", dest="nbcore", action="store", \
         help="Number of CPU / Threads to use for OTB applications (ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS)", \
-        default = "4", required = False, type = int)                                   
+        default = "1", required = False, type = int)                                   
         
         parser.add_argument("-ram","--r", dest="ram", action="store", \
-        help="RAM for otb applications", default = "1", required = False, type = int)
+        help="RAM for otb applications", default = "256", required = False, type = int)
         
         args = parser.parse_args()
     
         
         computeSITS(S2Dir=args.s2dir,outSITS=args.outSITS,resample20mBands=args.resample20mBands,\
                     resampleCSV=args.resampleCSV,unzip = args.unzip,OTBPythonBinding=args.OTBPythonBinding,nbcore=args.nbcore,ram=args.ram)
-        
