@@ -55,7 +55,6 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
             import otbApplication
             
         except:
-            OTBPythonBinding = False
             raise ImportError("You need to have OTB available in python to use OTBPythonBinding")
         
     else:        
@@ -140,7 +139,6 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
     
     if OTBPythonBinding :
         appMask = otbApplication.Registry.CreateApplication("ConcatenateImages")
-        appMask.GetParametersKeys()
         appMask.SetParameterStringList('il',cloudsToMask)
         appMask.Execute()
             
@@ -174,7 +172,6 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
                 sixBandsToVrt.append(glob.glob(os.path.join(i,'*FRE_B{}.tif'.format(k)))[0])
                 refBands.append(glob.glob(os.path.join(i,'*FRE_B8.tif'))[0])
                 
-                
     if OTBPythonBinding :
         appTempSITS = otbApplication.Registry.CreateApplication("ConcatenateImages")
         
@@ -184,7 +181,7 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         
         if checkOutliers:
             # =============================================================================
-            #             Look for outliers (values below 0, here in red band)
+            #             Look for outliers (values below 0, check here in red band, are added in mask)
             # =============================================================================            
             removeExp = ''
             for idx in range(1,len(cloudsToMask)+1):
@@ -314,32 +311,38 @@ if __name__ == "__main__":
         parser.add_argument("-s2dir","--wd", dest="s2dir", action="store",help="Sentinel-2 L2A Theia directory", required = True)
            
         parser.add_argument("-outSITS","--out", dest="outSITS", action="store", \
-        help="Output name of the Sentinel-2 Image Time Series", required = True, type = str)
+        help="Output name of the Sentinel-2 Image Time Series", \
+        required = True, type = str)
         
         parser.add_argument("-resample20m","--rs", dest="resample20mBands", action="store", \
-        help="Resample the 20m bands at 10m for computing 10 bands per date", required = False, default = False)
+        help="Resample the 20m bands at 10m for computing 10 bands per date", \
+        required = False, type = bool, default = False)
         
         parser.add_argument("-resampleCSV","--rsCSV", dest="resampleCSV", action="store", \
-        help="CSV of output dates", required = False, default = False)
+        help="CSV of output dates", \
+        required = False, default = False)
         
         parser.add_argument("-unzip","--u", dest="unzip", action="store", \
-        help="Do unzip of S2 images ?", required = False, type = bool, default = False)
+        help="Do unzip of S2 images ?", \
+        required = False, type = bool, default = False)
         
         parser.add_argument("-OTBPythonBinding","--otb", dest="OTBPythonBinding", action="store", \
-        help="If False, Compute VRT instead of using OTB Python Binding", required = False, default = True)
+        help="If False, Compute VRT instead of using OTB Python Binding", \
+        required = False, default = True)
         
         parser.add_argument("-checkOutliers","--c", dest="checkOutliers", action="store", \
-        help="If True, will look for outliers (values below 0)", required = False, default = False)
+        help="If True, will look for outliers (values below 0)", \
+        required = False, type = bool, default = False)
 
         parser.add_argument("-nbcore","--n", dest="nbcore", action="store", \
         help="Number of CPU / Threads to use for OTB applications (ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS)", \
         default = "1", required = False, type = int)                                   
         
         parser.add_argument("-ram","--r", dest="ram", action="store", \
-        help="RAM for otb applications", default = "256", required = False, type = int)
+        help="RAM for otb applications", \
+        default = "256", required = False, type = int)
         
         args = parser.parse_args()
     
-        
         computeSITS(S2Dir=args.s2dir,outSITS=args.outSITS,resample20mBands=args.resample20mBands,\
                     resampleCSV=args.resampleCSV,unzip = args.unzip,OTBPythonBinding=args.OTBPythonBinding,checkOutliers=args.checkOutliers,nbcore=args.nbcore,ram=args.ram)

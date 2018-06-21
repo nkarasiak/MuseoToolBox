@@ -50,7 +50,13 @@ def resampleEveryXDays(S2Dir,out,nDays=5,startDate=False,lastDate=False):
 
     if lastDate is False or startDate is False: 
         S2 = glob.glob(glob.os.path.join(S2Dir,'SENTINEL2*/'))
-        S2 = [os.path.basename(os.path.dirname(S2Folder)) for S2Folder in S2]
+        
+        # if no folder, looking for zip files
+        if S2 == [] :
+            S2 =  glob.glob(glob.os.path.join(S2Dir,'SENTINEL2*.zip'))
+            
+        else:
+            S2 = [os.path.basename(os.path.dirname(S2Folder)) for S2Folder in S2]
         
         # ==========================================================================
         #     Detecting YYYYMMDD date format
@@ -60,7 +66,8 @@ def resampleEveryXDays(S2Dir,out,nDays=5,startDate=False,lastDate=False):
         regexYYYYMMDD = r"(?<!\d)(?:(?:20\d{2})(?:(?:(?:0[13578]|1[02])31)|(?:(?:0[1,3-9]|1[0-2])(?:29|30)))|(?:(?:20(?:0[48]|[2468][048]|[13579][26]))0229)|(?:20\d{2})(?:(?:0?[1-9])|(?:1[0-2]))(?:0?[1-9]|1\d|2[0-8]))(?!\d)"
         p = re.compile(regexYYYYMMDD)
         
-        sampleTime = [p.findall(S2folder)[0] for S2folder in S2]
+        sampleTime = sorted([p.findall(S2folder)[0] for S2folder in S2])
+        
         sampleTimeDT = [dt.datetime.strptime(date,'%Y%m%d') for date in sampleTime]
     
     # =============================================================================
@@ -99,7 +106,7 @@ if __name__ == "__main__":
         usage = "usage: %prog [options] "
         parser = argparse.ArgumentParser(description = "Compute Satellite Image Time Series from Sentinel-2 A/B.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         
-        parser.add_argument("-s2dir","--wd", dest="s2dir", action="store",help="Sentinel-2 L2A Theia directory", required = True)
+        parser.add_argument("-s2dir","--wd", dest="s2dir", action="store",help="Sentinel-2 L2A Theia directory (if images not unzipped, will search for zip)", required = True)
            
         parser.add_argument("-out","--o", dest="out", action="store", \
         help="Csv file", required = True, type = str)

@@ -2,5 +2,6 @@
 *.pyc
 *.py~
 *_filtered*
+*.swp
 __pycache__
 
