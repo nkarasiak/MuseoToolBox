@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =============================================================================
-#  __  __                   _______          _ ____            
-# |  \/  |                 |__   __|        | |  _ \           
-# | \  / |_   _ ___  ___  ___ | | ___   ___ | | |_) | _____  __
-# | |\/| | | | / __|/ _ \/ _ \| |/ _ \ / _ \| |  _ < / _ \ \/ /
-# | |  | | |_| \__ \  __/ (_) | | (_) | (_) | | |_) | (_) >  < 
-# |_|  |_|\__,_|___/\___|\___/|_|\___/ \___/|_|____/ \___/_/\_\
-#                                             
-#                                             
+# ___  ___                       _____           _______           
+# |  \/  |                      |_   _|         | | ___ \          
+# | .  . |_   _ ___  ___  ___     | | ___   ___ | | |_/ / _____  __
+# | |\/| | | | / __|/ _ \/ _ \    | |/ _ \ / _ \| | ___ \/ _ \ \/ /
+# | |  | | |_| \__ \  __/ (_) |   | | (_) | (_) | | |_/ / (_) >  < 
+# \_|  |_/\__,_|___/\___|\___/    \_/\___/ \___/|_\____/ \___/_/\_\                                                                
+#
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
-# @git:     www.github.com/lennepkade/rstoolkit 
+# @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
 import numpy as np
@@ -105,7 +104,8 @@ if __name__ == "__main__":
         usage = "usage: %prog [options] "
         parser = argparse.ArgumentParser(description = "Compute Satellite Image Time Series from Sentinel-2 A/B.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         
-        parser.add_argument("-s2dir","--wd", dest="s2dir", action="store",help="Sentinel-2 L2A Theia directory (if images not unzipped, will search for zip)", required = True)
+        parser.add_argument("-s2dir","--wd", dest="s2dir", action="store",help="Sentinel-2 L2A Theia directory (if images not unzipped, will search for zip)",\
+        required = False)
            
         parser.add_argument("-out","--o", dest="out", action="store", \
         help="Csv file", required = True, type = str)
