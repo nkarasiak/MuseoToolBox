@@ -23,3 +23,4 @@ Each result is multiplied by 100 to save space (int16 type instead of float type
 This will : 
 - generate a indice for each date (tif format)
 - generate a vrt of the indice for all dates
+
