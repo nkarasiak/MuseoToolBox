@@ -1,4 +1,4 @@
-# RS toolkit / Sentinel 2
+# MuseoToolBox / Sentinel 2
 Sentinel-2 dedicated toolkit from RS toolkit.
 
 ## Compute SITS
