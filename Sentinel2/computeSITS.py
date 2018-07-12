@@ -57,7 +57,7 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         
     else:        
         if resample20mBands:
-            print("WARNING : Resample 20m bands at 10m is not available without OTB Python Binding")
+            print("WARNING : Resample 20m bands at 10m is not available without OTBPythonBinding")
             sys.exit(1)
         
 
@@ -110,7 +110,7 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
     if not OTBPythonBinding:
         CLOUDS_temp = os.path.join(outDir+'clouds.tif')
         SITS_temp = os.path.join(outDir+'sits_temp.tif')
-
+    
     import re
     regexYYYYMMDD = r"(?<!\d)(?:(?:20\d{2})(?:(?:(?:0[13578]|1[02])31)|(?:(?:0[1,3-9]|1[0-2])(?:29|30)))|(?:(?:20(?:0[48]|[2468][048]|[13579][26]))0229)|(?:20\d{2})(?:(?:0?[1-9])|(?:1[0-2]))(?:0?[1-9]|1\d|2[0-8]))(?!\d)"
     p = re.compile(regexYYYYMMDD)
