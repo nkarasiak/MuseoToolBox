@@ -22,7 +22,7 @@ except Exception as error:
 def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=False,xlabel=False,ylabel=False,\
                  thresold=False,alpha=False,legend=False,percent=False,xhorizontalalignment=False,cmap=plt.cm.Oranges,lastCorner=False,cm2=False,cmap2=plt.cm.Greens,xlabelsPos="bottom",diag=False,\
                  suptitle=False,xrotation=False,thresold2=False,vmin2=False,vmax2=False,dpi=False,toround=0,figsize=(6,6),subplot=False,font=False,fontsize=12,\
-                 beautifulBorder=False):
+                 beautifulBorder=False,aspect='auto',fmt=False,fmtSub=False,subPlotVerticalTitle=False,subplotCmap=False,subPlotHorizontalTitle=False,gsright=.95,pdf=False):
     """
     plot Confusion matrix, with lot (too many ?) of custom available.
     
@@ -36,7 +36,8 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
     """
     cm_ = np.copy(cm)
     if dpi is False:
-        dpi = 150
+        dpi = 80
+
     if font or fontsize:
         try:
             from matplotlib import rcParams
@@ -57,9 +58,9 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
         except Exception as error:
             raise ImportError(error)
             
-        gs = gridspec.GridSpec(2,2, height_ratios=[1,1/cm.shape[1]], width_ratios=[cm.shape[0],1])
+        gs = gridspec.GridSpec(2,2, height_ratios=[cm.shape[0],1], width_ratios=[cm.shape[1],1])
 
-        gs.update(left=0.05, right=0.95, bottom=0.08, top=0.92, wspace=0.1, hspace=0.1)
+        gs.update(left=0.05, right=gsright, bottom=0.08, top=0.92, wspace=0.1, hspace=0.1)
 
     if not alpha:
         alpha = 1.0
@@ -83,27 +84,33 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
             vmin=np.amin(cm)
             vmax=np.amax(cm)
 
-    fig = plt.figure(1, figsize=figsize,dpi=dpi,tight_layout=True)
-    
-    if cm2 is not False:
-        
-        ax = plt.subplot(gs[0,0]) # place it where it should be.
+    fig = plt.figure(1, figsize=figsize,dpi=dpi)#,tight_layout=True)
+
+    if cm2 is not False or subplot:
+        if subplot is not False:
+            ax = plt.subplot(gs[0,0]) # place it where it should be.
 
         
-        pl1 = ax.imshow(cm,interpolation='nearest',aspect='auto',cmap=cmap,vmin=vmin,vmax=vmax,alpha=alpha)
+        pl1 = ax.imshow(cm,interpolation='nearest', aspect=aspect,cmap=cmap,vmin=vmin,vmax=vmax,alpha=alpha)
         
         if not vmin2:
             vmin2 = np.amin(cm2)
         if not vmax2:
             vmax2 = np.amax(cm2)
-        pl2 = ax.imshow(cm2,interpolation='nearest',aspect='auto',cmap=cmap2,vmin=vmin2,vmax=vmax2,alpha=alpha)
+        if cm2 is not False:
+            pl2 = ax.imshow(cm2,interpolation='nearest',aspect=aspect,cmap=cmap2,vmin=vmin2,vmax=vmax2,alpha=alpha)
         
 
     else:
-        fig = plt.subplot(gs[0,0])
-        fig = plt.imshow(cm, interpolation='nearest', aspect='auto',cmap=cmap,vmin=vmin, vmax=vmax,alpha=alpha)
-    
+        
+
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1)
+        ax.imshow(cm, interpolation='nearest', aspect=aspect,cmap=cmap,vmin=vmin, vmax=vmax,alpha=alpha)
+
     ax.set_title(title,fontsize=fontsize+2)
+    #ax.set_adjustable('box-forced')
+
 
     ax = plt.gca()
     
@@ -143,7 +150,7 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
         for edge, spine in ax.spines.items():
             spine.set_visible(False)
 
-        ax.grid(which="minor", color="w", linestyle='-', linewidth=2)
+        ax.grid(which="minor", color="w", linestyle='-', linewidth=1)
         ax.set_xticks(np.arange(cm.shape[1]+1)-.5, minor=True)
         ax.set_yticks(np.arange(cm.shape[0]+1)-.5, minor=True)
             
@@ -169,9 +176,11 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
                 if lastCorner and i==cm.shape[0]-1 and j==cm.shape[1]-1:
                     ax.text(j,i,'')
                 else:
-                    ax.text(j, i, numberToPlot,
+                    if fmt:numberToPlot=str(numberToPlot+fmt)
+                    
+                    ax.text(j, i, str(numberToPlot),
                      horizontalalignment="center",
-                     color="white" if cm[i, j] > thresold else "#888888" if cm[i,j] == 0 else "#444444",va='center')
+                     color="white" if cm[i, j] > thresold else "#888888" if cm[i,j] < 0 else "#444444",va='center')
             if cm2 is not False:
                 if not np.ma.is_masked(cm2[i,j]):
                     if percent:
@@ -193,10 +202,7 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
                 
             
     #plt.ylabel('True label')
-    if xlabel:
-        ax.xlabel(xlabel)
-    if ylabel :
-        ax.ylabel(ylabel)
+
     if legend is True:
         if cm2 is not False:
             fig.colorbar(pl1,ax=ax)
@@ -212,14 +218,21 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
         plt.xticks(tick_marks, [],rotation=45)
     """
     #plt.tight_layout()
-    subplotCmap = plt.cm.Greens
+    if xlabel:
+        ax.xaxis.set_label_position('top')
+        ax.set_xlabel(xlabel)  
+        #plt.xlabel(xlabel)
+    if ylabel :
+        plt.ylabel(ylabel)
+    if subplotCmap is False:
+        subplotCmap = plt.cm.Greens
     if subplot:
         ax1v = plt.subplot(gs[0,1])
         # --------------------------------------------------------
         if subplot == 'F1':
             
             # Plot the data
-            verticalBarTitle = 'F1'
+            subPlotVerticalTitle = 'F1'
             verticalPlot = []
         
             for label in range(cm_.shape[1]):
@@ -232,76 +245,97 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
             
         #ax1v.hist(y,bins=bins, orientation='horizontal', color='k', edgecolor='w')
         elif subplot == 'Mean':
-            verticalBarTitle = 'Mean'
+            if subPlotVerticalTitle is False:
+                subPlotVerticalTitle = 'Mean'
             verticalPlot = [np.mean(cm_,axis=1)]
         else:
-            verticalBarTitle = 'User\'s acc.'
+            subPlotVerticalTitle = 'User\'s acc.'
             verticalPlot = [np.diag(cm_)/np.sum(cm_,axis=1)*100]
         verticalPlot = np.asarray(verticalPlot).reshape(-1,1)
-        ax1v.imshow(verticalPlot,cmap=subplotCmap,interpolation='nearest',aspect='auto',alpha=.8,vmin=0,vmax=100)
+        ax1v.imshow(verticalPlot,cmap=subplotCmap,interpolation='nearest', aspect=aspect,alpha=.8,vmin=0,vmax=100)
         
-        ax1v.set_title(verticalBarTitle)    
+        #ax1v.set_title(verticalBarTitle)    
         # Define the limits, labels, ticks as required
         #ax1v.set_yticks(np.linspace(-4,4,9)) # Ensures we have the same ticks as the scatter plot !
         #ax1v.set_xticklabels([])
-        ax1v.set_yticks([],[])
-        ax1v.set_xticks([],[])
+        if xlabelsPos == 'top':
+            ax1v.xaxis.tick_top()
+            ax1v.xaxis.set_ticks_position('top') # THIS IS THE ONLY CHANGE
+            
+            rotation=270
+            
+            ax1v.set_xticks([0])
+            ax1v.set_xticklabels([subPlotVerticalTitle],horizontalalignment=xhorizontalalignment,rotation=xrotation)
+        else:
+            ax1v.set_xticklabels([subPlotVerticalTitle],horizontalalignment=xhorizontalalignment,rotation=xrotation)
+            ax1v.set_xticks([])
+        ax1v.set_yticks([])
+        #ax1v.set_xticks([0],['co'])
+        #ax1v.set_xticks([],[])
         
+
+
+        for i in range(cm_.shape[0]):
+            txt = str(int(verticalPlot[i,0]))
+            if fmtSub: txt += fmtSub
+            ax1v.text(0,i,txt,horizontalalignment="center",color="white" if verticalPlot[i,0] > thresold else "#444444",va='center')
         if beautifulBorder:
             ax1v.tick_params(which="minor", bottom=False, top=False,left=False)
 
             for edge, spine in ax1v.spines.items():
                 spine.set_visible(False)
 
-            ax1v.grid(which="minor", color="w", linestyle='-', linewidth=2)
+            ax1v.grid(which="minor", color="w", linestyle='-', linewidth=1)
             ax1v.set_yticks(np.arange(cm.shape[1]+1)-.5, minor=True)
-        for i in range(cm_.shape[1]):
-            print(i)
-            ax1v.text(0,i,int(verticalPlot[i,0]),horizontalalignment="center",color="white" if verticalPlot[i,0] > thresold else "#444444",va='center')
-
+            
         if subplot is True or subplot is not 'F1':
             ax1h = plt.subplot(gs[1,0])
             print(subplot)
             # --------------------------------------------------------
             if subplot == 'Mean':
-                horizontalBar = 'Mean'
+                if not subPlotHorizontalTitle:
+                    subPlotHorizontalTitle = 'Mean'
                 horizontalPlot = np.mean(cm_,axis=0)
             else:
-                horizontalBar = 'Prod\'s acc.'
+                subPlotHorizontalTitle = 'Prod\'s acc.'
                 horizontalPlot = np.diag(cm_)/np.sum(cm_,axis=0)*100
             
             horizontalPlot = horizontalPlot.reshape(1,-1)
             #ax1h.hist(x, bins=bins, orientation='vertical', color='k', edgecolor='w')
-            ax1h.imshow(horizontalPlot,cmap=subplotCmap,interpolation='nearest', aspect='auto',alpha=.8,vmin=0,vmax=100)
+            ax1h.imshow(horizontalPlot,cmap=subplotCmap,interpolation='nearest', aspect=aspect,alpha=.8,vmin=0,vmax=100)
             # Define the limits, labels, ticks as required
             #ax1h.set_xticks(np.linspace(-4,4,9)) # Ensures we have the same ticks as the scatter plot !
             #ax1h.set_xlim([-4,4])
             #ax1h.set_xlabel(r'My x label')
 
-            
+            #ax1h.set_title(horizontalBar)
             
             ax1h.set_yticks([0])
-            ax1h.set_yticklabels([horizontalBar])
+            ax1h.set_yticklabels([subPlotHorizontalTitle])
             
-            for i in range(cm.shape[0]):
-                ax1h.text(i,0,int(horizontalPlot[0,i]),horizontalalignment="center",color="white" if horizontalPlot[0,i] > thresold else "#444444",va='center')
+            for i in range(cm.shape[1]):
+                txt = str(int(horizontalPlot[0,i]))
+                if fmtSub: txt += fmtSub
+                ax1h.text(i,0,txt,horizontalalignment="center",color="white" if horizontalPlot[0,i] > thresold else "#444444",va='center')
             if xlabelsPos != 'top':
-                ax1h.set_xticks(range(cm.shape[0]))
+                ax1h.set_xticks(range(cm.shape[1]))
                 if xrotation:
                     ax1h.set_xticklabels(xlabels,ha=xhorizontalalignment,rotation=xrotation)
                 else:
                     ax1h.set_xticklabels(xlabels,ha=xhorizontalalignment)
             else:
                 ax1h.set_xticks([],[])
-                
+            
+            
             if beautifulBorder:
                 ax1h.tick_params(which="minor", bottom=False, top=False,left=False)
     
                 for edge, spine in ax1h.spines.items():
                     spine.set_visible(False)
     
-                ax1h.grid(which="minor", color="w", linestyle='-', linewidth=2)
+                ax1h.grid(which="minor", color="w", linestyle='-', linewidth=1)
                 ax1h.set_xticks(np.arange(cm.shape[1]+1)-.5, minor=True)
-                
+    if pdf:
+        fig.savefig(pdf,bbox_inches='tight')
 
     return fig

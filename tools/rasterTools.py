@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from joblib import Parallel, delayed  
+
 #import multiprocessing
 import gdal
 import numpy as np
@@ -250,7 +250,7 @@ class readAndWriteRaster:
     
     """   
     
-    def __init__(self,inRaster,inMaskRaster=False,outNoData=False,parallel=False):
+    def __init__(self,inRaster,inMaskRaster=False,parallel=False):
         self.parallel = parallel
         
         #if parallel is not False:
@@ -277,15 +277,12 @@ class readAndWriteRaster:
         block_sizes = band.GetBlockSize()
         self.x_block_size = block_sizes[0]
         self.y_block_size = block_sizes[1]
-        self.total = self.nl*self.y_block_size
+        self.total = self.nl #/self.y_block_size
 
         self.nodata = band.GetNoDataValue()
         
         if self.nodata is None:
             self.nodata = -9999
-        self.outNoData = outNoData
-        if self.outNoData is False:
-            self.outNoData = self.nodata
         
         del band
     
@@ -298,11 +295,14 @@ class readAndWriteRaster:
         self.functions = []        
         self.outputs = []
         #out = dst_ds.GetRasterBand(1)
-    
-    def addFunction(self,function,outRaster,outNBand,outGdalGDT):
+        self.lastProgress = 0
+        self.outputNoData = []
+        
+    def addFunction(self,function,outRaster,outNBand,outGdalGDT=11,outNoData=False):
         self.driver = gdal.GetDriverByName('GTiff')
         self.__addOutput__(outRaster,outNBand,outGdalGDT)
         self.functions.append(function)        
+        self.outputNoData.append(outNoData)
 
     def __addOutput__(self,outRaster,outNBand,outGdalGDT):
         if not os.path.exists(os.path.dirname(outRaster)):
@@ -341,7 +341,7 @@ class readAndWriteRaster:
     
     def filterNoData(self,arr,mask=None):
         outArr = np.zeros((arr.shape))
-        outArr[:] = self.outNoData
+        outArr[:] = self.nodata
         
         if self.mask :
             t = np.logical_or((mask==self.maskNoData),arr[:,0]==self.nodata)            
@@ -379,11 +379,15 @@ class readAndWriteRaster:
             empty = length-1-hashtag
             print(str('\r ['+hashtag*'#'+empty*' '+'] ')+str(self.percent)+'%',end='')
         
-    def run(self,verbose=1):
+    def run(self,verbose=1,qgsFeedback=False):
         """
         Process with outside function.
         """            
         if self.parallel :
+            try:
+                from joblib import Parallel, delayed  
+            except :
+                raise ImportError('Please install joblib to use multiprocessing')
             def processParallel(X,mask,i,j,cols,lines,outputNBand,fun):                
                 tmp = np.copy(X)
                 tmp[mask[:,0],:outputNBand] = fun(tmp[mask[:,0],:])
@@ -396,7 +400,7 @@ class readAndWriteRaster:
             
             for idx,fun in enumerate(self.functions):
                 outputNBand = self.outputs[idx].RasterCount 
-                for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,max_nbytes=None)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
+                for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     if verbose:
                         self.progressBar(j,self.total)
                     #for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,verbose=False)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
@@ -410,23 +414,46 @@ class readAndWriteRaster:
         else:
         
             for X,mask,col,line,cols,lines in self.__iterBlock__(getBlock=True):
+                X_ = np.copy(X)
+                actualProgress = int(line/self.total*100)                
                 
-                if verbose:
-                    self.progressBar(line,self.total)
+                if self.lastProgress != actualProgress:
+                    self.lastProgress = actualProgress 
+    
+                    if qgsFeedback:
+                        if qgsFeedback == 'gui':                        
+                            self.progressBar(line,self.total)
+                        else:
+                            qgsFeedback.setProgress(actualProgress)
+                            if qgsFeedback.isCanceled():
+                                break
                         
+                    if verbose:
+                        self.progressBar(line,self.total)
                     
                 for idx,fun in enumerate(self.functions):
+                    if self.outputNoData[idx] == False:
+                        self.outputNoData[idx] = self.nodata
+                        
                     maxBands = self.outputs[idx].RasterCount
-                    if X[mask].size > 0:
-                        res = fun(X[mask[:,0],:])
-                        if res.shape[1] > maxBands :
-                            raise ValueError ("Your function output {} bands, but your output is specified to have a maximum of {} bands.".format(res.shape[1],maxBands))
+                    if X_[mask].size > 0:
+                        resFun = fun(X_[mask[:,0],:])
+                        if maxBands > self.nb:
+                            X = np.zeros((X_.shape[0],maxBands))
+                            X[:,:] = self.outputNoData[idx]
+                            X[mask[:,0],:] = resFun
+                        if resFun.ndim == 1:
+                            resFun = resFun.reshape(-1,1)
+                        if resFun.shape[1] > maxBands :
+                            raise ValueError ("Your function output {} bands, but your output is specified to have a maximum of {} bands.".format(resFun.shape[1],maxBands))
                         else:
-                            X[mask[:,0],:maxBands] = res
+                            X[:,:] = self.outputNoData[idx]
+                            X[mask[:,0],:maxBands] = resFun
                     for ind in range(self.outputs[idx].RasterCount):
                         indGdal = int(ind+1)
                         curBand = self.outputs[idx].GetRasterBand(indGdal)
                         curBand.WriteArray(X[:,ind].reshape(lines,cols),col,line)
                         curBand.FlushCache()
-                    self.outputs[idx].GetRasterBand(1).SetNoDataValue(self.outNoData)
+                    self.outputs[idx].GetRasterBand(1).SetNoDataValue(self.outputNoData[idx])
+                    
     
