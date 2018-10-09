@@ -426,7 +426,7 @@ def distMatrix(inCoords,distanceMetric=False):
     else:
         from scipy.spatial import distance
         
-        distArray = distance.cdist(inCoords,inCoords,'euclidean')
+        distArray = np.array(distance.cdist(inCoords,inCoords,'euclidean'),dtype=int)
 
     return distArray
 
@@ -655,9 +655,9 @@ def readROIFromVector(vector,roiprefix,*args):
     
     if len(roiFields) > 0:
             # fill ROI and *args
-            ROIvalues = np.zeros([lyr.GetFeatureCount(),len(roiFields)])
+            ROIvalues = np.zeros([lyr.GetFeatureCount(),len(roiFields)],dtype=int)
             if len(args) > 0 :
-                ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)])
+                ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=int)
             for i,feature in enumerate(lyr):
                 for j,band in enumerate(roiFields):
                     ROIvalues[i,j] = feature.GetField(band)

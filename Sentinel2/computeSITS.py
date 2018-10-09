@@ -87,9 +87,9 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
     if unzip:
         print('unzipping used bands')            
         if resample20mBands:
-            formula = "parallel -j "+str(nbcore)+" unzip -n {} *FRE_B?.tif *FRE_B??.tif *CLM_R1* *.xml *.jpg ::: "+os.path.join(S2Dir,"*.zip")
+            formula = "parallel -j "+str(nbcore)+" unzip -n {} *FRE_B?.tif *FRE_B??.tif *CLM_R1* *.xml *.jpg -d "+S2Dir+" ::: "+os.path.join(S2Dir,"*.zip")
         else:
-            formula = "parallel -j "+str(nbcore)+" unzip -n {} *FRE_B2*.tif *FRE_B3*.tif *FRE_B4*.tif *FRE_B8*.tif *CLM_R1* *.xml *.jpg ::: "+os.path.join(S2Dir,"*.zip")
+            formula = "parallel -j "+str(nbcore)+" unzip -n {} *FRE_B2*.tif *FRE_B3*.tif *FRE_B4*.tif *FRE_B8*.tif *CLM_R1* *.xml *.jpg -d "+S2Dir+" ::: "+os.path.join(S2Dir,"*.zip")
         print('executing : '+formula)        
         os.system(formula)
         
@@ -269,7 +269,9 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         app.SetParameterInt("comp",len(bands))
         app.SetParameterInt("ram",ram)
         if resampleCSV:
-            app.SetParameterString("od",resampleCSV)    
+            app.SetParameterString("od",resampleCSV)   
+        else:
+            app.SetParameterString("od",sampleTimeCsv)
         app.ExecuteAndWriteOutput()
         
     else:
@@ -320,9 +322,9 @@ if __name__ == "__main__":
         help="CSV of output dates", \
         required = False, default = False)
         
-        parser.add_argument("-unzip","--u", dest="unzip", action="store", \
+        parser.add_argument("-unzip","--u", dest="unzip", action="store_true", \
         help="Do unzip of S2 images ?", \
-        required = False, type = bool, default = False)
+        required = False, default = False)
         
         parser.add_argument("-OTBPythonBinding","--otb", dest="OTBPythonBinding", action="store", \
         help="If False, Compute VRT instead of using OTB Python Binding", \

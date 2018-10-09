@@ -37,7 +37,31 @@ def convertGdalDataTypeToOTB(gdalDT):
     return code[gdalDT]
 
 
-def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False):
+def get_coords_from_roi(raster_name,roi_name):
+    raster = gdal.Open(raster_name,gdal.GA_ReadOnly)
+    if raster is None:
+        print('Impossible to open '+raster_name)
+        #exit()
+
+    ## Open ROI
+    roi = gdal.Open(roi_name,gdal.GA_ReadOnly)
+    if roi is None:
+        print('Impossible to open '+roi_name)
+        #exit()
+
+    if stand_name:
+        ## Open Stand
+        stand = gdal.Open(stand_name,gdal.GA_ReadOnly)
+        if stand is None:
+            print('Impossible to open '+stand_name)
+            #exit()
+
+    ## Some tests
+    if (raster.RasterXSize != roi.RasterXSize) or (raster.RasterYSize != roi.RasterYSize):
+        print('Images should be of the same size')
+        #exit()
+
+def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,onlyCoords=False):
     '''!@brief Get the set of pixels given the thematic map.
     Get the set of pixels given the thematic map. Both map should be of same size. Data is read per block.
         Input:
@@ -111,8 +135,9 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False):
             # Load the reference data
             
             ROI = roi.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
-            if stand_name:
-                STAND = stand.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
+            if not onlyCoords:
+                if stand_name:
+                    STAND = stand.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
             
             t = np.nonzero(ROI)
             
@@ -137,15 +162,16 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False):
                     coords = np.concatenate((coords,coordsTp))
 
                 # Load the Variables
-                Xtp = np.empty((t[0].shape[0],d))
-                for k in range(d):
-                    band = raster.GetRasterBand(k+1).ReadAsArray(j, i, cols, lines)
-                    Xtp[:,k] = band[t]
-                try:
-                    X = np.concatenate((X,Xtp))
-                except MemoryError:
-                    print('Impossible to allocate memory: ROI too big')
-                    exit()
+                if not onlyCoords:
+                    Xtp = np.empty((t[0].shape[0],d))
+                    for k in range(d):
+                        band = raster.GetRasterBand(k+1).ReadAsArray(j, i, cols, lines)
+                        Xtp[:,k] = band[t]
+                    try:
+                        X = np.concatenate((X,Xtp))
+                    except MemoryError:
+                        print('Impossible to allocate memory: ROI too big')
+                        exit()
     
     
     """
@@ -168,10 +194,12 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False):
     """
     
     # Clean/Close variables
-    del Xtp,band    
+    # del Xtp,band    
     roi = None # Close the roi file
     raster = None # Close the raster file
     
+    if onlyCoords:
+        return coords
     if stand_name:
         if not getCoords:
             return X,Y,STD
