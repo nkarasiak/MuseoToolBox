@@ -504,7 +504,7 @@ class standCV:
                  
                  selectedStand = np.random.permutation(Ystand)[0]
 
-                 if self.SLOO:
+                 if self.SLOO is True:
 
                      YinSelectedStandt = np.in1d(Ystands,selectedStand)
                      YinSelectedStand = Ycurrent[YinSelectedStandt]
@@ -617,7 +617,7 @@ def saveToShape(array,srs,outShapeFile):
     ds = None
 
 
-def readROIFromVector(vector,roiprefix,*args):
+def readROIFromVector(vector,roiprefix,*args,**kwargs):
     """
     **********
     Parameters
@@ -628,7 +628,8 @@ def readROIFromVector(vector,roiprefix,*args):
         Common suffixof the training shpfile (i.e. 'band_',str).
     *args : str
         Field name containing your class number (i.e. 'class', str).    
-
+    **kwargs : dict
+        srs = True, or getFeatures = True
     Output
     ----------
 
@@ -645,20 +646,47 @@ def readROIFromVector(vector,roiprefix,*args):
     ldefn = lyr.GetLayerDefn()
     
     listFields = []
-        
+    if len(kwargs)>=1:
+        if 'srs' in kwargs.keys():
+            if kwargs['srs'] == True:
+                srs=True
+            else:
+                srs=False
+        else:
+            srs=False   
+        if 'getFeatures' in kwargs.keys():
+            if kwargs['getFeatures'] == True:
+                getFeatures = True
+                features = []
+            else:
+                getFeatures = False
+        else:
+            getFeatures=False
+    else:
+        srs=False
+        getFeatures=False
+    
     for n in range(ldefn.GetFieldCount()):
         fdefn = ldefn.GetFieldDefn(n)
         if not fdefn.name is listFields:
             listFields.append(fdefn.name)
         if fdefn.name.startswith(roiprefix):
             roiFields.append(fdefn.name)
-    
+      
+            
+    if srs is True:
+        spatialRef = lyr.GetSpatialRef()
+
+        
+            
     if len(roiFields) > 0:
             # fill ROI and *args
             ROIvalues = np.zeros([lyr.GetFeatureCount(),len(roiFields)],dtype=int)
             if len(args) > 0 :
                 ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=int)
             for i,feature in enumerate(lyr):
+                if getFeatures:
+                    features.append(feature)
                 for j,band in enumerate(roiFields):
                     ROIvalues[i,j] = feature.GetField(band)
                     if len(args) > 0:
@@ -668,9 +696,23 @@ def readROIFromVector(vector,roiprefix,*args):
                         except:
                             raise ValueError("Field \"{}\" do not exists. These fields are available : {}".format(args[a],listFields))
             if len(args)>0:
-                return [ROIvalues]+[np.asarray(ROIlevels)[:,i] for i in range(len(args))]
+                if srs and not getFeatures:
+                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],spatialRef
+                if srs and getFeatures:
+                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],features,spatialRef
+                if getFeatures and not srs:
+                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],features
+                else:
+                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0]
             else:
-                return ROIvalues
+                if srs and not getFeatures:
+                    return ROIvalues,spatialRef
+                if srs and getFeatures:
+                    return ROIvalues,features,spatialRef
+                if getFeatures and not srs:
+                    return ROIvalues,features
+                else:
+                    return ROIvalues
     else:
         raise ValueError('ROI field "{}" do not exists. These fields are available : {}'.format(roiprefix,listFields))
     

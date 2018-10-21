@@ -18,7 +18,7 @@ import numpy as np
 import glob
 import sys,argparse
 
-def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,OTBPythonBinding=True,checkOutliers=False,nbcore=1,ram=256):
+def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=False,cloudMask=None,OTBPythonBinding=True,checkOutliers=True,nbcore=1,ram=256):
     """
     Compute Satellite Image Time Series from Sentinel-2 A/B.
     
@@ -34,6 +34,8 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
         If str, must be csv file with one line per date (YYYYMMDD format, i.e 20180223).
     unzip : Bool, default False.
         If True, unzip only mandatory images, plus xml and jpg thumbnails.
+    checkOutliers : bool, default True.
+	If True, check outliers (values below 0 in red band are considered as invalid).
     OTBPythonBinding : Bool, default True.
         If True, use OTB python binding to avoid creating VRT.
     nbcore : int, default 1.
@@ -138,8 +140,13 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
     if OTBPythonBinding :
         appMask = otbApplication.Registry.CreateApplication("ConcatenateImages")
         appMask.SetParameterStringList('il',cloudsToMask)
+        if cloudMask:
+            appMask.SetParameterString("out",cloudMask)
+            #appMask.ExecuteAndWriteOutput()
+        
         appMask.Execute()
-            
+    
+
     else :
         print('building temporary cloud mask')    
         def listToStr(fileName,sep=' '):
@@ -274,6 +281,9 @@ def computeSITS(S2Dir,outSITS,resample20mBands=False,resampleCSV=False,unzip=Fal
             app.SetParameterString("od",sampleTimeCsv)
         app.ExecuteAndWriteOutput()
         
+        if cloudMask:
+            appMask.ExecuteAndWriteOutput()
+        
     else:
         if resampleCSV :
             formula = "otbcli_ImageTimeSeriesGapFilling -in {0} -mask {1} \
@@ -342,7 +352,11 @@ if __name__ == "__main__":
         help="RAM for otb applications", \
         default = "256", required = False, type = int)
         
+        parser.add_argument("-cloudMask",'--cm',dest='cloudMask',action="store",\
+        help="Output name of the Clouds Mask from Time Series",\
+        default=None,required=False,type=str)
+        
         args = parser.parse_args()
     
         computeSITS(S2Dir=args.s2dir,outSITS=args.outSITS,resample20mBands=args.resample20mBands,\
-                    resampleCSV=args.resampleCSV,unzip = args.unzip,OTBPythonBinding=args.OTBPythonBinding,checkOutliers=args.checkOutliers,nbcore=args.nbcore,ram=args.ram)
+                    resampleCSV=args.resampleCSV,unzip = args.unzip,cloudMask=args.cloudMask,OTBPythonBinding=args.OTBPythonBinding,checkOutliers=args.checkOutliers,nbcore=args.nbcore,ram=args.ram)
