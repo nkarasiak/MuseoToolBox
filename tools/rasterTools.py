@@ -18,6 +18,8 @@ import gdal
 import numpy as np
 import os
 
+
+
 def convertGdalDataTypeToOTB(gdalDT):
     """
     Convert Gdal DataType to OTB str format.
@@ -37,29 +39,6 @@ def convertGdalDataTypeToOTB(gdalDT):
     return code[gdalDT]
 
 
-def get_coords_from_roi(raster_name,roi_name):
-    raster = gdal.Open(raster_name,gdal.GA_ReadOnly)
-    if raster is None:
-        print('Impossible to open '+raster_name)
-        #exit()
-
-    ## Open ROI
-    roi = gdal.Open(roi_name,gdal.GA_ReadOnly)
-    if roi is None:
-        print('Impossible to open '+roi_name)
-        #exit()
-
-    if stand_name:
-        ## Open Stand
-        stand = gdal.Open(stand_name,gdal.GA_ReadOnly)
-        if stand is None:
-            print('Impossible to open '+stand_name)
-            #exit()
-
-    ## Some tests
-    if (raster.RasterXSize != roi.RasterXSize) or (raster.RasterYSize != roi.RasterYSize):
-        print('Images should be of the same size')
-        #exit()
 
 def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,onlyCoords=False):
     '''!@brief Get the set of pixels given the thematic map.
@@ -173,26 +152,6 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
                         print('Impossible to allocate memory: ROI too big')
                         exit()
     
-    
-    """
-    # No conversion anymore as it computes pixel distance and not metrics
-    if convertTo4326:
-        import osr
-        from pyproj import Proj,transform
-        # convert points coords to 4326
-        # if vector 
-        ## inShapeOp = ogr.Open(inVector)
-        ## inShapeLyr = inShapeOp.GetLayer()
-        ## initProj = Proj(inShapeLyr.GetSpatialRef().ExportToProj4()) # proj to Proj4
-        
-        sr = osr.SpatialReference()
-        sr.ImportFromWkt(roi.GetProjection())
-        initProj = Proj(sr.ExportToProj4())
-        destProj = Proj("+proj=longlat +datum=WGS84 +no_defs") # http://epsg.io/4326
-        
-        coords[:,0],coords[:,1] = transform(initProj,destProj,coords[:,0],coords[:,1]) 
-    """
-    
     # Clean/Close variables
     # del Xtp,band    
     roi = None # Close the roi file
@@ -210,7 +169,7 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
     else:
         return X,Y
 
-def rasterize(data,vectorSrc,field,outFile):
+def rasterize(data,vectorSrc,field,outFile,gdt=gdal.GDT_Byte):
     dataSrc = gdal.Open(data)
     import ogr
     shp = ogr.Open(vectorSrc)
@@ -218,7 +177,7 @@ def rasterize(data,vectorSrc,field,outFile):
     lyr = shp.GetLayer()
 
     driver = gdal.GetDriverByName('GTiff')
-    dst_ds = driver.Create(outFile,dataSrc.RasterXSize,dataSrc.RasterYSize,1,gdal.GDT_Byte)
+    dst_ds = driver.Create(outFile,dataSrc.RasterXSize,dataSrc.RasterYSize,1,gdt)
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
     if field is None:
@@ -229,22 +188,6 @@ def rasterize(data,vectorSrc,field,outFile):
     
     data,dst_ds,shp,lyr=None,None,None,None
     return outFile
-
-def pushFeedback(message,feedback=None):
-    isNum = isinstance(message,(float,int))
-    
-    if feedback and feedback is not True:
-        if feedback=='gui':
-            if not isNum:
-                QgsMessageLog.logMessage(str(message))
-        else:
-            if isNum:
-                feedback.setProgress(message)
-            else:
-                feedback.setProgressText(message)
-    else:
-        if not isNum:
-            print(str(message))            
 
 
   
@@ -405,8 +348,11 @@ class readAndWriteRaster:
             self.percent = int((line+1)/(total)*100)
             hashtag = int(self.percent/(100/length))
             empty = length-1-hashtag
-            print(str('\r ['+hashtag*'#'+empty*' '+'] ')+str(self.percent)+'%',end='')
-        
+
+            msg = "['"+hashtag*"#"+empty*' '+'] '+str(self.percent)+'%'
+            print(str(msg))
+     
+                
     def run(self,verbose=1,qgsFeedback=False):
         """
         Process with outside function.

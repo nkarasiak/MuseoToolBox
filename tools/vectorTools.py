@@ -16,6 +16,23 @@
 import os
 from osgeo import ogr
 import numpy as np
+import customPrint 
+
+def getDriverAccordingToFileName(fileName):
+    extensions = ['sqlite','shp','netcdf','gpx']
+    driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX']
+    
+    fileName,ext = os.path.splitext(fileName)
+        
+    if ext[1:] not in extensions:
+       msg = 'Your extension {} is not recognized as a valid extension for saving shape.\n'.format(ext)
+       msg = msg + 'Supported extensions are '+str(driversName)+'\n'
+       msg = msg + 'We recommend you to use \'sqlite\' extension.'
+       raise Warning(msg)
+    else:   
+        driverIdx=[x for x,i in enumerate(extensions) if i==ext[1:]][0]
+        driverName = driversName[driverIdx]
+        return driverName
 
 class randomInSubset():
 
@@ -89,14 +106,14 @@ class randomInSubset():
         ds = None
 
 class distanceCV:
-    def __init__(self,distanceArray,Y,distanceThresold=1000,minTrain=-1,SLOO=True,maxIter=False,furtherSplit=False,onlyVaryingTrain=False,stats=False,verbose=False,seed=False,otherLevel=False):
+    def __init__(self,distanceMatrix,Y,distanceThresold=1000,minTrain=-1,SLOO=True,maxIter=False,furtherSplit=False,onlyVaryingTrain=False,stats=False,verbose=False,seed=False,otherLevel=False):
         """Compute train/validation array with Spatial distance analysis.
         
         Object stops when less effective class number is reached (45 loops if your least class contains 45 ROI).
         
         Parameters
         ----------
-        distanceArray : array
+        distanceMatrix : array
             Matrix distance
         
         Y : array-like
@@ -123,12 +140,14 @@ class distanceCV:
             List of Y selected ROI for validation
             
         """
-        self.distanceArray = distanceArray
+        self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
         self.label = np.copy(Y)
         self.T = np.copy(Y)
         self.iterPos = 0
         self.minTrain = minTrain
+        if self.minTrain is None:
+            self.minTrain = -1
         self.onlyVaryingTrain = onlyVaryingTrain
         if self.onlyVaryingTrain :
             self.validation = np.array([]).astype('int')
@@ -431,8 +450,7 @@ def distMatrix(inCoords,distanceMetric=False):
     return distArray
 
 def convertToDistanceMatrix(coords,sr=False,convertTo4326=False):
-    
-    
+
     if convertTo4326:
         from pyproj import Proj, transform
         # initProj = Proj(sr.ExportToProj4())
@@ -564,10 +582,7 @@ def readFieldVector(inShape,inField,inStand=False,getFeatures=False):
         if getFeatures:
             print(i)
             getFeaturesList.append(j)
-            
-
-        
-            
+                        
         #current += 1
     srs = lyr1.GetSpatialRef()
     lyr1.ResetReading()
@@ -617,108 +632,156 @@ def saveToShape(array,srs,outShapeFile):
     ds = None
 
 
-def readROIFromVector(vector,roiprefix,*args,**kwargs):
+def readValuesFromVector(vector,*args,**kwargs):
     """
-    **********
+    Read values from vector. Will list all fields beginning with the roiprefix ('band_' for example)
+    
     Parameters
     ----------
     vector : str
         Vector path ('myFolder/class.shp',str).
-    roiprefix : str
-        Common suffixof the training shpfile (i.e. 'band_',str).
     *args : str
-        Field name containing your class number (i.e. 'class', str).    
-    **kwargs : dict
-        srs = True, or getFeatures = True
+        Field name containing the field to extract values from (i.e. 'class', str).    
+    **kwargs : arg
+        bandPrefix = 'band_' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band_').
+        getFeatures = True, will return features in one list AND spatial Reference.
+    
     Output
     ----------
-
-    ROIvalues : array
-    *args : array
+    Arr.
     """
 
     file = ogr.Open(vector)
     lyr = file.GetLayer()
-    
-    roiFields = []
-    
+
     # get all fields and save only roiFields
     ldefn = lyr.GetLayerDefn()
-    
     listFields = []
-    if len(kwargs)>=1:
-        if 'srs' in kwargs.keys():
-            if kwargs['srs'] == True:
-                srs=True
-            else:
-                srs=False
-        else:
-            srs=False   
-        if 'getFeatures' in kwargs.keys():
-            if kwargs['getFeatures'] == True:
-                getFeatures = True
-                features = []
-            else:
-                getFeatures = False
-        else:
-            getFeatures=False
-    else:
-        srs=False
-        getFeatures=False
     
+    # add kwargs 
+    if kwargs:
+        # check if need to extract bands from vector
+        if 'bandPrefix' in kwargs.keys():
+            extractBands = True
+            bandPrefix = kwargs['bandPrefix']
+        else:
+            extractBands = False
+        
+        # check if need to extract features from vector
+        if 'getFeatures' in kwargs.keys():
+            getFeatures = kwargs['getFeatures']
+        else:
+            getFeatures = False
+    else:
+        extractBands = False
+        getFeatures = False
+    
+    if extractBands:     
+        bandsFields = []
+    
+    # if getFeatures, save Spatial Reference and Features
+    if getFeatures:
+        srs = lyr.GetSpatialRef()
+        features = []
+    
+    # List available fields
     for n in range(ldefn.GetFieldCount()):
         fdefn = ldefn.GetFieldDefn(n)
         if not fdefn.name is listFields:
             listFields.append(fdefn.name)
-        if fdefn.name.startswith(roiprefix):
-            roiFields.append(fdefn.name)
-      
-            
-    if srs is True:
-        spatialRef = lyr.GetSpatialRef()
-
+        if extractBands:     
+            if fdefn.name.startswith(bandPrefix):
+                bandsFields.append(fdefn.name)                               
+    if extractBands:
+        if len(bandsFields) == 0:
+            raise ValueError('Band prefix field "{}" do not exists. These fields are available : {}'.format(bandPrefix,listFields))
+    
+    # Initialize empty arrays
+    if len(args)>0: # for single fields
+        ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=int)
         
-            
-    if len(roiFields) > 0:
-            # fill ROI and *args
-            ROIvalues = np.zeros([lyr.GetFeatureCount(),len(roiFields)],dtype=int)
-            if len(args) > 0 :
-                ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=int)
-            for i,feature in enumerate(lyr):
-                if getFeatures:
-                    features.append(feature)
-                for j,band in enumerate(roiFields):
-                    ROIvalues[i,j] = feature.GetField(band)
-                    if len(args) > 0:
-                        try:
-                            for a in range(len(args)):
-                                ROIlevels[i,a] = feature.GetField(args[a])
-                        except:
-                            raise ValueError("Field \"{}\" do not exists. These fields are available : {}".format(args[a],listFields))
-            if len(args)>0:
-                if srs and not getFeatures:
-                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],spatialRef
-                if srs and getFeatures:
-                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],features,spatialRef
-                if getFeatures and not srs:
-                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0],features
-                else:
-                    return ROIvalues,[np.asarray(ROIlevels)[:,i] for i in range(len(args))][0]
-            else:
-                if srs and not getFeatures:
-                    return ROIvalues,spatialRef
-                if srs and getFeatures:
-                    return ROIvalues,features,spatialRef
-                if getFeatures and not srs:
-                    return ROIvalues,features
-                else:
-                    return ROIvalues
+    if extractBands: # for bandPrefix
+        ROIvalues = np.zeros([lyr.GetFeatureCount(),len(bandsFields)],dtype=int)
+        
+    # Listing each feature and store to array
+    for i,feature in enumerate(lyr):
+        if extractBands:
+            for j,band in enumerate(bandsFields):
+                ROIvalues[i,j] = feature.GetField(band)
+        if len(args)>0:
+            try:
+                for a in range(len(args)):
+                    ROIlevels[i,a] = feature.GetField(args[a])
+            except:
+                raise ValueError("Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(args[a],listFields))
+        if getFeatures:
+            features.append(feature)
+
+    # Initialize return 
+    fieldsToReturn = []
+    
+    # if single fields
+    if len(args)>0:
+        for i in range(len(args)):
+            fieldsToReturn.append(np.asarray(ROIlevels)[:,i])
+    # if bandPrefix
+    if extractBands:
+        fieldsToReturn.append(ROIvalues)
+    # if features
+    if getFeatures:
+        fieldsToReturn.append(features)
+        fieldsToReturn.append(srs)
+    # if 1d, to turn single array 
+    if len(fieldsToReturn)==1:
+        fieldsToReturn = fieldsToReturn[0]
+    
+    return fieldsToReturn
+
+def addUniqueIDForVector(inVector,uniqueField='uniquefid'):
+    inDriverName = getDriverAccordingToFileName(inVector)
+    inDriver = ogr.GetDriverByName(inDriverName)
+    inSrc = inDriver.Open(inVector,1) # 1 for writable
+    inLyr = inSrc.GetLayer()       # get the layer for this datasource
+    inLyrDefn = inLyr.GetLayerDefn()
+    
+    if inDriverName == 'SQLITE':
+        inLyr.StartTransaction()
+
+    listFields = []
+    for n in range(inLyrDefn.GetFieldCount()):
+        fdefn = inLyrDefn.GetFieldDefn(n)
+        if not fdefn.name is listFields:
+            listFields.append(fdefn.name)    
+    if uniqueField in listFields:
+        customPrint.pushFeedback('Field \'{}\' is already in {}'.format(uniqueField,inVector))
+        inSrc.Destroy()
     else:
-        raise ValueError('ROI field "{}" do not exists. These fields are available : {}'.format(roiprefix,listFields))
+        newField = ogr.FieldDefn(uniqueField, ogr.OFTInteger)
+        newField.SetWidth(20)
+        inLyr.CreateField(newField)
+        
+        FIDs = [feat.GetFID() for feat in inLyr]
+        
+        ThisID = 1
+        
+        for FID in FIDs:
+            feat = inLyr.GetFeature(FID)
+            #ThisID = int(feat.GetFGetFeature(feat))
+            feat.SetField(uniqueField,int(ThisID)) # Write the FID to the ID field
+            inLyr.SetFeature(feat)              # update the feature
+            #inLyr.CreateFeature(feat)
+            print(ThisID)
+            ThisID += 1
+            
+        if inDriverName == 'SQLITE':
+            inLyr.CommitTransaction()
+        inSrc.Destroy()
+    return inVector
     
 if __name__ == "__main__":
     inShape = "/mnt/DATA/Sentinel-2/2017/5days/ACORVI_plot.sqlite"
-    a = readROIFromVector(inShape,'band_e')
+    bands,fts,srs= readValuesFromVector(inShape,bandPrefix = 'band_',getFeatures=True)
+    
     #readROIFromVector()
 #    
 #    inRaster = '/mnt/DATA/Sentinel-2/SITS/SITS_TCJ.tif'
