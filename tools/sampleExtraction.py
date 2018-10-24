@@ -17,9 +17,10 @@ import os
 from osgeo import gdal,ogr
 import numpy as np
 import tempfile
-import rasterTools,vectorTools,customPrint
+import rasterTools,vectorTools
+
     
-class sampleSelectionAndExtraction:
+class sampleExtraction:
     def __init__(self,inRaster,inVector,outVector,uniqueFID=None,bandPrefix=None):
         """
         Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
@@ -44,11 +45,11 @@ class sampleSelectionAndExtraction:
             tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_UInt32)
         else:
             uniqueFID = 'uniquefid'
-            customPrint.pushFeedback("adding 'uniquefid' field to the original vector.")
+            print("adding 'uniquefid' field to the original vector.")
             inVector = vectorTools.addUniqueIDForVector(inVector,uniqueFID)
             tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_UInt32)
         
-        customPrint.pushFeedback("Extract values from raster...")
+        print("Extract values from raster...")
         X,Y,coords = rasterTools.get_samples_from_roi(inRaster,tempRast,getCoords=True)
         
         os.remove(tempRast)
@@ -59,7 +60,7 @@ class sampleSelectionAndExtraction:
         outLayer = createPointLayer(inVector,outVector,uniqueFID)
         outLayer.addTotalNumberOfPoints(len(centroid))
         
-        customPrint.pushFeedback("Adding each centroid to {}...".format(outVector))
+        print("Adding each centroid to {}...".format(outVector))
         for idx,xy in enumerate(centroid):
             #xy = self.pixelLocationToCentroidGeom(coord,geoTransform)
             #outLayer.addPointToLayer(i,Y[idx][0],bandValue=X[idx],bandPrefix='band_')
@@ -182,7 +183,7 @@ class createPointLayer:
         if self.nSamples:
             currentPosition = int(self.idx/self.nSamples*100)
             if currentPosition != self.lastPosition:
-                customPrint.pushFeedback('Adding points... {}%'.format(currentPosition))
+                print('Adding points... {}%'.format(currentPosition))
                 self.lastPosition = currentPosition
         
     
@@ -289,5 +290,5 @@ if __name__ == "__main__":
         
         args = parser.parse_args()
             
-        sampleSelectionAndExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
+        sampleExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
                                      uniqueFID=args.uniqueFID,bandPrefix=args.bandPrefix)
