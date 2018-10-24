@@ -124,20 +124,12 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
                 Y = np.concatenate((Y,ROI[t].reshape((t[0].shape[0],1)).astype('uint8')))
                 if stand_name:
                     STD = np.concatenate((STD,STAND[t].reshape((t[0].shape[0],1)).astype('uint8')))
-                if getCoords :
-                    #coords = sp.append(coords,(i,j))
-                    #coordsTp = sp.array(([[cols,lines]]))
-                    #coords = sp.concatenate((coords,coordsTp))
-                    #print(t[1])
-                    #print(i)
-                    #sp.array([[t[1],i]])
+                if getCoords :                  
                     coordsTp = np.empty((t[0].shape[0],2))
-                    coordsTp[:,0] = t[1]
-                    coordsTp[:,1] = [i]*t[1].shape[0]
-                    """
-                    for n,p in enumerate(coordsTp):
-                        coordsTp[n] = pixel2coord(p)
-                    """
+                    
+                    coordsTp[:,0] = t[1]+j#t[0]*i#t[1]
+                    coordsTp[:,1] = t[0]+i#t[1]*j#[i]*t[1].shape[0]
+
                     coords = np.concatenate((coords,coordsTp))
 
                 # Load the Variables

@@ -52,9 +52,9 @@ class sampleExtraction:
         print("Extract values from raster...")
         X,Y,coords = rasterTools.get_samples_from_roi(inRaster,tempRast,getCoords=True)
         
+        geoTransform = gdal.Open(tempRast).GetGeoTransform()
         os.remove(tempRast)
     
-        geoTransform = gdal.Open(inRaster).GetGeoTransform()
         centroid = [self.pixelLocationToCentroidGeom(coord,geoTransform) for coord in coords]
         # init outLayer
         outLayer = createPointLayer(inVector,outVector,uniqueFID)
@@ -80,13 +80,13 @@ class sampleExtraction:
         
         Parameters
         --------
-        coords : arr or list.
+        coords : arr or list. 
             X is coords[0], Y is coords[1].
         geoTransform : list.
             List got from gdal.Open(inRaster).GetGeoTransform() .
         """
-        newX = (coords[0]+0.5)*geoTransform[1]+geoTransform[0]
-        newY = (coords[1]+0.5)*geoTransform[5]+geoTransform[3]
+        newX = geoTransform[1]*(coords[0]+0.5)+geoTransform[0] #(coords[0]+0.5)*geoTransform[1]+geoTransform[0]# (coords[0]+0.5)*geoTransform[1]+geoTransform[0]
+        newY = geoTransform[5]*(coords[1]+0.5)+geoTransform[3] #(coords[1]+0.5)*geoTransform[5]+geoTransform[3] # (coords[1]+0.5)*geoTransform[5]+geoTransform[3]
         return [newX,newY]
 
 
@@ -253,7 +253,14 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
-
+if __name__ == "__main__":
+    inRaster = "/home/nicolas/Bureau/tdubo/indices/NDVI/ndvi.vrt"
+    inVector = "/home/nicolas/Bureau/tdubo/plots_releves_rpg_UTM31.shp"
+    outVector = "/tmp/extraction_ndvi_se.sqlite"
+    #bandPrefix = "ndvi_"
+    
+    sampleExtraction(inRaster,inVector,outVector,bandPrefix=None)
+"""
 if __name__ == "__main__":
     import sys
     import argparse
@@ -292,3 +299,4 @@ if __name__ == "__main__":
             
         sampleExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
                                      uniqueFID=args.uniqueFID,bandPrefix=args.bandPrefix)
+"""
