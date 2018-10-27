@@ -253,6 +253,7 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
+"""
 if __name__ == "__main__":
     inRaster = "/home/nicolas/Bureau/tdubo/indices/NDVI/ndvi.vrt"
     inVector = "/home/nicolas/Bureau/tdubo/plots_releves_rpg_UTM31.shp"
@@ -299,4 +300,3 @@ if __name__ == "__main__":
             
         sampleExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
                                      uniqueFID=args.uniqueFID,bandPrefix=args.bandPrefix)
-"""
