@@ -16,11 +16,10 @@
 import os
 from osgeo import ogr
 import numpy as np
-import customPrint 
 
 def getDriverAccordingToFileName(fileName):
-    extensions = ['sqlite','shp','netcdf','gpx']
-    driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX']
+    extensions = ['sqlite','shp','netcdf','gpx','gpkg']
+    driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX','GPKG']
     
     fileName,ext = os.path.splitext(fileName)
         
@@ -463,6 +462,40 @@ def convertToDistanceMatrix(coords,sr=False,convertTo4326=False):
     
     return distMatrix(coords,distanceMetric=True)
 
+
+
+def randomPerClass(FIDs,train_size:0.5,seed=None):
+    """
+    random array according to FIDs.
+    
+    Parameters
+    ---------
+    FIDs : arr.
+        Label for each feature.
+    train_size : float (<1.0) or int (>1).
+        Percentage to keep for training or integer.
+    seed : int.
+        random_state for numpy.
+    """
+    train,valid = [np.asarray([]),np.asarray([])]
+    for C in np.unique(FIDs):
+        Cpos=np.where(FIDs==C)[0]
+        
+        if train_size < 1:
+            toSplit = int(train_size*len(Cpos))
+        else:
+            toSplit = train_size
+            
+        np.random.seed(seed)
+        tempTrain = np.random.permutation(Cpos)[:toSplit]
+        TF = np.in1d(Cpos,tempTrain,invert=True)
+        tempValid = Cpos[TF]
+        train = np.concatenate((train,tempTrain))
+        valid = np.concatenate((valid,tempValid))
+    return train,valid
+
+
+
 class standCV:
     def __init__(self,Y,stand,maxIter=False,SLOO=True,seed=False):
         """Compute train/validation per stand.
@@ -558,7 +591,7 @@ class standCV:
 def readFieldVector(inShape,inField,inStand=False,getFeatures=False):
     lyr = ogr.Open(inShape)
     lyr1 = lyr.GetLayer()
-    FIDs= np.zeros(lyr1.GetFeatureCount(),dtype=int)
+    FIDs= np.zeros(lyr1.GetFeatureCount(),dtype=np.int32)
     
     """
     if inStand:
@@ -698,10 +731,10 @@ def readValuesFromVector(vector,*args,**kwargs):
     
     # Initialize empty arrays
     if len(args)>0: # for single fields
-        ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=int)
+        ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=np.int32)
         
     if extractBands: # for bandPrefix
-        ROIvalues = np.zeros([lyr.GetFeatureCount(),len(bandsFields)],dtype=int)
+        ROIvalues = np.zeros([lyr.GetFeatureCount(),len(bandsFields)],dtype=np.int32)
         
     # Listing each feature and store to array
     for i,feature in enumerate(lyr):
@@ -715,8 +748,8 @@ def readValuesFromVector(vector,*args,**kwargs):
             except:
                 raise ValueError("Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(args[a],listFields))
         if getFeatures:
-            features.append(feature)
-
+            features.append(feature)      
+        
     # Initialize return 
     fieldsToReturn = []
     
@@ -753,7 +786,7 @@ def addUniqueIDForVector(inVector,uniqueField='uniquefid'):
         if not fdefn.name is listFields:
             listFields.append(fdefn.name)    
     if uniqueField in listFields:
-        customPrint.pushFeedback('Field \'{}\' is already in {}'.format(uniqueField,inVector))
+        print('Field \'{}\' is already in {}'.format(uniqueField,inVector))
         inSrc.Destroy()
     else:
         newField = ogr.FieldDefn(uniqueField, ogr.OFTInteger)
@@ -770,7 +803,6 @@ def addUniqueIDForVector(inVector,uniqueField='uniquefid'):
             feat.SetField(uniqueField,int(ThisID)) # Write the FID to the ID field
             inLyr.SetFeature(feat)              # update the feature
             #inLyr.CreateFeature(feat)
-            print(ThisID)
             ThisID += 1
             
         if inDriverName == 'SQLITE':

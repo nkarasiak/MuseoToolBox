@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-
+from __future__ import division, absolute_import, print_function
 import os
 import numpy as np
 import glob

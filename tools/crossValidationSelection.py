@@ -13,9 +13,9 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-import vectorTools
+from __future__ import absolute_import
+from MuseoToolBox.tools import vectorTools,rasterTools
 import os
-import numpy as np
 
 ### TODO
 ### Rasterize vector to keep only the centroid !
@@ -79,10 +79,10 @@ class samplingMethods:
         distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(inVector,inRaster)
         return [samplingType,dict(inRaster=inRaster,inVector=inVector,distanceMatrix=distanceMatrix,distanceThresold=distanceThresold,minTrain=minTrain,SLOO=SLOO,maxIter=maxIter,seed=seed)]
         
-    def randomCV(train_size=0.5,maxTrainSamplesPerClass=None,seed=None,nIter=5):
+    def randomCV(train_size=0.5,seed=None,nIter=5):
         """
         split : float,int. Default 0.5.
-            If float from 0.1 to 0.9 (means keep 90% for training). If int, will try to reach this sample for every class.
+            If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
         nSamples: int or str. Default None.
             If int, the max samples per class.
             If str, only 'smallest' to sample as the smallest class.
@@ -92,15 +92,14 @@ class samplingMethods:
             Number of iteration of the random sampling (will add 1 to the seed at each iteration if defined).
         """
         samplingType = 'random'
-        return [samplingType,dict(train_size=train_size,maxTrainSamplesPerClass=maxTrainSamplesPerClass,seed=seed,nIter=nIter)]
+        return [samplingType,dict(train_size=train_size,seed=seed,nIter=nIter)]
 
     def getDistanceMatrixForDistanceCV(inVector,inRaster):
         #TODO
-        import rasterTools
         import tempfile
         tempTif = tempfile.mktemp('_roi.tif')
         tempTif = rasterTools.rasterize(inRaster,inVector,None,tempTif)
-        X,Y,coords = rasterTools.get_samples_from_roi(inRaster,tempTif,getCoords=True)
+        coords = rasterTools.get_samples_from_roi(inRaster,tempTif,getCoords=True,onlyCoords=True)
         os.remove(tempTif)
         
         distanceMatrix = vectorTools.distMatrix(coords)
@@ -108,8 +107,7 @@ class samplingMethods:
         return distanceMatrix
 
 
-
-class sampleSelection:
+class sampleSelection(samplingMethods):
     def __init__(self,inVector,inField,samplingMethod):
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
@@ -148,32 +146,16 @@ class sampleSelection:
         if self.samplingType == 'random':
             FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
             FIDs = FIDs.flatten()
-            from sklearn.model_selection import train_test_split
+            
             nIter = samplingMethod[1]['nIter']
             seed = samplingMethod[1]['seed']
             train_size = samplingMethod[1]['train_size']
-            maxTrainSamplesPerClass = samplingMethod[1]['maxTrainSamplesPerClass']
-            if maxTrainSamplesPerClass:
-                def randomPerClass(FIDs,maxSamples,seed):
-                    train,valid = [np.asarray([]),np.asarray([])]
-                    for C in np.unique(FIDs):
-                        Cpos=np.where(FIDs==C)[0]
-                        np.random.seed(seed)
-                        tempTrain = np.random.permutation(Cpos)[:maxSamples]
-                        TF = np.in1d(Cpos,train,invert=True)
-                        tempValid = Cpos[TF]
-                        train = np.concatenate((train,tempTrain))
-                        valid = np.concatenate((valid,tempValid))
-                    return train,valid
-                
-                self.crossvalidation = [randomPerClass(FIDs,maxTrainSamplesPerClass,seed+i) for i in range(nIter)]
-            else:
-                self.crossvalidation = [train_test_split(FIDs,train_size=train_size,random_state=seed+i) for i in range(nIter)]            
+            
+            self.crossvalidation = [vectorTools.randomPerClass(FIDs,train_size,seed+i) for i in range(nIter)]
         
         ### Split at maximum distance beyond each point
         ### For Spatial-Leave-One-Out
         if self.samplingType == 'SLOO':
-            import rasterTools
             import tempfile
             tempTif = tempfile.mktemp('_roi.tif')
             tempTif = rasterTools.rasterize(inRaster,inVector,inField,tempTif)
@@ -289,14 +271,13 @@ if __name__ == '__main__':
     inStand = 'spjoin_rif'
     
     inRaster = '/mnt/DATA/Formosat_2006-2014/v2/SITS_2014.tif'
-    import rasterTools
-    rasterTools.getCentroidValue(inVector,inRaster)
-    """
+    #rasterTools.getCentroidValue(inVector,inRaster)
+    
     distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(inVector,inRaster)
-    sampling = samplingMethods.SLOOCV(inRaster,inVector,distanceThresold=450,maxIter=5)
+    sampling = samplingMethods.randomCV(50,5)
+    #sampling = samplingMethods.SLOOCV(inRaster,inVector,distanceThresold=450,maxIter=5)
     #sampling = samplingMethods.standCV(inStand,SLOO=True,maxIter=3,seed=1)
     #sampling = samplingMethods.randomCV(maxTrainSamplesPerClass=10)
     rsv = sampleSelection(inVector,inField,sampling)
     #cv = rsv.getCrossValidationForScikitLearn()
     files = rsv.saveVectorFiles('/tmp/test.sqlite')
-    """

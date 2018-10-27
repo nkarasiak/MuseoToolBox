@@ -12,14 +12,14 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import absolute_import
+from MuseoToolBox.tools import vectorTools,rasterTools
 
 import os
-from osgeo import gdal,ogr
 import numpy as np
 import tempfile
-import rasterTools,vectorTools
+from osgeo import gdal,ogr
 
-    
 class sampleExtraction:
     def __init__(self,inRaster,inVector,outVector,uniqueFID=None,bandPrefix=None):
         """
@@ -42,12 +42,12 @@ class sampleExtraction:
         
         if uniqueFID:    
             uniqueFID = uniqueFID.lower()
-            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_UInt32)
+            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         else:
             uniqueFID = 'uniquefid'
             print("adding 'uniquefid' field to the original vector.")
             inVector = vectorTools.addUniqueIDForVector(inVector,uniqueFID)
-            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_UInt32)
+            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         
         print("Extract values from raster...")
         X,Y,coords = rasterTools.get_samples_from_roi(inRaster,tempRast,getCoords=True)
@@ -253,6 +253,7 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
+"""
 if __name__ == "__main__":
     inRaster = "/home/nicolas/Bureau/tdubo/indices/NDVI/ndvi.vrt"
     inVector = "/home/nicolas/Bureau/tdubo/plots_releves_rpg_UTM31.shp"
@@ -299,4 +300,3 @@ if __name__ == "__main__":
             
         sampleExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
                                      uniqueFID=args.uniqueFID,bandPrefix=args.bandPrefix)
-"""

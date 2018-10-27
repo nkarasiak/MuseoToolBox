@@ -13,12 +13,9 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-#import multiprocessing
 import gdal
 import numpy as np
 import os
-
-
 
 def convertGdalDataTypeToOTB(gdalDT):
     """
@@ -127,8 +124,8 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
                 if getCoords :                  
                     coordsTp = np.empty((t[0].shape[0],2))
                     
-                    coordsTp[:,0] = t[1]+j#t[0]*i#t[1]
-                    coordsTp[:,1] = t[0]+i#t[1]*j#[i]*t[1].shape[0]
+                    coordsTp[:,0] = t[1]+j
+                    coordsTp[:,1] = t[0]+i
 
                     coords = np.concatenate((coords,coordsTp))
 
@@ -183,7 +180,7 @@ def rasterize(data,vectorSrc,field,outFile,gdt=gdal.GDT_Byte):
 
 
   
-class readAndWriteRaster:
+class rasterMath:
     """
     Read a raster per block, and perform one or many functions to one or many raster outputs.
     
@@ -216,15 +213,9 @@ class readAndWriteRaster:
     def __init__(self,inRaster,inMaskRaster=False,parallel=False):
         self.parallel = parallel
         
-        #if parallel is not False:
-        
-            
-        
         self.openRaster = gdal.Open(inRaster,gdal.GA_ReadOnly)
         if self.openRaster is None:
-            # fix_print_with_import
-            print('Impossible to open '+inRaster)
-            exit()
+            raise ReferenceError('Impossible to open '+inRaster)
             
         self.nb  = self.openRaster.RasterCount
         self.nc = self.openRaster.RasterXSize

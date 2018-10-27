@@ -18,7 +18,7 @@ import glob
 import os
 import sys,argparse
 
-def resampleEveryXDays(S2Dir,out,nDays=5,startDate=False,lastDate=False):
+def generateSampleTime(S2Dir,out,nDays=5,startDate=False,lastDate=False):
     """
     Generate a custom Sample Time for Satellite Image Time Series.
     

@@ -14,29 +14,23 @@
 # =============================================================================
 import numpy as np
 
-newOrder = [0,1,2,6,5,10,12,4,7,8,9,11,3,13]      
-#f1Order =  f1[:][newOrder]
-speciesName = ['Silver birch',
- 'Oak',
- 'Red oak',
- 'Aspen',
- 'European ash',
- 'Black locust',
- 'Willow',
- 'Eucalyptus',
- 'Corsican pine',
- 'Maritime pine',
- 'Black pine',
- 'Silver fir',
- 'Douglas fir']
-speciesNameNewOrder = speciesName# [speciesName[i] for i in newOrder]
-
 try:
     from matplotlib import pyplot as plt
     import itertools
 except Exception as error:
     raise ImportError(error)
-def reorderMatrix(cm,order=newOrder):
+
+def reorderMatrix(cm,order):
+    """
+    reorder Matrix according to index new order
+    
+    Parameters
+    ---------
+    cm : arr
+        Confusion matrix to reorder.
+    order : list
+        List of index for new order (E.g [0,1,3,2])
+    """
     return cm[:, order][order]    
 
 def plot_comOrOm(cm,title='Omission',ylabels=False,xlabels=False,vmin=False,vmax=False,xlabel=False,ylabel=False,\
@@ -860,7 +854,3 @@ def plotConfusionMatrix(cm,title='',ylabels=False,xlabels=False,vmin=False,vmax=
     if pdf : 
         plt.savefig(pdf, bbox_inches='tight')
     return fig
-
-
-if __name__ == '__main__':
-    plotFeatureImportance(featImp)
