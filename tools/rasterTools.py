@@ -91,9 +91,9 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
         coords = np.array([],dtype=np.uint16).reshape(0,2)
 
     ## Read block data
-    X = np.array([]).reshape(0,d)
-    Y = np.array([]).reshape(0,1)
-    STD = np.array([]).reshape(0,1)
+    X = np.array([],dtype=np.int16).reshape(0,d)
+    Y = np.array([],dtype=np.int16).reshape(0,1)
+    STD = np.array([],dtype=np.int16).reshape(0,1)
     
     total = nl*y_block_size
     for i in range(0,nl,y_block_size):
@@ -118,9 +118,9 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
             t = np.nonzero(ROI)
             
             if t[0].size > 0:
-                Y = np.concatenate((Y,ROI[t].reshape((t[0].shape[0],1)).astype('uint8')))
+                Y = np.concatenate((Y,ROI[t].reshape((t[0].shape[0],1))))
                 if stand_name:
-                    STD = np.concatenate((STD,STAND[t].reshape((t[0].shape[0],1)).astype('uint8')))
+                    STD = np.concatenate((STD,STAND[t].reshape((t[0].shape[0],1))))
                 if getCoords :                  
                     coordsTp = np.empty((t[0].shape[0],2))
                     
@@ -138,8 +138,7 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
                     try:
                         X = np.concatenate((X,Xtp))
                     except MemoryError:
-                        print('Impossible to allocate memory: ROI too big')
-                        exit()
+                        raise MemoryError('Impossible to allocate memory: ROI too big')
     
     # Clean/Close variables
     # del Xtp,band    

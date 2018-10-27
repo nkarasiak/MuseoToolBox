@@ -212,10 +212,11 @@ class createPointLayer:
         
         featUpdates =  self.inLyr.GetFeature(int(FID))
         for f in self.fields:
-            feature.SetField(f,featUpdates.GetField(f))
-            if self.addBand is True:
-                for idx,f in enumerate(self.nBandsFields):
-                    feature.SetField(f,int(bandValue[idx]))
+            if f!='ogc_fid':
+                feature.SetField(f,featUpdates.GetField(f))
+                if self.addBand is True:
+                    for idx,f in enumerate(self.nBandsFields):
+                        feature.SetField(f,int(bandValue[idx]))
         
         self.outLyr.CreateFeature(feature)
         self.idx += 1
@@ -253,10 +254,11 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
+
 """
 if __name__ == "__main__":
-    inRaster = "/home/nicolas/Bureau/tdubo/indices/NDVI/ndvi.vrt"
-    inVector = "/home/nicolas/Bureau/tdubo/plots_releves_rpg_UTM31.shp"
+    inRaster = "/home/nicolas/Bureau/test/raster.tif"
+    inVector = "/home/nicolas/Bureau/test/vector.sqlite"
     outVector = "/tmp/extraction_ndvi_se.sqlite"
     #bandPrefix = "ndvi_"
     
