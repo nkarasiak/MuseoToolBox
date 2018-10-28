@@ -12,10 +12,13 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-
+from __future__ import absolute_import, print_function
 import gdal
 import numpy as np
 import os
+import sys
+from MuseoToolBox.tools import customPrint
+
 
 def convertGdalDataTypeToOTB(gdalDT):
     """
@@ -95,7 +98,10 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
     Y = np.array([],dtype=np.int16).reshape(0,1)
     STD = np.array([],dtype=np.int16).reshape(0,1)
     
+    # for progress bar 
     total = nl*y_block_size
+    progressBar = customPrint.progressBar(total,message='Reading raster values... ')
+    
     for i in range(0,nl,y_block_size):
 
         if i + y_block_size < nl: # Check for size consistency in Y
@@ -108,6 +114,9 @@ def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,o
             else:
                 cols = nc - j
 
+            #for progressbar
+            currentPosition = int(i+j+1)
+            progressBar.addPosition(currentPosition)
             # Load the reference data
             
             ROI = roi.GetRasterBand(1).ReadAsArray(j, i, cols, lines)

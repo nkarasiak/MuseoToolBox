@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-
+from __future__ import absolute_import, print_function
 import os
 from osgeo import ogr
 import numpy as np
@@ -463,10 +463,9 @@ def convertToDistanceMatrix(coords,sr=False,convertTo4326=False):
     return distMatrix(coords,distanceMetric=True)
 
 
-
-def randomPerClass(FIDs,train_size:0.5,seed=None):
+def randomPerClass(FIDs,train_size=0.5,seed=None):
     """
-    random array according to FIDs.
+    Random array according to FIDs.
     
     Parameters
     ---------

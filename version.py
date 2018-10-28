@@ -13,19 +13,4 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-from __future__ import absolute_import 
-
-name='MuseoToolBox'
-
-# import rasterTools, vectorTools and other directly in root : mtb.XXX
-from .tools import *
-
-# import others folder as mtb.Folder.XXX
-from . import charts
-from . import Sentinel2
-
-# Maybe to activate later ?
-# You can import via :
-# from MuseoToolBox import apps as mtbApps
-#from . import stats 
-#from . import apps
+version = 0.1

@@ -12,6 +12,8 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import absolute_import, print_function
+import sys
 
 def pushFeedback(message,feedback=None):
     """
@@ -37,3 +39,45 @@ def pushFeedback(message,feedback=None):
     else:
         if not isNum:
             print(str(message))            
+
+class progressBar:
+    def __init__(self,total,message='',length=50):
+        """
+        total : int
+            Total number of samples.
+        length : int.
+            Length of the bar.
+        """
+        self.start = 0
+        self.total = total
+        self.length = length
+        self.message = message
+        self.lastPosition = None
+        
+    def addPosition(self,value):
+        inPercent = int(value/self.total*100)
+        if inPercent != self.lastPosition :
+            self.lastPosition = inPercent
+            self.nHash = int(self.length*(value/self.total))
+            self.nPoints = int(self.length-int(self.nHash))
+            self.printBar(inPercent)
+        
+    def printBar(self,value):
+        if value == 100:
+            end = "\n"
+        else:
+            end = "\r"
+        sys.stdout.flush()
+        #print(self.nHash)
+        #print(self.nPoints)
+        print(self.message+' [{}{}]{}%'.format(self.nHash*"#",self.nPoints*".",self.lastPosition),end=end)
+    
+if __name__ == '__main__':
+    pb = progressBar(800,length=50)
+    import time
+    for i in [100,300,500,700,800]:
+        pb.addPosition(i)
+        time.sleep(1)
+
+        
+            

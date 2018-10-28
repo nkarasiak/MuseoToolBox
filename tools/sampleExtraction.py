@@ -12,9 +12,10 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import
-from MuseoToolBox.tools import vectorTools,rasterTools
+from __future__ import absolute_import, print_function
+from MuseoToolBox.tools import vectorTools,rasterTools,customPrint
 
+import sys
 import os
 import numpy as np
 import tempfile
@@ -45,7 +46,7 @@ class sampleExtraction:
             tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         else:
             uniqueFID = 'uniquefid'
-            print("adding 'uniquefid' field to the original vector.")
+            print("Adding 'uniquefid' field to the original vector.")
             inVector = vectorTools.addUniqueIDForVector(inVector,uniqueFID)
             tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         
@@ -168,6 +169,7 @@ class createPointLayer:
             The number of points to be added (in order to have a progress bar. Will not affect the processing if bad value is put here.)
         """
         self.nSamples = nSamples
+        self.progressBar  = customPrint.progressBar(nSamples,'Adding points... ')
         
     def addPointToLayer(self,coords,uniqueIDValue,bandValue=None,bandPrefix=None):
         """
@@ -181,11 +183,10 @@ class createPointLayer:
             If array, should have the same size as the number of bands defined in addBandsValue function.
         """
         if self.nSamples:
-            currentPosition = int(self.idx/self.nSamples*100)
+            currentPosition = int(self.idx/self.nSamples*100)+1
             if currentPosition != self.lastPosition:
-                print('Adding points...[{1}{2}]{0}%'.format(int(currentPosition),int(currentPosition/5)*"#",int(20-int(currentPosition/5))*"."),end="\r", flush=True)
+                self.progressBar.addPosition(self.idx)
                 self.lastPosition = currentPosition
-        
     
         if self.uniqueIDandFID is False:
             self.__updateArrAccordingToVector__()

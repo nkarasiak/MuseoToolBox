@@ -12,20 +12,29 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import absolute_import
+import setuptools
 
-from __future__ import absolute_import 
+from version import version as __version__
 
-name='MuseoToolBox'
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+    
 
-# import rasterTools, vectorTools and other directly in root : mtb.XXX
-from .tools import *
-
-# import others folder as mtb.Folder.XXX
-from . import charts
-from . import Sentinel2
-
-# Maybe to activate later ?
-# You can import via :
-# from MuseoToolBox import apps as mtbApps
-#from . import stats 
-#from . import apps
+setuptools.setup(name='MuseoToolBox',
+      version=str(__version__),
+      description='Raster and vector tools for Remote Sensing and Classification',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
+      url='https://github.com/lennepkade/MuseoToolBox',
+      author='Nicolas Karasiak',
+      author_email='karasiak.nicolas@gmail.com',
+      license='GPLv3',
+      packages=setuptools.find_packages(),
+      install_requires=[
+          'scikit-learn',
+          'numpy',
+          'scipy',
+          'osgeo'
+      ],
+      zip_safe=False)
