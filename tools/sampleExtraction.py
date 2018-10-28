@@ -133,7 +133,7 @@ class createPointLayer:
         self.idx = 0
         self.lastPosition = 0
         self.nSamples = None
-        if self.driverName == 'SQLITE':
+        if self.driverName == 'SQLITE' or self.driverName == 'GPKG':
             self.outLyr.StartTransaction()
 
         self.uniqueIDField = uniqueIDField
@@ -183,7 +183,7 @@ class createPointLayer:
         if self.nSamples:
             currentPosition = int(self.idx/self.nSamples*100)
             if currentPosition != self.lastPosition:
-                print('Adding points... {}%'.format(currentPosition))
+                print('Adding points...[{1}{2}]{0}%'.format(int(currentPosition),int(currentPosition/5)*"#",int(20-int(currentPosition/5))*"."),end="\r", flush=True)
                 self.lastPosition = currentPosition
         
     
@@ -249,7 +249,7 @@ class createPointLayer:
         """
         Once work is done, close all layers.
         """
-        if self.driverName == 'SQLITE':
+        if self.driverName == 'SQLITE' or self.driverName == 'GPKG':
             self.outLyr.CommitTransaction()
         self.inData.Destroy()
         self.outData.Destroy()
