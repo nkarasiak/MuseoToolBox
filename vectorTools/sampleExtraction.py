@@ -13,7 +13,8 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import, print_function
-from MuseoToolBox.tools import vectorTools,rasterTools,customPrint
+from MuseoToolBox import vectorTools,rasterTools
+from MuseoToolBox.tools import customPrint
 
 import sys
 import os
@@ -51,12 +52,12 @@ class sampleExtraction:
             tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         
         print("Extract values from raster...")
-        X,Y,coords = rasterTools.get_samples_from_roi(inRaster,tempRast,getCoords=True)
+        X,Y,coords = rasterTools.getSamplesFromROI(inRaster,tempRast,getCoords=True)
         
         geoTransform = gdal.Open(tempRast).GetGeoTransform()
         os.remove(tempRast)
     
-        centroid = [self.pixelLocationToCentroidGeom(coord,geoTransform) for coord in coords]
+        centroid = [self.__pixelLocationToCentroidGeom(coord,geoTransform) for coord in coords]
         # init outLayer
         outLayer = createPointLayer(inVector,outVector,uniqueFID)
         outLayer.addTotalNumberOfPoints(len(centroid))
@@ -72,10 +73,7 @@ class sampleExtraction:
                     outLayer.addPointToLayer(xy,Y[idx][0],X[idx],bandPrefix)
         outLayer.closeLayers()
 
-
-
-
-    def pixelLocationToCentroidGeom(self,coords,geoTransform):
+    def __pixelLocationToCentroidGeom(self,coords,geoTransform):
         """
         Convert XY coords into the centroid of a pixel
         
@@ -183,11 +181,11 @@ class createPointLayer:
             If array, should have the same size as the number of bands defined in addBandsValue function.
         """
         if self.nSamples:
-            currentPosition = int(self.idx/self.nSamples*100)+1
+            currentPosition = int(self.idx+1/self.nSamples*100)
             if currentPosition != self.lastPosition:
-                self.progressBar.addPosition(self.idx)
+                self.progressBar.addPosition(self.idx+1)
                 self.lastPosition = currentPosition
-    
+                
         if self.uniqueIDandFID is False:
             self.__updateArrAccordingToVector__()
         
@@ -256,17 +254,17 @@ class createPointLayer:
         self.outData.Destroy()
 
 
+
 """
 if __name__ == "__main__":
-    inRaster = "/home/nicolas/Bureau/test/raster.tif"
-    inVector = "/home/nicolas/Bureau/test/vector.sqlite"
-    outVector = "/tmp/extraction_ndvi_se.sqlite"
+    inRaster = "/home/nicolas/Documents/notebook/mtb/data/map.tif"
+    inVector = "/home/nicolas/Documents/notebook/mtb/data/train.gpkg"
+    outVector = "/home/nicolas/Documents/notebook/mtb/data/train_withROI.gpkg"
     #bandPrefix = "ndvi_"
     
     sampleExtraction(inRaster,inVector,outVector,bandPrefix=None)
 """
 if __name__ == "__main__":
-    import sys
     import argparse
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])

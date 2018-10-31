@@ -17,93 +17,6 @@ import os
 from osgeo import ogr
 import numpy as np
 
-def getDriverAccordingToFileName(fileName):
-    extensions = ['sqlite','shp','netcdf','gpx','gpkg']
-    driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX','GPKG']
-    
-    fileName,ext = os.path.splitext(fileName)
-        
-    if ext[1:] not in extensions:
-       msg = 'Your extension {} is not recognized as a valid extension for saving shape.\n'.format(ext)
-       msg = msg + 'Supported extensions are '+str(driversName)+'\n'
-       msg = msg + 'We recommend you to use \'sqlite\' extension.'
-       raise Warning(msg)
-    else:   
-        driverIdx=[x for x,i in enumerate(extensions) if i==ext[1:]][0]
-        driverName = driversName[driverIdx]
-        return driverName
-
-class randomInSubset():
-
-    def __init__(self,inShape,inField,outValidation,outTrain,number=50,percent=True):
-        """
-        inShape : str path file (e.g. '/doc/ref.shp')
-        inField : string column name (e.g. 'class')
-        outValidation : str path of shp output file (e.g. '/tmp/valid.shp')
-        outTrain : str path of shp output file (e.g. '/tmp/train.shp')
-        """
-        from sklearn.model_selection import  train_test_split
-        
-        if percent:
-            number = number / 100.0
-        else:
-            number = int(number)
-            
-        lyr = ogr.Open(inShape)
-        lyr1 = lyr.GetLayer()
-        FIDs= np.zeros(lyr1.GetFeatureCount(),dtype=int)
-        Features = []
-        #unselFeat = []
-        #current = 0
-        
-        for i,j in enumerate(lyr1):
-            #print j.GetField(inField)
-            FIDs[i] = j.GetField(inField)
-            Features.append(j)
-            #current += 1
-        srs = lyr1.GetSpatialRef()
-        lyr1.ResetReading()
-        
-        ## 
-        if percent:
-            validation,train = train_test_split(Features,test_size=number,train_size=1-number,stratify=FIDs)
-        else:
-            validation,train = train_test_split(Features,test_size=number,stratify=FIDs)
-        
-        self.saveToShape(validation,srs,outValidation)
-        self.saveToShape(train,srs,outTrain)
-    
-    
-    def saveToShape(self,array,srs,outShapeFile):
-        # Parse a delimited text file of volcano data and create a shapefile
-        # use a dictionary reader so we can access by field name
-        # set up the shapefile driver
-        outDriver = ogr.GetDriverByName( 'ESRI Shapefile' )
-        
-        # create the data source
-        if os.path.exists(outShapeFile):
-            outDriver.DeleteDataSource(outShapeFile)
-        # Remove output shapefile if it already exists
-        
-        ds = outDriver.CreateDataSource(outShapeFile) #options = ['SPATIALITE=YES'])
-    
-        # create the spatial reference, WGS84
-        
-        lyrout = ds.CreateLayer('randomSubset',srs)
-        fields = [array[1].GetFieldDefnRef(i).GetName() for i in range(array[1].GetFieldCount())]
-        
-        for f in fields:
-            field_name = ogr.FieldDefn(f, ogr.OFTString)
-            field_name.SetWidth(24)
-            lyrout.CreateField(field_name)
-            
-        
-        for k in array:
-            lyrout.CreateFeature(k)
-    
-        # Save and close the data source
-        ds = None
-
 class distanceCV:
     def __init__(self,distanceMatrix,Y,distanceThresold=1000,minTrain=-1,SLOO=True,maxIter=False,furtherSplit=False,onlyVaryingTrain=False,stats=False,verbose=False,seed=False,otherLevel=False):
         """Compute train/validation array with Spatial distance analysis.
@@ -163,6 +76,10 @@ class distanceCV:
         
         if seed:
             np.random.seed(seed)
+        else:
+            import time
+            seed= int(time.time())
+        self.seed = seed
         
     def __iter__(self):
         return self
@@ -176,6 +93,8 @@ class distanceCV:
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
        
         if self.iterPos < self.maxIter:
+            np.random.seed(self.seed)
+            self.seed += 1
             ROItoRemove = []
             for iterPosition in range(self.maxIter):      
                 if self.verbose:print((53*'=' + '\n')*4)
@@ -207,7 +126,7 @@ class distanceCV:
                     while len(CTtemp) > 0:
                     #totalC = len(self.label[self.label==int(C)])
                     #uniqueTrain = 0
-
+                        np.random.seed(self.seed)
                         self.ROI = np.random.permutation(CTtemp)[0] # randomize ROI choice
 
                         
@@ -238,8 +157,7 @@ class distanceCV:
 #trainedTemp = sp.array([self.ROI]) # train is the current ROI                         
                         """
                         if self.SLOO is True and self.maxIter != self.minEffectiveClass:
-                            #print('self.SLOO true but no LeRest')
-                            print('ici')
+                            
                             CTtoRemove = np.concatenate((validateTemp,trainedTemp))                        
                     
                             # Remove ROI for further selection ROI (but keep in Y list)                        
@@ -260,9 +178,13 @@ class distanceCV:
                             
                             CTtemp = []
                         """
+                        if self.furtherSplit:
+                            validateTemp = np.array([self.ROI])
+                            trainedTemp = CTtemp[CTtemp!=validateTemp]
+
                         trained = trainedTemp
                         validate = validateTemp
-                            
+                                
                         CTtemp = []
                         #print len(validate)
                     initTrain = len(trained)
@@ -333,14 +255,12 @@ class distanceCV:
                                     
                                     distToMove = np.sort(distanceROI)[nTrainToRemove]
                                     #indToMove = distToMove[distanceROI]
-                                    indToMove = trained[distanceROI>=distToMove] # trained > distance to cut 
+                                    indToMove = trained[distanceROI>distToMove] # trained > distance to cut 
                                     for i in indToMove:
                                         trained = np.delete(trained,np.where(trained==i)[0])
                                     validate = np.concatenate((validate ,indToMove))
                                 else:
-
                                     nTrainToAdd = int(self.minTrain*len(CT) - len(trained))
-
                                     distanceROI = (self.distanceArray[int(np.random.permutation(validate)[0]),:])[validate]
                                     distToMove = np.sort(distanceROI)[-nTrainToAdd]
                                     #indToMove = distToMove[distanceROI]
@@ -448,22 +368,8 @@ def distMatrix(inCoords,distanceMetric=False):
 
     return distArray
 
-def convertToDistanceMatrix(coords,sr=False,convertTo4326=False):
 
-    if convertTo4326:
-        from pyproj import Proj, transform
-        # initProj = Proj(sr.ExportToProj4())
-        # convert points coords to 4326
-        # if vector 
-        initProj = Proj(sr.ExportToProj4())
-        destProj = Proj("+proj=longlat +datum=WGS84 +no_defs") # http://epsg.io/4326
-        
-        coords[:,0],coords[:,1] = transform(initProj,destProj,coords[:,0],coords[:,1]) 
-    
-    return distMatrix(coords,distanceMetric=True)
-
-
-def randomPerClass(FIDs,train_size=0.5,seed=None):
+class randomPerClass:
     """
     Random array according to FIDs.
     
@@ -476,22 +382,45 @@ def randomPerClass(FIDs,train_size=0.5,seed=None):
     seed : int.
         random_state for numpy.
     """
-    train,valid = [np.asarray([]),np.asarray([])]
-    for C in np.unique(FIDs):
-        Cpos=np.where(FIDs==C)[0]
+    def __init__(self,FIDs,train_size=0.5,nIter=5,seed=None):
+        self.FIDs = FIDs
+        self.train_size = train_size
+        self.nIter = nIter
+        self.seed = seed
+        self.iter = 0
+    def __iter__(self):
+        return self
         
-        if train_size < 1:
-            toSplit = int(train_size*len(Cpos))
-        else:
-            toSplit = train_size
+    # python 3 compatibility
+    def __next__(self):        
+        return self.next()
+        
+    def next(self):
+        if self.iter < self.nIter:
+            train,valid = [np.asarray([]),np.asarray([])]
+            for C in np.unique(self.FIDs):
+                Cpos=np.where(self.FIDs==C)[0]
+                
+                if self.train_size < 1:
+                    toSplit = int(self.train_size*len(Cpos))
+                else:
+                    toSplit = self.train_size
+                    
+                np.random.seed(self.seed)
+                tempTrain = np.random.permutation(Cpos)[:toSplit]
+                TF = np.in1d(Cpos,tempTrain,invert=True)
+                tempValid = Cpos[TF]
+                train = np.concatenate((train,tempTrain))
+                valid = np.concatenate((valid,tempValid))
             
-        np.random.seed(seed)
-        tempTrain = np.random.permutation(Cpos)[:toSplit]
-        TF = np.in1d(Cpos,tempTrain,invert=True)
-        tempValid = Cpos[TF]
-        train = np.concatenate((train,tempTrain))
-        valid = np.concatenate((valid,tempValid))
-    return train,valid
+            if self.seed is not None:
+                self.seed += 1
+            self.iter += 1
+            
+            return train,valid
+        else:
+             raise StopIteration()
+             
 
 
 
@@ -522,7 +451,7 @@ class standCV:
         
         if seed:
             np.random.seed(seed)
-            
+            self.seed = seed
         if maxIter :
             self.maxIter = maxIter
         else:
@@ -542,7 +471,7 @@ class standCV:
         return self.next()
     
     def next(self):
-                 
+         self.seedidx = 0
          if self.iterPos < self.maxIter:
              StandToRemove = []
              train = np.array([],dtype=int)
@@ -552,7 +481,9 @@ class standCV:
                  Ystands = np.array(self.stand)[Ycurrent]
                  Ystand = np.unique(Ystands)
                  
+                 np.random.seed(self.seed)
                  selectedStand = np.random.permutation(Ystand)[0]
+                 
 
                  if self.SLOO is True:
 
@@ -568,8 +499,7 @@ class standCV:
                      train = np.concatenate((train,np.asarray(YnotInSelectedStand)))
                      StandToRemove.append(selectedStand)
                  else:
-                     
-                     
+                     np.random.seed(self.seed)
                      randomYstand = np.random.permutation(Ystand)
                      
                      Ytrain = np.in1d(Ystands,randomYstand[:int(len(Ystand)*self.split)])
@@ -583,287 +513,8 @@ class standCV:
                  
              self.iterPos +=1 
              train
+             self.seed += 1
              return train,validation
          else:
              raise StopIteration()
              
-def readFieldVector(inShape,inField,inStand=False,getFeatures=False):
-    lyr = ogr.Open(inShape)
-    lyr1 = lyr.GetLayer()
-    FIDs= np.zeros(lyr1.GetFeatureCount(),dtype=np.int32)
-    
-    """
-    if inStand:
-        STDs = sp.copy(FIDs)
-    """
-    Features = []
-    Stands = []
-    getFeaturesList = []
-    #unselFeat = []
-    #current = 0
-    
-    for i,j in enumerate(lyr1):
-        #print j.GetField(inField)
-        if inStand:
-            #STDs[i] = j.GetField(inStand)
-            Stands.append(j.GetField(inStand))
-            Features.append(j.GetField(inField))
-        else:
-            FIDs[i] = j.GetField(inField)
-            Features.append(j)
-        if getFeatures:
-            print(i)
-            getFeaturesList.append(j)
-                        
-        #current += 1
-    srs = lyr1.GetSpatialRef()
-    lyr1.ResetReading()
-    
-    
-    if inStand:
-        if getFeatures:
-            return Features,Stands,srs,getFeaturesList
-        else:
-             
-            return Features,Stands,srs
-    else :
-        if getFeatures is True:
-            return Features,srs,getFeaturesList
-        else:
-            return Features,srs
-        
-def saveToShape(array,srs,outShapeFile):
-    # Parse a delimited text file of volcano data and create a shapefile
-    # use a dictionary reader so we can access by field name
-    # set up the shapefile driver
-    import ogr
-    outDriver = ogr.GetDriverByName( 'ESRI Shapefile' )
-    
-    # create the data source
-    if os.path.exists(outShapeFile):
-        outDriver.DeleteDataSource(outShapeFile)
-    # Remove output shapefile if it already exists
-    
-    ds = outDriver.CreateDataSource(outShapeFile) #options = ['SPATIALITE=YES'])
-
-    # create the spatial reference, WGS84
-    
-    lyrout = ds.CreateLayer('randomSubset',srs,ogr.wkbPoint)
-    fields = [array[1].GetFieldDefnRef(i).GetName() for i in range(array[1].GetFieldCount())]
-    
-    for i,f in enumerate(fields):
-        field_name = ogr.FieldDefn(f, array[1].GetFieldDefnRef(i).GetType())
-        field_name.SetWidth(array[1].GetFieldDefnRef(i).GetWidth())
-        lyrout.CreateField(field_name)
-        
-    
-    for k in array:
-        lyrout.CreateFeature(k)
-
-    # Save and close the data source
-    ds = None
-
-
-def readValuesFromVector(vector,*args,**kwargs):
-    """
-    Read values from vector. Will list all fields beginning with the roiprefix ('band_' for example)
-    
-    Parameters
-    ----------
-    vector : str
-        Vector path ('myFolder/class.shp',str).
-    *args : str
-        Field name containing the field to extract values from (i.e. 'class', str).    
-    **kwargs : arg
-        bandPrefix = 'band_' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band_').
-        getFeatures = True, will return features in one list AND spatial Reference.
-    
-    Output
-    ----------
-    Arr.
-    """
-
-    file = ogr.Open(vector)
-    lyr = file.GetLayer()
-
-    # get all fields and save only roiFields
-    ldefn = lyr.GetLayerDefn()
-    listFields = []
-    
-    # add kwargs 
-    if kwargs:
-        # check if need to extract bands from vector
-        if 'bandPrefix' in kwargs.keys():
-            extractBands = True
-            bandPrefix = kwargs['bandPrefix']
-        else:
-            extractBands = False
-        
-        # check if need to extract features from vector
-        if 'getFeatures' in kwargs.keys():
-            getFeatures = kwargs['getFeatures']
-        else:
-            getFeatures = False
-    else:
-        extractBands = False
-        getFeatures = False
-    
-    if extractBands:     
-        bandsFields = []
-    
-    # if getFeatures, save Spatial Reference and Features
-    if getFeatures:
-        srs = lyr.GetSpatialRef()
-        features = []
-    
-    # List available fields
-    for n in range(ldefn.GetFieldCount()):
-        fdefn = ldefn.GetFieldDefn(n)
-        if not fdefn.name is listFields:
-            listFields.append(fdefn.name)
-        if extractBands:     
-            if fdefn.name.startswith(bandPrefix):
-                bandsFields.append(fdefn.name)                               
-    if extractBands:
-        if len(bandsFields) == 0:
-            raise ValueError('Band prefix field "{}" do not exists. These fields are available : {}'.format(bandPrefix,listFields))
-    
-    # Initialize empty arrays
-    if len(args)>0: # for single fields
-        ROIlevels = np.zeros([lyr.GetFeatureCount(),len(args)],dtype=np.int32)
-        
-    if extractBands: # for bandPrefix
-        ROIvalues = np.zeros([lyr.GetFeatureCount(),len(bandsFields)],dtype=np.int32)
-        
-    # Listing each feature and store to array
-    for i,feature in enumerate(lyr):
-        if extractBands:
-            for j,band in enumerate(bandsFields):
-                ROIvalues[i,j] = feature.GetField(band)
-        if len(args)>0:
-            try:
-                for a in range(len(args)):
-                    ROIlevels[i,a] = feature.GetField(args[a])
-            except:
-                raise ValueError("Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(args[a],listFields))
-        if getFeatures:
-            features.append(feature)      
-        
-    # Initialize return 
-    fieldsToReturn = []
-    
-    # if single fields
-    if len(args)>0:
-        for i in range(len(args)):
-            fieldsToReturn.append(np.asarray(ROIlevels)[:,i])
-    # if bandPrefix
-    if extractBands:
-        fieldsToReturn.append(ROIvalues)
-    # if features
-    if getFeatures:
-        fieldsToReturn.append(features)
-        fieldsToReturn.append(srs)
-    # if 1d, to turn single array 
-    if len(fieldsToReturn)==1:
-        fieldsToReturn = fieldsToReturn[0]
-    
-    return fieldsToReturn
-
-def addUniqueIDForVector(inVector,uniqueField='uniquefid'):
-    inDriverName = getDriverAccordingToFileName(inVector)
-    inDriver = ogr.GetDriverByName(inDriverName)
-    inSrc = inDriver.Open(inVector,1) # 1 for writable
-    inLyr = inSrc.GetLayer()       # get the layer for this datasource
-    inLyrDefn = inLyr.GetLayerDefn()
-    
-    if inDriverName == 'SQLITE':
-        inLyr.StartTransaction()
-
-    listFields = []
-    for n in range(inLyrDefn.GetFieldCount()):
-        fdefn = inLyrDefn.GetFieldDefn(n)
-        if not fdefn.name is listFields:
-            listFields.append(fdefn.name)    
-    if uniqueField in listFields:
-        print('Field \'{}\' is already in {}'.format(uniqueField,inVector))
-        inSrc.Destroy()
-    else:
-        newField = ogr.FieldDefn(uniqueField, ogr.OFTInteger)
-        newField.SetWidth(20)
-        inLyr.CreateField(newField)
-        
-        FIDs = [feat.GetFID() for feat in inLyr]
-        
-        ThisID = 1
-        
-        for FID in FIDs:
-            feat = inLyr.GetFeature(FID)
-            #ThisID = int(feat.GetFGetFeature(feat))
-            feat.SetField(uniqueField,int(ThisID)) # Write the FID to the ID field
-            inLyr.SetFeature(feat)              # update the feature
-            #inLyr.CreateFeature(feat)
-            ThisID += 1
-            
-        if inDriverName == 'SQLITE':
-            inLyr.CommitTransaction()
-        inSrc.Destroy()
-    return inVector
-    
-if __name__ == "__main__":
-    inShape = "/mnt/DATA/Sentinel-2/2017/5days/ACORVI_plot.sqlite"
-    bands,fts,srs= readValuesFromVector(inShape,bandPrefix = 'band_',getFeatures=True)
-    
-    #readROIFromVector()
-#    
-#    inRaster = '/mnt/DATA/Sentinel-2/SITS/SITS_TCJ.tif'
-#    inField = 'level3'
-#    inVector = '/mnt/DATA/Formosat_2006-2014/v2/ROI/ROI_2154.sqlite'
-#    
-#    inRaster = "/mnt/DATA/Test/DA/SITS/SITS_2013.tif"
-#    inVector = "/mnt/DATA/Test/DA/ROI_2154.sqlite"
-#    inField = "level1"
-#    
-#    levels = ['level1','level2','level3']
-#    inStand = 'spjoin_rif'
-#    """
-#    FIDs,STDs,srs,fts=readFieldVector(inVector,inField,inStand,getFeatures=True)
-#    standCV(FIDs,STDs)
-#    
-#    for tr,vl in standCV(FIDs,STDs,SLOO=True,maxIter=5):
-#        print(tr,vl)
-#    
-#    trFeat = [fts[i] for i in tr]
-#    vlFeat= [fts[i] for i in vl]
-#    saveToShape(trFeat,srs,'/tmp/train_{}.shp'.format(1))
-#    saveToShape(vlFeat,srs,'/tmp/valid_{}.shp'.format(1))
-#    """
-#    """
-#    inShape = '/mnt/DATA/demo/train.shp'
-#    inField = 'Class'
-#    number = 50
-#    percent = True
-#    
-#    outValidation = '/tmp/valid1.shp'
-#    outTrain ='/tmp/train.shp'
-#    
-#    randomInSubset(inShape,inField,outValidation,outTrain,number,percent)
-#    
-#    """
-#    
-#    import function_dataraster 
-#    function_dataraster.rasterize(inRaster,inVector,inField,'/tmp/roi.tif')
-#    X,Y,coords = function_dataraster.get_samples_from_roi(inRaster,'/tmp/roi.tif',getCoords=True)
-#    
-#    distanceArray = distMatrix(coords)
-#    rawCV = distanceCV(distanceArray,Y,32,minTrain=-1,SLOO=True)
-#    
-#    
-#    
-#    #rawCV = distanceCV(distanceArray,label,distanceThresold=distance,minTrain=minTrain,SLOO=SLOO,maxIter=maxIter,verbose=False,stats=True)
-#
-#    
-#    for tr,vl in rawCV:
-#        print(tr.shape)
-#        print(vl.shape)
-#        
-#    #randomInSubset('/tmp/valid.shp','level3','/tmp/processingd62a83be114a482aaa14ca317e640586/f99783a424984860ac9998b5027be604/OUTPUTVALIDATION.shp','/tmp/processingd62a83be114a482aaa14ca317e640586/1822187d819e450fa9ad9995d6757e09/OUTPUTTRAIN.shp',50,True)

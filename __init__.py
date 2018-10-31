@@ -15,13 +15,12 @@
 
 from __future__ import absolute_import 
 
-name='MuseoToolBox'
-
+from .version import version as __version__
 # import rasterTools, vectorTools and other directly in root : mtb.XXX
-from .tools import *
+#from .tools import *
+from . import vectorTools,rasterTools
 
 # import others folder as mtb.Folder.XXX
-from . import charts
 from . import Sentinel2
 
 # Maybe to activate later ?
@@ -29,3 +28,5 @@ from . import Sentinel2
 # from MuseoToolBox import apps as mtbApps
 #from . import stats 
 #from . import apps
+
+

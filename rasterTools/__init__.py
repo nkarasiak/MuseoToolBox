@@ -16,9 +16,7 @@ from __future__ import absolute_import, print_function
 import gdal
 import numpy as np
 import os
-import sys
 from MuseoToolBox.tools import customPrint
-
 
 def convertGdalDataTypeToOTB(gdalDT):
     """
@@ -40,17 +38,25 @@ def convertGdalDataTypeToOTB(gdalDT):
 
 
 
-def get_samples_from_roi(raster_name,roi_name,stand_name=False,getCoords=False,onlyCoords=False):
+def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,onlyCoords=False):
     '''!@brief Get the set of pixels given the thematic map.
     Get the set of pixels given the thematic map. Both map should be of same size. Data is read per block.
         Input:
-            raster_name: the name of the raster file, could be any file that GDAL can open
-            roi_name: the name of the thematic image: each pixel whose values is greater than 0 is returned
+            raster_name: str.
+                the name of the raster file, could be any file that GDAL can open
+            roi_name: str.
+                the name of the thematic image: each pixel whose values is greater than 0 is returned
+            stand_name : str or False.
+                the name of the stand to extract.
+            getCoords : bool.
+                If getCoords, will return coords for each point.
+            onlyCoords : bool.
+                If true, with only return coords, no X,Y...
         Output:
             X: the sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each 
                 line of the matrix is a pixel.
             Y: the label of the pixel
-    Written by Mathieu Fauvel.
+    Written by Mathieu Fauvel, updated by Nicolas Karasiak.
     ''' 
     ## Open Raster
     raster = gdal.Open(raster_name,gdal.GA_ReadOnly)

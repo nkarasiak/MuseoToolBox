@@ -14,12 +14,12 @@
 # =============================================================================
 
 from __future__ import absolute_import
-from MuseoToolBox.tools import vectorTools,rasterTools
+from MuseoToolBox import vectorTools,rasterTools
+from MuseoToolBox.vectorTools import crossValidationClass
 import os
 
 ### TODO
 ### Rasterize vector to keep only the centroid !
-
 
 class samplingMethods:    
     def standCV(inStand,SLOO=True,maxIter=False,seed=None):
@@ -42,16 +42,18 @@ class samplingMethods:
         samplingType = 'STAND'
         return [samplingType,dict(inStand=inStand,SLOO=SLOO,maxIter=maxIter,seed=seed)]
     
-    def farthestCV(distanceMatrix,):
+    def farthestCV(inRaster,inVector,distanceMatrix,minTrain=None,maxIter=False,seed=None):
         """
         Generate a Cross-Validation using the farthest distance between the training and validation samples.
 
         Parameters
         ----------
         """        
+        
         samplingType = 'farthestCV'
-        return [samplingType,dict()]
-    def SLOOCV(inRaster,inVector,distanceThresold,minTrain=None,SLOO=True,maxIter=False,seed=None):
+        return [samplingType,dict(inRaster=inRaster,inVector=inVector,distanceMatrix=distanceMatrix,minTrain=minTrain,maxIter=maxIter,seed=seed,furtherSplit=True)]
+    
+    def SLOOCV(inRaster,inVector,distanceThresold,distanceMatrix=None,minTrain=None,SLOO=True,maxIter=False,seed=None):
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
         
@@ -60,9 +62,11 @@ class samplingMethods:
         Parameters
         ----------
         inRaster : str.
-            Path of the raster to compute the distance in pixel.
+            Path of the raster.
         inVector : str.
-            Path of the vector files to compute distance between each feautre.
+            Path of the vector.
+        distanceMatrix : array.
+            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
         distanceThresold : int.
             In pixels.
         minTrain : int/float, default None.
@@ -75,11 +79,13 @@ class samplingMethods:
         seed : int, default None.
             If seed, int, to repeat exactly the same random.            
         """
+        if distanceMatrix is None:
+            distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+        
         samplingType = 'SLOO'
-        distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(inVector,inRaster)
         return [samplingType,dict(inRaster=inRaster,inVector=inVector,distanceMatrix=distanceMatrix,distanceThresold=distanceThresold,minTrain=minTrain,SLOO=SLOO,maxIter=maxIter,seed=seed)]
         
-    def randomCV(train_size=0.5,seed=None,nIter=5):
+    def randomCV(train_size=0.5,nIter=5,seed=None):
         """
         split : float,int. Default 0.5.
             If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
@@ -94,15 +100,15 @@ class samplingMethods:
         samplingType = 'random'
         return [samplingType,dict(train_size=train_size,seed=seed,nIter=nIter)]
 
-    def getDistanceMatrixForDistanceCV(inVector,inRaster):
+    def getDistanceMatrixForDistanceCV(inRaster,inVector):
         #TODO
         import tempfile
         tempTif = tempfile.mktemp('_roi.tif')
         tempTif = rasterTools.rasterize(inRaster,inVector,None,tempTif)
-        coords = rasterTools.get_samples_from_roi(inRaster,tempTif,getCoords=True,onlyCoords=True)
+        coords = rasterTools.getSamplesFromROI(inRaster,tempTif,getCoords=True,onlyCoords=True)
         os.remove(tempTif)
-        
-        distanceMatrix = vectorTools.distMatrix(coords)
+        from scipy.spatial import distance 
+        distanceMatrix = distance.cdist(coords,coords,'euclidean')
 
         return distanceMatrix
 
@@ -127,46 +133,55 @@ class sampleSelection(samplingMethods):
             If you need to regenerate the cross validation, you need to reinitialize it.
             
         """
+        self.inVector = inVector
+        self.inField = inField
         self.samplingMethod = samplingMethod
         
-        self.extensions = ['sqlite','shp','netcdf','gpx']
-        self.driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX']
+        self.extensions = ['sqlite','shp','netcdf','gpx','gpkg']
+        self.driversName = ['SQLITE','ESRI Shapefile','netCDF','GPX','GPKG']
         
         self.samplingType = samplingMethod[0]
         
         self.__alertMessage = 'It seems you already generated the cross validation. \n Please use reinitialize function if you want to regenerate the cross validation. \n But check if you defined a seed number in your samplingMethods function to have the same output.'
         self.__alreadyRead = False
         
-        # create unique randil state if no seed
+        # create unique random state if no seed
+        self.seedGenerated = False
         if self.samplingMethod[1]['seed'] is None:
+            self.seedGenerated = True 
             import time
             self.samplingMethod[1]['seed'] = int(time.time())
-            
+            print('No seed given... Won\'t be able to generate ScikitLearn CV and vector files.')
         ### Totally random
         if self.samplingType == 'random':
             FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
             FIDs = FIDs.flatten()
             
-            nIter = samplingMethod[1]['nIter']
-            seed = samplingMethod[1]['seed']
-            train_size = samplingMethod[1]['train_size']
             
-            self.crossvalidation = [vectorTools.randomPerClass(FIDs,train_size,seed+i) for i in range(nIter)]
+            self.crossvalidation = crossValidationClass.randomPerClass(FIDs=FIDs,**samplingMethod[1])
         
         ### Split at maximum distance beyond each point
         ### For Spatial-Leave-One-Out
-        if self.samplingType == 'SLOO':
+        if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
+            FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
             import tempfile
             tempTif = tempfile.mktemp('_roi.tif')
+            inRaster = self.samplingMethod[1]['inRaster']
             tempTif = rasterTools.rasterize(inRaster,inVector,inField,tempTif)
-            X,Y = rasterTools.get_samples_from_roi(inRaster,tempTif)
+            X,Y = rasterTools.getSamplesFromROI(inRaster,tempTif)
             os.remove(tempTif)
+            if FIDs.shape[0] != Y.shape[0]: 
+                self.SLOOnotSamesize = True
+                self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want ot save as vector the Cross-Validation.'
+                print(self.errorSLOOmsg)
+            else:
+                self.SLOOnotSamesize = False
             dictForSLOO = {}
             for key,value in samplingMethod[1].items():
                 if not key is 'inRaster' and not key is 'inVector' :
                     dictForSLOO[key] = value
-            self.crossvalidation = vectorTools.distanceCV(Y=Y,**dictForSLOO)
-            
+            self.crossvalidation = crossValidationClass.distanceCV(Y=Y,**dictForSLOO)
+        
         ## For Stand Split    
         if self.samplingType == 'STAND':
             inStand = samplingMethod[1]['inStand']
@@ -175,10 +190,10 @@ class sampleSelection(samplingMethods):
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
             FIDs,STDs,self.fts,self.srs = vectorTools.readValuesFromVector(inVector,inField,inStand,getFeatures=True)
             FIDs = FIDs.flatten()
-            self.crossvalidation = vectorTools.standCV(FIDs,STDs,SLOO=SLOO,maxIter=maxIter)
+            self.crossvalidation = crossValidationClass.standCV(FIDs,STDs,SLOO=SLOO,maxIter=maxIter,seed=self.samplingMethod[1]['seed'])
             
     def reinitialize(self):
-        self.__init__(self.outVector,self.samplingMethod)
+        self.__init__(self.inVector,self.inField,self.samplingMethod)
         
     def getSupportedExtensions(self):
         print('Output extension supported for this class are : ')
@@ -186,13 +201,18 @@ class sampleSelection(samplingMethods):
             print(3*' '+'- '+self.driversName[idx]+' : '+ext)
     
     def getCrossValidationForScikitLearn(self):
-        if self.__alreadyRead is True:
+        if self.__alreadyRead is True and self.seedGenerated:
             raise Warning(self.__alertMessage)
         else:
+            if self.__alreadyRead:
+                self.reinitialize()
             self.__alreadyRead = True
             return self.crossvalidation
         
     def saveVectorFiles(self,outVector):
+        if self.samplingType == 'SLOO':
+            if self.SLOOnotSamesize :
+                raise Exception(self.errorSLOOmsg)
         self.__fileName,self.__ext = os.path.splitext(outVector)
         
         if self.__ext[1:] not in self.extensions:
@@ -201,9 +221,11 @@ class sampleSelection(samplingMethods):
             print('We recommend you to use sqlite extension.')
         
         else:
-            if self.__alreadyRead is True:
+            if self.__alreadyRead is True and self.seedGenerated:
                 print(self.__alertMessage)
             else:
+                if self.__alreadyRead:
+                    self.reinitialize()
                 listOutput = []
                 self.cv = []
                 for idx,trvl in enumerate(self.crossvalidation):
@@ -263,21 +285,4 @@ class sampleSelection(samplingMethods):
             lyrout.CommitTransaction()
         # Save and close the data source
         ds = None
-    
-if __name__ == '__main__':
-    
-    inVector = '/mnt/DATA/Formosat_2006-2014/v2/ROI/ROI_2154.sqlite'
-    inField = 'level3'
-    inStand = 'spjoin_rif'
-    
-    inRaster = '/mnt/DATA/Formosat_2006-2014/v2/SITS_2014.tif'
-    #rasterTools.getCentroidValue(inVector,inRaster)
-    
-    distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(inVector,inRaster)
-    sampling = samplingMethods.randomCV(50,5)
-    #sampling = samplingMethods.SLOOCV(inRaster,inVector,distanceThresold=450,maxIter=5)
-    #sampling = samplingMethods.standCV(inStand,SLOO=True,maxIter=3,seed=1)
-    #sampling = samplingMethods.randomCV(maxTrainSamplesPerClass=10)
-    rsv = sampleSelection(inVector,inField,sampling)
-    #cv = rsv.getCrossValidationForScikitLearn()
-    files = rsv.saveVectorFiles('/tmp/test.sqlite')
+        

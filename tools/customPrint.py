@@ -41,7 +41,7 @@ def pushFeedback(message,feedback=None):
             print(str(message))            
 
 class progressBar:
-    def __init__(self,total,message='',length=50):
+    def __init__(self,total,message='',length=40):
         """
         total : int
             Total number of samples.
