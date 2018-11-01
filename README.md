@@ -1,4 +1,3 @@
-# Museo ToolBox
 ![MuseoToolBox logo](metadata/museoToolBox_logo_128.png)
 
 **Museo ToolBox** is a python library which was initially made to manipulate easily raster and had some OrfeoToolBox inside.
