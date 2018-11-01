@@ -6,7 +6,7 @@ The first usage was to give an easy the way to compute a Satellite Image Time Se
 
 
 ## Who build Museo ToolBox ?
-I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series with Sentinel-2. A special thanks to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who gave with me the love of good and open-source coding.
+I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series with Sentinel-2. A special thanks to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who gave me the love of good and open-source coding.
 
 ## What's the point ?
 Today, the main usages of Museo ToolBox are :
