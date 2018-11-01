@@ -30,4 +30,4 @@ I build [several python notebooks to give you some nice tutorials : just go to t
 For now, I still don't build a pip package, so you have to clone this repository and to had it in your python path.
 
 ## Why this name ?
-As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico).
+As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)).
