@@ -16,7 +16,16 @@
 from __future__ import print_function
 import sys
       
-
+def pushFeedback(msg,feedback=None):
+    
+    if feedback and feedback is not True:
+        if feedback=='gui':
+            QgsMessageLog.logMessage(str(msg))
+        else:
+            feedback.setProgressText(msg)
+    else:
+        print(msg)
+    
 class progressBar:
     def __init__(self,total,message='',length=40,feedback=None):
         """

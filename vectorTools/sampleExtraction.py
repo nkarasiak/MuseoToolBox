@@ -19,7 +19,6 @@ from MuseoToolBox.tools import progressBar
 import sys
 import os
 import numpy as np
-import tempfile
 from osgeo import gdal,ogr
 
 class sampleExtraction:
@@ -40,22 +39,17 @@ class sampleExtraction:
         bandPrefix : str, default None.
             If bandPrefix (e.g. 'band_'), will extract values from raster.
         """
-        tempRast = tempfile.mktemp('roi.tif')
-        
         if uniqueFID:    
             uniqueFID = uniqueFID.lower()
-            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         else:
             uniqueFID = 'uniquefid'
             print("Adding 'uniquefid' field to the original vector.")
             inVector = vectorTools.addUniqueIDForVector(inVector,uniqueFID)
-            tempRast = rasterTools.rasterize(inRaster,inVector,uniqueFID,tempRast,gdt=gdal.GDT_Int32)
         
         print("Extract values from raster...")
-        X,Y,coords = rasterTools.getSamplesFromROI(inRaster,tempRast,getCoords=True)
+        X,Y,coords = rasterTools.getSamplesFromROI(inRaster,inVector,uniqueFID,getCoords=True)
         
-        geoTransform = gdal.Open(tempRast).GetGeoTransform()
-        os.remove(tempRast)
+        geoTransform = gdal.Open(inRaster).GetGeoTransform()        
     
         centroid = [self.__pixelLocationToCentroidGeom(coord,geoTransform) for coord in coords]
         # init outLayer

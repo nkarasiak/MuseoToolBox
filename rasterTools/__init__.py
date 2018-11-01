@@ -16,8 +16,39 @@ from __future__ import absolute_import, print_function
 import gdal
 import numpy as np
 import os
-from MuseoToolBox.tools import progressBar
+import tempfile
+from MuseoToolBox.tools import progressBar,pushFeedback
 
+def convertGdalToNumpyDataType(gdalDT=None,numpyDT=None):
+    """
+    Return the datatype from gdal to numpy or from numpy to gdal.
+    
+    Parameters
+    ----------
+        gdalDT : int
+            gdal datatype from src_dataset.GetRasterBand(1).DataType
+        numpyDT : str
+            str from array.dtype.name
+    """
+    from osgeo import gdal_array
+    
+    NP2GDAL_CONVERSION = {
+      "uint8": 1,
+      "int8": 1,
+      "uint16": 2,
+      "int16": 3,
+      "uint32": 4,
+      "int32": 5,
+      "float32": 6,
+      "float64": 7,
+      "complex64": 10,
+      "complex128": 11,
+    }
+    
+    if numpyDT is None:
+        return gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
+    else:
+        return NP2GDAL_CONVERSION[numpyDT]
 def convertGdalDataTypeToOTB(gdalDT):
     """
     Convert Gdal DataType to OTB str format.
@@ -38,55 +69,68 @@ def convertGdalDataTypeToOTB(gdalDT):
 
 
 
-def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,onlyCoords=False):
-    '''!@brief Get the set of pixels given the thematic map.
+def getSamplesFromROI(inRaster,inVector,*fields,**kwargs):
+    """
     Get the set of pixels given the thematic map. Both map should be of same size. Data is read per block.
         Input:
             raster_name: str.
                 the name of the raster file, could be any file that GDAL can open
             roi_name: str.
                 the name of the thematic image: each pixel whose values is greater than 0 is returned
-            stand_name : str or False.
-                the name of the stand to extract.
-            getCoords : bool.
-                If getCoords, will return coords for each point.
-            onlyCoords : bool.
-                If true, with only return coords, no X,Y...
+            *fields : str.
+                Each field to extract label/value from.
+            **kwargs:
+                Only two keyword args are accepted:
+                    getCoords : bool.
+                        If getCoords, will return coords for each point.
+                    onlyCoords : bool.
+                        If true, with only return coords, no X,Y...
         Output:
             X: the sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each 
                 line of the matrix is a pixel.
             Y: the label of the pixel
     Written by Mathieu Fauvel, updated by Nicolas Karasiak.
-    ''' 
+    """ 
     ## Open Raster
-    raster = gdal.Open(raster_name,gdal.GA_ReadOnly)
+    raster = gdal.Open(inRaster,gdal.GA_ReadOnly)
     if raster is None:
-        print('Impossible to open '+raster_name)
+        print('Impossible to open '+inRaster)
         #exit()
 
-    ## Open ROI
-    roi = gdal.Open(roi_name,gdal.GA_ReadOnly)
-    if roi is None:
-        print('Impossible to open '+roi_name)
-        #exit()
+    ## Convert vector to raster
 
-    if stand_name:
-        ## Open Stand
-        stand = gdal.Open(stand_name,gdal.GA_ReadOnly)
-        if stand is None:
-            print('Impossible to open '+stand_name)
-            #exit()
+    nFields = len(fields)
+    rois = []
+    temps = []
+    for field in fields:
+        pushFeedback('Extra field {} has been found'.format(field))
+        rstField = tempfile.mktemp('_roi.tif')
+        rstField = rasterize(inRaster,inVector,field,rstField)
+        roiField = gdal.Open(rstField,gdal.GA_ReadOnly)
+        if roiField is None:
+            raise Exception('A problem occured when rasterizing {} with field {}'.format(inVector,field))
+        if (raster.RasterXSize != roiField.RasterXSize) or (raster.RasterYSize != roiField.RasterYSize):
+            raise Exception('Raster and vector do not cover the same extent.')
 
-    ## Some tests
-    if (raster.RasterXSize != roi.RasterXSize) or (raster.RasterYSize != roi.RasterYSize):
-        print('Images should be of the same size')
-        #exit()
-
+        rois.append(roiField)
+        temps.append(rstField)
+    
+    ## generate kwargs value
+    if 'getCoords' in kwargs:
+        getCoords = kwargs['getCoords'] 
+    else:
+        getCoords = False
+    if 'onlyCoords' in kwargs:
+        onlyCoords = kwargs['onlyCoords']
+    else:
+        onlyCoords = False
+    
     ## Get block size
     band = raster.GetRasterBand(1)
     block_sizes = band.GetBlockSize()
     x_block_size = block_sizes[0]
     y_block_size = block_sizes[1]
+    gdalDT = band.DataType
     del band
     
     ## Get the number of variables and the size of the images
@@ -94,15 +138,16 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
     nc = raster.RasterXSize
     nl = raster.RasterYSize
     
-    ulx, xres, xskew, uly, yskew, yres  = roi.GetGeoTransform()
+    ulx, xres, xskew, uly, yskew, yres  = raster.GetGeoTransform()
     
-    if getCoords :
+    if getCoords is True or onlyCoords is True:
         coords = np.array([],dtype=np.uint16).reshape(0,2)
+            
 
     ## Read block data
-    X = np.array([],dtype=np.int16).reshape(0,d)
-    Y = np.array([],dtype=np.int16).reshape(0,1)
-    STD = np.array([],dtype=np.int16).reshape(0,1)
+    X = np.array([],dtype=convertGdalDataTypeToOTB(gdalDT)).reshape(0,d)
+    #Y = np.array([],dtype=np.int16).reshape(0,1)
+    F = np.array([],dtype=np.int16).reshape(0,nFields) # now support multiple fields    
     
     # for progress bar 
     total = nl*y_block_size
@@ -125,18 +170,12 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
             pb.addPosition(currentPosition)
             # Load the reference data
             
-            ROI = roi.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
-            if not onlyCoords:
-                if stand_name:
-                    STAND = stand.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
-            
+            ROI = rois[0].GetRasterBand(1).ReadAsArray(j, i, cols, lines)
+
             t = np.nonzero(ROI)
             
-            if t[0].size > 0:
-                Y = np.concatenate((Y,ROI[t].reshape((t[0].shape[0],1))))
-                if stand_name:
-                    STD = np.concatenate((STD,STAND[t].reshape((t[0].shape[0],1))))
-                if getCoords :                  
+            if t[0].size > 0:                
+                if getCoords or onlyCoords :                  
                     coordsTp = np.empty((t[0].shape[0],2))
                     
                     coordsTp[:,0] = t[1]+j
@@ -146,6 +185,14 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
 
                 # Load the Variables
                 if not onlyCoords:
+                    # extract values from each field
+                    Ftemp = np.empty((t[0].shape[0],nFields),dtype=np.int16)
+                    for idx,roiTemp in enumerate(rois):
+                        roiField = roiTemp.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
+                        Ftemp[:,idx] = roiField[t]
+                    F = np.concatenate((F,Ftemp))
+                    
+                    # extract raster values (X)
                     Xtp = np.empty((t[0].shape[0],d))
                     for k in range(d):
                         band = raster.GetRasterBand(k+1).ReadAsArray(j, i, cols, lines)
@@ -159,20 +206,23 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
     # del Xtp,band    
     roi = None # Close the roi file
     raster = None # Close the raster file
+   
+    # remove temp raster
+    for roi in temps:
+        os.remove(roi)
+        
+    # generate output
+    toReturn = [X]+[F[:,f].reshape(-1,1) for f in range(nFields)]
     
     if onlyCoords:
         return coords
-    if stand_name:
-        if not getCoords:
-            return X,Y,STD
-        else:
-            return X,Y,STD,coords
-    elif getCoords :
-        return X,Y,coords
+    if not getCoords :
+        return toReturn
     else:
-        return X,Y
+        toReturn.append(coords)
+        return toReturn
 
-def rasterize(data,vectorSrc,field,outFile,gdt=gdal.GDT_Byte):
+def rasterize(data,vectorSrc,field,outFile,gdt=gdal.GDT_Int16):
     dataSrc = gdal.Open(data)
     import ogr
     shp = ogr.Open(vectorSrc)
@@ -343,7 +393,9 @@ class rasterMath:
     def run(self,verbose=1,qgsFeedback=False):
         """
         Process with outside function.
-        """            
+        """          
+        
+        # TODO : Parallel/ Not working for now.
         if self.parallel :
             try:
                 from joblib import Parallel, delayed  
@@ -363,7 +415,7 @@ class rasterMath:
                 outputNBand = self.outputs[idx].RasterCount 
                 for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     if verbose:
-                        self.pb(j,self.total)
+                        self.pb.addPosition(j)
                     #for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,verbose=False)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     for ind in range(self.outputs[idx].RasterCount):
                         indGdal = int(ind+1)
@@ -383,14 +435,14 @@ class rasterMath:
     
                     if qgsFeedback:
                         if qgsFeedback == 'gui':                        
-                            self.pb(line)
+                            self.pb.addPosition(line)
                         else:
                             qgsFeedback.setProgress(actualProgress)
                             if qgsFeedback.isCanceled():
                                 break
                         
                     if verbose:
-                        self.pb(line)
+                        self.pb.addPosition(line)
                     
                 for idx,fun in enumerate(self.functions):
                     if self.outputNoData[idx] == False:
@@ -415,6 +467,10 @@ class rasterMath:
                         curBand = self.outputs[idx].GetRasterBand(indGdal)
                         curBand.WriteArray(X[:,ind].reshape(lines,cols),col,line)
                         curBand.FlushCache()
-                    self.outputs[idx].GetRasterBand(1).SetNoDataValue(self.outputNoData[idx])
                     
-    
+                    band = self.outputs[idx].GetRasterBand(1)
+                    band.SetNoDataValue(self.outputNoData[idx])
+                    band.FlushCache()
+            band=None
+            for idx,fun in enumerate(self.functions):
+                self.outputs[idx] = None

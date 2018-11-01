@@ -102,11 +102,7 @@ class samplingMethods:
 
     def getDistanceMatrixForDistanceCV(inRaster,inVector):
         #TODO
-        import tempfile
-        tempTif = tempfile.mktemp('_roi.tif')
-        tempTif = rasterTools.rasterize(inRaster,inVector,None,tempTif)
-        coords = rasterTools.getSamplesFromROI(inRaster,tempTif,getCoords=True,onlyCoords=True)
-        os.remove(tempTif)
+        coords = rasterTools.getSamplesFromROI(inRaster,inVector,None,getCoords=True,onlyCoords=True)
         from scipy.spatial import distance 
         distanceMatrix = distance.cdist(coords,coords,'euclidean')
 
@@ -164,12 +160,8 @@ class sampleSelection(samplingMethods):
         ### For Spatial-Leave-One-Out
         if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
             FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
-            import tempfile
-            tempTif = tempfile.mktemp('_roi.tif')
             inRaster = self.samplingMethod[1]['inRaster']
-            tempTif = rasterTools.rasterize(inRaster,inVector,inField,tempTif)
-            X,Y = rasterTools.getSamplesFromROI(inRaster,tempTif)
-            os.remove(tempTif)
+            X,Y = rasterTools.getSamplesFromROI(inRaster,inVector,inField)
             if FIDs.shape[0] != Y.shape[0]: 
                 self.SLOOnotSamesize = True
                 self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want ot save as vector the Cross-Validation.'

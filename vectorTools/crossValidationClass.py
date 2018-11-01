@@ -13,8 +13,6 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import, print_function
-import os
-from osgeo import ogr
 import numpy as np
 
 class distanceCV:
@@ -43,7 +41,8 @@ class distanceCV:
         maxIter :
             False : as loop as min effective class
         
-        Returnsdistanc
+        
+        Returns
         -------
         train : array 
             List of Y selected ROI for train
@@ -386,7 +385,13 @@ class randomPerClass:
         self.FIDs = FIDs
         self.train_size = train_size
         self.nIter = nIter
+        if seed:
+            np.random.seed(seed)
+        else:
+            import time
+            seed= int(time.time())
         self.seed = seed
+        
         self.iter = 0
     def __iter__(self):
         return self
@@ -413,8 +418,8 @@ class randomPerClass:
                 train = np.concatenate((train,tempTrain))
                 valid = np.concatenate((valid,tempValid))
             
-            if self.seed is not None:
-                self.seed += 1
+            
+            self.seed += 1
             self.iter += 1
             
             return train,valid
@@ -451,7 +456,10 @@ class standCV:
         
         if seed:
             np.random.seed(seed)
-            self.seed = seed
+        else:
+            import time
+            seed= int(time.time())
+        self.seed = seed
         if maxIter :
             self.maxIter = maxIter
         else:
@@ -512,7 +520,6 @@ class standCV:
                      
                  
              self.iterPos +=1 
-             train
              self.seed += 1
              return train,validation
          else:
