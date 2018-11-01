@@ -14,7 +14,7 @@
 # =============================================================================
 from __future__ import absolute_import, print_function
 from MuseoToolBox import vectorTools,rasterTools
-from MuseoToolBox.tools import customPrint
+from MuseoToolBox.tools import progressBar
 
 import sys
 import os
@@ -167,7 +167,7 @@ class createPointLayer:
             The number of points to be added (in order to have a progress bar. Will not affect the processing if bad value is put here.)
         """
         self.nSamples = nSamples
-        self.progressBar  = customPrint.progressBar(nSamples,'Adding points... ')
+        self.pb  = progressBar(nSamples,'Adding points... ')
         
     def addPointToLayer(self,coords,uniqueIDValue,bandValue=None,bandPrefix=None):
         """
@@ -183,7 +183,7 @@ class createPointLayer:
         if self.nSamples:
             currentPosition = int(self.idx+1/self.nSamples*100)
             if currentPosition != self.lastPosition:
-                self.progressBar.addPosition(self.idx+1)
+                self.pb.addPosition(self.idx+1)
                 self.lastPosition = currentPosition
                 
         if self.uniqueIDandFID is False:

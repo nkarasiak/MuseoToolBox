@@ -16,7 +16,7 @@ from __future__ import absolute_import, print_function
 import gdal
 import numpy as np
 import os
-from MuseoToolBox.tools import customPrint
+from MuseoToolBox.tools import progressBar
 
 def convertGdalDataTypeToOTB(gdalDT):
     """
@@ -106,7 +106,7 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
     
     # for progress bar 
     total = nl*y_block_size
-    progressBar = customPrint.progressBar(total,message='Reading raster values... ')
+    pb = progressBar(total,message='Reading raster values... ')
     
     for i in range(0,nl,y_block_size):
 
@@ -122,7 +122,7 @@ def getSamplesFromROI(raster_name,roi_name,stand_name=False,getCoords=False,only
 
             #for progressbar
             currentPosition = int(i+j+1)
-            progressBar.addPosition(currentPosition)
+            pb.addPosition(currentPosition)
             # Load the reference data
             
             ROI = roi.GetRasterBand(1).ReadAsArray(j, i, cols, lines)
@@ -224,9 +224,14 @@ class rasterMath:
     
     """   
     
-    def __init__(self,inRaster,inMaskRaster=False,parallel=False):
+    def __init__(self,inRaster,inMaskRaster=False):
+        
+        # Need to work of parallelize
+        ## Not working for the moment
+        parallel = False
         self.parallel = parallel
         
+        # Load raster
         self.openRaster = gdal.Open(inRaster,gdal.GA_ReadOnly)
         if self.openRaster is None:
             raise ReferenceError('Impossible to open '+inRaster)
@@ -236,17 +241,18 @@ class rasterMath:
         self.nl = self.openRaster.RasterYSize
         
         
-        # Get the geoinformation
+        ## Get the geoinformation
         self.GeoTransform = self.openRaster.GetGeoTransform()
         self.Projection = self.openRaster.GetProjection()
     
-        # Get block size
+        ## Get block size
         band = self.openRaster.GetRasterBand(1)
         block_sizes = band.GetBlockSize()
         self.x_block_size = block_sizes[0]
         self.y_block_size = block_sizes[1]
         self.total = self.nl #/self.y_block_size
-
+        
+        self.pb = progressBar(self.total,message='rasterMath... ')
         self.nodata = band.GetNoDataValue()
         
         if self.nodata is None:
@@ -254,11 +260,12 @@ class rasterMath:
         
         del band
     
-        #
+        # Load inMask if given
         self.mask = inMaskRaster
         if self.mask:
             self.maskNoData = 0
             self.openMask = gdal.Open(inMaskRaster)
+            
         ## Initialize the output
         self.functions = []        
         self.outputs = []
@@ -332,23 +339,6 @@ class rasterMath:
         arr = tmp[mask[:,0],:]
         return arr
     
-
-
-    def progressBar(self,line,total,length=40):
-        
-        try:
-            self.percent
-        except:
-            self.percent = int((line+1)/(total)*100)
-        
-        if self.percent != int((line+1)/(total)*100):
-            self.percent = int((line+1)/(total)*100)
-            hashtag = int(self.percent/(100/length))
-            empty = length-1-hashtag
-
-            msg = "['"+hashtag*"#"+empty*' '+'] '+str(self.percent)+'%'
-            print(str(msg))
-     
                 
     def run(self,verbose=1,qgsFeedback=False):
         """
@@ -373,7 +363,7 @@ class rasterMath:
                 outputNBand = self.outputs[idx].RasterCount 
                 for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     if verbose:
-                        self.progressBar(j,self.total)
+                        self.pb(j,self.total)
                     #for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,verbose=False)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     for ind in range(self.outputs[idx].RasterCount):
                         indGdal = int(ind+1)
@@ -393,14 +383,14 @@ class rasterMath:
     
                     if qgsFeedback:
                         if qgsFeedback == 'gui':                        
-                            self.progressBar(line,self.total)
+                            self.pb(line)
                         else:
                             qgsFeedback.setProgress(actualProgress)
                             if qgsFeedback.isCanceled():
                                 break
                         
                     if verbose:
-                        self.progressBar(line,self.total)
+                        self.pb(line)
                     
                 for idx,fun in enumerate(self.functions):
                     if self.outputNoData[idx] == False:

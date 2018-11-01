@@ -13,9 +13,60 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-from __future__ import absolute_import 
+from __future__ import print_function
+import sys
+      
 
-from os.path import dirname, basename, isfile
-import glob
-modules = glob.glob(dirname(__file__)+"/*.py")
-__all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
+class progressBar:
+    def __init__(self,total,message='',length=40,feedback=None):
+        """
+        total : int
+            Total number of samples.
+        message : str
+            Custom message to show before the progress bar.
+        length : int.
+            Length of the bar.
+        feedback : str, feedback class fro Qgis, or None.
+            if str, only 'gui' to log a message in QgsMessageLog.
+            if feedback, class feedback from Qgis in order to set the progress bar direclty in the processing toolbox.
+        """
+        self.start = 0
+        self.total = total
+        self.length = length
+        self.message = message
+        self.lastPosition = None
+        self.feedback=feedback
+        
+        
+        
+    def addPosition(self,value):
+        inPercent = int(value/self.total*100)
+        if inPercent != self.lastPosition :
+            self.lastPosition = inPercent
+            self.nHash = int(self.length*(value/self.total))
+            self.nPoints = int(self.length-int(self.nHash))
+            
+            if self.feedback:
+                self.feedback.setProgress(self.lastPosition)
+            else:
+                self.printBar(inPercent)
+        
+    def printBar(self,value):
+        if value == 100:
+            end = "\n"
+        else:
+            end = "\r"
+        sys.stdout.flush()
+        #print(self.nHash)
+        #print(self.nPoints)
+        print(self.message+' [{}{}]{}%'.format(self.nHash*"#",self.nPoints*".",self.lastPosition),end=end)
+    
+if __name__ == '__main__':
+    pb = progressBar(800,length=50)
+    import time
+    for i in [100,300,500,700,800]:
+        pb.addPosition(i)
+        time.sleep(1)
+
+        
+            
