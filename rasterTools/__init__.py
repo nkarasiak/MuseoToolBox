@@ -19,7 +19,7 @@ import os
 import tempfile
 from MuseoToolBox.tools import progressBar,pushFeedback
 
-def convertGdalToNumpyDataType(gdalDT=None,numpyDT=None):
+def convertGdalAndNumpyDataType(gdalDT=None,numpyDT=None):
     """
     Return the datatype from gdal to numpy or from numpy to gdal.
     
@@ -302,7 +302,7 @@ class rasterMath:
         self.y_block_size = block_sizes[1]
         self.total = self.nl #/self.y_block_size
         
-        self.pb = progressBar(self.total,message='rasterMath... ')
+        self.pb = progressBar(self.total-1,message='rasterMath... ')
         self.nodata = band.GetNoDataValue()
         
         if self.nodata is None:
@@ -323,8 +323,12 @@ class rasterMath:
         self.lastProgress = 0
         self.outputNoData = []
         
-    def addFunction(self,function,outRaster,outNBand,outGdalGDT=11,outNoData=False):
+    def addFunction(self,function,outRaster,outNBand,outGdalGDT=False,outNoData=False):
         self.driver = gdal.GetDriverByName('GTiff')
+        if outGdalGDT is False:
+            dtypeName = function(self.getRandomBlock()).dtype.name
+            outGdalGDT = convertGdalAndNumpyDataType(numpyDT = dtypeName)
+            pushFeedback('Using datatype from numpy table : '+str(dtypeName))
         self.__addOutput__(outRaster,outNBand,outGdalGDT)
         self.functions.append(function)        
         self.outputNoData.append(outNoData)
@@ -428,7 +432,8 @@ class rasterMath:
         
             for X,mask,col,line,cols,lines in self.__iterBlock__(getBlock=True):
                 X_ = np.copy(X)
-                actualProgress = int(line/self.total*100)                
+                actualProgress = int((line+1)/self.total*100)                
+                
                 
                 if self.lastProgress != actualProgress:
                     self.lastProgress = actualProgress 
@@ -442,6 +447,7 @@ class rasterMath:
                                 break
                         
                     if verbose:
+                        
                         self.pb.addPosition(line)
                     
                 for idx,fun in enumerate(self.functions):
@@ -473,4 +479,5 @@ class rasterMath:
                     band.FlushCache()
             band=None
             for idx,fun in enumerate(self.functions):
+                print('Saved {} using function {}'.format(self.outputs[idx].GetDescription(),str(fun.__name__)))
                 self.outputs[idx] = None
