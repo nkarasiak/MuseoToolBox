@@ -24,44 +24,43 @@ def commissionOmission(table):
     return com,om
 
 
-class CONFUSION_MATRIX:
-    def __init__(self):
-        self.confusion_matrix=None
-        self.OA=None
-        self.Kappa = None
-        self.F1mean = None
-        
-    def compute_confusion_matrix(self,yp,yr):
+class confusionMatrix:
+    def __init__(self,yp,yr,kappa=False,OA=False,F1=False):
         ''' 
         Compute the confusion matrix
         '''
         # Initialization
         n = yp.size
-        C=int(yr.max())
-        self.confusion_matrix=np.zeros((C,C))
+        C=np.amax((int(yr.max()),int(yp.max())))
+        self.confusion_matrix=np.zeros((C,C),dtype=np.int16)
         
         # Compute confusion matrix
         for i in range(n):
             self.confusion_matrix[yp[i].astype(int)-1,yr[i].astype(int)-1] +=1
+
         
         # Compute overall accuracy
-        self.OA=np.sum(np.diag(self.confusion_matrix))/n
+        if OA :
+            self.OA=np.sum(np.diag(self.confusion_matrix))/n
         
         # Compute Kappa
-        nl = np.sum(self.confusion_matrix,axis=1)
-        nc = np.sum(self.confusion_matrix,axis=0)
-        self.Kappa = ((n**2)*self.OA - np.sum(nc*nl))/(n**2-np.sum(nc*nl))
+        if kappa:
+            nl = np.sum(self.confusion_matrix,axis=1)
+            nc = np.sum(self.confusion_matrix,axis=0)
+            self.Kappa = ((n**2)*self.OA - np.sum(nc*nl))/(n**2-np.sum(nc*nl))
         
         #
-        try:
-            nl = np.sum(self.confusion_matrix,axis=1,dtype=float)
-            nc = np.sum(self.confusion_matrix,axis=0,dtype=float)
-            self.F1mean = 2*np.mean( np.divide( np.diag(self.confusion_matrix), (nl + nc)) )
-        except:
-            self.F1mean = 0
-        
-        # TBD Variance du Kappa
-        
+        if F1 : 
+            F1 = []
+            for label in range(self.confusion_matrix.shape[0]):
+                TP = self.confusion_matrix[label,label]
+                #TN = np.sum(sp.diag(currentCsv))-currentCsv[label,label]
+                FN = np.sum(self.confusion_matrix[:,label])-self.confusion_matrix[label,label]
+                FP = np.sum(self.confusion_matrix[label,:])-self.confusion_matrix[label,label]
+                denum = (2*TP+FP+FN)
+                if denum != 0:
+                    F1.append(2*TP / (2*TP+FP+FN))
+                self.F1 = F1
     
     
 class statsFromConfusionMatrix:

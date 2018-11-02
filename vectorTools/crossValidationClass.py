@@ -51,6 +51,7 @@ class distanceCV:
             List of Y selected ROI for validation
             
         """
+        self.name = 'SLOO'
         self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
         self.label = np.copy(Y)
@@ -382,6 +383,7 @@ class randomPerClass:
         random_state for numpy.
     """
     def __init__(self,FIDs,train_size=0.5,nIter=5,seed=None):
+        self.name = 'randomPerClass'
         self.FIDs = FIDs
         self.train_size = train_size
         self.nIter = nIter
@@ -402,7 +404,7 @@ class randomPerClass:
         
     def next(self):
         if self.iter < self.nIter:
-            train,valid = [np.asarray([]),np.asarray([])]
+            train,valid = [np.asarray([],dtype=np.int16),np.asarray([],dtype=np.int16)]
             for C in np.unique(self.FIDs):
                 Cpos=np.where(self.FIDs==C)[0]
                 
@@ -441,6 +443,7 @@ class standCV:
         SLOO :  Bool
             True  or False. If SLOO, keep only one Y per validation stand.
         """
+        self.name = 'standCV'
         self.Y = Y
         self.uniqueY = np.unique(self.Y)
         self.stand = stand

@@ -142,12 +142,10 @@ class sampleSelection(samplingMethods):
         self.__alreadyRead = False
         
         # create unique random state if no seed
-        self.seedGenerated = False
         if self.samplingMethod[1]['seed'] is None:
-            self.seedGenerated = True 
+            self.seedGenerated = True
             import time
             self.samplingMethod[1]['seed'] = int(time.time())
-            print('No seed given... Won\'t be able to generate ScikitLearn CV and vector files.')
         ### Totally random
         if self.samplingType == 'random':
             FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
@@ -193,13 +191,10 @@ class sampleSelection(samplingMethods):
             print(3*' '+'- '+self.driversName[idx]+' : '+ext)
     
     def getCrossValidationForScikitLearn(self):
-        if self.__alreadyRead is True and self.seedGenerated:
-            raise Warning(self.__alertMessage)
-        else:
-            if self.__alreadyRead:
-                self.reinitialize()
-            self.__alreadyRead = True
-            return self.crossvalidation
+        if self.__alreadyRead:
+            self.reinitialize()
+        self.__alreadyRead = True
+        return self.crossvalidation
         
     def saveVectorFiles(self,outVector):
         if self.samplingType == 'SLOO':
@@ -213,24 +208,21 @@ class sampleSelection(samplingMethods):
             print('We recommend you to use sqlite extension.')
         
         else:
-            if self.__alreadyRead is True and self.seedGenerated:
-                print(self.__alertMessage)
-            else:
-                if self.__alreadyRead:
-                    self.reinitialize()
-                listOutput = []
-                self.cv = []
-                for idx,trvl in enumerate(self.crossvalidation):
-                    self.cv.append([trvl[0],trvl[1]])
-                    trFeat = [self.fts[int(i)] for i in trvl[0]]
-                    vlFeat= [self.fts[int(i)] for i in trvl[1]]
-                    tr = self.__fileName+'_train_'+str(idx)+self.__ext
-                    vl = self.__fileName+'_valid_'+str(idx)+self.__ext
-                    self.__saveToShape__(trFeat,self.srs,tr)
-                    self.__saveToShape__(vlFeat,self.srs,vl)
-                    listOutput.append([tr,vl])
-                self.__alreadyRead = True
-                return listOutput
+            if self.__alreadyRead:
+                self.reinitialize()
+            listOutput = []
+            self.cv = []
+            for idx,trvl in enumerate(self.crossvalidation):
+                self.cv.append([trvl[0],trvl[1]])
+                trFeat = [self.fts[int(i)] for i in trvl[0]]
+                vlFeat= [self.fts[int(i)] for i in trvl[1]]
+                tr = self.__fileName+'_train_'+str(idx)+self.__ext
+                vl = self.__fileName+'_valid_'+str(idx)+self.__ext
+                self.__saveToShape__(trFeat,self.srs,tr)
+                self.__saveToShape__(vlFeat,self.srs,vl)
+                listOutput.append([tr,vl])
+            self.__alreadyRead = True
+            return listOutput
 
 
     

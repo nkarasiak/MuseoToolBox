@@ -83,13 +83,87 @@ class learnAndPredict:
         self.model = np.save()
     def loadModel(self,path):
         self.model = np.load()
-    def predictArray(self,X):
+    def predictFromArray(self,X):
+        """
+        Predict label from array.
+        Parameters
+        ----------
+        X : array.
+            The array to predict. Must have the same number of bands of the initial array/raster.
+        """
         Xpredict = self.model.predict(X)
         return Xpredict
-    def predictRaster(self,inRaster,inMaskRaster=False,outNoData=False):
+
+    def predictConfidencePerClassFromArray(self,X):
+        """
+        Predict label from array.
+        
+        Parameters
+        ----------
+        X : array.
+            The array to predict proba. Must have the same number of bands of the initial array/raster.
+            
+        
+        Returns
+        ----------
+        Xpredict : array.
+            The probability from 0 to 100.
+        """
+        Xpredict = self.model.predict_proba(X)*100        
+        return Xpredict
+
+    def predictConfidenceOfHighestClassFromArray(self,X):
+        """
+        Predict label from array.
+        
+        Parameters
+        ----------
+        X : array.
+            The array to predict proba. Must have the same number of bands of the initial array/raster.
+            
+        
+        Returns
+        ----------
+        Xpredict : array.
+            The probability from 0 to 100.
+        """
+        Xpredict = np.amax(self.model.predict_proba(X)*100,axis=1)
+        return Xpredict
+
+    def predictFromRaster(self,inRaster,outRaster,outConfidencePerClass=False,outConfidence=False,inMaskRaster=False,outNoData=0):
+        """
+        Predict label from raster using previous learned model.
+        This function will call self.predictFromArray(X).
+        
+        Parameters
+        ----------
+        inRaster : str
+            Path of the raster used for prediction.
+        outRaster : str
+            Path of the prediction raster to save.
+        outConfidence : str
+            Path of the max confidence from all classes raster to save.
+        outCOnfidencePerClass : str
+            Path of the confidence raster per class to be saved.
+        inMaskRaster : str, default False.
+            Path of the raster where 0 is mask and value above are no mask.
+        outGdalDT : int, defaut 1.
+            1 is for gdal.GDT_Byte, 2 for gdal.GDT_UInt16, 3 is for gdal.GDT_Int16...
+        outNoData : int, default 0.
+            Value of no data for the outRaster.
+        """
+        
         from MuseoToolBox.rasterTools import rasterMath
-        rM = rasterMath(inRaster,inMaskRaster)
-    
+        from MuseoToolBox.rasterTools import getGdalDTFromMinMaxValues
+        rM = rasterMath(inRaster,inMaskRaster,'Prediction... ')
+        gdalDT = getGdalDTFromMinMaxValues(int(np.amax(np.unique(self.Y))))
+        rM.addFunction(self.predictFromArray,outRaster,1,gdalDT,outNoData=0)
+        if outConfidence:
+            rM.addFunction(self.predictConfidenceOfHighestClassFromArray,outConfidence,outNBand=False,outGdalDT=3,outNoData=-9999)    
+        if outConfidencePerClass:
+            rM.addFunction(self.predictConfidencePerClassFromArray,outConfidencePerClass,outNBand=False,outGdalDT=3,outNoData=-9999)    
+        rM.run()
+        
     def getStatsFromCV(self,confusionMatrix=True,kappa=False,OA=False,F1=False):
         if self.outStatsFromCV is False:
             raise Exception('outStatsFromCV in fromRaster or fromVector must be True')

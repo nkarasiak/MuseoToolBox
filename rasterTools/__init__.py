@@ -19,6 +19,43 @@ import os
 import tempfile
 from MuseoToolBox.tools import progressBar,pushFeedback
 
+def getGdalDTFromMinMaxValues(maxValue,minValue=0):
+    """
+    Return the Gdal DataType according the minimum or the maximum value.
+    
+    Parameters
+    ----------
+    maxValue : int/float.
+        The maximum value needed.
+    minValue : int/float, default 0.
+        The minimum value needed.
+    """
+    maxAbsValue = np.amax(np.abs([maxValue,minValue]))
+    
+    # if values are integer
+    if isinstance(maxValue,int):
+        if minValue >= 0:
+            if maxValue <= 255:
+                gdalDT = gdal.GDT_Byte
+            elif maxValue > 255 and maxValue <= 65535:
+                gdalDT = gdal.GDT_UInt16
+            elif maxValue >= 65535 or maxValue <= 4294967295:
+                gdalDT = gdal.GDT_UInt32
+        elif minValue <0:
+            if maxValue > 255 and maxAbsValue <= 65535:
+                gdalDT = gdal.GDT_Int16
+            elif maxAbsValue > 65535:
+                gdalDT = gdal.GDT_Int32
+    
+    # if values are float
+    if isinstance(maxValue,float):
+        if maxAbsValue <= +3.4E+38:
+            gdalDT = gdal.GDT_Float32
+        else:
+            gdalDT = gdal.GDT_Float64
+    
+    return gdalDT
+                    
 def convertGdalAndNumpyDataType(gdalDT=None,numpyDT=None):
     """
     Return the datatype from gdal to numpy or from numpy to gdal.
@@ -103,7 +140,7 @@ def getSamplesFromROI(inRaster,inVector,*fields,**kwargs):
     rois = []
     temps = []
     for field in fields:
-        pushFeedback('Extra field {} has been found'.format(field))
+        pushFeedback("Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
         rstField = rasterize(inRaster,inVector,field,rstField)
         roiField = gdal.Open(rstField,gdal.GA_ReadOnly)
@@ -212,7 +249,7 @@ def getSamplesFromROI(inRaster,inVector,*fields,**kwargs):
         os.remove(roi)
         
     # generate output
-    toReturn = [X]+[F[:,f].reshape(-1,1) for f in range(nFields)]
+    toReturn = [X]+[F[:,f] for f in range(nFields)]
     
     if onlyCoords:
         return coords
@@ -248,7 +285,6 @@ class rasterMath:
     """
     Read a raster per block, and perform one or many functions to one or many raster outputs.
     
-    - If you want to add an output, just use addOutput() function and select raster path, number of bands and datatype.
     - If you want a sample of your data, just call getRandomBlock().
     
     Parameters
@@ -261,7 +297,7 @@ class rasterMath:
         Path to mask raster (masked values are 0). If not, please change self.maskNoData to your value.
     outNBand : int, default 1
         Number of bands of the first output.
-    outGdalGDT : int, default 1.
+    outGdalDT : int, default 1.
         Gdal DataType of the first output.
     outNoData : int, default False.
         If False, will set the same value as the input raster nodata.
@@ -274,7 +310,7 @@ class rasterMath:
     
     """   
     
-    def __init__(self,inRaster,inMaskRaster=False):
+    def __init__(self,inRaster,inMaskRaster=False,message='rasterMath... '):
         
         # Need to work of parallelize
         ## Not working for the moment
@@ -302,7 +338,7 @@ class rasterMath:
         self.y_block_size = block_sizes[1]
         self.total = self.nl #/self.y_block_size
         
-        self.pb = progressBar(self.total-1,message='rasterMath... ')
+        self.pb = progressBar(self.total-1,message=message)
         self.nodata = band.GetNoDataValue()
         
         if self.nodata is None:
@@ -323,20 +359,46 @@ class rasterMath:
         self.lastProgress = 0
         self.outputNoData = []
         
-    def addFunction(self,function,outRaster,outNBand,outGdalGDT=False,outNoData=False):
+    def addFunction(self,function,outRaster,outNBand=False,outGdalDT=False,outNoData=False):
+        """
+        Add function to rasterMath.
+        
+        Parameters
+        ----------
+        function : def.
+            Function to parse with one arguments used to 
+        outRaster : str.
+            Path of the raster to save the result.
+        outNBand : int, default False.
+            Number of bands of the outRaster.
+            If False will take the number of dimensions from the first result of the function.
+        outGdalDT : int, default False.
+            If False, will use the datatype of the function result.
+        outNoData : int, default False.
+            If False will use 0 for byte, or -9999 for int16/32.
+        """
         self.driver = gdal.GetDriverByName('GTiff')
-        if outGdalGDT is False:
+        
+        if outGdalDT is False:
             dtypeName = function(self.getRandomBlock()).dtype.name
-            outGdalGDT = convertGdalAndNumpyDataType(numpyDT = dtypeName)
+            outGdalDT = convertGdalAndNumpyDataType(numpyDT = dtypeName)
             pushFeedback('Using datatype from numpy table : '+str(dtypeName))
-        self.__addOutput__(outRaster,outNBand,outGdalGDT)
+        
+        if outNBand is False:
+            randomBlock = function(self.getRandomBlock())
+            if randomBlock.ndim > 1:
+                outNBand = randomBlock.shape[1]
+            else:
+                outNBand = 1
+                
+        self.__addOutput__(outRaster,outNBand,outGdalDT)
         self.functions.append(function)        
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self,outRaster,outNBand,outGdalGDT):
+    def __addOutput__(self,outRaster,outNBand,outGdalDT):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
-        dst_ds = self.driver.Create(outRaster, self.nc,self.nl, outNBand, outGdalGDT)
+        dst_ds = self.driver.Create(outRaster, self.nc,self.nl, outNBand, outGdalDT)
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
         self.outputs.append(dst_ds)
@@ -464,7 +526,7 @@ class rasterMath:
                         if resFun.ndim == 1:
                             resFun = resFun.reshape(-1,1)
                         if resFun.shape[1] > maxBands :
-                            raise ValueError ("Your function output {} bands, but your output is specified to have a maximum of {} bands.".format(resFun.shape[1],maxBands))
+                            raise ValueError ("Your function output {} bands, but has been defined to have a maximum of {} bands.".format(resFun.shape[1],maxBands))
                         else:
                             X[:,:] = self.outputNoData[idx]
                             X[mask[:,0],:maxBands] = resFun

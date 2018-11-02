@@ -19,6 +19,7 @@ from .metadata.version import version as __version__
 # import rasterTools, vectorTools and other directly in root : mtb.XXX
 #from .tools import *
 from . import vectorTools,rasterTools
+from .learnTools import learnAndPredict
 
 # import others folder as mtb.Folder.XXX
 from . import Sentinel2
