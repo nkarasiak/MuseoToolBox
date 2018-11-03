@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from MuseoToolBox import vectorTools,rasterTools
 from MuseoToolBox.vectorTools import crossValidationClass
 import os
+import numpy as np
 
 ### TODO
 ### Rasterize vector to keep only the centroid !
@@ -114,6 +115,15 @@ class sampleSelection(samplingMethods):
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
         
+        Parameters
+        ----------
+        inVector : str or array.
+            if str, path of the vector. If array, numpy array of labels.
+        inField : str or None if inVector is np.ndarray.
+            if str, field name from the vector.
+        samplingMethod : object.
+            object from samplingMethods.
+            
         Function
         ----------
         getCrossValidation() : Function.
@@ -130,6 +140,11 @@ class sampleSelection(samplingMethods):
             
         """
         self.inVector = inVector
+        if isinstance(inVector,np.ndarray):
+            self.inVectorIsArray = True
+        else:
+            self.inVectorIsArray = False
+            
         self.inField = inField
         self.samplingMethod = samplingMethod
         
@@ -148,15 +163,20 @@ class sampleSelection(samplingMethods):
             self.samplingMethod[1]['seed'] = int(time.time())
         ### Totally random
         if self.samplingType == 'random':
-            FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
-            FIDs = FIDs.flatten()
-            
-            
+            if self.inVectorIsArray:
+                FIDs = inVector
+                FIDs = FIDs.flatten()
+            else:
+                FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
+                FIDs = FIDs.flatten()
             self.crossvalidation = crossValidationClass.randomPerClass(FIDs=FIDs,**samplingMethod[1])
         
         ### Split at maximum distance beyond each point
         ### For Spatial-Leave-One-Out
         if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
+            if self.inVectorIsArray:
+                raise Exception('Sorry but for using SLOO and farthestCV, MuseoToolBox need a raster and a vector, not numpy array')
+            
             FIDs,self.fts,self.srs= vectorTools.readValuesFromVector(inVector,inField,getFeatures=True)
             inRaster = self.samplingMethod[1]['inRaster']
             X,Y = rasterTools.getSamplesFromROI(inRaster,inVector,inField)
@@ -178,8 +198,13 @@ class sampleSelection(samplingMethods):
             SLOO = samplingMethod[1]['SLOO']
             maxIter = samplingMethod[1]['maxIter']
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
-            FIDs,STDs,self.fts,self.srs = vectorTools.readValuesFromVector(inVector,inField,inStand,getFeatures=True)
-            FIDs = FIDs.flatten()
+            if self.inVectorIsArray:
+                FIDs = inVector    
+                FIDs = FIDs.flatten()
+                STDs = inStand
+            else:
+                FIDs,STDs,self.fts,self.srs = vectorTools.readValuesFromVector(inVector,inField,inStand,getFeatures=True)
+                FIDs = FIDs.flatten()
             self.crossvalidation = crossValidationClass.standCV(FIDs,STDs,SLOO=SLOO,maxIter=maxIter,seed=self.samplingMethod[1]['seed'])
             
     def reinitialize(self):
@@ -197,6 +222,8 @@ class sampleSelection(samplingMethods):
         return self.crossvalidation
         
     def saveVectorFiles(self,outVector):
+        if self.inVectorIsArray:
+            raise Exception('To save vector files, you need to use in input a vector, not an array')
         if self.samplingType == 'SLOO':
             if self.SLOOnotSamesize :
                 raise Exception(self.errorSLOOmsg)
