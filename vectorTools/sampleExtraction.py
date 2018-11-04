@@ -1,31 +1,38 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =============================================================================
-# ___  ___                       _____           _______           
-# |  \/  |                      |_   _|         | | ___ \          
+# ___  ___                       _____           _______
+# |  \/  |                      |_   _|         | | ___ \
 # | .  . |_   _ ___  ___  ___     | | ___   ___ | | |_/ / _____  __
 # | |\/| | | | / __|/ _ \/ _ \    | |/ _ \ / _ \| | ___ \/ _ \ \/ /
-# | |  | | |_| \__ \  __/ (_) |   | | (_) | (_) | | |_/ / (_) >  < 
-# \_|  |_/\__,_|___/\___|\___/    \_/\___/ \___/|_\____/ \___/_/\_\                                                                                                        
-#                                             
+# | |  | | |_| \__ \  __/ (_) |   | | (_) | (_) | | |_/ / (_) >  <
+# \_|  |_/\__,_|___/\___|\___/    \_/\___/ \___/|_\____/ \___/_/\_\
+#
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import, print_function
-from MuseoToolBox import vectorTools,rasterTools
+from MuseoToolBox import vectorTools, rasterTools
 from MuseoToolBox.tools import progressBar
 
 import sys
 import os
 import numpy as np
-from osgeo import gdal,ogr
+from osgeo import gdal, ogr
+
 
 class sampleExtraction:
-    def __init__(self,inRaster,inVector,outVector,uniqueFID=None,bandPrefix=None):
+    def __init__(
+            self,
+            inRaster,
+            inVector,
+            outVector,
+            uniqueFID=None,
+            bandPrefix=None):
         """
         Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
-        
+
         Parameters
         ----------
         inRaster : str.
@@ -39,55 +46,59 @@ class sampleExtraction:
         bandPrefix : str, default None.
             If bandPrefix (e.g. 'band_'), will extract values from raster.
         """
-        if uniqueFID:    
+        if uniqueFID:
             uniqueFID = uniqueFID.lower()
         else:
             uniqueFID = 'uniquefid'
             print("Adding 'uniquefid' field to the original vector.")
-            inVector = vectorTools.addUniqueIDForVector(inVector,uniqueFID)
-        
+            inVector = vectorTools.addUniqueIDForVector(inVector, uniqueFID)
+
         print("Extract values from raster...")
-        X,Y,coords = rasterTools.getSamplesFromROI(inRaster,inVector,uniqueFID,getCoords=True)
-        
-        geoTransform = gdal.Open(inRaster).GetGeoTransform()        
-    
-        centroid = [self.__pixelLocationToCentroidGeom(coord,geoTransform) for coord in coords]
+        X, Y, coords = rasterTools.getSamplesFromROI(
+            inRaster, inVector, uniqueFID, getCoords=True)
+
+        geoTransform = gdal.Open(inRaster).GetGeoTransform()
+
+        centroid = [self.__pixelLocationToCentroidGeom(
+            coord, geoTransform) for coord in coords]
         # init outLayer
-        outLayer = createPointLayer(inVector,outVector,uniqueFID)
+        outLayer = createPointLayer(inVector, outVector, uniqueFID)
         outLayer.addTotalNumberOfPoints(len(centroid))
-        
+
         print("Adding each centroid to {}...".format(outVector))
-        for idx,xy in enumerate(centroid):
+        for idx, xy in enumerate(centroid):
             #xy = self.pixelLocationToCentroidGeom(coord,geoTransform)
-            #outLayer.addPointToLayer(i,Y[idx][0],bandValue=X[idx],bandPrefix='band_')
-            if Y[idx][0]!=0:
+            # outLayer.addPointToLayer(i,Y[idx][0],bandValue=X[idx],bandPrefix='band_')
+            if Y[idx][0] != 0:
                 if bandPrefix is None:
-                    outLayer.addPointToLayer(xy,Y[idx][0])
+                    outLayer.addPointToLayer(xy, Y[idx][0])
                 else:
-                    outLayer.addPointToLayer(xy,Y[idx][0],X[idx],bandPrefix)
+                    outLayer.addPointToLayer(xy, Y[idx][0], X[idx], bandPrefix)
         outLayer.closeLayers()
 
-    def __pixelLocationToCentroidGeom(self,coords,geoTransform):
+    def __pixelLocationToCentroidGeom(self, coords, geoTransform):
         """
         Convert XY coords into the centroid of a pixel
-        
+
         Parameters
         --------
-        coords : arr or list. 
+        coords : arr or list.
             X is coords[0], Y is coords[1].
         geoTransform : list.
             List got from gdal.Open(inRaster).GetGeoTransform() .
         """
-        newX = geoTransform[1]*(coords[0]+0.5)+geoTransform[0] #(coords[0]+0.5)*geoTransform[1]+geoTransform[0]# (coords[0]+0.5)*geoTransform[1]+geoTransform[0]
-        newY = geoTransform[5]*(coords[1]+0.5)+geoTransform[3] #(coords[1]+0.5)*geoTransform[5]+geoTransform[3] # (coords[1]+0.5)*geoTransform[5]+geoTransform[3]
-        return [newX,newY]
+        newX = geoTransform[1] * (coords[0] + 0.5) + \
+            geoTransform[0]  # (coords[0]+0.5)*geoTransform[1]+geoTransform[0]# (coords[0]+0.5)*geoTransform[1]+geoTransform[0]
+        # (coords[1]+0.5)*geoTransform[5]+geoTransform[3] # (coords[1]+0.5)*geoTransform[5]+geoTransform[3]
+        newY = geoTransform[5] * (coords[1] + 0.5) + geoTransform[3]
+        return [newX, newY]
 
 
 class createPointLayer:
-    def __init__(self,inVector,outVector,uniqueIDField):
+    def __init__(self, inVector, outVector, uniqueIDField):
         """
         Create a vector layer as point type.
-        
+
         Parameters
         -------
         inVector : str.
@@ -98,7 +109,7 @@ class createPointLayer:
             Field containing the unique ID for each feature.
         bandPrefix : None or str.
             If str, if the prefix of each value for the number of bands of your image. Used to train models from classifier.
-            
+
         Functions
         -------
         addTotalNumberOfPoints(nSamples): int.
@@ -109,19 +120,19 @@ class createPointLayer:
             Close the layer.
         """
         # load inVector
-        self.inData = ogr.Open(inVector,0)
+        self.inData = ogr.Open(inVector, 0)
         self.inLyr = self.inData.GetLayerByIndex(0)
-        srs=self.inLyr.GetSpatialRef()
-        
+        srs = self.inLyr.GetSpatialRef()
+
         # create outVector
         self.driverName = vectorTools.getDriverAccordingToFileName(outVector)
         driver = ogr.GetDriverByName(self.driverName)
         self.outData = driver.CreateDataSource(outVector)
-        
+
         # finish  outVector creation
         self.outLyr = self.outData.CreateLayer('centroid', srs, ogr.wkbPoint)
         self.outLyrDefinition = self.outLyr.GetLayerDefn()
-        
+
         # initialize variables
         self.idx = 0
         self.lastPosition = 0
@@ -130,12 +141,12 @@ class createPointLayer:
             self.outLyr.StartTransaction()
 
         self.uniqueIDField = uniqueIDField
-        
+
         # Will generate uniqueIDandFID when copying vector
         self.uniqueIDandFID = False
         self.addBand = False
-    
-    def __addBandsValue(self,bandPrefix,nBands):
+
+    def __addBandsValue(self, bandPrefix, nBands):
         """
         Parameters
         -------
@@ -146,24 +157,29 @@ class createPointLayer:
         """
         self.nBandsFields = []
         for b in range(nBands):
-            field = bandPrefix+str(b)
+            field = bandPrefix + str(b)
             self.nBandsFields.append(field)
             self.outLyr.CreateField(ogr.FieldDefn(field, ogr.OFTInteger))
         self.addBand = True
 
-    def addTotalNumberOfPoints(self,nSamples):
+    def addTotalNumberOfPoints(self, nSamples):
         """
         Adding the total number of points will show a progress bar.
-        
+
         Parameters
         --------
         nSamples : int.
             The number of points to be added (in order to have a progress bar. Will not affect the processing if bad value is put here.)
         """
         self.nSamples = nSamples
-        self.pb  = progressBar(nSamples,'Adding points... ')
-        
-    def addPointToLayer(self,coords,uniqueIDValue,bandValue=None,bandPrefix=None):
+        self.pb = progressBar(nSamples, 'Adding points... ')
+
+    def addPointToLayer(
+            self,
+            coords,
+            uniqueIDValue,
+            bandValue=None,
+            bandPrefix=None):
         """
         Parameters
         -------
@@ -175,45 +191,47 @@ class createPointLayer:
             If array, should have the same size as the number of bands defined in addBandsValue function.
         """
         if self.nSamples:
-            currentPosition = int(self.idx+1/self.nSamples*100)
+            currentPosition = int(self.idx + 1 / self.nSamples * 100)
             if currentPosition != self.lastPosition:
-                self.pb.addPosition(self.idx+1)
+                self.pb.addPosition(self.idx + 1)
                 self.lastPosition = currentPosition
-                
+
         if self.uniqueIDandFID is False:
             self.__updateArrAccordingToVector__()
-        
+
         # add Band to list of fields if needed
         if bandValue is not None:
             if bandPrefix is None:
-                raise Warning('Please, define a bandPrefix value to save bands value into the vector file.')
+                raise Warning(
+                    'Please, define a bandPrefix value to save bands value into the vector file.')
             if self.addBand is False:
-                self.__addBandsValue(bandPrefix,bandValue.shape[0])   
-                
+                self.__addBandsValue(bandPrefix, bandValue.shape[0])
+
         point = ogr.Geometry(ogr.wkbPoint)
-        point.SetPoint(0, coords[0],coords[1])
+        point.SetPoint(0, coords[0], coords[1])
         featureIndex = self.idx
         feature = ogr.Feature(self.outLyrDefinition)
         feature.SetGeometry(point)
         feature.SetFID(featureIndex)
-        
+
         # Retrieve inVector FID
         try:
-            FID = self.uniqueFIDs[np.where(np.asarray(self.uniqueIDs,dtype=np.int)==int(uniqueIDValue))[0][0]]
-        except:
+            FID = self.uniqueFIDs[np.where(np.asarray(
+                self.uniqueIDs, dtype=np.int) == int(uniqueIDValue))[0][0]]
+        except BaseException:
             print(uniqueIDValue)
-        
-        featUpdates =  self.inLyr.GetFeature(int(FID))
+
+        featUpdates = self.inLyr.GetFeature(int(FID))
         for f in self.fields:
-            if f!='ogc_fid':
-                feature.SetField(f,featUpdates.GetField(f))
+            if f != 'ogc_fid':
+                feature.SetField(f, featUpdates.GetField(f))
                 if self.addBand is True:
-                    for idx,f in enumerate(self.nBandsFields):
-                        feature.SetField(f,int(bandValue[idx]))
-        
+                    for idx, f in enumerate(self.nBandsFields):
+                        feature.SetField(f, int(bandValue[idx]))
+
         self.outLyr.CreateFeature(feature)
         self.idx += 1
-        
+
     def __updateArrAccordingToVector__(self):
         """
         Update outVector layer by adding field from inVector.
@@ -222,14 +240,16 @@ class createPointLayer:
         self.uniqueIDs = []
         self.uniqueFIDs = []
         currentFeature = self.inLyr.GetNextFeature()
-        self.fields = [currentFeature.GetFieldDefnRef(i).GetName() for i in range(currentFeature.GetFieldCount())]
+        self.fields = [
+            currentFeature.GetFieldDefnRef(i).GetName() for i in range(
+                currentFeature.GetFieldCount())]
         # Add input Layer Fields to the output Layer
         layerDefinition = self.inLyr.GetLayerDefn()
 
         for i in range(len(self.fields)):
             fieldDefn = layerDefinition.GetFieldDefn(i)
             self.outLyr.CreateField(fieldDefn)
-            
+
         self.inLyr.ResetReading()
         for feat in self.inLyr:
             uID = feat.GetField(self.uniqueIDField)
@@ -237,7 +257,7 @@ class createPointLayer:
             self.uniqueIDs.append(uID)
             self.uniqueFIDs.append(uFID)
         self.uniqueIDandFID = True
-        
+
     def closeLayers(self):
         """
         Once work is done, close all layers.
@@ -248,50 +268,80 @@ class createPointLayer:
         self.outData.Destroy()
 
 
-
-"""
-if __name__ == "__main__":
-    inRaster = "/home/nicolas/Documents/notebook/mtb/data/map.tif"
-    inVector = "/home/nicolas/Documents/notebook/mtb/data/train.gpkg"
-    outVector = "/home/nicolas/Documents/notebook/mtb/data/train_withROI.gpkg"
-    #bandPrefix = "ndvi_"
-    
-    sampleExtraction(inRaster,inVector,outVector,bandPrefix=None)
-"""
 if __name__ == "__main__":
     import argparse
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
-        print(2*' '+sys.argv[0]+' [options]')
-        print(2*' '+"Help : ", prog, " --help")
-        print(2*' '+"or : ", prog, " -h")
-        print(5*' '+"example 1 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ "%sys.argv[0])
-        print(5*' '+"example 2 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid"%sys.argv[0])
-        sys.exit(-1)  
- 
+        print(2 * ' ' + sys.argv[0] + ' [options]')
+        print(2 * ' ' + "Help : ", prog, " --help")
+        print(2 * ' ' + "or : ", prog, " -h")
+        print(
+            5 *
+            ' ' +
+            "example 1 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ " %
+            sys.argv[0])
+        print(
+            5 *
+            ' ' +
+            "example 2 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid" %
+            sys.argv[0])
+        sys.exit(-1)
+
     else:
         usage = "usage: %prog [options] "
-        parser = argparse.ArgumentParser(description = "From points or polygons, extraction each pixel centroid and extract values from raster.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        
-        parser.add_argument("-in","--image", dest="inRaster", action="store",help="Image to extract values from and to generate centroid from output vector", required = True)
-           
-        parser.add_argument("-vec","--vector", dest="inVector", action="store", \
-        help="Vector to fill with raster values", \
-        required = True, type = str)
-        
-        parser.add_argument("-out","--outvector", dest="outVector", action="store", \
-        help="Vector to save (sqlite extension if possible)", \
-        required = True, type = str)
-        
-        parser.add_argument("-field","--uniqueField", dest="uniqueFID", action="store", \
-        help="Unique field per feature. If no field, will create an 'uniquefid' field in the original shapefile.", \
-        required = False, default = None)
-        
-        parser.add_argument("-outfield.prefix.name","--outField", dest="bandPrefix", action="store", \
-        help="Prefix name to save the values from the raster. E.g 'band_'.", \
-        required = False, default = None)
-        
+        parser = argparse.ArgumentParser(
+            description="From points or polygons, extraction each pixel centroid and extract values from raster.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        parser.add_argument(
+            "-in",
+            "--image",
+            dest="inRaster",
+            action="store",
+            help="Image to extract values from and to generate centroid from output vector",
+            required=True)
+
+        parser.add_argument(
+            "-vec",
+            "--vector",
+            dest="inVector",
+            action="store",
+            help="Vector to fill with raster values",
+            required=True,
+            type=str)
+
+        parser.add_argument(
+            "-out",
+            "--outvector",
+            dest="outVector",
+            action="store",
+            help="Vector to save (sqlite extension if possible)",
+            required=True,
+            type=str)
+
+        parser.add_argument(
+            "-field",
+            "--uniqueField",
+            dest="uniqueFID",
+            action="store",
+            help="Unique field per feature. If no field, will create an 'uniquefid' field in the original shapefile.",
+            required=False,
+            default=None)
+
+        parser.add_argument(
+            "-outfield.prefix.name",
+            "--outField",
+            dest="bandPrefix",
+            action="store",
+            help="Prefix name to save the values from the raster. E.g 'band_'.",
+            required=False,
+            default=None)
+
         args = parser.parse_args()
-            
-        sampleExtraction(inRaster=args.inRaster,inVector=args.inVector,outVector=args.outVector,\
-                                     uniqueFID=args.uniqueFID,bandPrefix=args.bandPrefix)
+
+        sampleExtraction(
+            inRaster=args.inRaster,
+            inVector=args.inVector,
+            outVector=args.outVector,
+            uniqueFID=args.uniqueFID,
+            bandPrefix=args.bandPrefix)
