@@ -14,29 +14,28 @@
 # =============================================================================
 import numpy as np
 class learnAndPredict:
-    def __init__(self,classifier,param_grid=None,n_jobs=1):
+    def __init__(self,n_jobs=1):
         """
+        learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
+        After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictFromRaster() or predictFromArray().
+        
+        
         Parameters
         ----------
-        classifier : str or class from scikit-learn.
-            str is only 'GMM'. Else, you can input RandomForestClassifier got from 'from sklearn.ensemble import RandomForestClassifier'
-        param_grid : None, else dict.
-            param_grid for the grid_search. E.g. for RandomForestClassifier : param_grid=dict(n_estimators=[10,100],max_features=[1,3]) 
-        scale : Bool, default False.
-            If True, will standardize features.
         n_jobs : int, default 1.
-            Number of cores to used for prediction.
+            Number of cores to be used by sklearn in grid-search.
         """
-            
-        self.classifier = classifier
         self.n_jobs = n_jobs
-        self.param_grid = param_grid
+
         self.scale = False
         
     def scaleX(self,X=None):
         """
         Scale X data using StandardScaler from sklear.
         If X is None, initialize StandardScaler.
+        
+        Parameters
+        ----------
         
         """
         from sklearn.preprocessing import StandardScaler
@@ -47,7 +46,7 @@ class learnAndPredict:
             Xt = self.scaler.transform(X)
             return Xt
                 
-    def learnFromVector(self,X,Y,outStatsFromCV=True,scale=False,cv=None):
+    def learnFromVector(self,X,Y,classifier,param_grid=None,outStatsFromCV=True,scale=False,cv=None):
         """
         learn Model from vector/array.
         
@@ -57,13 +56,21 @@ class learnAndPredict:
             Array with values of each label variable.
         Y : array.
             Array with labels only.
+        classifier : class from scikit-learn.
+            E.g. RandomForestClassifier() got from 'from sklearn.ensemble import RandomForestClassifier'
+        param_grid : None, else dict.
+            param_grid for the grid_search. E.g. for RandomForestClassifier : param_grid=dict(n_estimators=[10,100],max_features=[1,3]) 
         outStatsFromCv : bool, default True.
             If True, getStatsFromCV() will be available to keep statistics (confusion matrix, OA, Kappa, F1)
+        scale : Bool, default False.
+            If True, will standardize features.
         scale : Bool, default False.
             If True, will standardize features.
         cv : Cross-Validation or None.
             if cv, choose one from vectorTools.samplingMethods and generate it via vectorTools.sampleSelection().
         """
+        self.classifier = classifier
+        self.param_grid = param_grid
         self.Y = Y
 
         self.X = X
@@ -74,7 +81,7 @@ class learnAndPredict:
         
         self.__learn__(self.X,Y,outStatsFromCV,cv)
         
-    def learnFromRaster(self,inRaster,inVector,inField,outStatsFromCV=True,scale=False,cv=None):
+    def learnFromRaster(self,inRaster,inVector,inField,classifier,param_grid=None,outStatsFromCV=True,scale=False,cv=None):
         """
         learn Model from raster.
         
@@ -86,6 +93,10 @@ class learnAndPredict:
             Path of the vector file.
         inField : str.
             Field name containing the label to predict.
+        classifier : class from scikit-learn.
+            E.g. RandomForestClassifier() got from 'from sklearn.ensemble import RandomForestClassifier'
+        param_grid : None, else dict.
+            param_grid for the grid_search. E.g. for RandomForestClassifier : param_grid=dict(n_estimators=[10,100],max_features=[1,3]) 
         outStatsFromCv : bool, default True.
             If True, getStatsFromCV() will be available to keep statistics (confusion matrix, OA, Kappa, F1)
         scale : Bool, default False.
@@ -94,6 +105,9 @@ class learnAndPredict:
             if cv, choose one from vectorTools.samplingMethods and generate it via vectorTools.sampleSelection().
         """
         from MuseoToolBox.rasterTools import getSamplesFromROI
+        self.classifier = classifier
+        self.param_grid = param_grid
+        
         X,Y = getSamplesFromROI(inRaster,inVector,inField)
         self.Y = Y
 
@@ -136,6 +150,14 @@ class learnAndPredict:
         
 
     def saveModel(self,path):
+        """
+        Save model to be load later via learnAndPredict.loadModel(path)
+        
+        Parameters
+        ----------
+        path : str.
+            If path ends with npy, perfects, else will add '.npy' after your fileName.
+        """
         if not path.endswith('.npy'):
             path += '.npy'
         
@@ -145,6 +167,14 @@ class learnAndPredict:
             np.save(path,self.model)
         
     def loadModel(self,path):
+        """
+        Load model previously saved with learnAndPredict.saveModel(path)
+        
+        Parameters
+        ----------
+        path : str.
+            If path ends with npy, perfects, else will add '.npy' after your fileName.
+        """
         if not path.endswith('.npy'):
             path += '.npy'
             
@@ -163,6 +193,7 @@ class learnAndPredict:
     def predictFromArray(self,X):
         """
         Predict label from array.
+        
         Parameters
         ----------
         X : array.
@@ -203,7 +234,6 @@ class learnAndPredict:
         X : array.
             The array to predict proba. Must have the same number of bands of the initial array/raster.
             
-        
         Returns
         ----------
         Xpredict : array.
@@ -252,6 +282,21 @@ class learnAndPredict:
         rM.run()
         
     def getStatsFromCV(self,confusionMatrix=True,kappa=False,OA=False,F1=False):
+        """
+        Extract statistics from the Cross-Validation.
+        If Cross-Validation is 5-fold, getStatsFromCV will return 5 confusion matrix, 5 kappas...
+        
+        Parameters and returns
+        ----------
+        confusionMatrix : bool, default True.
+            If True, will return first the Confusion Matrix.
+        kappa : bool, default False.
+            If True, will return in kappa.
+        OA : bool, default False.
+            If True, will return Overall Accuracy/
+        F1 : bool, default False.
+            If True, will return F1 Score per class.
+        """
         if self.outStatsFromCV is False:
             raise Exception('outStatsFromCV in fromRaster or fromVector must be True')
         else:
@@ -276,7 +321,9 @@ class learnAndPredict:
                 if F1 : 
                     F1s.append(cmObject.F1) #statsFromConfusionMatrix(cm).__get_F1()
             
-            toReturn = CM
+            toReturn = []
+            if confusionMatrix : 
+                toReturn.append(CM)
             if kappa is True:
                 toReturn.append(kappas)
             if OA is True:
@@ -284,4 +331,3 @@ class learnAndPredict:
             if F1 is True:
                 toReturn.append(F1s)
             return toReturn
-            

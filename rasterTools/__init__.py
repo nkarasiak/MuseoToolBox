@@ -354,12 +354,13 @@ class rasterMath:
             
         ## Initialize the output
         self.functions = []        
+        self.functionsKwargs = []
         self.outputs = []
         #out = dst_ds.GetRasterBand(1)
         self.lastProgress = 0
         self.outputNoData = []
         
-    def addFunction(self,function,outRaster,outNBand=False,outGdalDT=False,outNoData=False):
+    def addFunction(self,function,outRaster,outNBand=False,outGdalDT=False,outNoData=False,functionKwargs=False):
         """
         Add function to rasterMath.
         
@@ -376,6 +377,8 @@ class rasterMath:
             If False, will use the datatype of the function result.
         outNoData : int, default False.
             If False will use 0 for byte, or -9999 for int16/32.
+        functionKwargs : False, or dict type.
+            If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
         """
         self.driver = gdal.GetDriverByName('GTiff')
         
@@ -392,7 +395,8 @@ class rasterMath:
                 outNBand = 1
                 
         self.__addOutput__(outRaster,outNBand,outGdalDT)
-        self.functions.append(function)        
+        self.functions.append(function)
+        self.functionsKwargs.append(functionKwargs)        
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self,outRaster,outNBand,outGdalDT):
@@ -463,6 +467,8 @@ class rasterMath:
         
         # TODO : Parallel/ Not working for now.
         if self.parallel :
+            raise Exception('Sorry, parallel is not supported for the moment...')
+            """
             try:
                 from joblib import Parallel, delayed  
             except :
@@ -479,7 +485,7 @@ class rasterMath:
             
             for idx,fun in enumerate(self.functions):
                 outputNBand = self.outputs[idx].RasterCount 
-                for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
+                for X,mask,i,j,cols,lines,idx in Paralletrough l(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
                     if verbose:
                         self.pb.addPosition(j)
                     #for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,verbose=False)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
@@ -489,7 +495,7 @@ class rasterMath:
                         curBand.WriteArray(X[:,ind].reshape(lines,cols),i,j)
                         curBand.FlushCache()
                     self.outputs[idx].GetRasterBand(1).SetNoDataValue(self.outNoData)
-
+            """
         else:
         
             for X,mask,col,line,cols,lines in self.__iterBlock__(getBlock=True):
@@ -518,7 +524,10 @@ class rasterMath:
                         
                     maxBands = self.outputs[idx].RasterCount
                     if X_[mask].size > 0:
-                        resFun = fun(X_[mask[:,0],:])
+                        if self.functionsKwargs[idx] is not False:
+                            resFun = fun(X_[mask[:,0],:],**self.functionsKwargs[idx])
+                        else:
+                            resFun = fun(X_[mask[:,0],:])
                         if maxBands > self.nb:
                             X = np.zeros((X_.shape[0],maxBands))
                             X[:,:] = self.outputNoData[idx]
