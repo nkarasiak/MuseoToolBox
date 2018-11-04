@@ -285,7 +285,7 @@ class distanceCV:
                         # if train size if less than split% of whole class
                         # (i.e. 30% for exemple)
                         if (len(trained) != self.minTrain * len(CT)
-                            ) or (self.SLOO and len(trained) == 0):
+                                ) or (self.SLOO and len(trained) == 0):
 
                             if self.verbose:
                                 print('len trained before ' +
