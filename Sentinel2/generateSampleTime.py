@@ -100,16 +100,20 @@ def generateSampleTime(S2Dir, out, nDays=5, startDate=False, lastDate=False):
     np.savetxt(out, np.asarray(customeSampleTime, dtype=np.int), fmt='%d')
 
 
-if __name__ == "__main__":
+def main(argv=None, apply_config=True):
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
         print(sys.argv[0] + ' [options]')
         print("Help : ", prog, " --help")
         print("or : ", prog, " -h")
         print(
+            2 *
+            ' ' +
             "example 1 : python %s -s2dir /tmp/S2downloads -out /tmp/sample_time.csv" %
             sys.argv[0])
         print(
+            2 *
+            ' ' +
             "example 2 : python %s -s2dir /tmp/S2downloads -out /tmp/sample_time.csv -startDate 20170103 -endDate 20171225" %
             sys.argv[0])
         sys.exit(-1)
@@ -160,9 +164,12 @@ if __name__ == "__main__":
 
         args = parser.parse_args()
 
-        resampleEveryXDays(
+        generateSampleTime(
             S2Dir=args.s2dir,
             out=args.out,
             nDays=args.nDays,
             startDate=args.startDate,
             lastDate=args.lastDate)
+
+if __name__ == "__main__":
+    sys.exit(main())

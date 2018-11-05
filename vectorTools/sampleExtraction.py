@@ -267,21 +267,20 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
-
-if __name__ == "__main__":
+def main(argv=None, apply_config=True):
     import argparse
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
-        print(2 * ' ' + sys.argv[0] + ' [options]')
-        print(2 * ' ' + "Help : ", prog, " --help")
-        print(2 * ' ' + "or : ", prog, " -h")
+        print(sys.argv[0] + ' [options]')
+        print("Help : ", prog, " --help")
+        print("or : ", prog, " -h")
         print(
-            5 *
+            2 *
             ' ' +
             "example 1 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ " %
             sys.argv[0])
         print(
-            5 *
+            2 *
             ' ' +
             "example 2 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid" %
             sys.argv[0])
@@ -345,3 +344,6 @@ if __name__ == "__main__":
             outVector=args.outVector,
             uniqueFID=args.uniqueFID,
             bandPrefix=args.bandPrefix)
+
+if __name__ == "__main__":
+    sys.exit(main())

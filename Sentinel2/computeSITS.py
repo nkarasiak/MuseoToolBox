@@ -346,16 +346,20 @@ def computeSITS(
     print('SITS built at ' + str(outSITS))
 
 
-if __name__ == "__main__":
+def main(argv=None, apply_config=True):
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
         print(sys.argv[0] + ' [options]')
         print("Help : ", prog, " --help")
         print("or : ", prog, " -h")
         print(
+            2 *
+            ' ' +
             "example 1 : python %s -s2dir /tmp/S2downloads -out /tmp/SITS.tif" %
             sys.argv[0])
         print(
+            2 *
+            ' ' +
             "example 2 : python %s -s2dir /tmp/S2downloads -out /tmp/SITS.tif -resample20m True -unzip True -nbcore 4 -ram 4000" %
             sys.argv[0])
         sys.exit(-1)
@@ -462,3 +466,6 @@ if __name__ == "__main__":
             checkOutliers=args.checkOutliers,
             nbcore=args.nbcore,
             ram=args.ram)
+
+if __name__ == "__main__":
+    sys.exit(main())

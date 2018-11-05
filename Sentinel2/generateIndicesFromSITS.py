@@ -28,8 +28,8 @@ indicesDict = dict(
     EVI='(B08 + 6*B04 - 7.5*B02 + 1) == 0 ? -9999 : 2.5*(B08 - B04) / (B08 + 6*B04 - 7.5*B02 + 1)*100',
     EVI2='(B08 + 2.4 * B04 + 1) == 0 ? -9999 : 2.5 * (B08 - B04) / (B08 + 2.4 * B04 + 1)*100',
     PSRI='B05 == 0 ? -9999 : ((B04 - B02) / B05)*100',
+    ARI='B03 == 0 ? -9999 : B05 == 0 ? -999 : 1/B03-1/B05',
     ARI2='B02 == 0 ? -9999 : B03 == 0 ? -9999 : ((B08 / B02) - (B08 / B03))')
-
 
 def generateIndicesFromSITS(
         inSITS,
@@ -55,7 +55,7 @@ def generateIndicesFromSITS(
     sampleTime : str, default False
         CSV of the SITS sample time
     comp : int, default 4
-        Number of components per date.
+        Number of components per date. 4 bands or 10 bands for Sentinel-2.
     nbcore : int, default 1
         Number of cores used.
     ram : int, default 256
@@ -169,13 +169,15 @@ def generateIndicesFromSITS(
     print(indice + ' has been calculated.')
 
 
-if __name__ == "__main__":
+def main(argv=None, apply_config=True):
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
         print(sys.argv[0] + ' [options]')
         print("Help : ", prog, " --help")
         print("or : ", prog, " -h")
         print(
+            2 *
+            ' ' +
             "example 1 : python %s -inSITS /tmp/SITS.tif -outIndice /tmp/indice/ACORVI.vrt -indice ACORVI" %
             sys.argv[0])
 
@@ -247,3 +249,6 @@ if __name__ == "__main__":
             comp=args.comp,
             nbcore=args.nbcore,
             ram=args.ram)
+
+if __name__ == "__main__":
+    sys.exit(main())

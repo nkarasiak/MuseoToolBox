@@ -15,7 +15,6 @@
 
 from __future__ import absolute_import
 
-from .metadata.version import version as __version__
 
 # import rasterTools, vectorTools and other directly in root : mtb.XXX
 #from .tools import *

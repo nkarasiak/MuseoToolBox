@@ -5,3 +5,7 @@
 *.swp
 __pycache__
 
+MuseoToolBox.egg-info/
+build/
+dist/
+

@@ -14,13 +14,18 @@
 # =============================================================================
 from __future__ import absolute_import
 import setuptools
-
-from version import version as __version__
+__version__ = 0.9
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-
+"""
+install_requires=[
+    'scikit-learn',
+    'numpy',
+    'scipy',
+    'osgeo'],
+"""
 setuptools.setup(
     name='MuseoToolBox',
     version=str(__version__),
@@ -32,9 +37,12 @@ setuptools.setup(
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
     packages=setuptools.find_packages(),
-    install_requires=[
-        'scikit-learn',
-        'numpy',
-        'scipy',
-        'osgeo'],
-    zip_safe=False)
+    zip_safe=False,
+    entry_points = {
+        'console_scripts': [
+            'mtb_sampleExtraction=vectorTools.sampleExtraction:main',
+            'mtb_generateIndicesFromSITS=Sentinel2.generateIndicesFromSITS:main',
+            'mtb_computeSITS=Sentinel2.computeSITS:main'
+        ],
+    }
+ )
