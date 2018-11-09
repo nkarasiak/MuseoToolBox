@@ -13,5 +13,5 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-import vectorTools, rasterTools
+from . import vectorTools, rasterTools
 from .learnTools import learnAndPredict

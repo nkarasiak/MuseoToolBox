@@ -12,8 +12,8 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-import vectorTools, rasterTools
-from tools import progressBar
+from .. import rasterTools
+from ..tools import progressBar
 
 import sys
 import os
