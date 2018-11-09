@@ -16,9 +16,9 @@ import os
 from osgeo import ogr
 import numpy as np
 
-from MuseoToolBox.vectorTools.crossValidationSelection import samplingMethods, sampleSelection
-from MuseoToolBox.vectorTools.sampleExtraction import sampleExtraction
-from MuseoToolBox.vectorTools import crossValidationClass
+from .crossValidationSelection import samplingMethods, sampleSelection
+from .sampleExtraction import sampleExtraction
+from . import crossValidationClass
 
 
 def getDriverAccordingToFileName(fileName):

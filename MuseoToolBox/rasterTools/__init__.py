@@ -16,7 +16,7 @@ import gdal
 import numpy as np
 import os
 import tempfile
-from MuseoToolBox.tools import progressBar, pushFeedback
+from ..tools import progressBar, pushFeedback
 
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):

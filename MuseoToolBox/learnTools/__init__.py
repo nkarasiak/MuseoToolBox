@@ -122,7 +122,7 @@ class learnAndPredict:
         cv : Cross-Validation or None.
             if cv, choose one from vectorTools.samplingMethods and generate it via vectorTools.sampleSelection().
         """
-        from MuseoToolBox.rasterTools import getSamplesFromROI
+        from .rasterTools import getSamplesFromROI
         self.classifier = classifier
         self.param_grid = param_grid
 
@@ -299,8 +299,8 @@ class learnAndPredict:
             Value of no data for the outRaster.
         """
 
-        from MuseoToolBox.rasterTools import rasterMath
-        from MuseoToolBox.rasterTools import getGdalDTFromMinMaxValues
+        from .rasterTools import rasterMath
+        from .rasterTools import getGdalDTFromMinMaxValues
         rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
         gdalDT = getGdalDTFromMinMaxValues(int(np.amax(np.unique(self.Y))))
         rM.addFunction(
@@ -351,7 +351,7 @@ class learnAndPredict:
                 'outStatsFromCV in fromRaster or fromVector must be True')
         else:
             # ,statsFromConfusionMatrix,
-            from MuseoToolBox.stats.statsFromConfusionMatrix import confusionMatrix
+            from .stats.statsFromConfusionMatrix import confusionMatrix
             CM = []
             kappas = []
             OAs = []
