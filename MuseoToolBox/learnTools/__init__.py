@@ -14,7 +14,6 @@
 # =============================================================================
 import numpy as np
 
-
 class learnAndPredict:
     def __init__(self, n_jobs=1):
         """
@@ -353,7 +352,7 @@ class learnAndPredict:
         else:
             # ,statsFromConfusionMatrix,
             from MuseoToolBox.stats.statsFromConfusionMatrix import confusionMatrix
-            CM = [[]]
+            CM = []
             kappas = []
             OAs = []
             F1s = []
@@ -366,7 +365,7 @@ class learnAndPredict:
                 cmObject = confusionMatrix(
                     Y_test, X_pred, kappa=kappa, OA=OA, F1=F1)
                 cm = cmObject.confusion_matrix
-                CM[0].append([cm])
+                CM.append([cm])
                 if kappa:
                     # statsFromConfusionMatrix(cm).__get_kappa()
                     kappas.append(cmObject.Kappa)

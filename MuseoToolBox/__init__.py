@@ -13,8 +13,5 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-from __future__ import absolute_import
-
-from .generateSampleTime import generateSampleTime
-from .computeSITS import computeSITS
-from .generateIndicesFromSITS import generateIndicesFromSITS
+from . import vectorTools, rasterTools
+from .learnTools import learnAndPredict

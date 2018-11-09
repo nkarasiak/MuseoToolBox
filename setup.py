@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import
 import setuptools
 __version__ = 0.9
 
@@ -40,9 +39,7 @@ setuptools.setup(
     zip_safe=False,
     entry_points = {
         'console_scripts': [
-            'mtb_sampleExtraction=vectorTools.sampleExtraction:main',
-            'mtb_generateIndicesFromSITS=Sentinel2.generateIndicesFromSITS:main',
-            'mtb_computeSITS=Sentinel2.computeSITS:main'
+            'mtb_sampleExtraction=MuseoToolBox.vectorTools.sampleExtraction:main',
         ],
     }
  )

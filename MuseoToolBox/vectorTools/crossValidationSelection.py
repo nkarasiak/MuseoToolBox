@@ -15,13 +15,9 @@
 
 from __future__ import absolute_import
 from MuseoToolBox import vectorTools, rasterTools
-from MuseoToolBox.vectorTools import crossValidationClass
+
 import os
 import numpy as np
-
-# TODO
-# Rasterize vector to keep only the centroid !
-
 
 class samplingMethods:
     def standCV(inStand, SLOO=True, maxIter=False, seed=None):
@@ -222,7 +218,7 @@ class sampleSelection(samplingMethods):
                 FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
                     inVector, inField, getFeatures=True)
                 FIDs = FIDs.flatten()
-            self.crossvalidation = crossValidationClass.randomPerClass(
+            self.crossvalidation = vectorTools.crossValidationClass.randomPerClass(
                 FIDs=FIDs, **samplingMethod[1])
 
         # Split at maximum distance beyond each point
@@ -246,7 +242,7 @@ class sampleSelection(samplingMethods):
             for key, value in samplingMethod[1].items():
                 if key is not 'inRaster' and key is not 'inVector':
                     dictForSLOO[key] = value
-            self.crossvalidation = crossValidationClass.distanceCV(
+            self.crossvalidation = vectorTools.crossValidationClass.distanceCV(
                 Y=Y, **dictForSLOO)
 
         # For Stand Split
@@ -263,7 +259,7 @@ class sampleSelection(samplingMethods):
                 FIDs, STDs, self.fts, self.srs = vectorTools.readValuesFromVector(
                     inVector, inField, inStand, getFeatures=True)
                 FIDs = FIDs.flatten()
-            self.crossvalidation = crossValidationClass.standCV(
+            self.crossvalidation = vectorTools.crossValidationClass.standCV(
                 FIDs, STDs, SLOO=SLOO, maxIter=maxIter, seed=self.samplingMethod[1]['seed'])
 
     def reinitialize(self):

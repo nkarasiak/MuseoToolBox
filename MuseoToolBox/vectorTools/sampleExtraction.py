@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function
 from MuseoToolBox import vectorTools, rasterTools
 from MuseoToolBox.tools import progressBar
 
@@ -277,13 +276,11 @@ def main(argv=None, apply_config=True):
         print(
             2 *
             ' ' +
-            "example 1 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ " %
-            sys.argv[0])
+            "example 1 : ",prog," -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ ")
         print(
             2 *
             ' ' +
-            "example 2 : python %s -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid" %
-            sys.argv[0])
+            "example 2 : ",prog," -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid")
         sys.exit(-1)
 
     else:
