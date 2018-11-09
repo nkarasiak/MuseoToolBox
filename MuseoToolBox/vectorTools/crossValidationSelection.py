@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-from .. import rasterTools
+from .. import vectorTools,rasterTools
 
 import os
 import numpy as np

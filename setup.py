@@ -18,16 +18,9 @@ __version__ = 0.9
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-"""
-install_requires=[
-    'scikit-learn',
-    'numpy',
-    'scipy',
-    'osgeo'],
-"""
 setuptools.setup(
     name='MuseoToolBox',
-    version=str(__version__),
+    version='0.9',
     description='Raster and vector tools for Remote Sensing and Classification',
     long_description=long_description,
     long_description_content_type="text/markdown",
