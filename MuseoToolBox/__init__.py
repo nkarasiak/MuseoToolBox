@@ -12,6 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-
+from __future__ import absolute_import
 from . import vectorTools, rasterTools
 from .learnTools import learnAndPredict

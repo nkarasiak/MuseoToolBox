@@ -12,6 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import absolute_import,print_function
 import numpy as np
 
 class distanceCV:
