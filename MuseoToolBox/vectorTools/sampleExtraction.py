@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import,print_function
-from .. import vectorTools,rasterTools
+from . import *
 from ..tools import progressBar
 
 import sys

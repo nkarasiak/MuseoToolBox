@@ -14,8 +14,8 @@
 # =============================================================================
 
 from __future__ import absolute_import,print_function
-from .. import vectorTools,rasterTools
-
+from .. import rasterTools
+from . import *
 import os
 import numpy as np
 
