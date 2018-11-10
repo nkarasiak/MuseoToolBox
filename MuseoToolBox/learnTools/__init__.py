@@ -148,7 +148,7 @@ class learnAndPredict:
 
         if outStatsFromCV is True:
             self.CV = []
-            if type(cv).__name__ == 'StratifiedKFold':
+            if hasattr(cv, 'split'): # if cv is from sklearn, need to fit to generate tr/vl
                 cv = cv.split(X, Y)
             for tr, vl in cv:
                 self.CV.append((tr, vl))
@@ -262,7 +262,7 @@ class learnAndPredict:
         Xpredict : array.
             The probability from 0 to 100.
         """
-        if isinstance(self.Xpredict, np.ndarray):
+        if hasattr(self,'Xpredict'):
             Xpredict = np.amax(self.Xpredict, axis=1)
         else:
             if self.scale:

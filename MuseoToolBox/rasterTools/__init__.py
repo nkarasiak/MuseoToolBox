@@ -18,8 +18,8 @@ import gdal
 import numpy as np
 import os
 import tempfile
-from ..tools import progressBar, pushFeedback
 
+from ..tools import progressBar, pushFeedback
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     """
@@ -41,7 +41,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
                 gdalDT = gdal.GDT_Byte
             elif maxValue > 255 and maxValue <= 65535:
                 gdalDT = gdal.GDT_UInt16
-            elif maxValue >= 65535 or maxValue <= 4294967295:
+            elif maxValue >= 65535:
                 gdalDT = gdal.GDT_UInt32
         elif minValue < 0:
             if maxValue > 255 and maxAbsValue <= 65535:

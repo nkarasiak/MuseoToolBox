@@ -138,23 +138,15 @@ class distanceCV:
                     validate = np.array([]).astype('int')
 
                     while len(CTtemp) > 0:
-                        #totalC = len(self.label[self.label==int(C)])
-                        #uniqueTrain = 0
+
                         np.random.seed(self.seed)
                         self.ROI = np.random.permutation(
                             CTtemp)[0]  # randomize ROI choice
 
-                        # while uniqueTrain <(self.split*totalC) :
-                        #sameClass = sp.where( self.Y[CT] == C )
                         distanceROI = (self.distanceArray[int(self.ROI), :])[
                             CTtemp]  # get line of distance for specific ROI
 
                         if self.minTrain == -1:
-                            # distToCutValid = sp.sort(distanceROI)[:self.maxIter][-1] # get distance where to split train/valid
-                            # distToCutTrain =
-                            # sp.sort(distanceROI)[-self.maxIter:][0] # get
-                            # distance where to split train/valid
-
                             trainedTemp = np.array([self.ROI])
 
                             validateTemp = CTtemp[CTtemp !=
@@ -169,35 +161,6 @@ class distanceCV:
                                                   self.distanceThresold]
                             #trainedTemp = trainedTemp[trainedTemp!=self.ROI]
 
-                        """
-                        elif self.SLOO:
-                            validateTemp = sp.array([self.ROI]) # validate ROI
-                            trainedTemp = CTtemp[(distanceROI>=self.distanceThresold)] # Train in a buffer
-                        """
-# trainedTemp = sp.array([self.ROI]) # train is the current ROI
-                        """
-                        if self.SLOO is True and self.maxIter != self.minEffectiveClass:
-
-                            CTtoRemove = np.concatenate((validateTemp,trainedTemp))
-
-                            # Remove ROI for further selection ROI (but keep in Y list)
-                            for i in np.nditer(CTtoRemove):
-                                CTtemp = np.delete(CTtemp,np.where(CTtemp==i)[0])
-
-                            #if self.verbose : print('len CTtemp is : '+str(len(CTtemp)))
-
-                            trained = np.concatenate((trained,trainedTemp))
-                            validate = np.concatenate((validate,validateTemp))
-
-
-                        else:
-                            trained = trainedTemp
-                            validate = validateTemp
-
-
-
-                            CTtemp = []
-                        """
                         if self.furtherSplit:
                             validateTemp = np.array([self.ROI])
                             trainedTemp = CTtemp[CTtemp != validateTemp]
@@ -383,15 +346,10 @@ class distanceCV:
 
                     validation = np.concatenate((validation, validate))
                     train = np.concatenate((train, trained))
-                    # allDist[sp.where(y[allDist]==C)[0]]
-                    #T = sp.searchsorted(T,currentClass)
-                    # for i in sp.nditer(train):
 
                     # remove current validation ROI
                     ROItoRemove.append(validation)
                     ROItoRemove.append(train)
-
-                    #Cstats = sp.vstack((Cstats,(self.distanceThresold,self.minTrain*100,C,initTrain,initValid,len(trained)-initTrain,len(validate)-initValid,meanDistTrain,meanDistValidation)))
 
                 if self.stats is True:
                     np.savetxt(
@@ -401,8 +359,6 @@ class distanceCV:
                         delimiter=',',
                         header="Distance,Percent Train, Label,Init train,Init valid,Ntrain Add,Mean DisT Train,Mean Dist Valid")
 
-                    # if not self.SLOO:
-                    #validate = CT[distanceROI<distToCut]
 
                 self.iterPos += 1
 
@@ -592,9 +548,6 @@ class standCV:
                     YinSelectedStand = Ycurrent[YinSelectedStandt]
                     validation = np.concatenate(
                         (validation, np.asarray(YinSelectedStand)))
-
-                    # improve code...
-                    # Ycurrent[sp.where(Ystands!=selectedStand)[0]]
 
                     YnotInSelectedStandt = np.invert(YinSelectedStandt)
                     YnotInSelectedStand = Ycurrent[YnotInSelectedStandt]

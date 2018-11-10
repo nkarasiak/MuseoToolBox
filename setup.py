@@ -12,15 +12,17 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import absolute_import
+from metadata.version import version as __version__
 import setuptools
-__version__ = 0.9
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+
 setuptools.setup(
     name='MuseoToolBox',
-    version='0.9',
+    version=__version__,
     description='Raster and vector tools for Remote Sensing and Classification',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -29,6 +31,12 @@ setuptools.setup(
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
     packages=setuptools.find_packages(),
+    classifiers=[
+            "Topic :: Scientific/Engineering :: Artificial Intelligence",
+            "Topic :: Scientific/Engineering :: GIS",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 2",
+            "Intended Audience :: Science/Research"],
     zip_safe=False,
     entry_points = {
         'console_scripts': [

@@ -13,4 +13,5 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-version = 0.1
+version = 0.9
+
