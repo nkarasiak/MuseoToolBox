@@ -14,7 +14,7 @@
 # =============================================================================
 
 import glob
-path = '../docs/source/notebooks/**/*.ipynb'
+path = '../docs/source/examples/**/*.ipynb'
 ipynbs = glob.glob(path)
 
 rstNb = open("source/notebooks.rst","w+")
@@ -27,6 +27,6 @@ for ipynb in ipynbs:
         rstNb.write('\n'+fld+'\n')
         rstNb.write((len(fld)*1+2)*'-'+'\n')
         rstNb.write('.. toctree::\n')
-    rstNb.write('    notebooks/'+fld+'/'+glob.os.path.basename(ipynb)+'\n')
+    rstNb.write('    examples/'+fld+'/'+glob.os.path.basename(ipynb)+'\n')
         
 rstNb.close()
