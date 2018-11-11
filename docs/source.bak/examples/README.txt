@@ -1,2 +1,0 @@
-Museo ToolBox - Gallery
-************************
