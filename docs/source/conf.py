@@ -17,6 +17,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import re
 import os
 import sys
 # sys.path.insert(0, os.path.abspath('.'))
@@ -72,7 +73,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 __version__ = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
-    open('../../ot/__init__.py').read()).group(1)
+    open('../../MuseoToolBox/__init__.py').read()).group(1)
 
 version = __version__
 # The full version, including alpha/beta/rc tags.
