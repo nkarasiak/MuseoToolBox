@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
+from __future__ import absolute_import, print_function
 import os
 from osgeo import ogr
 import numpy as np
@@ -31,10 +31,10 @@ def getDriverAccordingToFileName(fileName):
     fileName : str.
         Path of the vector with extension.
 
-    Output
+    Returns
     ----------
     driverName : str
-        'SQLIRE', 'GPKG', 'ESRI Shapefile'...
+        'SQLITE', 'GPKG', 'ESRI Shapefile'...
     """
     extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
     driversName = ['SQLITE', 'ESRI Shapefile', 'netCDF', 'GPX', 'GPKG']
@@ -55,7 +55,7 @@ def getDriverAccordingToFileName(fileName):
 
 def readValuesFromVector(vector, *args, **kwargs):
     """
-    Read values from vector. Will list all fields beginning with the roiprefix ('band_' for example)
+    Read values from vector. Will list all fields beginning with the roiprefix 'band-' for example.
 
     Parameters
     ----------
@@ -64,12 +64,13 @@ def readValuesFromVector(vector, *args, **kwargs):
     *args : str
         Field name containing the field to extract values from (i.e. 'class', str).
     **kwargs : arg
-        bandPrefix = 'band_' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band_').
+        bandPrefix = 'band-' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band-').
         getFeatures = True, will return features in one list AND spatial Reference.
 
-    Output
-    ----------
-    Arr.
+    Returns
+    -------
+      Y : arr.
+          As many array as arguments. For bandPrefix, will return one array with n dimension.
     """
 
     file = ogr.Open(vector)

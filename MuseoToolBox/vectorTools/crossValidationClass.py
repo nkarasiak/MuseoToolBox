@@ -12,8 +12,9 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
+from __future__ import absolute_import, print_function
 import numpy as np
+
 
 class distanceCV:
     def __init__(
@@ -358,7 +359,6 @@ class distanceCV:
                         fmt='%d',
                         delimiter=',',
                         header="Distance,Percent Train, Label,Init train,Init valid,Ntrain Add,Mean DisT Train,Mean Dist Valid")
-
 
                 self.iterPos += 1
 

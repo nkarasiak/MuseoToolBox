@@ -42,9 +42,13 @@ uploadpypi :
 	#python setup.py register
 	$(PYTHON) setup.py sdist upload -r pypi
 
-rdoc :
-	pandoc --from=markdown --to=rst --output=docs/source/readme.rst README.md
+builddoc :
+	m2r README.md
+	mv README.rst docs/source/
+	cd docs/ && make html
 
+renegeratenb:
+	jupyter nbconvert
 notebook :
 	ipython3 notebook --notebook-dir=notebooks/
 	

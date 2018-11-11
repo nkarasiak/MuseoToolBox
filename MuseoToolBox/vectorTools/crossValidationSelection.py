@@ -13,13 +13,16 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 
-from __future__ import absolute_import,print_function
-from .. import rasterTools
-from . import *
+from __future__ import absolute_import, print_function
+from .. import rasterTools, vectorTools
 import os
 import numpy as np
 
+
 class samplingMethods:
+    """
+    Store class, just choose one of the different functions, then generate the sample via sampleSelection().
+    """
     def standCV(inStand, SLOO=True, maxIter=False, seed=None):
         """
         Generate a Cross-Validation by stand/polygon group.
@@ -36,6 +39,10 @@ class samplingMethods:
 
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
+            
+        Returns
+        -------
+        List : list with the sampling type and the parameters for the standCV.
         """
         samplingType = 'STAND'
         return [
@@ -58,6 +65,23 @@ class samplingMethods:
 
         Parameters
         ----------
+        inRaster : str.
+            Path of the raster.
+        inVector : str.
+            Path of the vector.
+        distanceMatrix : array.
+            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+        minTrain : int/float, default None.
+            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
+        maxIter : default False.
+            If False : will iterate as many times as the smallest number of stands.
+            If int : will iterate the number of stands given in maxIter.
+        seed : int, default None.
+            If seed, int, to repeat exactly the same random.
+            
+        Returns
+        -------
+        List : list with the sampling type and the parameters for the farthestCV.
         """
 
         samplingType = 'farthestCV'
@@ -84,8 +108,6 @@ class samplingMethods:
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
 
-        See : https://doi.org/10.1111/geb.12161.
-
         Parameters
         ----------
         inRaster : str.
@@ -105,6 +127,14 @@ class samplingMethods:
             If int : will iterate the number of stands given in maxIter.
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
+            
+        Returns
+        -------
+        List : list with the sampling type and the parameters for the SLOOCV.
+        
+        References
+        ----------
+        See : https://doi.org/10.1111/geb.12161.
         """
         if distanceMatrix is None:
             distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(
@@ -125,6 +155,11 @@ class samplingMethods:
 
     def randomCV(train_size=0.5, nIter=5, seed=None):
         """
+        Get parameters to have a randomCV.
+        
+        Parameters
+        ----------
+        
         split : float,int. Default 0.5.
             If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
         nSamples: int or str. Default None.
@@ -134,6 +169,11 @@ class samplingMethods:
             If seed, int, to repeat exactly the same random.
         nIter : int, default 5.
             Number of iteration of the random sampling (will add 1 to the seed at each iteration if defined).
+            
+        Returns
+        --------
+        List : list with the sampling type and the parameters for the randomCV.
+        
         """
         samplingType = 'random'
         return [
@@ -144,11 +184,23 @@ class samplingMethods:
                 nIter=nIter)]
 
     def getDistanceMatrixForDistanceCV(inRaster, inVector):
-        # TODO
+        """
+        Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
+        
+        Parameters
+        ----------
+        inRaster : str
+            Path of the raster file.
+        inVector : str
+            Path of the vector file.
+        Returns
+        --------
+        distanceMatrix : array.
+        """
         coords = rasterTools.getSamplesFromROI(
             inRaster, inVector, None, getCoords=True, onlyCoords=True)
         from scipy.spatial import distance
-        distanceMatrix = distance.cdist(coords, coords, 'euclidean')
+        distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.int16)
 
         return distanceMatrix
 
@@ -167,7 +219,7 @@ class sampleSelection(samplingMethods):
         samplingMethod : object.
             object from samplingMethods.
 
-        Function
+        Returns
         ----------
         getCrossValidation() : Function.
             Get a memory cross validation to use directly in Scikit-Learn.

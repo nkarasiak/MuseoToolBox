@@ -12,8 +12,8 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
-from . import *
+from __future__ import absolute_import, print_function
+from .. import vectorTools,rasterTools
 from ..tools import progressBar
 
 import sys
@@ -33,6 +33,7 @@ class sampleExtraction:
         """
         Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
 
+        This script is available via terminal by entering : `mtb_sampleExtraction`.
         Parameters
         ----------
         inRaster : str.
@@ -267,6 +268,7 @@ class createPointLayer:
         self.inData.Destroy()
         self.outData.Destroy()
 
+
 def main(argv=None, apply_config=True):
     import argparse
     if len(sys.argv) == 1:
@@ -277,11 +279,11 @@ def main(argv=None, apply_config=True):
         print(
             2 *
             ' ' +
-            "example 1 : ",prog," -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ ")
+            "example 1 : ", prog, " -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ ")
         print(
             2 *
             ' ' +
-            "example 2 : ",prog," -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid")
+            "example 2 : ", prog, " -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid")
         sys.exit(-1)
 
     else:
@@ -342,6 +344,7 @@ def main(argv=None, apply_config=True):
             outVector=args.outVector,
             uniqueFID=args.uniqueFID,
             bandPrefix=args.bandPrefix)
+
 
 if __name__ == "__main__":
     sys.exit(main())

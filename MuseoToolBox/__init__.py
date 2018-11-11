@@ -16,4 +16,4 @@ from __future__ import absolute_import
 from . import vectorTools, rasterTools
 from .learnTools import learnAndPredict
 
-__version__ = 0.9
+__version__ = "0.9"

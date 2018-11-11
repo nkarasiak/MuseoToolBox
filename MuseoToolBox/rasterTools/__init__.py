@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
+from __future__ import absolute_import, print_function
 
 import gdal
 import numpy as np
@@ -20,6 +20,7 @@ import os
 import tempfile
 
 from ..tools import progressBar, pushFeedback
+
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     """
@@ -31,6 +32,10 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
         The maximum value needed.
     minValue : int/float, default 0.
         The minimum value needed.
+        
+    Returns
+    -------
+        gdalDT : the gdalDT integer.
     """
     maxAbsValue = np.amax(np.abs([maxValue, minValue]))
 
@@ -64,11 +69,15 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
     Return the datatype from gdal to numpy or from numpy to gdal.
 
     Parameters
-    ----------
+    -----------
         gdalDT : int
-            gdal datatype from src_dataset.GetRasterBand(1).DataType
+            gdal datatype from src_dataset.GetRasterBand(1).DataType.
         numpyDT : str
-            str from array.dtype.name
+            str from array.dtype.name.
+        
+    Returns
+    --------
+        dt : the integer datatype.
     """
     from osgeo import gdal_array
 
@@ -100,7 +109,7 @@ def convertGdalDataTypeToOTB(gdalDT):
     gdalDT : int
         gdal Datatype (integer value)
 
-    Output
+    Returns
     ----------
     str format of OTB datatype
         availableCode = uint8/uint16/int16/uint32/int32/float/double
@@ -113,24 +122,31 @@ def convertGdalDataTypeToOTB(gdalDT):
 def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     """
     Get the set of pixels given the thematic map. Both map should be of same size. Data is read per block.
-        Input:
-            raster_name: str.
-                the name of the raster file, could be any file that GDAL can open
-            roi_name: str.
-                the name of the thematic image: each pixel whose values is greater than 0 is returned
-            *fields : str.
-                Each field to extract label/value from.
-            **kwargs:
-                Only two keyword args are accepted:
-                    getCoords : bool.
-                        If getCoords, will return coords for each point.
-                    onlyCoords : bool.
-                        If true, with only return coords, no X,Y...
-        Output:
-            X: the sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each
-                line of the matrix is a pixel.
-            Y: the label of the pixel
-    Written by Mathieu Fauvel, updated by Nicolas Karasiak.
+    
+    Initially written by Mathieu Fauvel, improved by Nicolas Karasiak.
+    
+    Parameters
+    -----------
+    raster_name: str.
+        the name of the raster file, could be any file that GDAL can open
+    roi_name: str.
+        the name of the thematic image: each pixel whose values is greater than 0 is returned
+    *fields : str.
+        Each field to extract label/value from.
+    **kwargs:
+        Only two keyword args are accepted:
+            getCoords : bool.
+                If getCoords, will return coords for each point.
+            onlyCoords : bool.
+                If true, with only return coords, no X,Y...
+                
+    Returns
+    -------
+    X: arr.
+        The sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each line of the matrix is a pixel.
+    Y: arr.
+        The label of the pixel
+
     """
     # Open Raster
     raster = gdal.Open(inRaster, gdal.GA_ReadOnly)
@@ -298,32 +314,22 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
 class rasterMath:
     """
     Read a raster per block, and perform one or many functions to one or many raster outputs.
-
-    - If you want a sample of your data, just call getRandomBlock().
+    If you want a sample of your data, just call getRandomBlock().
 
     Parameters
     ----------
     inRaster : str
         Gdal supported raster
-    outRaster : str
-        Path to raster to save (tif file)
-    inMaskRaster : str, default False.
-        Path to mask raster (masked values are 0). If not, please change self.maskNoData to your value.
-    outNBand : int, default 1
-        Number of bands of the first output.
-    outGdalDT : int, default 1.
-        Gdal DataType of the first output.
-    outNoData : int, default False.
-        If False, will set the same value as the input raster nodata.
-    parallel : int, default False.
-        Number of cores to be used if not False.
+    inMaskRaster : str or False.
+        If str, path of the raster mask.
+    message : str or None.
+        If str, the message will be displayed before the progress bar.
 
-    Output
-    ----------
-        As many raster (geoTiff) as output defined by the user.
+    Returns
+    -------
+        Save raster : As many raster (geoTiff) as output defined by the user.
 
     """
-
     def __init__(self, inRaster, inMaskRaster=False, message='rasterMath... '):
 
         # Need to work of parallelize
@@ -442,6 +448,27 @@ class rasterMath:
                     yield col, row, width, height
 
     def generateBlockArray(self, col, row, width, height, mask=True):
+        """
+        Add function to rasterMath.
+        
+        Parameters
+        ----------
+        col : int.
+            the col
+        row : int
+            the line.
+        width : int.
+            the width.
+        height : int.
+            the height;
+        mask : bool.
+            Use the mask.
+            
+        Returns
+        -------
+        arr : arr with values.
+        arrMask : the masked array.
+        """
         arr = np.empty((height * width, self.nb))
 
         for ind in range(self.nb):
@@ -459,6 +486,9 @@ class rasterMath:
         return arr, arrMask
 
     def filterNoData(self, arr, mask=None):
+        """
+        Filter no data according to a mask or to nodata value set in the raster.
+        """
         outArr = np.zeros((arr.shape))
         outArr[:] = self.nodata
 
@@ -475,6 +505,9 @@ class rasterMath:
         return outArr, tmpMask
 
     def getRandomBlock(self):
+        """
+        Get Random Block from the raster.
+        """
         cols = int(
             np.random.permutation(
                 range(

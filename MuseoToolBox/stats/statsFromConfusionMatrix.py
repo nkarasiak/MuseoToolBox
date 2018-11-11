@@ -12,14 +12,19 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
+from __future__ import absolute_import, print_function
 import numpy as np
 
 
 def commissionOmission(table):
     """
     Compute commission and omission from a confusion matrix
-
+    
+    Parameters
+    ----------
+    table : array.
+        The confusion matrix (same number of lines and columns)
+        
     Returns
     -------
     com : commissions (list)
@@ -46,11 +51,11 @@ class confusionMatrix:
         yr : array.
             The label truth.
         kappa : bool, default False.
-            If true, returns kappa.
+            If true, computes kappa.
         OA : bool, default False.
-            If True, returns Overall Accuracy.
+            If True, computes Overall Accuracy.
         F1 : bool, default False.
-            If True, returns F1-Score per class.
+            If True, computes F1-Score per class.        
         """
         # Initialization
         n = yp.size

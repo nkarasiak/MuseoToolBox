@@ -12,7 +12,7 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import,print_function
+from __future__ import absolute_import, print_function
 import numpy as np
 
 class learnAndPredict:
@@ -38,6 +38,8 @@ class learnAndPredict:
 
         Parameters
         ----------
+         X : arr, or None.
+             The array to scale the data from.
 
         """
         from sklearn.preprocessing import StandardScaler
@@ -148,8 +150,12 @@ class learnAndPredict:
 
         if outStatsFromCV is True:
             self.CV = []
-            if hasattr(cv, 'split'): # if cv is from sklearn, need to fit to generate tr/vl
-                cv = cv.split(X, Y)
+            if hasattr(
+                    cv, 'split'):  # if cv is from sklearn, need to fit to generate tr/vl
+                try:
+                    cv = cv.split(X, Y)
+                except BaseException:
+                    pass
             for tr, vl in cv:
                 self.CV.append((tr, vl))
         else:
@@ -262,7 +268,7 @@ class learnAndPredict:
         Xpredict : array.
             The probability from 0 to 100.
         """
-        if hasattr(self,'Xpredict'):
+        if hasattr(self, 'Xpredict'):
             Xpredict = np.amax(self.Xpredict, axis=1)
         else:
             if self.scale:
@@ -336,8 +342,8 @@ class learnAndPredict:
         Extract statistics from the Cross-Validation.
         If Cross-Validation is 5-fold, getStatsFromCV will return 5 confusion matrix, 5 kappas...
 
-        Parameters and returns
-        ----------
+        Parameters
+        -----------
         confusionMatrix : bool, default True.
             If True, will return first the Confusion Matrix.
         kappa : bool, default False.
@@ -346,6 +352,10 @@ class learnAndPredict:
             If True, will return Overall Accuracy/
         F1 : bool, default False.
             If True, will return F1 Score per class.
+            
+        Returns
+        -------
+        Statistics : List of statistics with at least the confusion matrix.
         """
         if self.outStatsFromCV is False:
             raise Exception(
@@ -368,13 +378,10 @@ class learnAndPredict:
                 cm = cmObject.confusion_matrix
                 CM.append([cm])
                 if kappa:
-                    # statsFromConfusionMatrix(cm).__get_kappa()
                     kappas.append(cmObject.Kappa)
                 if OA:
-                    # statsFromConfusionMatrix(cm).__get_OA()
                     OAs.append(cmObject.OA)
                 if F1:
-                    # statsFromConfusionMatrix(cm).__get_F1()
                     F1s.append(cmObject.F1)
 
             toReturn = []
