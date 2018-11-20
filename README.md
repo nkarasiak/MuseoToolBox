@@ -1,9 +1,8 @@
 ![MuseoToolBox logo](https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
-**Museo ToolBox** is a python library which was initially made to manipulate easily raster and had some OrfeoToolBox inside.
+**Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a cross-validation strategy and learning/predicting with Scikit-Learn. 
 
-The first usage was to give an easy the way to compute a Satellite Image Time Series (SITS) from [Sentinel-2 L2A Theia Data](https://github.com/olivierhagolle/theia_download) using python binding of OrfeoToolBox. You can also generate vegetation indices (NDVI, ACORVI) from your SITS.
-
+The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a few lines : mean/modal/prediction/whittaker (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
 
 ## Who build Museo ToolBox ?
 I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series with Sentinel-2. A special thanks to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who gave me the love of good and open-source coding.
@@ -29,4 +28,4 @@ I build [several python notebooks to give you some nice tutorials : just go to t
 For now, I still don't build a pip package, so you have to clone this repository and to had it in your python path.
 
 ## Why this name ?
-As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)).
+As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation';
