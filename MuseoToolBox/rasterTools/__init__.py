@@ -157,12 +157,14 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     # Convert vector to raster
 
     nFields = len(fields)
+    if nFields == 0:
+        fields = None
     rois = []
     temps = []
     for field in fields:
         pushFeedback("Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
-        rstField = rasterize(inRaster, inVector, field, rstField)
+        rstField = rasterize(inRaster, inVector, field, rstField,gdal.GDT_Float64)
         roiField = gdal.Open(rstField, gdal.GA_ReadOnly)
         if roiField is None:
             raise Exception(
@@ -201,12 +203,12 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     ulx, xres, xskew, uly, yskew, yres = raster.GetGeoTransform()
 
     if getCoords is True or onlyCoords is True:
-        coords = np.array([], dtype=np.uint16).reshape(0, 2)
+        coords = np.array([], dtype=np.uint64).reshape(0, 2)
 
     # Read block data
-    X = np.array([], dtype=convertGdalDataTypeToOTB(gdalDT)).reshape(0, d)
+    X = np.array([], dtype=convertGdalAndNumpyDataType(gdalDT)).reshape(0, d)
     #Y = np.array([],dtype=np.int16).reshape(0,1)
-    F = np.array([], dtype=np.int16).reshape(
+    F = np.array([], dtype=np.uint64).reshape(
         0, nFields)  # now support multiple fields
 
     # for progress bar
@@ -245,7 +247,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 # Load the Variables
                 if not onlyCoords:
                     # extract values from each field
-                    Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.int16)
+                    Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.uint64)
                     for idx, roiTemp in enumerate(rois):
                         roiField = roiTemp.GetRasterBand(
                             1).ReadAsArray(j, i, cols, lines)
@@ -301,7 +303,7 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
         gdt)
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
-    if field is None:
+    if field is False or field is None:
         gdal.RasterizeLayer(dst_ds, [1], lyr, None)
     else:
         OPTIONS = ['ATTRIBUTE=' + field]

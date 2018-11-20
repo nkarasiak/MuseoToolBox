@@ -83,7 +83,7 @@ class learnAndPredict:
         """
         self.classifier = classifier
         self.param_grid = param_grid
-        self.Y = Y
+        self.Y = Y.reshape(-1,1)
 
         self.X = X
         if scale:
@@ -91,7 +91,7 @@ class learnAndPredict:
             self.scaleX()
             self.X = self.scaleX(X)
 
-        self.__learn__(self.X, Y, outStatsFromCV, cv)
+        self.__learn__(self.X, self.Y, outStatsFromCV, cv)
 
     def learnFromRaster(
             self,
@@ -175,7 +175,7 @@ class learnAndPredict:
                 print(message)
 
         else:
-            self.model = self.classifier.fit(X, Y)
+            self.model = self.classifier.fit(self,X=X,y=Y.reshape(-1,1))
 
     def saveModel(self, path):
         """

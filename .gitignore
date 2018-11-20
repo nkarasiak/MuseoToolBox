@@ -70,3 +70,7 @@ ENV/
 
 # coverage output folder
 cov_html/
+
+*.gpkg-shm
+
+*.gpkg-wal

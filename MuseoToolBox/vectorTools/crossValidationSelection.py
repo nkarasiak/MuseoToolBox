@@ -183,30 +183,11 @@ class samplingMethods:
                 seed=seed,
                 nIter=nIter)]
 
-    def getDistanceMatrixForDistanceCV(inRaster, inVector):
-        """
-        Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
-        
-        Parameters
-        ----------
-        inRaster : str
-            Path of the raster file.
-        inVector : str
-            Path of the vector file.
-        Returns
-        --------
-        distanceMatrix : array.
-        """
-        coords = rasterTools.getSamplesFromROI(
-            inRaster, inVector, None, getCoords=True, onlyCoords=True)
-        from scipy.spatial import distance
-        distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.int16)
-
-        return distanceMatrix
 
 
-class sampleSelection(samplingMethods):
-    def __init__(self, inVector, inField, samplingMethod):
+
+class sampleSelection:
+    def __init__(self):
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
 
@@ -216,8 +197,6 @@ class sampleSelection(samplingMethods):
             if str, path of the vector. If array, numpy array of labels.
         inField : str or None if inVector is np.ndarray.
             if str, field name from the vector.
-        samplingMethod : object.
-            object from samplingMethods.
 
         Returns
         ----------
@@ -234,14 +213,10 @@ class sampleSelection(samplingMethods):
             If you need to regenerate the cross validation, you need to reinitialize it.
 
         """
-        self.inVector = inVector
-        if isinstance(inVector, np.ndarray):
+        if isinstance(self.inVector, (np.ndarray,list)):
             self.inVectorIsArray = True
         else:
             self.inVectorIsArray = False
-
-        self.inField = inField
-        self.samplingMethod = samplingMethod
 
         self.extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
         self.driversName = [
@@ -251,84 +226,94 @@ class sampleSelection(samplingMethods):
             'GPX',
             'GPKG']
 
-        self.samplingType = samplingMethod[0]
 
         self.__alertMessage = 'It seems you already generated the cross validation. \n Please use reinitialize function if you want to regenerate the cross validation. \n But check if you defined a seed number in your samplingMethods function to have the same output.'
         self.__alreadyRead = False
 
         # create unique random state if no seed
-        if self.samplingMethod[1]['seed'] is None:
+        if self.params['seed'] is None:
             self.seedGenerated = True
             import time
-            self.samplingMethod[1]['seed'] = int(time.time())
+            self.params['seed'] = int(time.time())
         # Totally random
         if self.samplingType == 'random':
             if self.inVectorIsArray:
-                FIDs = inVector
+                FIDs = self.inVector
+                if isinstance(FIDs,list):
+                    FIDs = np.array(FIDs)
                 FIDs = FIDs.flatten()
             else:
                 FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    inVector, inField, getFeatures=True)
+                    self.inVector, self.inField, getFeatures=True)
                 FIDs = FIDs.flatten()
+
             self.crossvalidation = vectorTools.crossValidationClass.randomPerClass(
-                FIDs=FIDs, **samplingMethod[1])
-
-        # Split at maximum distance beyond each point
-        # For Spatial-Leave-One-Out
+                FIDs=FIDs, **self.params)
+            
         if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
-            if self.inVectorIsArray:
-                raise Exception(
-                    'Sorry but for using SLOO and farthestCV, MuseoToolBox need a raster and a vector, not numpy array')
-
-            FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                inVector, inField, getFeatures=True)
-            inRaster = self.samplingMethod[1]['inRaster']
-            X, Y = rasterTools.getSamplesFromROI(inRaster, inVector, inField)
-            if FIDs.shape[0] != Y.shape[0]:
-                self.SLOOnotSamesize = True
-                self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want ot save as vector the Cross-Validation.'
-                print(self.errorSLOOmsg)
-            else:
-                self.SLOOnotSamesize = False
-            dictForSLOO = {}
-            for key, value in samplingMethod[1].items():
-                if key is not 'inRaster' and key is not 'inVector':
-                    dictForSLOO[key] = value
+            self.__prepareDistanceCV()
             self.crossvalidation = vectorTools.crossValidationClass.distanceCV(
-                Y=Y, **dictForSLOO)
+                Y=self.Y, **self.dictForSLOO)
 
         # For Stand Split
         if self.samplingType == 'STAND':
-            inStand = samplingMethod[1]['inStand']
-            SLOO = samplingMethod[1]['SLOO']
-            maxIter = samplingMethod[1]['maxIter']
+            inStand = self.params['inStand']
+            
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
             if self.inVectorIsArray:
-                FIDs = inVector
+                FIDs = self.inVector
                 FIDs = FIDs.flatten()
-                STDs = inStand
+                STDs = self.inStand
             else:
                 FIDs, STDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    inVector, inField, inStand, getFeatures=True)
+                    self.inVector, self.inField, inStand, getFeatures=True)
                 FIDs = FIDs.flatten()
             self.crossvalidation = vectorTools.crossValidationClass.standCV(
-                FIDs, STDs, SLOO=SLOO, maxIter=maxIter, seed=self.samplingMethod[1]['seed'])
+                FIDs, STDs, valid_size=self.params['valid_size'], n_splits=self.params['n_splits'], seed=self.params['seed'])
+
+    def __prepareDistanceCV(self):
+        # Split at maximum distance beyond each point
+        # For Spatial-Leave-One-Out
+        if self.inVectorIsArray:
+            raise Exception(
+                'Sorry but for using SLOO and farthestCV, MuseoToolBox need a raster and a vector, not numpy array')
+
+        self.FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
+            self.inVector, self.inField, getFeatures=True)
+        X, self.Y = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField)
+        if self.FIDs.shape[0] != self.Y.shape[0]:
+            self.SLOOnotSamesize = True
+            self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
+            print(self.errorSLOOmsg)
+        else:
+            self.SLOOnotSamesize = False
+        self.dictForSLOO = {}
+        for key, value in self.params.items():
+            if key is not 'inRaster' and key is not 'inVector':
+                self.dictForSLOO[key] = value
 
     def reinitialize(self):
-        self.__init__(self.inVector, self.inField, self.samplingMethod)
+        sampleSelection.__init__(self)
 
     def getSupportedExtensions(self):
-        print('Output extension supported for this class are : ')
+        print('Museo ToolBox supported extensions are : ')
         for idx, ext in enumerate(self.extensions):
             print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
 
-    def getCrossValidationForScikitLearn(self):
+    def split(self,**sklearnCompatiblity):
+        if self.__alreadyRead:
+            self.reinitialize()
+        self.__alreadyRead = True
+        return self.crossvalidation
+    
+    def getCrossValidation(self):
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
         return self.crossvalidation
 
-    def saveVectorFiles(self, outVector):
+        
+    def saveVectorFiles(self,outVector):
         if self.inVectorIsArray:
             raise Exception(
                 'To save vector files, you need to use in input a vector, not an array')

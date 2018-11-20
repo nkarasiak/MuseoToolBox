@@ -68,13 +68,16 @@ class sampleExtraction:
 
         print("Adding each centroid to {}...".format(outVector))
         for idx, xy in enumerate(centroid):
-            #xy = self.pixelLocationToCentroidGeom(coord,geoTransform)
-            # outLayer.addPointToLayer(i,Y[idx][0],bandValue=X[idx],bandPrefix='band_')
-            if Y[idx][0] != 0:
+            try:
+                curY = Y[idx][0]
+            except:
+                curY = Y[idx]
+            if curY != 0:
                 if bandPrefix is None:
-                    outLayer.addPointToLayer(xy, Y[idx][0])
+                    outLayer.addPointToLayer(xy, curY)
                 else:
-                    outLayer.addPointToLayer(xy, Y[idx][0], X[idx], bandPrefix)
+                    outLayer.addPointToLayer(xy, curY, X[idx], bandPrefix)
+            
         outLayer.closeLayers()
 
     def __pixelLocationToCentroidGeom(self, coords, geoTransform):

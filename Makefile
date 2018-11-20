@@ -50,7 +50,7 @@ builddoc :
 renegeratenb:
 	jupyter nbconvert
 notebook :
-	ipython3 notebook --notebook-dir=notebooks/
+	ipython3 notebook --notebook-dir=docs/source/examples/
 	
 bench : 
 	@git stash  >/dev/null 2>&1

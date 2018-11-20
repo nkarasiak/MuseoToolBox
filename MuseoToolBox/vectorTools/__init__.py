@@ -20,7 +20,40 @@ import numpy as np
 from .crossValidationSelection import samplingMethods, sampleSelection
 from .sampleExtraction import sampleExtraction
 from . import crossValidationClass
+from .. import rasterTools
 
+def getDistanceMatrixForDistanceCV(inRaster, inVector,inLevel=False):
+    """
+    Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
+    
+    Parameters
+    ----------
+    inRaster : str
+        Path of the raster file.
+    inVector : str
+        Path of the vector file.
+    Returns
+    --------
+    distanceMatrix : array.
+    """
+    if inLevel:
+        onlyCoords=False
+    else:
+        onlyCoords=True
+    
+    coords = rasterTools.getSamplesFromROI(
+        inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords)
+    from scipy.spatial import distance
+    if inLevel :
+        inLabel = coords[1]
+        coords = coords[2]
+    
+    distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.int16)
+    
+    if inLevel :
+        return distanceMatrix,inLabel
+    else:
+        return distanceMatrix
 
 def getDriverAccordingToFileName(fileName):
     """
@@ -73,8 +106,11 @@ def readValuesFromVector(vector, *args, **kwargs):
           As many array as arguments. For bandPrefix, will return one array with n dimension.
     """
 
-    file = ogr.Open(vector)
-    lyr = file.GetLayer()
+    try:
+        file = ogr.Open(vector)
+        lyr = file.GetLayer()
+    except:
+        raise Exception ("Can't open {} file".format(vector))
 
     # get all fields and save only roiFields
     ldefn = lyr.GetLayerDefn()
