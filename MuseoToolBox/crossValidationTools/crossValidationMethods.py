@@ -14,10 +14,10 @@
 # =============================================================================
 from __future__ import absolute_import, print_function
 import numpy as np
-from ..vectorTools.crossValidationSelection import sampleSelection
-from ..vectorTools import getDistanceMatrixForDistanceCV
+from .__sampleSelection import __sampleSelection
+from ..vectorTools import getDistanceMatrix
 
-class LeavePercentSubStandOut(sampleSelection):
+class LeavePercentSubStandOut(__sampleSelection):
     def __init__(self,
              inVector,
              inStand,
@@ -59,9 +59,9 @@ class LeavePercentSubStandOut(sampleSelection):
                 SLOO=percent,
                 maxIter=maxIter,
                 seed=seed)
-        sampleSelection.__init__(self)
+        __sampleSelection.__init__(self)
 
-class LeaveOneSubStandOut(sampleSelection):
+class LeaveOneSubStandOut(__sampleSelection):
     def __init__(self,
              inVector,
              inStand,
@@ -95,9 +95,9 @@ class LeaveOneSubStandOut(sampleSelection):
                 SLOO=SLOO,
                 maxIter=maxIter,
                 seed=seed)
-        sampleSelection.__init__(self)
+        __sampleSelection.__init__(self)
 
-class farthestCV(sampleSelection):
+class farthestCV(__sampleSelection):
     def __init__(self,
             inRaster,
             inVector,
@@ -140,9 +140,9 @@ class farthestCV(sampleSelection):
                 maxIter=maxIter,
                 seed=seed,
                 furtherSplit=True)
-        sampleSelection.__init__(self)
+        __sampleSelection.__init__(self)
 
-class SLOO(sampleSelection):
+class SLOO(__sampleSelection):
     def __init__(self,
             inRaster,
             inVector,
@@ -185,7 +185,7 @@ class SLOO(sampleSelection):
         See : https://doi.org/10.1111/geb.12161.
         """
         if distanceMatrix is None:
-            distanceMatrix = getDistanceMatrixForDistanceCV(
+            distanceMatrix = getDistanceMatrix(
                 inRaster, inVector)
 
         self.samplingType = 'SLOO'
@@ -199,9 +199,9 @@ class SLOO(sampleSelection):
                 SLOO=SLOO,
                 n_splits=n_splits,
                 seed=seed)
-        sampleSelection.__init__(self)
+        __sampleSelection.__init__(self)
 
-class randomCV(sampleSelection):
+class randomCV(__sampleSelection):
     def __init__(self,
             inVector,
             inField=None,
@@ -237,4 +237,4 @@ class randomCV(sampleSelection):
                 seed=seed,
                 n_splits=n_splits)
         
-        sampleSelection.__init__(self)
+        __sampleSelection.__init__(self)

@@ -21,7 +21,7 @@ class distanceCV:
             distanceMatrix,
             Y,
             distanceThresold=1000,
-            minTrain=-1,
+            minTrain=False,
             SLOO=True,
             n_splits=False,
             furtherSplit=False,
@@ -30,7 +30,7 @@ class distanceCV:
             verbose=False,
             seed=False,
             otherLevel=False,
-            distanceMatrixLabel=False):
+            distanceLabel=False):
         """Compute train/validation array with Spatial distance analysis.
 
         Object stops when less effective class number is reached (45 loops if your least class contains 45 ROI).
@@ -46,7 +46,7 @@ class distanceCV:
         minTrain : int or float
             if >1 : keep n ROI beyond distanceThresold
             if float <1 : minimum percent of samples to use for traning. Use 1 for use only distance Thresold.
-            if -1 : same size
+            if False keep same size.
         SLOO : Spatial Leave One Out, keep on single validation pixel.
             SLOO=True: Skcv (if n_splits=False, skcv is SLOO from Kevin Le Rest, or SKCV from Pohjankukka)
         n_splits :
@@ -66,19 +66,18 @@ class distanceCV:
         self.name = 'SLOO'
         self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
-        self.label = np.copy(Y)
-        self.T = np.copy(Y)
+        self.Y = np.copy(Y)
         self.iterPos = 0
         self.minTrain = minTrain
-        self.distanceMatrixLabel = distanceMatrixLabel
+        self.distanceLabel = distanceLabel
         if self.minTrain is None:
             self.minTrain = -1
         self.onlyVaryingTrain = onlyVaryingTrain
         if self.onlyVaryingTrain:
             self.validation = np.array([]).astype('int')
         self.otherLevel = otherLevel
-        if self.otherLevel is not False and self.distanceMatrixLabel is False:
-            raise Exception('You need the to set the distanceMatrixLabel in order to compute spatial leave-one-out method using a subclass.')
+        if self.otherLevel is not False and self.distanceLabel is False:
+            raise Exception('You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
         self.furtherSplit = furtherSplit
@@ -98,7 +97,7 @@ class distanceCV:
             import time
             seed = int(time.time())
         self.seed = seed
-        self.mask = np.array([])
+        self.mask = np.ones(np.asarray(self.Y).shape,dtype=bool)
 
     def __iter__(self):
         return self
@@ -110,6 +109,7 @@ class distanceCV:
     def next(self):
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
         if self.iterPos < self.n_splits:
+            print(self.iterPos)
             np.random.seed(self.seed)
             self.seed += 1
             ROItoRemove = []
@@ -123,141 +123,98 @@ class distanceCV:
                 if self.stats:
                     #Cstats = sp.array([]).reshape(0,9   )
                     Cstats = []
-
-                for C in np.unique(self.label):
-
+                for C in np.unique(self.Y):
                     # Y is True, where C is the unique class
-                    allCT = np.where(self.label == C)[0]
+                    CT = np.where(self.Y == C)[0]
+                    CTroi = np.where(self.Y[self.mask]==C)[0]
                     
-                    CT = np.where(self.T == C)[0]
-
-                    CTtemp = np.copy(CT)
-
-                    
+                    if self.iterPos>0:
+                        currentCT = np.logical_and(self.Y==C,self.mask==1)
+                        self.ROI = np.random.permutation(np.where(currentCT==True)[0])[0]
+                    else:
+                        self.ROI = np.random.permutation(CTroi)[0]
+                        
                     if self.verbose:
                         print('C = ' + str(C))
                         print('len total class : ' + str(len(CT)))
-                        fmt = '' if self.minTrain > 1 else '.0%'
-
-                    trained = np.array([]).astype('int')
-                    validate = np.array([]).astype('int')
-                    
-                    while len(CTtemp) > 0:
                         
-                        self.ROI = np.random.permutation(CTtemp)[0]
+                    
+                    if self.otherLevel is not False:
+                        print('ROI stand is '+str(self.otherLevel[self.ROI])+' for label '+str(C))
+                        while self.otherLevel[self.ROI] in self.mask:
+                            self.ROI = np.random.permutation(CT)[0]
+                    else:
+                        while self.ROI in self.mask:
+                            self.ROI = np.random.permutation(CT)[0]
+    
+                    if self.otherLevel is not False:
+                        Tstand =  self.distanceLabel[np.isin(self.distanceLabel,np.unique(self.otherLevel[CT]))]
+                        TstandTF = np.isin(self.distanceLabel,Tstand)
+                        standPos = np.argwhere(self.otherLevel[self.ROI]==self.distanceLabel)[0][0]
+                        distanceROI = (self.distanceArray[standPos,:])
+                        distanceROI = distanceROI[TstandTF]
+                        
+                    else:    
+                        distanceROI = (self.distanceArray[int(self.ROI), :])[CT]  # get line of distance for specific ROI
+    
+                    if self.minTrain is False:
                         if self.otherLevel is not False:
-                            while self.otherLevel[self.ROI] in self.mask:
-                                self.ROI = np.random.permutation(CTtemp)[0]
+                            tmpValidation = np.where(self.otherLevel == self.otherLevel[self.ROI])[0]
+                            #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
+                            tmpTrain = CT[np.isin(self.otherLevel[CT],self.distanceLabel[np.where(distanceROI>= self.distanceThresold)[0]])]
+    
                         else:
-                            while self.ROI in self.mask:
-                                self.ROI = np.random.permutation(CTtemp)[0]
-
-                        if self.otherLevel is not False and self.distanceMatrixLabel is not None:
-                            Tstand =  self.distanceMatrixLabel[np.isin(self.distanceMatrixLabel,np.unique(self.otherLevel[allCT]))]
-                            TstandTF = np.isin(self.distanceMatrixLabel,Tstand)
-                            standPos = np.argwhere(self.otherLevel[self.ROI]==self.distanceMatrixLabel)[0][0]
-                            distanceROI = (self.distanceArray[standPos,:])
-                            distanceROI = distanceROI[TstandTF]
-                            
-                        else:    
-                            distanceROI = (self.distanceArray[int(self.ROI), :])[allCT]  # get line of distance for specific ROI
-
-                        if self.minTrain == -1:
-                            if self.otherLevel is not False:
-                                trainedTemp = np.where(self.otherLevel == self.otherLevel[self.ROI])[0]
-                                #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
-                                validateTemp = allCT[np.isin(self.otherLevel[allCT],self.distanceMatrixLabel[np.where(distanceROI>= self.distanceThresold)[0]])]
-
-                            else:
-                                trainedTemp = np.array([self.ROI])
-
-                                validateTemp = allCT[distanceROI >
-                                                  self.distanceThresold]
-                            # CTtemp[distanceROI>=self.distanceThresold] #
-                            # trained > distance to cut
-
-                        if self.n_splits == self.minEffectiveClass:
-                            if self.otherLevel is not False:
-                                trainedTemp = np.where(self.otherLevel == self.otherLevel[self.ROI])[0]
-                                #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
-                                validateTemp = allCT[np.isin(self.otherLevel[allCT],self.distanceMatrixLabel[np.where(distanceROI>= self.distanceThresold)[0]])]
-
-                            else:
-                                trainedTemp = np.array([self.ROI])
-
-                                validateTemp = CTtemp[distanceROI >
-                                                  self.distanceThresold]
-                            #trainedTemp = trainedTemp[trainedTemp!=self.ROI]
-
-                        if self.furtherSplit:
-                            validateTemp = np.array([self.ROI])
-                            trainedTemp = CTtemp[CTtemp != validateTemp]
-
-                        trained = trainedTemp
-                        validate = validateTemp
-
-                        CTtemp = []
-                        #print len(validate)
-                    initTrain = len(trained)
-                    initValid = len(validate)
-
-                    if self.minTrain > 1:
-                        if len(trained) != self.minTrain:
-
-                            # get number of ROI to keep
-                            indToCut = len(CT) - int(self.minTrain)
-                            # get distance where to split train/valid
-                            distToCut = np.sort(distanceROI)[indToCut]
-                            # trained > distance to cut
-                            trained = CT[distanceROI >= distToCut]
-
-                            if self.SLOO:  # with SLOO we keep 1 single validation ROI
-                                trained = np.random.permutation(
-                                    trained)[0:self.minTrain]
-                            else:
-                                if self.verbose:
-                                    print('len validate before split (' +
-                                          format(self.minTrain, fmt) +
-                                          ') : ' +
-                                          str(len(validate)))
-                                validate = CT[distanceROI <= distToCut]
-
-                    if self.stats:
-
-                        #CTtemp = sp.where(self.label[trained]==C)[0]
-                        CTdistTrain = np.array(self.distanceArray[trained])[
-                            :, trained]
-                        if len(CTdistTrain) > 1:
-                            CTdistTrain = np.mean(
-                                np.triu(CTdistTrain)[
-                                    np.triu(CTdistTrain) != 0])
-
-                        #CTtemp = sp.where(self.label[validate]==C)[0]
-                        CTdistValid = np.array(self.distanceArray[validate])[
-                            :, validate]
-                        CTdistValid = np.mean(
-                            np.triu(CTdistValid)[
-                                np.triu(CTdistValid) != 0])
-                        Cstats.append([self.distanceThresold,
-                                       self.minTrain,
-                                       C,
-                                       initValid,
-                                       initTrain,
-                                       len(trained) - initTrain,
-                                       CTdistTrain,
-                                       CTdistValid])
-
-                    if self.verbose:
-                        print('len validate : ' + str(len(validate)))
-                        print('len trained : ' + str(len(trained)))
-
-                    validation = np.concatenate((validation, validate))
-                    train = np.concatenate((train, trained))
-
-                    # remove current validation ROI
-                    #ROItoRemove.append(validation)
-                    ROItoRemove.append(train)
-
+                            tmpValidation = np.array([self.ROI])
+    
+                            tmpTrain = CT[distanceROI >
+                                              self.distanceThresold]
+    
+                    if self.furtherSplit:
+                        tmpValidation = np.array([self.ROI])
+                        tmpTrain = CT[CT != tmpValidation]
+                        
+                    del CT
+                    
+                    validation = np.concatenate((validation, tmpValidation))
+                    train = np.concatenate((train, tmpTrain))
+    
+                if self.stats:
+    
+                    initTrain = len(tmpTrain)
+                    initValid = len(tmpValidation)
+            
+                    #CTtemp = sp.where(self.label[trained]==C)[0]
+                    CTdistTrain = np.array(self.distanceArray[train])[
+                        :, train]
+                    if len(CTdistTrain) > 1:
+                        CTdistTrain = np.mean(
+                            np.triu(CTdistTrain)[
+                                np.triu(CTdistTrain) != 0])
+    
+                    #CTtemp = sp.where(self.label[validate]==C)[0]
+                    CTdistValid = np.array(self.distanceArray[validation])[
+                        :, validation]
+                    CTdistValid = np.mean(
+                        np.triu(CTdistValid)[
+                            np.triu(CTdistValid) != 0])
+                    Cstats.append([self.distanceThresold,
+                                   self.minTrain,
+                                   C,
+                                   initValid,
+                                   initTrain,
+                                   len(train) - initTrain,
+                                   CTdistTrain,
+                                   CTdistValid])
+    
+                if self.verbose:
+                    print('len validate : ' + str(len(validation)))
+                    print('len trained : ' + str(len(train)))
+    
+    
+                # remove current validation ROI
+                #ROItoRemove.append(validation)
+                ROItoRemove.append(train)
+    
                 if self.stats is True:
                     np.savetxt(
                         self.stats,
@@ -265,24 +222,22 @@ class distanceCV:
                         fmt='%d',
                         delimiter=',',
                         header="Distance,Percent Train, Label,Init train,Init valid,Ntrain Add,Mean DisT Train,Mean Dist Valid")
-
+        
                 self.iterPos += 1
-
+        
                 if self.verbose:
                     print(53 * '=')
                 
                 # Remove ROI for further selection ROI (but keep in Y list)
-                if self.otherLevel is not False:
-                    self.mask = np.concatenate((self.mask,np.unique(self.otherLevel[train])))
-                else:
-                    self.mask = np.concatenate((self.mask,np.unique(train)))
-
+                self.mask[validation] = 0
+                    
                 
-                if train.shape[0]>0:
-                    if self.stats and self.stats is True:
-                        return validation, train, Cstats
-                    else:
-                        return validation, train
+                
+            
+                if self.stats and self.stats is True:
+                    return train, validation, Cstats
+                else:
+                    return train, validation
 
         else:
             raise StopIteration()
@@ -362,7 +317,7 @@ class randomPerClass:
         else:
             raise StopIteration()
 
-class standCV:
+class groupCV:
     def __init__(self, Y, stand, n_splits=False, valid_size=1, seed=False):
         """Compute train/validation per stand.
         Y : array-like
@@ -437,7 +392,7 @@ class standCV:
                     selectedStand = np.random.permutation(Ystands[self.mask[Ycurrent]])[0]
                     
                 if self.valid_size <1:
-                    selectedStand = np.random.permutation(Ystands)[:int(len(Ystand)*self.valid_size)]
+                    selectedStand = np.random.permutation(Ystand)[:int(len(Ystand)*self.valid_size)]
                     
                 YinSelectedStandt = np.in1d(Ystands, selectedStand)
                 YinSelectedStand = Ycurrent[YinSelectedStandt]
@@ -450,7 +405,11 @@ class standCV:
                     (train, np.asarray(YnotInSelectedStand)))
                 
                 if self.valid_size==1:
-                    self.mask = np.logical_and(self.mask,~np.logical_and(YTF,np.in1d(self.stand,selectedStand)))
+                    del Ystands,Ycurrent
+                    selected= np.in1d(self.stand,selectedStand)
+                    choosen = np.logical_and(YTF,selected,where=False).reshape(-1,1)
+                    del selected
+                    self.mask = np.logical_and(self.mask,choosen)
                 
                 self.seed += 1
             self.iterPos += 1

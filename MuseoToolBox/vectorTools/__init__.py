@@ -17,12 +17,10 @@ import os
 from osgeo import ogr
 import numpy as np
 
-from .crossValidationSelection import samplingMethods, sampleSelection
 from .sampleExtraction import sampleExtraction
-from . import crossValidationClass
 from .. import rasterTools
 
-def getDistanceMatrixForDistanceCV(inRaster, inVector,inLevel=False):
+def getDistanceMatrix(inRaster, inVector,inLevel=False):
     """
     Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
     
@@ -48,7 +46,7 @@ def getDistanceMatrixForDistanceCV(inRaster, inVector,inLevel=False):
         inLabel = coords[1]
         coords = coords[2]
     
-    distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.int16)
+    distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.uint64)
     
     if inLevel :
         return distanceMatrix,inLabel

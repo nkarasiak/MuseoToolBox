@@ -15,4 +15,7 @@
 from __future__ import absolute_import
 from . import vectorTools, rasterTools,crossValidationTools
 from .learnTools import learnAndPredict
+from .vectorTools import readValuesFromVector
+from .rasterTools import rasterMath,getSamplesFromROI
+
 __version__ = "0.9"

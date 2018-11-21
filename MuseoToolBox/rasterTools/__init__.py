@@ -212,7 +212,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         0, nFields)  # now support multiple fields
 
     # for progress bar
-    total = nl * y_block_size
+    total = 100
     pb = progressBar(total, message='Reading raster values... ')
 
     for i in range(0, nl, y_block_size):
@@ -227,7 +227,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 cols = nc - j
 
             # for progressbar
-            currentPosition = int(i + j + 1)
+            
+            currentPosition = (i/nl+j/nc)*100+1
             pb.addPosition(currentPosition)
             # Load the reference data
 

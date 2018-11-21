@@ -15,178 +15,11 @@
 
 from __future__ import absolute_import, print_function
 from .. import rasterTools, vectorTools
+from . import crossValidationClass
 import os
 import numpy as np
 
-
-class samplingMethods:
-    """
-    Store class, just choose one of the different functions, then generate the sample via sampleSelection().
-    """
-    def standCV(inStand, SLOO=True, maxIter=False, seed=None):
-        """
-        Generate a Cross-Validation by stand/polygon group.
-
-        Parameters
-        ----------
-        inStand : str.
-            field name containing label of group/stand.
-        SLOO : float, default True.
-            If float from 0.1 to 0.9 (means keep 90% for training)
-        maxIter : default False.
-            If False : will iterate as many times as the smallest number of stands.
-            If int : will iterate the number of stands given in maxIter.
-
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
-            
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the standCV.
-        """
-        samplingType = 'STAND'
-        return [
-            samplingType,
-            dict(
-                inStand=inStand,
-                SLOO=SLOO,
-                maxIter=maxIter,
-                seed=seed)]
-
-    def farthestCV(
-            inRaster,
-            inVector,
-            distanceMatrix,
-            minTrain=None,
-            maxIter=False,
-            seed=None):
-        """
-        Generate a Cross-Validation using the farthest distance between the training and validation samples.
-
-        Parameters
-        ----------
-        inRaster : str.
-            Path of the raster.
-        inVector : str.
-            Path of the vector.
-        distanceMatrix : array.
-            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
-        minTrain : int/float, default None.
-            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
-        maxIter : default False.
-            If False : will iterate as many times as the smallest number of stands.
-            If int : will iterate the number of stands given in maxIter.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
-            
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the farthestCV.
-        """
-
-        samplingType = 'farthestCV'
-        return [
-            samplingType,
-            dict(
-                inRaster=inRaster,
-                inVector=inVector,
-                distanceMatrix=distanceMatrix,
-                minTrain=minTrain,
-                maxIter=maxIter,
-                seed=seed,
-                furtherSplit=True)]
-
-    def SLOOCV(
-            inRaster,
-            inVector,
-            distanceThresold,
-            distanceMatrix=None,
-            minTrain=None,
-            SLOO=True,
-            maxIter=False,
-            seed=None):
-        """
-        Generate a Cross-Validation with Spatial Leave-One-Out method.
-
-        Parameters
-        ----------
-        inRaster : str.
-            Path of the raster.
-        inVector : str.
-            Path of the vector.
-        distanceMatrix : array.
-            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
-        distanceThresold : int.
-            In pixels.
-        minTrain : int/float, default None.
-            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
-        SLOO : True or float
-            from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
-        maxIter : default False.
-            If False : will iterate as many times as the smallest number of stands.
-            If int : will iterate the number of stands given in maxIter.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
-            
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the SLOOCV.
-        
-        References
-        ----------
-        See : https://doi.org/10.1111/geb.12161.
-        """
-        if distanceMatrix is None:
-            distanceMatrix = samplingMethods.getDistanceMatrixForDistanceCV(
-                inRaster, inVector)
-
-        samplingType = 'SLOO'
-        return [
-            samplingType,
-            dict(
-                inRaster=inRaster,
-                inVector=inVector,
-                distanceMatrix=distanceMatrix,
-                distanceThresold=distanceThresold,
-                minTrain=minTrain,
-                SLOO=SLOO,
-                maxIter=maxIter,
-                seed=seed)]
-
-    def randomCV(train_size=0.5, nIter=5, seed=None):
-        """
-        Get parameters to have a randomCV.
-        
-        Parameters
-        ----------
-        
-        split : float,int. Default 0.5.
-            If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
-        nSamples: int or str. Default None.
-            If int, the max samples per class.
-            If str, only 'smallest' to sample as the smallest class.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
-        nIter : int, default 5.
-            Number of iteration of the random sampling (will add 1 to the seed at each iteration if defined).
-            
-        Returns
-        --------
-        List : list with the sampling type and the parameters for the randomCV.
-        
-        """
-        samplingType = 'random'
-        return [
-            samplingType,
-            dict(
-                train_size=train_size,
-                seed=seed,
-                nIter=nIter)]
-
-
-
-
-class sampleSelection:
+class _sampleSelection:
     def __init__(self):
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
@@ -247,53 +80,58 @@ class sampleSelection:
                     self.inVector, self.inField, getFeatures=True)
                 FIDs = FIDs.flatten()
 
-            self.crossvalidation = vectorTools.crossValidationClass.randomPerClass(
+            self.crossvalidation = crossValidationClass.randomPerClass(
                 FIDs=FIDs, **self.params)
             
         if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
             self.__prepareDistanceCV()
-            self.crossvalidation = vectorTools.crossValidationClass.distanceCV(
+            self.crossvalidation = crossValidationClass.distanceCV(
                 Y=self.Y, **self.dictForSLOO)
 
         # For Stand Split
-        if self.samplingType == 'STAND':
-            inStand = self.params['inStand']
-            
+        if self.samplingType == 'GROUP':            
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
             if self.inVectorIsArray:
                 FIDs = self.inVector
                 FIDs = FIDs.flatten()
-                STDs = self.inStand
+                STDs = self.inGroup
             else:
                 FIDs, STDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.inVector, self.inField, inStand, getFeatures=True)
+                    self.inVector, self.inField, self.inStand, getFeatures=True)
                 FIDs = FIDs.flatten()
-            self.crossvalidation = vectorTools.crossValidationClass.standCV(
+            self.crossvalidation = crossValidationClass.groupCV(
                 FIDs, STDs, valid_size=self.params['valid_size'], n_splits=self.params['n_splits'], seed=self.params['seed'])
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
         # For Spatial-Leave-One-Out
-        if self.inVectorIsArray:
-            raise Exception(
-                'Sorry but for using SLOO and farthestCV, MuseoToolBox need a raster and a vector, not numpy array')
-
-        self.FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
+        if not self.inVectorIsArray:
+            self.FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
             self.inVector, self.inField, getFeatures=True)
-        X, self.Y = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField)
-        if self.FIDs.shape[0] != self.Y.shape[0]:
-            self.SLOOnotSamesize = True
-            self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
-            print(self.errorSLOOmsg)
+        if hasattr(self,'inGroup'):
+            self.Y = self.inVector
+            if isinstance(self.inGroup,np.ndarray):
+                inGroup = self.inGroup
+            else:
+                X, self.Y,inGroup = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField,self.inGroup)
         else:
-            self.SLOOnotSamesize = False
+            X, self.Y = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField,self.inGroup)
+        if not self.inVectorIsArray:
+            if self.FIDs.shape[0] != self.Y.shape[0]:
+                self.SLOOnotSamesize = True
+                self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
+                print(self.errorSLOOmsg)
+            else:
+                self.SLOOnotSamesize = False
         self.dictForSLOO = {}
         for key, value in self.params.items():
             if key is not 'inRaster' and key is not 'inVector':
                 self.dictForSLOO[key] = value
+        if hasattr(self,'inGroup'):
+            self.dictForSLOO['otherLevel']=inGroup
 
     def reinitialize(self):
-        sampleSelection.__init__(self)
+        _sampleSelection.__init__(self)
 
     def getSupportedExtensions(self):
         print('Museo ToolBox supported extensions are : ')
@@ -374,7 +212,7 @@ class sampleSelection:
             array[1].GetFieldDefnRef(i).GetName() for i in range(
                 array[1].GetFieldCount())]
         if lyrout is None:
-            print('fail to save')
+            raise Exception('Failed to create file '+str(outShapeFile))
 
         if self.__ext[1:] != 'shp':
             isShp = False
