@@ -15,6 +15,7 @@
 from __future__ import absolute_import, print_function
 import numpy as np
 
+
 class learnAndPredict:
     def __init__(self, n_jobs=1):
         """
@@ -83,7 +84,7 @@ class learnAndPredict:
         """
         self.classifier = classifier
         self.param_grid = param_grid
-        self.Y = Y.reshape(-1,1)
+        self.Y = Y.reshape(-1, 1)
 
         self.X = X
         if scale:
@@ -175,7 +176,7 @@ class learnAndPredict:
                 print(message)
 
         else:
-            self.model = self.classifier.fit(self,X=X,y=Y.reshape(-1,1))
+            self.model = self.classifier.fit(self, X=X, y=Y.reshape(-1, 1))
 
     def saveModel(self, path):
         """
@@ -352,7 +353,7 @@ class learnAndPredict:
             If True, will return Overall Accuracy/
         F1 : bool, default False.
             If True, will return F1 Score per class.
-            
+
         Returns
         -------
         Statistics : List of statistics with at least the confusion matrix.

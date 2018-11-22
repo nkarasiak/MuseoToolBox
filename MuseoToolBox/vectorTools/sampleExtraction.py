@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import, print_function
-from .. import vectorTools,rasterTools
+from .. import vectorTools, rasterTools
 from ..tools import progressBar
 
 import sys
@@ -29,7 +29,8 @@ class sampleExtraction:
             inVector,
             outVector,
             uniqueFID=None,
-            bandPrefix=None):
+            bandPrefix=None,
+            verbose=1):
         """
         Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
 
@@ -47,16 +48,19 @@ class sampleExtraction:
         bandPrefix : str, default None.
             If bandPrefix (e.g. 'band_'), will extract values from raster.
         """
+        self.__verbose = verbose
         if uniqueFID:
             uniqueFID = uniqueFID.lower()
         else:
             uniqueFID = 'uniquefid'
-            print("Adding 'uniquefid' field to the original vector.")
+            if verbose:
+                print("Adding 'uniquefid' field to the original vector.")
             inVector = vectorTools.addUniqueIDForVector(inVector, uniqueFID)
 
-        print("Extract values from raster...")
+        if verbose:
+            print("Extract values from raster...")
         X, Y, coords = rasterTools.getSamplesFromROI(
-            inRaster, inVector, uniqueFID, getCoords=True)
+            inRaster, inVector, uniqueFID, getCoords=True, verbose=verbose)
 
         geoTransform = gdal.Open(inRaster).GetGeoTransform()
 
@@ -64,20 +68,22 @@ class sampleExtraction:
             coord, geoTransform) for coord in coords]
         # init outLayer
         outLayer = createPointLayer(inVector, outVector, uniqueFID)
-        outLayer.addTotalNumberOfPoints(len(centroid))
+        if self.__verbose:
+            outLayer.addTotalNumberOfPoints(len(centroid))
 
-        print("Adding each centroid to {}...".format(outVector))
+        if verbose:
+            print("Adding each centroid to {}...".format(outVector))
         for idx, xy in enumerate(centroid):
             try:
                 curY = Y[idx][0]
-            except:
+            except BaseException:
                 curY = Y[idx]
             if curY != 0:
                 if bandPrefix is None:
                     outLayer.addPointToLayer(xy, curY)
                 else:
                     outLayer.addPointToLayer(xy, curY, X[idx], bandPrefix)
-            
+
         outLayer.closeLayers()
 
     def __pixelLocationToCentroidGeom(self, coords, geoTransform):
@@ -99,7 +105,7 @@ class sampleExtraction:
 
 
 class createPointLayer:
-    def __init__(self, inVector, outVector, uniqueIDField):
+    def __init__(self, inVector, outVector, uniqueIDField, verbose=1):
         """
         Create a vector layer as point type.
 
@@ -123,6 +129,7 @@ class createPointLayer:
         closeLayer():
             Close the layer.
         """
+        self.__verbose = verbose
         # load inVector
         self.inData = ogr.Open(inVector, 0)
         self.inLyr = self.inData.GetLayerByIndex(0)
@@ -194,11 +201,12 @@ class createPointLayer:
         bandValue : None, or arr.
             If array, should have the same size as the number of bands defined in addBandsValue function.
         """
-        if self.nSamples:
-            currentPosition = int(self.idx + 1 / self.nSamples * 100)
-            if currentPosition != self.lastPosition:
-                self.pb.addPosition(self.idx + 1)
-                self.lastPosition = currentPosition
+        if self.__verbose:
+            if self.nSamples:
+                currentPosition = int(self.idx + 1)
+                if currentPosition != self.lastPosition:
+                    self.pb.addPosition(self.idx + 1)
+                    self.lastPosition = currentPosition
 
         if self.uniqueIDandFID is False:
             self.__updateArrAccordingToVector__()
@@ -282,11 +290,15 @@ def main(argv=None, apply_config=True):
         print(
             2 *
             ' ' +
-            "example 1 : ", prog, " -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ ")
+            "example 1 : ",
+            prog,
+            " -in raster.tif -vec roi.sqlite -out vector.sqlite -outfield.prefix.name band_ ")
         print(
             2 *
             ' ' +
-            "example 2 : ", prog, " -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid")
+            "example 2 : ",
+            prog,
+            " -in raster.tif -vec roi.sqlite -out vector.sqlite -field ogc_fid")
         sys.exit(-1)
 
     else:

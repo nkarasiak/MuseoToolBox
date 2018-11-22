@@ -40,8 +40,15 @@ autoclass_content = 'both'
 source_parsers = {
    '.md': 'recommonmark.parser.CommonMarkParser',
 }
-extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.viewcode','sphinx.ext.napoleon','sphinx.ext.autosummary','nbsphinx']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.autosummary',
+    'nbsphinx',#'sphinx.ext.linkcode',
+    'sphinx.ext.doctest',
+    'sphinx_gallery.gen_gallery'
+    ]
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -60,6 +67,15 @@ master_doc = 'index'
 project = 'Museo ToolBox'
 copyright = '2018, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
+
+sphinx_gallery_conf = {
+     # path to your examples scripts
+     'examples_dirs': '../../examples',
+     'filename_pattern' : '/',
+     # path where to save gallery generated examples
+     'gallery_dirs': 'auto_examples',
+     'plot_gallery': True
+}
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

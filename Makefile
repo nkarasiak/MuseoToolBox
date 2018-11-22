@@ -42,15 +42,16 @@ uploadpypi :
 	#python setup.py register
 	$(PYTHON) setup.py sdist upload -r pypi
 
-builddoc :
+doc :
 	m2r README.md
 	mv README.rst docs/source/
+	rm -rf docs/build/html/ docs/source/auto_examples/
 	cd docs/ && make html
 
 renegeratenb:
 	jupyter nbconvert
 notebook :
-	ipython3 notebook --notebook-dir=docs/source/examples/
+	ipython3 notebook --notebook-dir=notebooks/
 	
 bench : 
 	@git stash  >/dev/null 2>&1

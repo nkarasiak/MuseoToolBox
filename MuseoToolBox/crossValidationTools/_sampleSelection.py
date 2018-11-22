@@ -19,6 +19,7 @@ from . import crossValidationClass
 import os
 import numpy as np
 
+
 class _sampleSelection:
     def __init__(self):
         """
@@ -46,7 +47,7 @@ class _sampleSelection:
             If you need to regenerate the cross validation, you need to reinitialize it.
 
         """
-        if isinstance(self.inVector, (np.ndarray,list)):
+        if isinstance(self.inVector, (np.ndarray, list)):
             self.inVectorIsArray = True
         else:
             self.inVectorIsArray = False
@@ -58,7 +59,6 @@ class _sampleSelection:
             'netCDF',
             'GPX',
             'GPKG']
-
 
         self.__alertMessage = 'It seems you already generated the cross validation. \n Please use reinitialize function if you want to regenerate the cross validation. \n But check if you defined a seed number in your samplingMethods function to have the same output.'
         self.__alreadyRead = False
@@ -72,24 +72,23 @@ class _sampleSelection:
         if self.samplingType == 'random':
             if self.inVectorIsArray:
                 FIDs = self.inVector
-                if isinstance(FIDs,list):
+                if isinstance(FIDs, list):
                     FIDs = np.array(FIDs)
-                FIDs = FIDs.flatten()
             else:
                 FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.inVector, self.inField, getFeatures=True)
-                FIDs = FIDs.flatten()
+                    self.inVector, self.inField, getFeatures=True, verbose=self.verbose)
+            FIDs = FIDs.flatten()
 
             self.crossvalidation = crossValidationClass.randomPerClass(
-                FIDs=FIDs, **self.params)
-            
-        if self.samplingType == 'SLOO' or self.samplingType == 'farthestCV':
+                FIDs=FIDs, verbose=self.verbose, **self.params)
+
+        if self.samplingType == 'Spatial':
             self.__prepareDistanceCV()
             self.crossvalidation = crossValidationClass.distanceCV(
-                Y=self.Y, **self.dictForSLOO)
+                Y=self.Y, verbose=self.verbose, **self.params)
 
         # For Stand Split
-        if self.samplingType == 'GROUP':            
+        if self.samplingType == 'Group':
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
             if self.inVectorIsArray:
                 FIDs = self.inVector
@@ -97,38 +96,40 @@ class _sampleSelection:
                 STDs = self.inGroup
             else:
                 FIDs, STDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.inVector, self.inField, self.inStand, getFeatures=True)
+                    self.inVector, self.inField, self.inGroup, getFeatures=True, verbose=self.verbose)
                 FIDs = FIDs.flatten()
             self.crossvalidation = crossValidationClass.groupCV(
-                FIDs, STDs, valid_size=self.params['valid_size'], n_splits=self.params['n_splits'], seed=self.params['seed'])
+                FIDs,
+                STDs,
+                valid_size=self.params['valid_size'],
+                n_splits=self.params['n_splits'],
+                seed=self.params['seed'],
+                verbose=self.verbose)
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
         # For Spatial-Leave-One-Out
         if not self.inVectorIsArray:
             self.FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-            self.inVector, self.inField, getFeatures=True)
-        if hasattr(self,'inGroup'):
-            self.Y = self.inVector
-            if isinstance(self.inGroup,np.ndarray):
-                inGroup = self.inGroup
+                self.inVector, self.inField, getFeatures=True, verbose=self.verbose)
+            if hasattr(self, 'inGroup'):
+                X, self.Y, inGroup = rasterTools.getSamplesFromROI(
+                    self.inRaster, self.inVector, self.inField, self.inGroup, verbose=self.verbose)
+                self.params['group'] = inGroup
             else:
-                X, self.Y,inGroup = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField,self.inGroup)
-        else:
-            X, self.Y = rasterTools.getSamplesFromROI(self.inRaster, self.inVector, self.inField,self.inGroup)
-        if not self.inVectorIsArray:
+                X, self.Y = rasterTools.getSamplesFromROI(
+                    self.inRaster, self.inVector, self.inField, verbose=self.verbose)
+
             if self.FIDs.shape[0] != self.Y.shape[0]:
                 self.SLOOnotSamesize = True
                 self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
                 print(self.errorSLOOmsg)
             else:
                 self.SLOOnotSamesize = False
-        self.dictForSLOO = {}
-        for key, value in self.params.items():
-            if key is not 'inRaster' and key is not 'inVector':
-                self.dictForSLOO[key] = value
-        if hasattr(self,'inGroup'):
-            self.dictForSLOO['otherLevel']=inGroup
+        else:
+            if hasattr(self, 'inGroup'):
+                self.params['group'] = self.inGroup
+            self.Y = self.inVector
 
     def reinitialize(self):
         _sampleSelection.__init__(self)
@@ -138,20 +139,19 @@ class _sampleSelection:
         for idx, ext in enumerate(self.extensions):
             print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
 
-    def split(self,**sklearnCompatiblity):
+    def split(self, **sklearnCompatiblity):
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
         return self.crossvalidation
-    
+
     def getCrossValidation(self):
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
         return self.crossvalidation
 
-        
-    def saveVectorFiles(self,outVector):
+    def saveVectorFiles(self, outVector):
         if self.inVectorIsArray:
             raise Exception(
                 'To save vector files, you need to use in input a vector, not an array')
@@ -212,7 +212,7 @@ class _sampleSelection:
             array[1].GetFieldDefnRef(i).GetName() for i in range(
                 array[1].GetFieldCount())]
         if lyrout is None:
-            raise Exception('Failed to create file '+str(outShapeFile))
+            raise Exception('Failed to create file ' + str(outShapeFile))
 
         if self.__ext[1:] != 'shp':
             isShp = False

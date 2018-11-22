@@ -12,10 +12,12 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import
-from . import vectorTools, rasterTools, crossValidationTools, datasets
-from .learnTools import learnAndPredict
-from .vectorTools import readValuesFromVector
-from .rasterTools import rasterMath, getSamplesFromROI
 
-__version__ = "0.9"
+import os
+__pathFile = os.path.dirname(os.path.realpath(__file__))
+
+
+def getHistoricalMap():
+    raster = os.path.join(__pathFile, 'historicalmap/map_compress.tif')
+    vector = os.path.join(__pathFile, 'historicalmap/train.gpkg')
+    return raster, vector

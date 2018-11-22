@@ -32,7 +32,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
         The maximum value needed.
     minValue : int/float, default 0.
         The minimum value needed.
-        
+
     Returns
     -------
         gdalDT : the gdalDT integer.
@@ -74,7 +74,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
             gdal datatype from src_dataset.GetRasterBand(1).DataType.
         numpyDT : str
             str from array.dtype.name.
-        
+
     Returns
     --------
         dt : the integer datatype.
@@ -122,9 +122,9 @@ def convertGdalDataTypeToOTB(gdalDT):
 def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     """
     Get the set of pixels given the thematic map. Both map should be of same size. Data is read per block.
-    
+
     Initially written by Mathieu Fauvel, improved by Nicolas Karasiak.
-    
+
     Parameters
     -----------
     raster_name: str.
@@ -139,7 +139,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 If getCoords, will return coords for each point.
             onlyCoords : bool.
                 If true, with only return coords, no X,Y...
-                
+
     Returns
     -------
     X: arr.
@@ -164,7 +164,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     for field in fields:
         pushFeedback("Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
-        rstField = rasterize(inRaster, inVector, field, rstField,gdal.GDT_Float64)
+        rstField = rasterize(inRaster, inVector, field,
+                             rstField, gdal.GDT_Float64)
         roiField = gdal.Open(rstField, gdal.GA_ReadOnly)
         if roiField is None:
             raise Exception(
@@ -186,6 +187,10 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         onlyCoords = kwargs['onlyCoords']
     else:
         onlyCoords = False
+    if 'verbose' in kwargs:
+        __verbose = kwargs['verbose']
+    else:
+        __verbose = 1
 
     # Get block size
     band = raster.GetRasterBand(1)
@@ -212,8 +217,9 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         0, nFields)  # now support multiple fields
 
     # for progress bar
-    total = 100
-    pb = progressBar(total, message='Reading raster values... ')
+    if __verbose:
+        total = 100
+        pb = progressBar(total, message='Reading raster values... ')
 
     for i in range(0, nl, y_block_size):
         if i + y_block_size < nl:  # Check for size consistency in Y
@@ -227,9 +233,9 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 cols = nc - j
 
             # for progressbar
-            
-            currentPosition = (i/nl+j/nc)*100+1
-            pb.addPosition(currentPosition)
+            if __verbose:
+                currentPosition = (i / nl) * 100
+                pb.addPosition(currentPosition)
             # Load the reference data
 
             ROI = rois[0].GetRasterBand(1).ReadAsArray(j, i, cols, lines)
@@ -267,6 +273,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                         raise MemoryError(
                             'Impossible to allocate memory: ROI too big')
 
+    if __verbose:
+        pb.addPosition(100)
     # Clean/Close variables
     # del Xtp,band
     roi = None  # Close the roi file
@@ -333,6 +341,7 @@ class rasterMath:
         Save raster : As many raster (geoTiff) as output defined by the user.
 
     """
+
     def __init__(self, inRaster, inMaskRaster=False, message='rasterMath... '):
 
         # Need to work of parallelize
@@ -453,7 +462,7 @@ class rasterMath:
     def generateBlockArray(self, col, row, width, height, mask=True):
         """
         Add function to rasterMath.
-        
+
         Parameters
         ----------
         col : int.
@@ -466,7 +475,7 @@ class rasterMath:
             the height;
         mask : bool.
             Use the mask.
-            
+
         Returns
         -------
         arr : arr with values.

@@ -67,7 +67,7 @@ class progressBar:
         sys.stdout.flush()
         # print(self.nHash)
         # print(self.nPoints)
-        print(self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end)
+        print('\r' + self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end)
 
 
 if __name__ == '__main__':

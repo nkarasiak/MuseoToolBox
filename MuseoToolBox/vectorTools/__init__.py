@@ -20,10 +20,11 @@ import numpy as np
 from .sampleExtraction import sampleExtraction
 from .. import rasterTools
 
-def getDistanceMatrix(inRaster, inVector,inLevel=False):
+
+def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=1):
     """
     Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
-    
+
     Parameters
     ----------
     inRaster : str
@@ -34,24 +35,26 @@ def getDistanceMatrix(inRaster, inVector,inLevel=False):
     --------
     distanceMatrix : array.
     """
-    if inLevel:
-        onlyCoords=False
+    if inLevel is not False:
+        onlyCoords = False
     else:
-        onlyCoords=True
-    
+        onlyCoords = True
+
     coords = rasterTools.getSamplesFromROI(
-        inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords)
+        inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords, verbose=verbose)
     from scipy.spatial import distance
-    if inLevel :
+    if inLevel:
         inLabel = coords[1]
         coords = coords[2]
-    
-    distanceMatrix = np.asarray(distance.cdist(coords, coords, 'euclidean'),dtype=np.uint64)
-    
-    if inLevel :
-        return distanceMatrix,inLabel
+
+    distanceMatrix = np.asarray(distance.cdist(
+        coords, coords, 'euclidean'), dtype=np.uint64)
+
+    if inLevel:
+        return distanceMatrix, inLabel
     else:
         return distanceMatrix
+
 
 def getDriverAccordingToFileName(fileName):
     """
@@ -107,8 +110,8 @@ def readValuesFromVector(vector, *args, **kwargs):
     try:
         file = ogr.Open(vector)
         lyr = file.GetLayer()
-    except:
-        raise Exception ("Can't open {} file".format(vector))
+    except BaseException:
+        raise Exception("Can't open {} file".format(vector))
 
     # get all fields and save only roiFields
     ldefn = lyr.GetLayerDefn()
@@ -148,56 +151,60 @@ def readValuesFromVector(vector, *args, **kwargs):
         if extractBands:
             if fdefn.name.startswith(bandPrefix):
                 bandsFields.append(fdefn.name)
-    if extractBands:
-        if len(bandsFields) == 0:
+
+    if len(kwargs) == 0 and len(args) == 0:
+        print('These fields are available : {}'.format(listFields))
+    else:
+
+        if extractBands and len(bandsFields) == 0:
             raise ValueError(
                 'Band prefix field "{}" do not exists. These fields are available : {}'.format(
                     bandPrefix, listFields))
 
-    # Initialize empty arrays
-    if len(args) > 0:  # for single fields
-        ROIlevels = np.zeros(
-            [lyr.GetFeatureCount(), len(args)], dtype=np.int32)
+        # Initialize empty arrays
+        if len(args) > 0:  # for single fields
+            ROIlevels = np.zeros(
+                [lyr.GetFeatureCount(), len(args)], dtype=np.int32)
 
-    if extractBands:  # for bandPrefix
-        ROIvalues = np.zeros(
-            [lyr.GetFeatureCount(), len(bandsFields)], dtype=np.int32)
+        if extractBands:  # for bandPrefix
+            ROIvalues = np.zeros(
+                [lyr.GetFeatureCount(), len(bandsFields)], dtype=np.int32)
 
-    # Listing each feature and store to array
-    for i, feature in enumerate(lyr):
-        if extractBands:
-            for j, band in enumerate(bandsFields):
-                ROIvalues[i, j] = feature.GetField(band)
+        # Listing each feature and store to array
+        for i, feature in enumerate(lyr):
+            if extractBands:
+                for j, band in enumerate(bandsFields):
+                    ROIvalues[i, j] = feature.GetField(band)
+            if len(args) > 0:
+                try:
+                    for a in range(len(args)):
+                        ROIlevels[i, a] = feature.GetField(args[a])
+                except BaseException:
+                    raise ValueError(
+                        "Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(
+                            args[a], listFields))
+            if getFeatures:
+                features.append(feature)
+
+        # Initialize return
+        fieldsToReturn = []
+
+        # if single fields
         if len(args) > 0:
-            try:
-                for a in range(len(args)):
-                    ROIlevels[i, a] = feature.GetField(args[a])
-            except BaseException:
-                raise ValueError(
-                    "Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(
-                        args[a], listFields))
+            for i in range(len(args)):
+                fieldsToReturn.append(np.asarray(ROIlevels)[:, i])
+        # if bandPrefix
+        if extractBands:
+            fieldsToReturn.append(ROIvalues)
+        # if features
         if getFeatures:
-            features.append(feature)
+            fieldsToReturn.append(features)
+            fieldsToReturn.append(srs)
+        # if 1d, to turn single array
+        if len(fieldsToReturn) == 1:
+            fieldsToReturn = fieldsToReturn[0]
 
-    # Initialize return
-    fieldsToReturn = []
-
-    # if single fields
-    if len(args) > 0:
-        for i in range(len(args)):
-            fieldsToReturn.append(np.asarray(ROIlevels)[:, i])
-    # if bandPrefix
-    if extractBands:
-        fieldsToReturn.append(ROIvalues)
-    # if features
-    if getFeatures:
-        fieldsToReturn.append(features)
-        fieldsToReturn.append(srs)
-    # if 1d, to turn single array
-    if len(fieldsToReturn) == 1:
-        fieldsToReturn = fieldsToReturn[0]
-
-    return fieldsToReturn
+        return fieldsToReturn
 
 
 def addUniqueIDForVector(inVector, uniqueField='uniquefid'):

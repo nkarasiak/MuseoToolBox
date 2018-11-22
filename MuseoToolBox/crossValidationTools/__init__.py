@@ -17,14 +17,16 @@ import numpy as np
 from ..vectorTools import getDistanceMatrix
 from ._sampleSelection import _sampleSelection
 
+
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
-             inVector,
-             inField=None,
-             inGroup=None,
-             valid_size=0.5,
-             n_splits=5, 
-             seed=None):
+                 inVector,
+                 inField=None,
+                 inGroup=None,
+                 valid_size=0.5,
+                 n_splits=5,
+                 seed=None,
+                 verbose=False):
         """
         Generate a Cross-Validation using subgroup (each group belong to a unique label).
 
@@ -43,34 +45,39 @@ class LeavePSubGroupOut(_sampleSelection):
             If int : will iterate the number of times given in n_splits.
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
-            
+
         Returns
         -------
         List : list with the sampling type and the parameters for the groupCV.
         """
-        self.samplingType = 'GROUP'
-        if isinstance(valid_size,float):
-            if valid_size>1 or valid_size<0:
+        self.samplingType = 'Group'
+        self.verbose = verbose
+
+        if isinstance(valid_size, float):
+            if valid_size > 1 or valid_size < 0:
                 raise Exception('Percent must be between 0 and 1')
         else:
-            raise Exception('Percent must be between 0 and 1 and must be a float')
+            raise Exception(
+                'Percent must be between 0 and 1 and must be a float')
         self.inVector = inVector
         self.inField = inField
         self.inGroup = inGroup
-        
+
         self.params = dict(
-                valid_size=valid_size,
-                n_splits=n_splits,
-                seed=seed)
+            valid_size=valid_size,
+            n_splits=n_splits,
+            seed=seed)
         _sampleSelection.__init__(self)
+
 
 class LeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-             inVector,
-             inField=None,
-             inGroup=None,
-             n_splits=False, 
-             seed=None):
+                 inVector,
+                 inField=None,
+                 inGroup=None,
+                 n_splits=False,
+                 seed=None,
+                 verbose=False):
         """
         Generate a Cross-Validation by subgroup.
 
@@ -88,30 +95,34 @@ class LeaveOneSubGroupOut(_sampleSelection):
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
 
-            
+
         Returns
         -------
         List : list with the sampling type and the parameters for the groupCV.
         """
-        self.samplingType = 'GROUP'
+        self.samplingType = 'Group'
+        self.verbose = verbose
+
         self.inVector = inVector
         self.inField = inField
         self.inGroup = inGroup
         self.params = dict(
-                valid_size=1,
-                n_splits=n_splits,
-                seed=seed)
+            valid_size=1,
+            n_splits=n_splits,
+            seed=seed)
         _sampleSelection.__init__(self)
+
 
 class SpatialLeavePSideOut(_sampleSelection):
     def __init__(self,
-            inRaster,
-            inVector,
-            inField=None,
-            distanceMatrix=None,
-            minTrain=None,
-            n_splits=False,
-            seed=None):
+                 inRaster,
+                 inVector,
+                 inField=None,
+                 distanceMatrix=None,
+                 minTrain=None,
+                 n_splits=False,
+                 seed=None,
+                 verbose=False):
         """
         Generate a Cross-Validation using the farthest distance between the training and validation samples.
 
@@ -130,35 +141,39 @@ class SpatialLeavePSideOut(_sampleSelection):
             If int : will iterate the number of groups given in maxIter.
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
-            
+
         Returns
         -------
         List : list with the sampling type and the parameters for the farthestCV.
         """
+        self.samplingType = 'Spatial'
+        self.verbose = verbose
 
-        self.samplingType = 'farthestCV'
         self.inRaster = inRaster
         self.inVector = inVector
         self.inField = inField
+
         self.params = dict(
-                distanceMatrix=distanceMatrix,
-                minTrain=minTrain,
-                n_splits=n_splits,
-                seed=seed,
-                furtherSplit=True)
+            distanceMatrix=distanceMatrix,
+            minTrain=minTrain,
+            n_splits=n_splits,
+            seed=seed,
+            furtherSplit=True)
         _sampleSelection.__init__(self)
+
 
 class SpatialLeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-            inRaster,
-            inVector,
-            inField=None,
-            inGroup=None,
-            distanceThresold=None,
-            distanceMatrix=None,
-            distanceLabel=None,
-            n_splits=False,
-            seed=None):
+                 inRaster,
+                 inVector,
+                 inField=None,
+                 inGroup=None,
+                 distanceThresold=None,
+                 distanceMatrix=None,
+                 distanceLabel=None,
+                 n_splits=False,
+                 seed=None,
+                 verbose=False):
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
 
@@ -181,47 +196,47 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
             If int : will iterate the number of groups given in maxIter.
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
-            
+
         Returns
         -------
         List : list with the sampling type and the parameters for the SLOOCV.
-        
+
         References
         ----------
         See : https://doi.org/10.1111/geb.12161.
         """
-        self.samplingType = 'SLOO'
+        self.samplingType = 'Spatial'
+        self.verbose = verbose
 
         if distanceMatrix is None:
-            distanceMatrix = getDistanceMatrix(
-                inRaster, inVector)
-        
+            distanceMatrix, distanceLabel = getDistanceMatrix(
+                inRaster, inVector, inGroup, verbose=verbose)
+
         self.inRaster = inRaster
         self.inVector = inVector
         self.inField = inField
         self.inGroup = inGroup
-        
+
         self.params = dict(
-                distanceMatrix=distanceMatrix,
-                distanceThresold=distanceThresold,
-                distanceLabel=distanceLabel,
-                SLOO=True,
-                n_splits=n_splits,
-                seed=seed)
+            distanceMatrix=distanceMatrix,
+            distanceThresold=distanceThresold,
+            distanceLabel=distanceLabel,
+            SLOO=True,
+            n_splits=n_splits,
+            seed=seed)
         _sampleSelection.__init__(self)
-        
-    
+
+
 class SpatialLeaveOnePixelOut(_sampleSelection):
     def __init__(self,
-            inRaster,
-            inVector,
-            inField=None,
-            distanceThresold=None,
-            distanceMatrix=None,
-            minTrain=None,
-            SLOO=True,
-            n_splits=False,
-            seed=None):
+                 inRaster,
+                 inVector,
+                 inField=None,
+                 distanceThresold=None,
+                 distanceMatrix=None,
+                 n_splits=False,
+                 seed=None,
+                 verbose=False):
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
 
@@ -244,46 +259,51 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
             If int : will iterate the number of groups given in maxIter.
         seed : int, default None.
             If seed, int, to repeat exactly the same random.
-            
+
         Returns
-        -------
+        --------
         List : list with the sampling type and the parameters for the SLOOCV.
-        
+
         References
         ----------
         See : https://doi.org/10.1111/geb.12161.
         """
+
+        self.samplingType = 'Spatial'
+        self.verbose = verbose
+
         if distanceMatrix is None:
             distanceMatrix = getDistanceMatrix(
-                inRaster, inVector)
-        
+                inRaster, inVector, verbose=verbose)
+
         self.inRaster = inRaster
         self.inVector = inVector
         self.inField = inField
-        
-        self.samplingType = 'SLOO'
+
         self.params = dict(
-                distanceMatrix=distanceMatrix,
-                distanceThresold=distanceThresold,
-                minTrain=minTrain,
-                SLOO=SLOO,
-                n_splits=n_splits,
-                seed=seed)
+            distanceMatrix=distanceMatrix,
+            distanceThresold=distanceThresold,
+            minTrain=False,
+            SLOO=True,
+            n_splits=n_splits,
+            seed=seed)
         _sampleSelection.__init__(self)
+
 
 class RandomCV(_sampleSelection):
     def __init__(self,
-            inVector,
-            inField=None,
-            train_size=0.5,
-            n_splits=5,
-            seed=None):
+                 inVector,
+                 inField=None,
+                 train_size=0.5,
+                 n_splits=5,
+                 seed=None,
+                 verbose=False):
         """
         Get parameters to have a randomCV.
-        
+
         Parameters
         ----------
-        
+
         split : float,int. Default 0.5.
             If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
         nSamples: int or str. Default None.
@@ -293,18 +313,18 @@ class RandomCV(_sampleSelection):
             If seed, int, to repeat exactly the same random.
         n_splits : int, default 5.
             Number of iteration of the random sampling (will add 1 to the seed at each iteration if defined).
-            
+
         Returns
         --------
         List : list with the sampling type and the parameters for the randomCV.
-        
+
         """
         self.samplingType = 'random'
+        self.verbose = verbose
         self.inVector = inVector
         self.inField = inField
-        
         self.params = dict(
-                train_size=train_size,
-                seed=seed,
-                n_splits=n_splits)
+            train_size=train_size,
+            seed=seed,
+            n_splits=n_splits)
         _sampleSelection.__init__(self)
