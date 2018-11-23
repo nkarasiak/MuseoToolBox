@@ -17,7 +17,6 @@ import numpy as np
 from ..vectorTools import getDistanceMatrix
 from ._sampleSelection import _sampleSelection
 
-
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
                  inVector,
@@ -59,9 +58,9 @@ class LeavePSubGroupOut(_sampleSelection):
         else:
             raise Exception(
                 'Percent must be between 0 and 1 and must be a float')
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
-        self.inGroup = inGroup
+        self.group = inGroup
 
         self.params = dict(
             valid_size=valid_size,
@@ -103,9 +102,9 @@ class LeaveOneSubGroupOut(_sampleSelection):
         self.samplingType = 'Group'
         self.verbose = verbose
 
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
-        self.inGroup = inGroup
+        self.group = inGroup
         self.params = dict(
             valid_size=1,
             n_splits=n_splits,
@@ -150,7 +149,7 @@ class SpatialLeavePSideOut(_sampleSelection):
         self.verbose = verbose
 
         self.inRaster = inRaster
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
 
         self.params = dict(
@@ -213,9 +212,9 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                 inRaster, inVector, inGroup, verbose=verbose)
 
         self.inRaster = inRaster
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
-        self.inGroup = inGroup
+        self.group = inGroup
 
         self.params = dict(
             distanceMatrix=distanceMatrix,
@@ -277,7 +276,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
                 inRaster, inVector, verbose=verbose)
 
         self.inRaster = inRaster
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
 
         self.params = dict(
@@ -321,8 +320,9 @@ class RandomCV(_sampleSelection):
         """
         self.samplingType = 'random'
         self.verbose = verbose
-        self.inVector = inVector
+        self.Y = inVector
         self.inField = inField
+        
         self.params = dict(
             train_size=train_size,
             seed=seed,

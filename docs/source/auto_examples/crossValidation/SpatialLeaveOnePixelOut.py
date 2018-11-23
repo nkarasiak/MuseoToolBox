@@ -26,8 +26,9 @@ field = 'Class'
 ##############################################################################
 # Create CV
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,seed=12)
+# n_splits will be the number  of the least populated class
 
+SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,seed=12)
 
 ###############################################################################
 # .. note::

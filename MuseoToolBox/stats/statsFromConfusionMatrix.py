@@ -60,12 +60,11 @@ class confusionMatrix:
         # Initialization
         n = yp.size
         C = np.amax((int(yr.max()), int(yp.max())))
-        self.confusion_matrix = np.zeros((C, C), dtype=np.int16)
+        self.confusion_matrix = np.zeros((C, C), dtype=np.int64)
 
         # Compute confusion matrix
         for i in range(n):
-            self.confusion_matrix[yp[i].astype(
-                int) - 1, yr[i].astype(int) - 1] += 1
+            self.confusion_matrix[yp[i].astype(np.int64) - 1, yr[i].astype(np.int64) - 1] += 1
 
         # Compute overall accuracy
         if OA:
@@ -75,7 +74,7 @@ class confusionMatrix:
         if kappa:
             nl = np.sum(self.confusion_matrix, axis=1)
             nc = np.sum(self.confusion_matrix, axis=0)
-            self.Kappa = ((n**2) * self.OA - np.sum(nc * nl)) / \
+            self.Kappa = ((n**2) * np.sum(np.diag(self.confusion_matrix)) / n - np.sum(nc * nl)) / \
                 (n**2 - np.sum(nc * nl))
 
         #

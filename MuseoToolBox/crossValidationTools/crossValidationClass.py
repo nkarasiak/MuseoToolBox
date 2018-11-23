@@ -19,8 +19,9 @@ import numpy as np
 class distanceCV:
     def __init__(
             self,
-            distanceMatrix,
-            Y,
+            X=None,
+            distanceMatrix=None,
+            Y=None,
             distanceThresold=1000,
             minTrain=False,
             SLOO=True,
@@ -246,11 +247,11 @@ class distanceCV:
 
 class randomPerClass:
     """
-    Random array according to FIDs.
+    Random array according to Y.
 
     Parameters
     ----------
-    FIDs : arr.
+    Y : arr.
         Label for each feature.
     train_size : float (<1.0) or int (>1).
         Percentage to keep for training or integer.
@@ -261,14 +262,16 @@ class randomPerClass:
 
     """
 
-    def __init__(self, FIDs, train_size=0.5,
+    def __init__(self,X=None,Y=None,train_size=0.5,
                  valid_size=False, n_splits=5, seed=None,verbose=False):
+        
         self.name = 'randomPerClass'
-        self.FIDs = FIDs
+        self.Y = Y
         self.train_size = train_size
         self.n_splits = n_splits
         if n_splits is False:
-            n_splits = min([len(self.FIDs == C) for C in np.unique(FIDs)])
+            self.n_splits = min([len(self.Y == C) for C in np.unique(Y)])
+        self.n_splits+=1 # in order to begin with 1
         if seed:
             np.random.seed(seed)
         else:
@@ -277,8 +280,8 @@ class randomPerClass:
             seed = int(time.time())
         self.seed = seed
         self.valid_size = valid_size
-        self.iter = 0
-        self.mask = np.ones(np.asarray(self.FIDs).shape, dtype=bool)
+        self.iterPos = 1
+        self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
 
     def __iter__(self):
         return self
@@ -288,34 +291,37 @@ class randomPerClass:
         return self.next()
 
     def next(self):
-        if self.iter < self.n_splits:
+        if self.iterPos < self.n_splits:
+            if self.iterPos%2==1 and self.train_size==0.5: self.mask[:]=1
             np.random.seed(self.seed)
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
-            for C in np.unique(self.FIDs):
-                Cpos = np.where(self.FIDs == C)[0]
+            for C in np.unique(self.Y):
+                Cpos = np.where(self.Y == C)[0]
                 if self.train_size < 1:
-                    toSplit = int(self.train_size * len(Cpos))
-                else:
-                    toSplit = self.train_size
-
+                    if self.train_size==0.5 and self.iterPos%2==1:
+                        toSplit = int(self.train_size * len(Cpos))
+                        tempTrain = np.random.permutation(Cpos)[:toSplit]
+                    else:
+                        unMask = np.logical_and(self.Y==C,self.mask==0)
+                        tempTrain = np.where(unMask==1)[0]
+                        
+                    TF = np.in1d(Cpos, tempTrain, invert=True)
+                    tempValid = Cpos[TF]
+                        
                 if self.valid_size >= 1:
                     tempValid = np.asarray(
                         [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
                     TF = np.in1d(Cpos, tempValid, invert=True)
                     tempTrain = Cpos[TF]
 
-                else:
-                    tempTrain = np.random.permutation(Cpos)[:toSplit]
-                    TF = np.in1d(Cpos, tempTrain, invert=True)
-                    tempValid = Cpos[TF]
                 train = np.concatenate((train, tempTrain))
                 valid = np.concatenate((valid, tempValid))
 
-                self.mask[valid] = False
+                self.mask[valid] = 0
 
             self.seed += 1
-            self.iter += 1
+            self.iterPos += 1
 
             return train, valid
         else:
@@ -323,12 +329,12 @@ class randomPerClass:
 
 
 class groupCV:
-    def __init__(self, Y, stand, n_splits=False, valid_size=1, seed=False,verbose=False):
-        """Compute train/validation per stand.
+    def __init__(self, X=None,Y=None,group=None, n_splits=False, valid_size=1, seed=False,verbose=False):
+        """Compute train/validation per group.
         Y : array-like
             contains class for each ROI.
-        Stand : array-like
-            contains stand number for each ROI.
+        group : array-like
+            contains goup number for each ROI.
         valid_size : int (1) or float (0.01 to 0.99)
             If 1 Leave-One-Group Out.
         n_splits : False or int
@@ -340,11 +346,10 @@ class groupCV:
         self.verbose = verbose
         self.Y = Y
         self.uniqueY = np.unique(self.Y)
-        self.stand = stand
+        self.group = group
 
         self.valid_size = valid_size
-        self.n_splits = n_splits
-        self.iterPos = 0
+        self.iterPos = 1
 
         if seed:
             np.random.seed(seed)
@@ -358,17 +363,15 @@ class groupCV:
         else:
             n_splits = []
             for i in np.unique(Y):
-                standNumber = np.unique(
-                    np.array(stand)[
-                        np.where(
-                            np.array(Y) == i)])
+                standNumber = np.unique(np.array(group)[np.where(np.array(Y).flatten() == i)])
+                
                 n_splits.append(standNumber.shape[0])
             self.n_splits = np.amin(n_splits)
             if self.n_splits == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-
-        self.mask = np.ones(np.asarray(stand).shape, dtype=bool)
+        self.n_splits += 1 # in order to begin with iterPos = 1
+        self.mask = np.ones(np.asarray(group).shape, dtype=bool)
 
     def __iter__(self):
         return self
@@ -385,23 +388,29 @@ class groupCV:
             validation = np.array([], dtype=int)
             for i in self.uniqueY:
                 Ycurrent = np.where(np.array(self.Y) == i)[0]
-                Ystands = np.array(self.stand)[Ycurrent]
+                Ystands = np.array(self.group)[Ycurrent]
 
                 np.random.seed(self.seed)
                 # Only choose an unselected stand
                 #YTF = np.array(self.Y) == i
                 Ystand = np.unique(Ystands)
+                if len(Ystands[self.mask[Ycurrent]]) == 0:
+                    # Reset mask if not enought subgroup available
+                    # Appear only if n_splits > min len of subgroup
+                    self.mask[:] = 1
+                
                 if self.valid_size == 1:
-                    if len(Ystands[self.mask[Ycurrent]]) == 0:
-                        # Reset mask if not enought subgroup available
-                        # Appear only if n_splits > min len of subgroup
-                        self.mask[:] = 1
                     selectedStand = np.random.permutation(
                         Ystands[self.mask[Ycurrent]])[0]
                     
                 if self.valid_size < 1:
-                    selectedStand = np.random.permutation(
-                        Ystand)[:int(len(Ystand) * self.valid_size)]
+                    if self.valid_size == 0.5 and self.iterPos%2==0:
+                        # If 50%, real CV with train/valid reverse at next iter to valid/train
+                        selectedStand = np.random.permutation(
+                                Ystands[self.mask[Ycurrent]])    
+                    else:
+                        selectedStand = np.random.permutation(
+                            Ystand)[:int(len(Ystand) * self.valid_size)]
                 if self.verbose:
                     print('For class {}, subgroup {}'.format(i,selectedStand))
                     
@@ -415,9 +424,9 @@ class groupCV:
                 train = np.concatenate(
                     (train, np.asarray(YnotInSelectedStand)))
                 
-                if self.valid_size == 1:
+                if self.valid_size == 1 or self.valid_size==0.5:
                     del Ystands, Ycurrent
-                    selected = np.in1d(self.stand, selectedStand)
+                    selected = np.in1d(self.group, selectedStand)
                     self.mask[selected] = 0
                     del selected
 

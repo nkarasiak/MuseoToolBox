@@ -1,13 +1,13 @@
 .. note::
     :class: sphx-glr-download-link-note
 
-    Click :ref:`here <sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py>` to download the full example code
+    Click :ref:`here <sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut_noRaster.py>` to download the full example code
 .. rst-class:: sphx-glr-example-title
 
-.. _sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:
+.. _sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut_noRaster.py:
 
 
-Spatial Leave-One-Pixel-Out (SLOPO)
+Spatial Leave-One-Pixel-Out / No raster (SLOPO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out called here
@@ -26,6 +26,8 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
+    from MuseoToolBox.vectorTools import getDistanceMatrix
+    from MuseoToolBox.rasterTools import getSamplesFromROI
     from MuseoToolBox import datasets
 
 
@@ -44,22 +46,8 @@ Load HistoricalMap dataset
     raster,vector = datasets.getHistoricalMap()
     field = 'Class'
 
-
-
-
-
-
-
-Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- n_splits will be the number  of the least populated class
-
-
-
-.. code-block:: python
-
-
-    SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,seed=12)
+    X,Y = getSamplesFromROI(raster,vector,field,verbose=False)
+    distanceMatrix = getDistanceMatrix(raster,vector,verbose=False)
 
 
 
@@ -71,9 +59,23 @@ Create CV
 
  .. code-block:: none
 
-    Values from 'False' field will be extracted
     Values from 'Class' field will be extracted
-    Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.
+    Values from 'False' field will be extracted
+
+
+Create CV
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+.. code-block:: python
+
+    SLOPO = SpatialLeaveOnePixelOut(None,Y,None,distanceMatrix=distanceMatrix,distanceThresold=100,seed=12,verbose=False)
+
+
+
+
+
 
 
 .. note::
@@ -114,6 +116,7 @@ Draw image
 
 .. code-block:: python
 
+    
     import numpy as np
     from matplotlib import pyplot as plt
     fig, ax = plt.subplots()
@@ -133,17 +136,16 @@ Draw image
 
 
 
-
-.. image:: /auto_examples/crossValidation/images/sphx_glr_SpatialLeaveOnePixelOut_001.png
+.. image:: /auto_examples/crossValidation/images/sphx_glr_SpatialLeaveOnePixelOut_noRaster_001.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  2.456 seconds)
+**Total running time of the script:** ( 0 minutes  1.553 seconds)
 
 
-.. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:
+.. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut_noRaster.py:
 
 
 .. only :: html
@@ -155,13 +157,13 @@ Draw image
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: SpatialLeaveOnePixelOut.py <SpatialLeaveOnePixelOut.py>`
+     :download:`Download Python source code: SpatialLeaveOnePixelOut_noRaster.py <SpatialLeaveOnePixelOut_noRaster.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: SpatialLeaveOnePixelOut.ipynb <SpatialLeaveOnePixelOut.ipynb>`
+     :download:`Download Jupyter notebook: SpatialLeaveOnePixelOut_noRaster.ipynb <SpatialLeaveOnePixelOut_noRaster.ipynb>`
 
 
 .. only:: html

@@ -12,11 +12,12 @@ Contents
    :maxdepth: 2
 
    self
-	
-
+   MuseoToolBox
+   examples
+   
 .. include:: README.rst
     :start-line: 1
-
+   
 Indices and tables
 ==================
 

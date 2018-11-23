@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Spatial Leave-One-Pixel-Out (SLOPO)
+Spatial Leave-One-Pixel-Out / No raster (SLOPO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out called here
@@ -15,6 +15,8 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 #^^^^^^^^^^^^^^^^^^^^
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
+from MuseoToolBox.vectorTools import getDistanceMatrix
+from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
@@ -23,12 +25,13 @@ from MuseoToolBox import datasets
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
 
+X,Y = getSamplesFromROI(raster,vector,field,verbose=False)
+distanceMatrix = getDistanceMatrix(raster,vector,verbose=False)
+
 ##############################################################################
 # Create CV
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# n_splits will be the number  of the least populated class
-
-SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,seed=12)
+SLOPO = SpatialLeaveOnePixelOut(None,Y,None,distanceMatrix=distanceMatrix,distanceThresold=100,seed=12,verbose=False)
 
 ###############################################################################
 # .. note::
@@ -40,6 +43,7 @@ for tr,vl in SLOPO.split():
 
 #############################################
 # Draw image
+    
 import numpy as np
 from matplotlib import pyplot as plt
 fig, ax = plt.subplots()
@@ -56,4 +60,3 @@ plt.text(46,52,'Buffer of spatial auto-correlated pixels')
 plt.axis('off')
 
 plt.show()
-

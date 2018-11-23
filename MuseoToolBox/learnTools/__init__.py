@@ -17,7 +17,7 @@ import numpy as np
 
 
 class learnAndPredict:
-    def __init__(self, n_jobs=1):
+    def __init__(self, n_jobs=1,verbose=False):
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictFromRaster() or predictFromArray().
@@ -29,7 +29,7 @@ class learnAndPredict:
             Number of cores to be used by sklearn in grid-search.
         """
         self.n_jobs = n_jobs
-
+        self.verbose = verbose
         self.scale = False
 
     def scaleX(self, X=None):
@@ -84,16 +84,17 @@ class learnAndPredict:
         """
         self.classifier = classifier
         self.param_grid = param_grid
-        self.Y = Y.reshape(-1, 1)
-
+        self.Y = Y
+        
+        if cv is not None and self.param_grid is None:
+            raise Exception ('Please specify a param_grid if you use a cross-validation method')
         self.X = X
         if scale:
             self.scale = True
             self.scaleX()
             self.X = self.scaleX(X)
 
-        self.__learn__(self.X, self.Y, outStatsFromCV, cv)
-
+        self.__learn__(self.X, self.Y,classifier,param_grid,outStatsFromCV, cv)
     def learnFromRaster(
             self,
             inRaster,
@@ -127,10 +128,14 @@ class learnAndPredict:
             if cv, choose one from vectorTools.samplingMethods and generate it via vectorTools.sampleSelection().
         """
         from ..rasterTools import getSamplesFromROI
+        
         self.classifier = classifier
         self.param_grid = param_grid
 
-        X, Y = getSamplesFromROI(inRaster, inVector, inField)
+        if cv is not None and self.param_grid is None:
+            raise Exception ('Please specify a param_grid if you use a cross-validation method')
+            
+        X, Y = getSamplesFromROI(inRaster, inVector, inField,verbose=self.verbose)
         self.Y = Y
 
         self.X = X
@@ -140,9 +145,9 @@ class learnAndPredict:
             self.X = self.scaleX(X)
         self.Xpredict = False
 
-        self.__learn__(X, Y, outStatsFromCV, cv)
+        self.__learn__(self.X, self.Y,classifier,param_grid,outStatsFromCV, cv)
 
-    def __learn__(self, X, Y, outStatsFromCV, cv):
+    def __learn__(self, X, Y,classifier,param_grid,outStatsFromCV, cv):
         self.outStatsFromCV = outStatsFromCV
         from sklearn.model_selection import GridSearchCV
         if cv is None:
@@ -151,21 +156,15 @@ class learnAndPredict:
 
         if outStatsFromCV is True:
             self.CV = []
-            if hasattr(
-                    cv, 'split'):  # if cv is from sklearn, need to fit to generate tr/vl
-                try:
-                    cv = cv.split(X, Y)
-                except BaseException:
-                    pass
-            for tr, vl in cv:
+            for tr, vl in cv.split(X,Y):
                 self.CV.append((tr, vl))
         else:
             self.CV = cv
-
-        if isinstance(self.param_grid, dict):
+                    
+        if isinstance(param_grid,dict):
             grid = GridSearchCV(
                 self.classifier,
-                param_grid=self.param_grid,
+                param_grid=param_grid,
                 cv=self.CV,
                 n_jobs=self.n_jobs)
             grid.fit(X, Y)
@@ -176,7 +175,7 @@ class learnAndPredict:
                 print(message)
 
         else:
-            self.model = self.classifier.fit(self, X=X, y=Y.reshape(-1, 1))
+            self.model = self.classifier.fit(X=X, y=Y)
 
     def saveModel(self, path):
         """
@@ -363,7 +362,7 @@ class learnAndPredict:
                 'outStatsFromCV in fromRaster or fromVector must be True')
         else:
             # ,statsFromConfusionMatrix,
-            from ..stats.statsFromConfusionMatrix import confusionMatrix
+            from ..stats.statsFromConfusionMatrix import confusionMatrix as computeStats
             CM = []
             kappas = []
             OAs = []
@@ -374,10 +373,10 @@ class learnAndPredict:
 
                 self.model.fit(X_train, Y_train)
                 X_pred = self.model.predict(X_test)
-                cmObject = confusionMatrix(
+                cmObject = computeStats(
                     Y_test, X_pred, kappa=kappa, OA=OA, F1=F1)
-                cm = cmObject.confusion_matrix
-                CM.append([cm])
+    
+                CM.append([cmObject.confusion_matrix])
                 if kappa:
                     kappas.append(cmObject.Kappa)
                 if OA:

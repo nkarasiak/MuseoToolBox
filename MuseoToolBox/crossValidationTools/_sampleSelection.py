@@ -32,9 +32,9 @@ class _sampleSelection:
         inField : str or None if inVector is np.ndarray.
             if str, field name from the vector.
 
-        Returns
+        Functions
         ----------
-        getCrossValidation() : Function.
+        split() : Function.
             Get a memory cross validation to use directly in Scikit-Learn.
 
         saveVectorFiles() : Need default output name (str).
@@ -47,11 +47,11 @@ class _sampleSelection:
             If you need to regenerate the cross validation, you need to reinitialize it.
 
         """
-        if isinstance(self.inVector, (np.ndarray, list)):
+        if isinstance(self.Y, (np.ndarray, list)):
             self.inVectorIsArray = True
         else:
             self.inVectorIsArray = False
-
+            
         self.extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
         self.driversName = [
             'SQLITE',
@@ -71,65 +71,52 @@ class _sampleSelection:
         # Totally random
         if self.samplingType == 'random':
             if self.inVectorIsArray:
-                FIDs = self.inVector
-                if isinstance(FIDs, list):
-                    FIDs = np.array(FIDs)
+                self.Y = self.Y
+                if isinstance(self.Y, list):
+                    self.Y = np.array(self.Y)
             else:
-                FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.inVector, self.inField, getFeatures=True, verbose=self.verbose)
-            FIDs = FIDs.flatten()
+                self.Y, self.fts, self.srs = vectorTools.readValuesFromVector(
+                    self.Y, self.inField, getFeatures=True, verbose=self.verbose)
 
-            self.crossvalidation = crossValidationClass.randomPerClass(
-                FIDs=FIDs, verbose=self.verbose, **self.params)
+            self.crossvalidation = crossValidationClass.randomPerClass#(Y=self.Y, verbose=self.verbose, **self.params)
 
         if self.samplingType == 'Spatial':
             self.__prepareDistanceCV()
-            self.crossvalidation = crossValidationClass.distanceCV(
-                Y=self.Y, verbose=self.verbose, **self.params)
+            self.crossvalidation = crossValidationClass.distanceCV#(Y=self.Y, verbose=self.verbose, **self.params)
 
         # For Stand Split
         if self.samplingType == 'Group':
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
-            if self.inVectorIsArray:
-                FIDs = self.inVector
-                FIDs = FIDs.flatten()
-                STDs = self.inGroup
-            else:
-                FIDs, STDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.inVector, self.inField, self.inGroup, getFeatures=True, verbose=self.verbose)
-                FIDs = FIDs.flatten()
-            self.crossvalidation = crossValidationClass.groupCV(
-                FIDs,
-                STDs,
-                valid_size=self.params['valid_size'],
-                n_splits=self.params['n_splits'],
-                seed=self.params['seed'],
-                verbose=self.verbose)
+            if not self.inVectorIsArray:
+                self.Y, self.group, self.fts, self.srs = vectorTools.readValuesFromVector(
+                    self.Y, self.inField, self.group, getFeatures=True, verbose=self.verbose)
+            self.params['group'] = self.group                
+            self.crossvalidation = crossValidationClass.groupCV#(Y,S,verbose=self.verbose,**self.params)
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
         # For Spatial-Leave-One-Out
         if not self.inVectorIsArray:
-            self.FIDs, self.fts, self.srs = vectorTools.readValuesFromVector(
-                self.inVector, self.inField, getFeatures=True, verbose=self.verbose)
-            if hasattr(self, 'inGroup'):
-                X, self.Y, inGroup = rasterTools.getSamplesFromROI(
-                    self.inRaster, self.inVector, self.inField, self.inGroup, verbose=self.verbose)
-                self.params['group'] = inGroup
+            self.Y_, self.fts, self.srs = vectorTools.readValuesFromVector(
+                self.Y, self.inField, getFeatures=True, verbose=self.verbose)
+            if hasattr(self, 'group'):
+                X, self.Y, group = rasterTools.getSamplesFromROI(
+                    self.inRaster, self.Y, self.inField, self.group, verbose=self.verbose)
+                self.params['group'] = group
             else:
                 X, self.Y = rasterTools.getSamplesFromROI(
-                    self.inRaster, self.inVector, self.inField, verbose=self.verbose)
+                    self.inRaster, self.Y, self.inField, verbose=self.verbose)
 
-            if self.FIDs.shape[0] != self.Y.shape[0]:
+            if self.Y_.shape[0] != self.Y.shape[0]:
                 self.SLOOnotSamesize = True
                 self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
                 print(self.errorSLOOmsg)
             else:
                 self.SLOOnotSamesize = False
         else:
-            if hasattr(self, 'inGroup'):
-                self.params['group'] = self.inGroup
-            self.Y = self.inVector
+            if hasattr(self, 'group'):
+                self.params['group'] = self.group
+        
 
     def reinitialize(self):
         _sampleSelection.__init__(self)
@@ -138,12 +125,18 @@ class _sampleSelection:
         print('Museo ToolBox supported extensions are : ')
         for idx, ext in enumerate(self.extensions):
             print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
-
-    def split(self, **sklearnCompatiblity):
+    
+    def get_n_splits(self,params=None,X=None,Y=None,groups=None):
+        n_splits = self.crossvalidation(X=None,Y=Y,verbose=self.verbose,**self.params).n_splits
+        return n_splits
+    def split(self,X=None,Y=None,groups=None):
+        if Y is None:
+            Y = self.Y
+        Y=Y.reshape(-1,1)
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
-        return self.crossvalidation
+        return self.crossvalidation(X=None,Y=Y,verbose=self.verbose,**self.params)
 
     def getCrossValidation(self):
         if self.__alreadyRead:

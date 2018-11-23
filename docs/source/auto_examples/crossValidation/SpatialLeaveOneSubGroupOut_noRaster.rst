@@ -1,13 +1,13 @@
 .. note::
     :class: sphx-glr-download-link-note
 
-    Click :ref:`here <sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py>` to download the full example code
+    Click :ref:`here <sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut_noRaster.py>` to download the full example code
 .. rst-class:: sphx-glr-example-title
 
-.. _sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:
+.. _sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut_noRaster.py:
 
 
-Spatial Leave-One-SubGroup-Out (SLOSGO)
+Spatial Leave-One-SubGroup-Out / No raster (SLOSGO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out using subgroup,
@@ -26,6 +26,8 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
+    from MuseoToolBox.vectorTools import getDistanceMatrix
+    from MuseoToolBox.rasterTools import getSamplesFromROI
     from MuseoToolBox import datasets
 
 
@@ -51,17 +53,17 @@ Load HistoricalMap dataset
 
 
 
-Create CV
+
+Get distance Matrix and label
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
 .. code-block:: python
 
-    SLOSGO = SpatialLeaveOneSubGroupOut(raster,vector,field,subGroup,
-                                        distanceThresold=100,
-                                        seed=12,verbose=False)
 
+    distanceMatrix,distanceLabel = getDistanceMatrix(raster,vector,subGroup)
+    X,Y,S = getSamplesFromROI(raster,vector,field,subGroup)
 
 
 
@@ -73,9 +75,27 @@ Create CV
  .. code-block:: none
 
     Values from 'uniquefid' field will be extracted
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     Values from 'Class' field will be extracted
     Values from 'uniquefid' field will be extracted
-    Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
+
+
+Create CV
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+.. code-block:: python
+
+    SLOSGO = SpatialLeaveOneSubGroupOut(inRaster=None,inVector=Y,inField=None,inGroup=S,
+                                        distanceMatrix=distanceMatrix,distanceLabel=distanceLabel,distanceThresold=100,
+                                        seed=12)
+
+
+
+
+
 
 
 .. note::
@@ -133,16 +153,16 @@ Draw image
 
 
 
-.. image:: /auto_examples/crossValidation/images/sphx_glr_SpatialLeaveOneSubGroupOut_001.png
+.. image:: /auto_examples/crossValidation/images/sphx_glr_SpatialLeaveOneSubGroupOut_noRaster_001.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  1.377 seconds)
+**Total running time of the script:** ( 0 minutes  1.577 seconds)
 
 
-.. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:
+.. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut_noRaster.py:
 
 
 .. only :: html
@@ -154,13 +174,13 @@ Draw image
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: SpatialLeaveOneSubGroupOut.py <SpatialLeaveOneSubGroupOut.py>`
+     :download:`Download Python source code: SpatialLeaveOneSubGroupOut_noRaster.py <SpatialLeaveOneSubGroupOut_noRaster.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: SpatialLeaveOneSubGroupOut.ipynb <SpatialLeaveOneSubGroupOut.ipynb>`
+     :download:`Download Jupyter notebook: SpatialLeaveOneSubGroupOut_noRaster.ipynb <SpatialLeaveOneSubGroupOut_noRaster.ipynb>`
 
 
 .. only:: html

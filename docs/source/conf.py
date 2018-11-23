@@ -50,6 +50,8 @@ extensions = [
     'sphinx_gallery.gen_gallery'
     ]
 
+autosummary_generate = True
+autoclass_content = 'both'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -69,12 +71,14 @@ copyright = '2018, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
 
 sphinx_gallery_conf = {
-     # path to your examples scripts
+    'doc_module': ('sphinx_gallery','MuseoToolBox'),
+         # path to your examples scripts
      'examples_dirs': '../../examples',
      'filename_pattern' : '/',
      # path where to save gallery generated examples
      'gallery_dirs': 'auto_examples',
-     'plot_gallery': True
+     'plot_gallery': True,
+     #'doc_module' : ('sphinx_gallery', 'numpy') #  enable 'Examples using..'
 }
 
 # The version info for the project you're documenting, acts as replacement for

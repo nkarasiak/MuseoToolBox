@@ -45,7 +45,7 @@ uploadpypi :
 doc :
 	m2r README.md
 	mv README.rst docs/source/
-	rm -rf docs/build/html/ docs/source/auto_examples/
+	# rm -rf docs/build/html/ docs/source/auto_examples/
 	cd docs/ && make html
 
 renegeratenb:
