@@ -8,13 +8,13 @@ a vector file."""
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+# -------------------
 
 import MuseoToolBox as mtb
 
 ##############################################################################
 # Load HistoricalMap dataset
-#####################################
+# ----------------------------
 
 raster,vector = mtb.datasets.getHistoricalMap()
 
@@ -26,7 +26,7 @@ mtb.vectorTools.readValuesFromVector(vector)
 
 #############################################
 # Read values from field 'Class'
-#####################################
+# --------------------------------
 
 Y = mtb.vectorTools.readValuesFromVector(vector,'Class')
 print(Y)
@@ -34,7 +34,7 @@ print(Y.shape)
 
 #############################################
 # Read values from field beginning with 'C'
-##############################################
+# -------------------------------------------
 # As multiple fields can begin with C, function returns a column per field
 
 C = mtb.vectorTools.readValuesFromVector(vector,bandPrefix='C')
