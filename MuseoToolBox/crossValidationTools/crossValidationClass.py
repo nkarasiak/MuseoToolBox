@@ -100,7 +100,9 @@ class distanceCV:
                 self.n_splits = self.minEffectiveClass
         else:
             self.n_splits = self.minEffectiveClass
-        print('_splits is '+str(self.n_splits))
+        
+        if self.verbose:
+            print('n_splits:'+str(self.n_splits))
         self.random_state = random_state
         self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
 
