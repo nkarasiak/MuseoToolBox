@@ -12,14 +12,14 @@ to learn and predict a model."""
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+#####################################
 
 import MuseoToolBox as mtb
 from matplotlib import pyplot as plt
 
 ##############################################################################
 # Load HistoricalMap dataset
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#####################################
 
 raster,vector = mtb.datasets.getHistoricalMap()
 outVector='/tmp/vector_withROI.gpkg'

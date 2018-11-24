@@ -15,7 +15,7 @@ This example shows how to make a Leave-One-SubGroup-Out.
 
 
 Import librairies
-^^^^^^^^^^^^^^^^^^^^
+##############################
 
 
 
@@ -32,7 +32,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+##############################
 
 
 
@@ -50,14 +50,15 @@ Load HistoricalMap dataset
 
 
 Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#########################
 
 
 
 .. code-block:: python
 
     valid_size = 0.5 # Means 50%
-    LPSGO = LeaveOneSubGroupOut(vector,field,group,n_splits = 10,verbose=False)
+    LOSGO = LeaveOneSubGroupOut(vector,field,group,
+                                verbose=False,random_state=12)
 
 
 
@@ -74,7 +75,7 @@ Create CV
 .. code-block:: python
 
 
-    for tr,vl in LPSGO.split():
+    for tr,vl in LOSGO.split():
         print(tr,vl)
 
 
@@ -87,24 +88,27 @@ Create CV
 
  .. code-block:: none
 
-    [ 0  1  2  3  7  5  6  9 14 16 12 13] [ 8  4 15 10 11]
-    [ 1  2  3  7  8  4  5  6 14 15 10 11] [ 0  9 16 12 13]
-    [ 0  1  3  7  8  4  5  9 15 16 10 13] [ 2  6 14 12 11]
+    [ 1  2  3  7  8  4  6  9 14 16 10 13] [ 0  5 15 12 11]
     [ 0  1  2  3  7  5  6  9 15 16 12 11] [ 8  4 14 10 13]
-    [ 0  2  3  7  8  4  6  9 14 16 10 13] [ 1  5 15 12 11]
-    [ 0  1  2  3  7  4  5  9 15 16 12 11] [ 8  6 14 10 13]
-    [ 1  2  3  7  8  4  6  9 14 16 10 11] [ 0  5 15 12 13]
-    [ 0  1  2  3  7  4  6  9 14 16 12 13] [ 8  5 15 10 11]
-    [ 0  1  2  3  8  5  6  9 14 15 10 13] [ 7  4 16 12 11]
-    [ 0  1  2  3  8  4  5  6 14 16 12 11] [ 7  9 15 10 13]
 
 
-Plot example in image
+Differences with sklearn
+##############################################################################
+ Sklearn do not use subgroups
+ as MuseoToolBox use one group per Y label    
 
 
 
 .. code-block:: python
 
+    from sklearn.model_selection import LeaveOneGroupOut
+    from MuseoToolBox import vectorTools
+
+    Y,Groups = vectorTools.readValuesFromVector(vector,field,group)
+    LOGO = LeaveOneGroupOut()
+    for tr,vl in LOGO.split(X=Y,y=Y,groups=Groups):
+        print(tr,vl)
+    # Plot example in image
     
     import numpy as np
     from matplotlib import pyplot as plt
@@ -119,9 +123,32 @@ Plot example in image
     :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    [ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [0]
+    [ 0  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [1]
+    [ 0  1  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [2]
+    [ 0  1  2  4  5  6  7  8  9 10 11 12 13 14 15 16] [3]
+    [ 0  1  2  3  5  6  7  8  9 10 11 12 13 14 15 16] [4]
+    [ 0  1  2  3  4  6  7  8  9 10 11 12 13 14 15 16] [5]
+    [ 0  1  2  3  4  5  7  8  9 10 11 12 13 14 15 16] [6]
+    [ 0  1  2  3  4  5  6  8  9 10 11 12 13 14 15 16] [7]
+    [ 0  1  2  3  4  5  6  7  9 10 11 12 13 14 15 16] [8]
+    [ 0  1  2  3  4  5  6  7  8 10 11 12 13 14 15 16] [9]
+    [ 0  1  2  3  4  5  6  7  8  9 11 12 13 14 15 16] [10]
+    [ 0  1  2  3  4  5  6  7  8  9 10 12 13 14 15 16] [11]
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 13 14 15 16] [12]
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 14 15 16] [13]
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 15 16] [14]
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 16] [15]
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15] [16]
 
 
-**Total running time of the script:** ( 0 minutes  0.053 seconds)
+**Total running time of the script:** ( 0 minutes  0.806 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

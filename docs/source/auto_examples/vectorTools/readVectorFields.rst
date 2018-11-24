@@ -30,7 +30,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+####################################
 
 
 
@@ -69,7 +69,7 @@ Load HistoricalMap dataset
 
 
 Read values from field 'Class'
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+####################################
 
 
 
@@ -95,7 +95,7 @@ Read values from field 'Class'
 
 
 Read values from field beginning with 'C'
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+#############################################
  As multiple fields can begin with C, function returns a column per field
 
 
@@ -136,7 +136,7 @@ Read values from field beginning with 'C'
     (17, 1)
 
 
-**Total running time of the script:** ( 0 minutes  0.009 seconds)
+**Total running time of the script:** ( 0 minutes  0.012 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vectorTools_readVectorFields.py:
