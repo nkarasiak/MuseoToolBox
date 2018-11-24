@@ -12,7 +12,7 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
 from MuseoToolBox.vectorTools import getDistanceMatrix
@@ -20,7 +20,7 @@ from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
@@ -30,7 +30,7 @@ distanceMatrix = getDistanceMatrix(raster,vector,verbose=False)
 
 ##############################################################################
 # Create CV
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 SLOPO = SpatialLeaveOnePixelOut(None,Y,None,distanceMatrix=distanceMatrix,distanceThresold=100,random_state=12,verbose=False)
 
 ###############################################################################

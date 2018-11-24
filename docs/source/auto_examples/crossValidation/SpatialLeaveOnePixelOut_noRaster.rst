@@ -18,7 +18,7 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 
 
 Import librairies
-^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -36,7 +36,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -64,7 +64,7 @@ Load HistoricalMap dataset
 
 
 Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -108,6 +108,7 @@ Create CV
     (8898,) (5,)
     (8878,) (5,)
     (8435,) (5,)
+    (8130,) (5,)
 
 
 Draw image
@@ -142,7 +143,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.760 seconds)
+**Total running time of the script:** ( 0 minutes  1.802 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut_noRaster.py:

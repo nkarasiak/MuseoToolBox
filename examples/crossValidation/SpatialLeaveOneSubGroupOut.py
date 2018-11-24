@@ -12,13 +12,13 @@ In this example, it shows how to use just once a raster.
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
@@ -26,10 +26,11 @@ subGroup = 'uniquefid'
 
 ##############################################################################
 # Create CV
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
+
 SLOSGO = SpatialLeaveOneSubGroupOut(raster,vector,field,subGroup,
-                                    distanceThresold=100,
-                                    seed=12,verbose=False)
+                                    distanceThresold=20,
+                                    random_state=12,verbose=False)
 
 ###############################################################################
 # .. note::

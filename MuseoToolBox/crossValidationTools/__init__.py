@@ -17,6 +17,7 @@ from __future__ import absolute_import, print_function
 from ..vectorTools import getDistanceMatrix
 from ._sampleSelection import _sampleSelection
 
+
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
                  inVector,
@@ -322,7 +323,7 @@ class RandomCV(_sampleSelection):
         self.verbose = verbose
         self.Y = inVector
         self.inField = inField
-        
+
         self.params = dict(
             train_size=train_size,
             random_state=random_state,

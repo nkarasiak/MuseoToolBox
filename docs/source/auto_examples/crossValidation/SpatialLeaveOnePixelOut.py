@@ -12,20 +12,20 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
 
 ##############################################################################
 # Create CV
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 # n_splits will be the number  of the least populated class
 
 SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,random_state=12)
@@ -34,7 +34,7 @@ SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,rando
 # .. note::
 #    There is no need to specify a bandPrefix. 
 #    If bandPrefix is not specified, scipt will only generate the centroid
-
+SLOPO.get_n_splits()
 for tr,vl in SLOPO.split():
     print(tr.shape,vl.shape)
 

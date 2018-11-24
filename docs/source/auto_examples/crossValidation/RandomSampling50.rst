@@ -16,7 +16,7 @@ This example shows how to make a Random Sampling with
 
 
 Import librairies
-^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -33,7 +33,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -51,7 +51,7 @@ Load HistoricalMap dataset
 
 
 Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -179,7 +179,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.118 seconds)
+**Total running time of the script:** ( 0 minutes  0.173 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

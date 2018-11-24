@@ -18,7 +18,7 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 
 
 Import librairies
-^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -34,7 +34,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -51,8 +51,8 @@ Load HistoricalMap dataset
 
 
 Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- n_splits will be the number  of the least populated class
+-------------------------------------------
+n_splits will be the number  of the least populated class
 
 
 
@@ -84,7 +84,7 @@ Create CV
 
 .. code-block:: python
 
-
+    SLOPO.get_n_splits()
     for tr,vl in SLOPO.split():
         print(tr.shape,vl.shape)
 
@@ -98,6 +98,8 @@ Create CV
 
  .. code-block:: none
 
+    _splits is 1
+    _splits is 8
     (8105,) (5,)
     (10598,) (5,)
     (8710,) (5,)
@@ -140,7 +142,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.679 seconds)
+**Total running time of the script:** ( 0 minutes  2.020 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

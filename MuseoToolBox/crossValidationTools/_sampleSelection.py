@@ -51,7 +51,7 @@ class _sampleSelection:
             self.inVectorIsArray = True
         else:
             self.inVectorIsArray = False
-            
+
         self.extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
         self.driversName = [
             'SQLITE',
@@ -77,11 +77,13 @@ class _sampleSelection:
                 self.Y, self.fts, self.srs = vectorTools.readValuesFromVector(
                     self.Y, self.inField, getFeatures=True, verbose=self.verbose)
 
-            self.crossvalidation = crossValidationClass.randomPerClass#(Y=self.Y, verbose=self.verbose, **self.params)
+            # (Y=self.Y, verbose=self.verbose, **self.params)
+            self.crossvalidation = crossValidationClass.randomPerClass
 
         if self.samplingType == 'Spatial':
             self.__prepareDistanceCV()
-            self.crossvalidation = crossValidationClass.distanceCV#(Y=self.Y, verbose=self.verbose, **self.params)
+            # (Y=self.Y, verbose=self.verbose, **self.params)
+            self.crossvalidation = crossValidationClass.distanceCV
 
         # For Stand Split
         if self.samplingType == 'Group':
@@ -89,8 +91,9 @@ class _sampleSelection:
             if not self.inVectorIsArray:
                 self.Y, self.group, self.fts, self.srs = vectorTools.readValuesFromVector(
                     self.Y, self.inField, self.group, getFeatures=True, verbose=self.verbose)
-            self.params['group'] = self.group                
-            self.crossvalidation = crossValidationClass.groupCV#(Y,S,verbose=self.verbose,**self.params)
+            self.params['group'] = self.group
+            # (Y,S,verbose=self.verbose,**self.params)
+            self.crossvalidation = crossValidationClass.groupCV
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
@@ -115,7 +118,6 @@ class _sampleSelection:
         else:
             if hasattr(self, 'group'):
                 self.params['group'] = self.group
-        
 
     def reinitialize(self):
         _sampleSelection.__init__(self)
@@ -124,18 +126,21 @@ class _sampleSelection:
         print('Museo ToolBox supported extensions are : ')
         for idx, ext in enumerate(self.extensions):
             print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
-    
-    def get_n_splits(self,params=None,X=None,Y=None,groups=None):
-        n_splits = self.crossvalidation(X=None,Y=Y,verbose=self.verbose,**self.params).n_splits
+
+    def get_n_splits(self, params=None, X=None, Y=None, groups=None):
+        n_splits = self.crossvalidation(
+            X=None, Y=Y, verbose=self.verbose, **self.params).n_splits
         return n_splits
-    def split(self,X=None,Y=None,groups=None):
+
+    def split(self, X=None, Y=None, groups=None):
         if Y is None:
             Y = self.Y
-        Y=Y.reshape(-1,1)
+        Y = Y.reshape(-1, 1)
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
-        return self.crossvalidation(X=None,Y=Y,verbose=self.verbose,**self.params)
+        return self.crossvalidation(
+            X=None, Y=Y, verbose=self.verbose, **self.params)
 
     def getCrossValidation(self):
         if self.__alreadyRead:

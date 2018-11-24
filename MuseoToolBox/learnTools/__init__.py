@@ -17,7 +17,7 @@ import numpy as np
 
 
 class learnAndPredict:
-    def __init__(self, n_jobs=1,verbose=False):
+    def __init__(self, n_jobs=1, verbose=False):
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictFromRaster() or predictFromArray().
@@ -85,16 +85,24 @@ class learnAndPredict:
         self.classifier = classifier
         self.param_grid = param_grid
         self.Y = Y
-        
+
         if cv is not None and self.param_grid is None:
-            raise Exception ('Please specify a param_grid if you use a cross-validation method')
+            raise Exception(
+                'Please specify a param_grid if you use a cross-validation method')
         self.X = X
         if scale:
             self.scale = True
             self.scaleX()
             self.X = self.scaleX(X)
 
-        self.__learn__(self.X, self.Y,classifier,param_grid,outStatsFromCV, cv)
+        self.__learn__(
+            self.X,
+            self.Y,
+            classifier,
+            param_grid,
+            outStatsFromCV,
+            cv)
+
     def learnFromRaster(
             self,
             inRaster,
@@ -128,14 +136,16 @@ class learnAndPredict:
             if cv, choose one from vectorTools.samplingMethods and generate it via vectorTools.sampleSelection().
         """
         from ..rasterTools import getSamplesFromROI
-        
+
         self.classifier = classifier
         self.param_grid = param_grid
 
         if cv is not None and self.param_grid is None:
-            raise Exception ('Please specify a param_grid if you use a cross-validation method')
-            
-        X, Y = getSamplesFromROI(inRaster, inVector, inField,verbose=self.verbose)
+            raise Exception(
+                'Please specify a param_grid if you use a cross-validation method')
+
+        X, Y = getSamplesFromROI(
+            inRaster, inVector, inField, verbose=self.verbose)
         self.Y = Y
 
         self.X = X
@@ -145,9 +155,15 @@ class learnAndPredict:
             self.X = self.scaleX(X)
         self.Xpredict = False
 
-        self.__learn__(self.X, self.Y,classifier,param_grid,outStatsFromCV, cv)
+        self.__learn__(
+            self.X,
+            self.Y,
+            classifier,
+            param_grid,
+            outStatsFromCV,
+            cv)
 
-    def __learn__(self, X, Y,classifier,param_grid,outStatsFromCV, cv):
+    def __learn__(self, X, Y, classifier, param_grid, outStatsFromCV, cv):
         self.outStatsFromCV = outStatsFromCV
         from sklearn.model_selection import GridSearchCV
         if cv is None:
@@ -156,12 +172,12 @@ class learnAndPredict:
 
         if outStatsFromCV is True:
             self.CV = []
-            for tr, vl in (cv for cv in cv.split(X,Y) if cv is not None):
+            for tr, vl in (cv for cv in cv.split(X, Y) if cv is not None):
                 self.CV.append((tr, vl))
         else:
             self.CV = cv
-                    
-        if isinstance(param_grid,dict):
+
+        if isinstance(param_grid, dict):
             grid = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
@@ -366,8 +382,8 @@ class learnAndPredict:
         else:
             # ,statsFromConfusionMatrix,
             from ..stats.statsFromConfusionMatrix import confusionMatrix as computeStats
-            
-            results=[]
+
+            results = []
             for train_index, test_index in self.CV:
                 X_train, X_test = self.X[train_index], self.X[test_index]
                 Y_train, Y_test = self.Y[train_index], self.Y[test_index]
@@ -385,8 +401,6 @@ class learnAndPredict:
                 if F1:
                     results.append(cmObject.F1)
                 if nTrain:
-                    results.append(np.unique(Y_train,return_counts=True)[1])
-                
-            
-            
+                    results.append(np.unique(Y_train, return_counts=True)[1])
+
                 yield results

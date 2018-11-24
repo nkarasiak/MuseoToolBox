@@ -12,7 +12,7 @@ In this example, it shows how to use just once a raster.
 
 ##############################################################################
 # Import librairies
-#^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
 from MuseoToolBox.vectorTools import getDistanceMatrix
@@ -20,7 +20,7 @@ from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
@@ -29,17 +29,16 @@ subGroup = 'uniquefid'
 
 ##############################################################################
 # Get distance Matrix and label
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 
 distanceMatrix,distanceLabel = getDistanceMatrix(raster,vector,subGroup)
 X,Y,S = getSamplesFromROI(raster,vector,field,subGroup)
 ##############################################################################
 # Create CV
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# -------------------------------------------
 SLOSGO = SpatialLeaveOneSubGroupOut(inRaster=None,inVector=Y,inField=None,inGroup=S,
                                     distanceMatrix=distanceMatrix,distanceLabel=distanceLabel,distanceThresold=100,
-                                    seed=12)
-
+                                    random_state=12,n_splits=False)
 ###############################################################################
 # .. note::
 #    There is no need to specify a bandPrefix. 

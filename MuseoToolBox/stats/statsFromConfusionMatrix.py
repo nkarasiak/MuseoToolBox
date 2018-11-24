@@ -64,7 +64,8 @@ class confusionMatrix:
 
         # Compute confusion matrix
         for i in range(n):
-            self.confusion_matrix[yp[i].astype(np.int64) - 1, yr[i].astype(np.int64) - 1] += 1
+            self.confusion_matrix[yp[i].astype(
+                np.int64) - 1, yr[i].astype(np.int64) - 1] += 1
 
         # Compute overall accuracy
         if OA:

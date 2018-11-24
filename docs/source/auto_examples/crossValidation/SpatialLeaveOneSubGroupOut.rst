@@ -18,7 +18,7 @@ In this example, it shows how to use just once a raster.
 
 
 Import librairies
-^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -34,7 +34,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
@@ -52,15 +52,16 @@ Load HistoricalMap dataset
 
 
 Create CV
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 
 
 .. code-block:: python
 
+
     SLOSGO = SpatialLeaveOneSubGroupOut(raster,vector,field,subGroup,
-                                        distanceThresold=100,
-                                        seed=12,verbose=False)
+                                        distanceThresold=20,
+                                        random_state=12,verbose=False)
 
 
 
@@ -100,8 +101,9 @@ Create CV
 
  .. code-block:: none
 
-    (6041,) (3329,)
-    (5173,) (4091,)
+    _splits is 2
+    (11201,) (3329,)
+    (11545,) (4091,)
 
 
 Draw image
@@ -139,7 +141,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.584 seconds)
+**Total running time of the script:** ( 0 minutes  1.981 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:

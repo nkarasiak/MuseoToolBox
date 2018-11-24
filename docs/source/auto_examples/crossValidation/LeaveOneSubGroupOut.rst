@@ -15,7 +15,7 @@ This example shows how to make a Leave-One-SubGroup-Out.
 
 
 Import librairies
-##############################
+-------------------------------------------
 
 
 
@@ -32,7 +32,7 @@ Import librairies
 
 
 Load HistoricalMap dataset
-##############################
+-------------------------------------------
 
 
 
@@ -50,11 +50,12 @@ Load HistoricalMap dataset
 
 
 Create CV
-#########################
+-------------------------------------------
 
 
 
 .. code-block:: python
+
 
     valid_size = 0.5 # Means 50%
     LOSGO = LeaveOneSubGroupOut(vector,field,group,
@@ -93,9 +94,9 @@ Create CV
 
 
 Differences with sklearn
-##############################################################################
- Sklearn do not use subgroups
- as MuseoToolBox use one group per Y label    
+-------------------------------------------
+Sklearn do not use subgroups
+as MuseoToolBox use one group per Y label    
 
 
 
@@ -148,7 +149,7 @@ Differences with sklearn
     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15] [16]
 
 
-**Total running time of the script:** ( 0 minutes  0.806 seconds)
+**Total running time of the script:** ( 0 minutes  0.249 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

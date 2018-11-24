@@ -84,14 +84,14 @@ class distanceCV:
         self.stats = stats
         if self.group is False:
             self.minEffectiveClass = min(
-                [len(Y[Y == i]) for i in np.unique(Y)])
+                [len(self.Y[self.Y == i]) for i in np.unique(self.Y)])
         else:
             self.minEffectiveClass = min(
-                [len(np.unique(group[np.where(Y == i)[0]])) for i in np.unique(Y)])
+                [len(np.unique(group[np.where(Y == i)[0]])) for i in np.unique(self.Y)])
 
         if n_splits:
             self.n_splits = n_splits
-            if self.SLOO is True and self.n_splits > self.minEffectiveClass:
+            if self.n_splits > self.minEffectiveClass:
                 print(
                     'Warning : n_splits cannot be superior to the number of unique samples/stand')
                 print(
@@ -100,7 +100,7 @@ class distanceCV:
                 self.n_splits = self.minEffectiveClass
         else:
             self.n_splits = self.minEffectiveClass
-
+        print('_splits is '+str(self.n_splits))
         self.random_state = random_state
         self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
 
@@ -114,7 +114,7 @@ class distanceCV:
     def next(self):
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
         emptyTrain = False
-        if self.iterPos <= self.n_splits:
+        if self.iterPos < self.n_splits:
             np.random.seed(self.random_state)
             self.random_state += 1
             if self.verbose:
@@ -132,7 +132,7 @@ class distanceCV:
                 else:
                     self.ROI = np.random.permutation(CTroi)[0]
 
-                #When doing Leave-One-Out per subgroup
+                # When doing Leave-One-Out per subgroup
                 if self.group is not False:
                     if self.verbose > 1:
                         print('ROI stand is ' +
@@ -149,15 +149,12 @@ class distanceCV:
                     distanceROI = (self.distanceArray[standPos, :])
                     distanceROI = distanceROI[TstandTF]
                     tmpValidation = np.where(
-                            self.group == self.group[self.ROI])[0].astype(np.int64)
+                        self.group == self.group[self.ROI])[0].astype(np.int64)
                     #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
-                    tmpTrain = CT[np.isin(self.group[CT], self.distanceLabel[np.where(
-                    distanceROI >= self.distanceThresold)[0]])].astype(np.int64)
-                    if tmpTrain.shape[0]==0:
+                    tmpTrain = self.distanceLabel[CT][np.where(distanceROI>=self.distanceThresold)[0]].astype(np.int64)
+                    if tmpTrain.shape[0] == 0:
                         emptyTrain = True
-                        print('train is empty...')
-                
-                #When doing Leave-One-Out per pixel
+                # When doing Leave-One-Out per pixel
                 else:
                     self.ROI = np.random.permutation(CT)[0]
 
@@ -167,26 +164,24 @@ class distanceCV:
                         [self.ROI], dtype=np.int64)
                     tmpTrain = CT[distanceROI >
                                   self.distanceThresold]
-                    
-                    if tmpTrain.shape[0]==0:
+
+                    if tmpTrain.shape[0] == 0:
                         emptyTrain = True
-                        print('train is empty;..')
-
                 del CT
-
+                
+                
                 validation = np.concatenate((validation, tmpValidation))
-                train= np.concatenate((train,tmpTrain))
+                train = np.concatenate((train, tmpTrain))
 
             if self.verbose:
                 print('Validation samples : ' + str(len(validation)))
                 print('Training samples : ' + str(len(train)))
 
             self.iterPos += 1
-
             # Mask selected validation
             self.mask[validation] = 0
-            if emptyTrain is True:
-                print('Train has no sample, doing next spatial iteration')
+            if emptyTrain is True and self.iterPos < self.n_splits:
+                print('Train has no samples, doing next spatial iteration')
                 next(self)
             else:
                 return train, validation
@@ -211,16 +206,16 @@ class randomPerClass:
 
     """
 
-    def __init__(self,X=None,Y=None,train_size=0.5,
-                 valid_size=False, n_splits=5, random_state=None,verbose=False):
-        
+    def __init__(self, X=None, Y=None, train_size=0.5,
+                 valid_size=False, n_splits=5, random_state=None, verbose=False):
+
         self.name = 'randomPerClass'
         self.Y = Y
         self.train_size = train_size
         self.n_splits = n_splits
         if n_splits is False:
             self.n_splits = min([len(self.Y == C) for C in np.unique(Y)])
-            
+
         self.random_state = random_state
         self.valid_size = valid_size
         self.iterPos = 1
@@ -234,24 +229,25 @@ class randomPerClass:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits+1:
-            if self.iterPos%2==1 and self.train_size==0.5: self.mask[:]=1
+        if self.iterPos < self.n_splits + 1:
+            if self.iterPos % 2 == 1 and self.train_size == 0.5:
+                self.mask[:] = 1
             np.random.seed(self.random_state)
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.Y):
                 Cpos = np.where(self.Y == C)[0]
                 if self.train_size < 1:
-                    if self.train_size==0.5 and self.iterPos%2==1:
+                    if self.train_size == 0.5 and self.iterPos % 2 == 1:
                         toSplit = int(self.train_size * len(Cpos))
                         tempTrain = np.random.permutation(Cpos)[:toSplit]
                     else:
-                        unMask = np.logical_and(self.Y==C,self.mask==0)
-                        tempTrain = np.where(unMask==1)[0]
-                        
+                        unMask = np.logical_and(self.Y == C, self.mask == 0)
+                        tempTrain = np.where(unMask == 1)[0]
+
                     TF = np.in1d(Cpos, tempTrain, invert=True)
                     tempValid = Cpos[TF]
-                        
+
                 if self.valid_size >= 1:
                     tempValid = np.asarray(
                         [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
@@ -272,7 +268,8 @@ class randomPerClass:
 
 
 class groupCV:
-    def __init__(self, X=None,Y=None,group=None, n_splits=False, valid_size=1, random_state=False,verbose=False):
+    def __init__(self, X=None, Y=None, group=None, n_splits=False,
+                 valid_size=1, random_state=False, verbose=False):
         """Compute train/validation per group.
         Y : array-like
             contains class for each ROI.
@@ -300,8 +297,11 @@ class groupCV:
         else:
             n_splits = []
             for i in np.unique(Y):
-                standNumber = np.unique(np.array(group)[np.where(np.array(Y).flatten() == i)])
-                
+                standNumber = np.unique(
+                    np.array(group)[
+                        np.where(
+                            np.array(Y).flatten() == i)])
+
                 n_splits.append(standNumber.shape[0])
             self.n_splits = np.amin(n_splits)
             if self.n_splits == 1:
@@ -317,9 +317,9 @@ class groupCV:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits+1:
+        if self.iterPos < self.n_splits + 1:
             if self.verbose:
-                print(53*'=')
+                print(53 * '=')
             train = np.array([], dtype=int)
             validation = np.array([], dtype=int)
             for i in self.uniqueY:
@@ -334,22 +334,23 @@ class groupCV:
                     # Reset mask if not enought subgroup available
                     # Appear only if n_splits > min len of subgroup
                     self.mask[:] = 1
-                
+
                 if self.valid_size == 1:
                     selectedStand = np.random.permutation(
                         Ystands[self.mask[Ycurrent]])[0]
-                    
+
                 if self.valid_size < 1:
-                    if self.valid_size == 0.5 and self.iterPos%2==0:
-                        # If 50%, real CV with train/valid reverse at next iter to valid/train
+                    if self.valid_size == 0.5 and self.iterPos % 2 == 0:
+                        # If 50%, real CV with train/valid reverse at next iter
+                        # to valid/train
                         selectedStand = np.random.permutation(
-                                Ystands[self.mask[Ycurrent]])    
+                            Ystands[self.mask[Ycurrent]])
                     else:
                         selectedStand = np.random.permutation(
                             Ystand)[:int(len(Ystand) * self.valid_size)]
                 if self.verbose:
-                    print('For class {}, subgroup {}'.format(i,selectedStand))
-                    
+                    print('For class {}, subgroup {}'.format(i, selectedStand))
+
                 YinSelectedStandt = np.in1d(Ystands, selectedStand)
                 YinSelectedStand = Ycurrent[YinSelectedStandt]
                 validation = np.concatenate(
@@ -359,8 +360,8 @@ class groupCV:
                 YnotInSelectedStand = Ycurrent[YnotInSelectedStandt]
                 train = np.concatenate(
                     (train, np.asarray(YnotInSelectedStand)))
-                
-                if self.valid_size == 1 or self.valid_size==0.5:
+
+                if self.valid_size == 1 or self.valid_size == 0.5:
                     del Ystands, Ycurrent
                     selected = np.in1d(self.group, selectedStand)
                     self.mask[selected] = 0
