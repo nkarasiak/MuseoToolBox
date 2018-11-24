@@ -60,14 +60,13 @@ class _sampleSelection:
             'GPX',
             'GPKG']
 
-        self.__alertMessage = 'It seems you already generated the cross validation. \n Please use reinitialize function if you want to regenerate the cross validation. \n But check if you defined a seed number in your samplingMethods function to have the same output.'
+        self.__alertMessage = 'It seems you already generated the cross validation. \n Please use reinitialize function if you want to regenerate the cross validation. \n But check if you defined a random_state number in your samplingMethods function to have the same output.'
         self.__alreadyRead = False
 
-        # create unique random state if no seed
-        if self.params['seed'] is None:
-            self.seedGenerated = True
+        # create unique random state if no random_state
+        if self.params['random_state'] is None:
             import time
-            self.params['seed'] = int(time.time())
+            self.params['random_state'] = int(time.time())
         # Totally random
         if self.samplingType == 'random':
             if self.inVectorIsArray:

@@ -26,8 +26,7 @@ group = 'uniquefid'
 # Create CV
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 valid_size = 0.5 # Means 50%
-LPSGO = LeaveOneSubGroupOut(vector,field,group,n_splits = 10,
-                          seed=12,verbose=False)
+LPSGO = LeaveOneSubGroupOut(vector,field,group,n_splits = 10,verbose=False)
 
 ###############################################################################
 # .. note::

@@ -29,7 +29,7 @@ class distanceCV:
             useMaxDistance=False,
             stats=False,
             verbose=False,
-            seed=False,
+            random_state=False,
             group=False,
             distanceLabel=False):
         """Compute train/validation array with Spatial distance analysis.
@@ -101,12 +101,7 @@ class distanceCV:
         else:
             self.n_splits = self.minEffectiveClass
 
-        if seed:
-            np.random.seed(seed)
-        else:
-            import time
-            seed = int(time.time())
-        self.seed = seed
+        self.random_state = random_state
         self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
 
     def __iter__(self):
@@ -119,11 +114,11 @@ class distanceCV:
     def next(self):
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
         if self.iterPos < self.n_splits:
-            np.random.seed(self.seed)
-            self.seed += 1
+            np.random.seed(self.random_state)
+            self.random_state += 1
             if self.verbose:
                 print(53 * '=')
-            validation, train = np.array([[], []], dtype=np.uint64)
+            validation, train = np.array([[], []], dtype=np.int64)
             for C in np.unique(self.Y):
                 # Y is True, where C is the unique class
                 CT = np.where(self.Y == C)[0]
@@ -163,20 +158,20 @@ class distanceCV:
                 if self.minTrain is False:
                     if self.group is not False:
                         tmpValidation = np.where(
-                            self.group == self.group[self.ROI])[0].astype(np.uint64)
+                            self.group == self.group[self.ROI])[0].astype(np.int64)
                         #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
                         tmpTrain = CT[np.isin(self.group[CT], self.distanceLabel[np.where(
-                            distanceROI >= self.distanceThresold)[0]])].astype(np.uint64)
+                            distanceROI >= self.distanceThresold)[0]])].astype(np.int64)
 
                     else:
                         tmpValidation = np.array(
-                            [self.ROI], dtype=np.uint64)
+                            [self.ROI], dtype=np.int64)
 
                         tmpTrain = CT[distanceROI >
                                       self.distanceThresold]
 
                 if self.useMaxDistance:
-                    tmpValidation = np.array([self.ROI], dtype=np.uint64)
+                    tmpValidation = np.array([self.ROI], dtype=np.int64)
                     tmpTrain = CT[CT != tmpValidation]
 
                 del CT
@@ -257,13 +252,13 @@ class randomPerClass:
         Percentage to keep for training or integer.
     valid_size : False or int
         1 to do a Leave-One-Out.
-    seed : int.
+    random_state : int.
         random_state for numpy.
 
     """
 
     def __init__(self,X=None,Y=None,train_size=0.5,
-                 valid_size=False, n_splits=5, seed=None,verbose=False):
+                 valid_size=False, n_splits=5, random_state=None,verbose=False):
         
         self.name = 'randomPerClass'
         self.Y = Y
@@ -272,13 +267,8 @@ class randomPerClass:
         if n_splits is False:
             self.n_splits = min([len(self.Y == C) for C in np.unique(Y)])
         self.n_splits+=1 # in order to begin with 1
-        if seed:
-            np.random.seed(seed)
-        else:
-            print('No seed defined, will use time')
-            import time
-            seed = int(time.time())
-        self.seed = seed
+        
+        self.random_state = random_state
         self.valid_size = valid_size
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
@@ -293,7 +283,7 @@ class randomPerClass:
     def next(self):
         if self.iterPos < self.n_splits:
             if self.iterPos%2==1 and self.train_size==0.5: self.mask[:]=1
-            np.random.seed(self.seed)
+            np.random.seed(self.random_state)
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.Y):
@@ -320,7 +310,7 @@ class randomPerClass:
 
                 self.mask[valid] = 0
 
-            self.seed += 1
+            self.random_state += 1
             self.iterPos += 1
 
             return train, valid
@@ -329,7 +319,7 @@ class randomPerClass:
 
 
 class groupCV:
-    def __init__(self, X=None,Y=None,group=None, n_splits=False, valid_size=1, seed=False,verbose=False):
+    def __init__(self, X=None,Y=None,group=None, n_splits=False, valid_size=1, random_state=False,verbose=False):
         """Compute train/validation per group.
         Y : array-like
             contains class for each ROI.
@@ -351,13 +341,7 @@ class groupCV:
         self.valid_size = valid_size
         self.iterPos = 1
 
-        if seed:
-            np.random.seed(seed)
-        else:
-            print('No seed defined, will use time')
-            import time
-            seed = int(time.time())
-        self.seed = seed
+        self.random_state = random_state
         if n_splits:
             self.n_splits = n_splits
         else:
@@ -390,7 +374,7 @@ class groupCV:
                 Ycurrent = np.where(np.array(self.Y) == i)[0]
                 Ystands = np.array(self.group)[Ycurrent]
 
-                np.random.seed(self.seed)
+                np.random.seed(self.random_state)
                 # Only choose an unselected stand
                 #YTF = np.array(self.Y) == i
                 Ystand = np.unique(Ystands)
@@ -430,7 +414,7 @@ class groupCV:
                     self.mask[selected] = 0
                     del selected
 
-                self.seed += 1
+                self.random_state += 1
             self.iterPos += 1
             return train, validation
         else:

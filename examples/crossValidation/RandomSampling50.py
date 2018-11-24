@@ -27,7 +27,7 @@ group = 'uniquefid'
 # Create CV
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RS50 = RandomCV(vector,field,train_size=0.5,n_splits=10,
-                seed=12,verbose=False)
+                random_state=12,verbose=False)
 
 for tr,vl in RS50.split():
     print(tr,vl)

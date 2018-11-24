@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import, print_function
-import numpy as np
+
 from ..vectorTools import getDistanceMatrix
 from ._sampleSelection import _sampleSelection
 
@@ -24,7 +24,7 @@ class LeavePSubGroupOut(_sampleSelection):
                  inGroup=None,
                  valid_size=0.5,
                  n_splits=5,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Generate a Cross-Validation using subgroup (each group belong to a unique label).
@@ -42,8 +42,8 @@ class LeavePSubGroupOut(_sampleSelection):
         n_splits : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of times given in n_splits.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
 
         Returns
         -------
@@ -65,7 +65,7 @@ class LeavePSubGroupOut(_sampleSelection):
         self.params = dict(
             valid_size=valid_size,
             n_splits=n_splits,
-            seed=seed)
+            random_state=random_state)
         _sampleSelection.__init__(self)
 
 
@@ -75,7 +75,7 @@ class LeaveOneSubGroupOut(_sampleSelection):
                  inField=None,
                  inGroup=None,
                  n_splits=False,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Generate a Cross-Validation by subgroup.
@@ -91,8 +91,8 @@ class LeaveOneSubGroupOut(_sampleSelection):
         n_splits : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of times given in n_splits.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
 
 
         Returns
@@ -108,7 +108,7 @@ class LeaveOneSubGroupOut(_sampleSelection):
         self.params = dict(
             valid_size=1,
             n_splits=n_splits,
-            seed=seed)
+            random_state=random_state)
         _sampleSelection.__init__(self)
 
 
@@ -120,7 +120,7 @@ class SpatialLeavePSideOut(_sampleSelection):
                  distanceMatrix=None,
                  minTrain=None,
                  n_splits=False,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Generate a Cross-Validation using the farthest distance between the training and validation samples.
@@ -138,8 +138,8 @@ class SpatialLeavePSideOut(_sampleSelection):
         maxIter : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of groups given in maxIter.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
 
         Returns
         -------
@@ -156,7 +156,7 @@ class SpatialLeavePSideOut(_sampleSelection):
             distanceMatrix=distanceMatrix,
             minTrain=minTrain,
             n_splits=n_splits,
-            seed=seed,
+            random_state=random_state,
             furtherSplit=True)
         _sampleSelection.__init__(self)
 
@@ -171,7 +171,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                  distanceMatrix=None,
                  distanceLabel=None,
                  n_splits=False,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
@@ -193,8 +193,8 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
         n_splits : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of groups given in maxIter.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
 
         Returns
         -------
@@ -222,7 +222,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
             distanceLabel=distanceLabel,
             SLOO=True,
             n_splits=n_splits,
-            seed=seed)
+            random_state=random_state)
         _sampleSelection.__init__(self)
 
 
@@ -234,7 +234,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
                  distanceThresold=None,
                  distanceMatrix=None,
                  n_splits=False,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Generate a Cross-Validation with Spatial Leave-One-Out method.
@@ -256,8 +256,8 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         n_splits : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of groups given in maxIter.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
 
         Returns
         --------
@@ -285,7 +285,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
             minTrain=False,
             SLOO=True,
             n_splits=n_splits,
-            seed=seed)
+            random_state=random_state)
         _sampleSelection.__init__(self)
 
 
@@ -295,7 +295,7 @@ class RandomCV(_sampleSelection):
                  inField=None,
                  train_size=0.5,
                  n_splits=5,
-                 seed=None,
+                 random_state=None,
                  verbose=False):
         """
         Get parameters to have a randomCV.
@@ -308,10 +308,10 @@ class RandomCV(_sampleSelection):
         nSamples: int or str. Default None.
             If int, the max samples per class.
             If str, only 'smallest' to sample as the smallest class.
-        seed : int, default None.
-            If seed, int, to repeat exactly the same random.
+        random_state : int, default None.
+            If random_state, int, to repeat exactly the same random.
         n_splits : int, default 5.
-            Number of iteration of the random sampling (will add 1 to the seed at each iteration if defined).
+            Number of iteration of the random sampling (will add 1 to the random_state at each iteration if defined).
 
         Returns
         --------
@@ -325,6 +325,6 @@ class RandomCV(_sampleSelection):
         
         self.params = dict(
             train_size=train_size,
-            seed=seed,
+            random_state=random_state,
             n_splits=n_splits)
         _sampleSelection.__init__(self)

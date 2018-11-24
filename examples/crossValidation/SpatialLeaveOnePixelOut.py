@@ -28,7 +28,7 @@ field = 'Class'
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,seed=12)
+SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,random_state=12)
 
 ###############################################################################
 # .. note::

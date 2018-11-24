@@ -10,9 +10,14 @@ MuseoToolBox.egg-info/
 cv_*.sqlite
 
 # sphinx-gallery temp files
+# Sphinx documentation
+docs/source/_build/
+docs/source/gen_modules
+docs/source/_autosummary
+docs/source/_static
 docs/source/auto_examples/*.pickle
 docs/source/auto_examples/*.md5
-docs/auto_examples/
+docs/source/auto_examples/*
 docs/modules/
 
 # Distribution / packaging

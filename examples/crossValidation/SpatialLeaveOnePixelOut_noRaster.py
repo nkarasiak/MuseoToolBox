@@ -31,7 +31,7 @@ distanceMatrix = getDistanceMatrix(raster,vector,verbose=False)
 ##############################################################################
 # Create CV
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SLOPO = SpatialLeaveOnePixelOut(None,Y,None,distanceMatrix=distanceMatrix,distanceThresold=100,seed=12,verbose=False)
+SLOPO = SpatialLeaveOnePixelOut(None,Y,None,distanceMatrix=distanceMatrix,distanceThresold=100,random_state=12,verbose=False)
 
 ###############################################################################
 # .. note::

@@ -28,7 +28,7 @@ group = 'uniquefid'
 valid_size = 0.5 # Means 50%
 LPSGO = LeavePSubGroupOut(vector,field,group,
                           valid_size = valid_size,n_splits = 10,
-                          seed=12,verbose=False)
+                          random_state=12,verbose=False)
 
 ###############################################################################
 # .. note::
