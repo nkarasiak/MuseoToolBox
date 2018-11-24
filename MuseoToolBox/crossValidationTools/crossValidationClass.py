@@ -113,7 +113,8 @@ class distanceCV:
 
     def next(self):
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
-        if self.iterPos < self.n_splits:
+        emptyTrain = False
+        if self.iterPos <= self.n_splits:
             np.random.seed(self.random_state)
             self.random_state += 1
             if self.verbose:
@@ -131,6 +132,7 @@ class distanceCV:
                 else:
                     self.ROI = np.random.permutation(CTroi)[0]
 
+                #When doing Leave-One-Out per subgroup
                 if self.group is not False:
                     if self.verbose > 1:
                         print('ROI stand is ' +
@@ -139,10 +141,6 @@ class distanceCV:
                               str(C))
 
                     self.ROI = np.random.permutation(CT)[0]
-                else:
-                    self.ROI = np.random.permutation(CT)[0]
-
-                if self.group is not False:
                     Tstand = self.distanceLabel[np.isin(
                         self.distanceLabel, np.unique(self.group[CT]))]
                     TstandTF = np.isin(self.distanceLabel, Tstand)
@@ -150,92 +148,48 @@ class distanceCV:
                         self.group[self.ROI] == self.distanceLabel)[0][0]
                     distanceROI = (self.distanceArray[standPos, :])
                     distanceROI = distanceROI[TstandTF]
-
+                    tmpValidation = np.where(
+                            self.group == self.group[self.ROI])[0].astype(np.int64)
+                    #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
+                    tmpTrain = CT[np.isin(self.group[CT], self.distanceLabel[np.where(
+                    distanceROI >= self.distanceThresold)[0]])].astype(np.int64)
+                    if tmpTrain.shape[0]==0:
+                        emptyTrain = True
+                        print('train is empty...')
+                
+                #When doing Leave-One-Out per pixel
                 else:
+                    self.ROI = np.random.permutation(CT)[0]
+
                     distanceROI = (self.distanceArray[int(self.ROI), :])[
                         CT]  # get line of distance for specific ROI
-
-                if self.minTrain is False:
-                    if self.group is not False:
-                        tmpValidation = np.where(
-                            self.group == self.group[self.ROI])[0].astype(np.int64)
-                        #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
-                        tmpTrain = CT[np.isin(self.group[CT], self.distanceLabel[np.where(
-                            distanceROI >= self.distanceThresold)[0]])].astype(np.int64)
-
-                    else:
-                        tmpValidation = np.array(
-                            [self.ROI], dtype=np.int64)
-
-                        tmpTrain = CT[distanceROI >
-                                      self.distanceThresold]
-
-                if self.useMaxDistance:
-                    tmpValidation = np.array([self.ROI], dtype=np.int64)
-                    tmpTrain = CT[CT != tmpValidation]
+                    tmpValidation = np.array(
+                        [self.ROI], dtype=np.int64)
+                    tmpTrain = CT[distanceROI >
+                                  self.distanceThresold]
+                    
+                    if tmpTrain.shape[0]==0:
+                        emptyTrain = True
+                        print('train is empty;..')
 
                 del CT
 
                 validation = np.concatenate((validation, tmpValidation))
-                train = np.concatenate((train, tmpTrain))
-            """
-            TODO : Add stats
-            if self.stats:
+                train= np.concatenate((train,tmpTrain))
 
-                initTrain = len(tmpTrain)
-                initValid = len(tmpValidation)
-
-                #CTtemp = sp.where(self.label[trained]==C)[0]
-                CTdistTrain = np.array(self.distanceArray[train])[
-                    :, train]
-                if len(CTdistTrain) > 1:
-                    CTdistTrain = np.mean(
-                        np.triu(CTdistTrain)[
-                            np.triu(CTdistTrain) != 0])
-
-                #CTtemp = sp.where(self.label[validate]==C)[0]
-                CTdistValid = np.array(self.distanceArray[validation])[
-                    :, validation]
-                CTdistValid = np.mean(
-                    np.triu(CTdistValid)[
-                        np.triu(CTdistValid) != 0])
-                Cstats.append([self.distanceThresold,
-                               self.minTrain,
-                               C,
-                               initValid,
-                               initTrain,
-                               len(train) - initTrain,
-                               CTdistTrain,
-                               CTdistValid])
-            """
             if self.verbose:
                 print('Validation samples : ' + str(len(validation)))
                 print('Training samples : ' + str(len(train)))
 
-            """
-            TODO : Add stats
-            if self.stats is True:
-                np.savetxt(
-                    self.stats,
-                    Cstats,
-                    fmt='%d',
-                    delimiter=',',
-                    header="Distance,Percent Train, Label,Init train,Init valid,Ntrain Add,Mean DisT Train,Mean Dist Valid")
-            """
-
             self.iterPos += 1
 
-            # Remove ROI for further selection ROI (but keep in Y list)
+            # Mask selected validation
             self.mask[validation] = 0
-
-            """
-            TODO : Add stats
-            if self.stats and self.stats is True:
-                return train, validation, Cstats
+            if emptyTrain is True:
+                print('Train has no sample, doing next spatial iteration')
+                next(self)
             else:
-            """
-            return train, validation
-
+                return train, validation
         else:
             raise StopIteration()
 
@@ -266,8 +220,7 @@ class randomPerClass:
         self.n_splits = n_splits
         if n_splits is False:
             self.n_splits = min([len(self.Y == C) for C in np.unique(Y)])
-        self.n_splits+=1 # in order to begin with 1
-        
+            
         self.random_state = random_state
         self.valid_size = valid_size
         self.iterPos = 1
@@ -281,7 +234,7 @@ class randomPerClass:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits:
+        if self.iterPos < self.n_splits+1:
             if self.iterPos%2==1 and self.train_size==0.5: self.mask[:]=1
             np.random.seed(self.random_state)
             train, valid = [np.asarray(
@@ -354,7 +307,6 @@ class groupCV:
             if self.n_splits == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-        self.n_splits += 1 # in order to begin with iterPos = 1
         self.mask = np.ones(np.asarray(group).shape, dtype=bool)
 
     def __iter__(self):
@@ -365,7 +317,7 @@ class groupCV:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits:
+        if self.iterPos < self.n_splits+1:
             if self.verbose:
                 print(53*'=')
             train = np.array([], dtype=int)

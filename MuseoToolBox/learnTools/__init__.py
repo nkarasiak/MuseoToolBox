@@ -156,7 +156,7 @@ class learnAndPredict:
 
         if outStatsFromCV is True:
             self.CV = []
-            for tr, vl in cv.split(X,Y):
+            for tr, vl in (cv for cv in cv.split(X,Y) if cv is not None):
                 self.CV.append((tr, vl))
         else:
             self.CV = cv
@@ -337,7 +337,8 @@ class learnAndPredict:
             confusionMatrix=True,
             kappa=False,
             OA=False,
-            F1=False):
+            F1=False,
+            nTrain=False):
         """
         Extract statistics from the Cross-Validation.
         If Cross-Validation is 5-fold, getStatsFromCV will return 5 confusion matrix, 5 kappas...
@@ -352,6 +353,8 @@ class learnAndPredict:
             If True, will return Overall Accuracy/
         F1 : bool, default False.
             If True, will return F1 Score per class.
+        nTrain : bool, default False.
+            If True, will return numbe of train samples ordered asc. per label.
 
         Returns
         -------
@@ -363,10 +366,8 @@ class learnAndPredict:
         else:
             # ,statsFromConfusionMatrix,
             from ..stats.statsFromConfusionMatrix import confusionMatrix as computeStats
-            CM = []
-            kappas = []
-            OAs = []
-            F1s = []
+            
+            results=[]
             for train_index, test_index in self.CV:
                 X_train, X_test = self.X[train_index], self.X[test_index]
                 Y_train, Y_test = self.Y[train_index], self.Y[test_index]
@@ -375,22 +376,17 @@ class learnAndPredict:
                 X_pred = self.model.predict(X_test)
                 cmObject = computeStats(
                     Y_test, X_pred, kappa=kappa, OA=OA, F1=F1)
-    
-                CM.append([cmObject.confusion_matrix])
+                if confusionMatrix:
+                    results.append(cmObject.confusion_matrix)
                 if kappa:
-                    kappas.append(cmObject.Kappa)
+                    results.append(cmObject.Kappa)
                 if OA:
-                    OAs.append(cmObject.OA)
+                    results.append(cmObject.OA)
                 if F1:
-                    F1s.append(cmObject.F1)
-
-            toReturn = []
-            if confusionMatrix:
-                toReturn.append(CM)
-            if kappa is True:
-                toReturn.append(kappas)
-            if OA is True:
-                toReturn.append(OAs)
-            if F1 is True:
-                toReturn.append(F1s)
-            return toReturn
+                    results.append(cmObject.F1)
+                if nTrain:
+                    results.append(np.unique(Y_train,return_counts=True)[1])
+                
+            
+            
+                yield results
