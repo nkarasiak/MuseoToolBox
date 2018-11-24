@@ -5,6 +5,10 @@
 *.swp
 __pycache__
 
+# nb
+*.pickle
+*.py.md5
+
 # MTB
 MuseoToolBox.egg-info/
 cv_*.sqlite
@@ -15,8 +19,8 @@ docs/source/_build/
 docs/source/gen_modules
 docs/source/_autosummary
 docs/source/_static
-docs/source/auto_examples/*.pickle
-docs/source/auto_examples/*.md5
+docs/source/auto_examples/**.pickle
+docs/source/auto_examples/**.md5
 docs/modules/
 
 # Distribution / packaging
