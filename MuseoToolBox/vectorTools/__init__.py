@@ -21,7 +21,7 @@ from .sampleExtraction import sampleExtraction
 from .. import rasterTools
 
 
-def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=1):
+def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
     """
     Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
 

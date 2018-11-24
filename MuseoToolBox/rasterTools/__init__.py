@@ -188,9 +188,9 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     else:
         onlyCoords = False
     if 'verbose' in kwargs:
-        __verbose = kwargs['verbose']
+        verbose = kwargs['verbose']
     else:
-        __verbose = 1
+        verbose = 1
 
     # Get block size
     band = raster.GetRasterBand(1)
@@ -217,7 +217,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         0, nFields)  # now support multiple fields
 
     # for progress bar
-    if __verbose:
+    if verbose:
         total = 100
         pb = progressBar(total, message='Reading raster values... ')
 
@@ -233,7 +233,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 cols = nc - j
 
             # for progressbar
-            if __verbose:
+            if verbose:
                 currentPosition = (i / nl) * 100
                 pb.addPosition(currentPosition)
             # Load the reference data
@@ -273,7 +273,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                         raise MemoryError(
                             'Impossible to allocate memory: ROI too big')
 
-    if __verbose:
+    if verbose:
         pb.addPosition(100)
     # Clean/Close variables
     # del Xtp,band

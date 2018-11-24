@@ -100,7 +100,7 @@ class distanceCV:
                 self.n_splits = self.minEffectiveClass
         else:
             self.n_splits = self.minEffectiveClass
-        
+
         if self.verbose:
             print('n_splits:'+str(self.n_splits))
         self.random_state = random_state
@@ -150,10 +150,15 @@ class distanceCV:
                         self.group[self.ROI] == self.distanceLabel)[0][0]
                     distanceROI = (self.distanceArray[standPos, :])
                     distanceROI = distanceROI[TstandTF]
-                    tmpValidation = np.where(
+                    tmpValid = np.where(
                         self.group == self.group[self.ROI])[0].astype(np.int64)
                     #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
-                    tmpTrain = self.distanceLabel[CT][np.where(distanceROI>=self.distanceThresold)[0]].astype(np.int64)
+                    tmpTrainGroup = np.unique(
+                        self.distanceLabel[CT][np.where(distanceROI >= self.distanceThresold)[0]])
+                    tmpTrainGroup = tmpTrainGroup[tmpTrainGroup !=
+                                                  self.group[self.ROI]]
+                    tmpTrain = np.in1d(self.group, tmpTrainGroup).flatten()
+
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
                 # When doing Leave-One-Out per pixel
@@ -162,7 +167,7 @@ class distanceCV:
 
                     distanceROI = (self.distanceArray[int(self.ROI), :])[
                         CT]  # get line of distance for specific ROI
-                    tmpValidation = np.array(
+                    tmpValid = np.array(
                         [self.ROI], dtype=np.int64)
                     tmpTrain = CT[distanceROI >
                                   self.distanceThresold]
@@ -170,9 +175,12 @@ class distanceCV:
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
                 del CT
-                
-                
-                validation = np.concatenate((validation, tmpValidation))
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                    raise IndexError(
+                        'Selected labels do not correspond to selected class, please leave feedback')
+
+                #
+                validation = np.concatenate((validation, tmpValid))
                 train = np.concatenate((train, tmpTrain))
 
             if self.verbose:
@@ -242,22 +250,25 @@ class randomPerClass:
                 if self.train_size < 1:
                     if self.train_size == 0.5 and self.iterPos % 2 == 1:
                         toSplit = int(self.train_size * len(Cpos))
-                        tempTrain = np.random.permutation(Cpos)[:toSplit]
+                        tmpTrain = np.random.permutation(Cpos)[:toSplit]
                     else:
                         unMask = np.logical_and(self.Y == C, self.mask == 0)
-                        tempTrain = np.where(unMask == 1)[0]
+                        tmpTrain = np.where(unMask == 1)[0]
 
-                    TF = np.in1d(Cpos, tempTrain, invert=True)
-                    tempValid = Cpos[TF]
+                    TF = np.in1d(Cpos, tmpTrain, invert=True)
+                    tmpValid = Cpos[TF]
 
                 if self.valid_size >= 1:
-                    tempValid = np.asarray(
+                    tmpValid = np.asarray(
                         [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
-                    TF = np.in1d(Cpos, tempValid, invert=True)
-                    tempTrain = Cpos[TF]
+                    TF = np.in1d(Cpos, tmpValid, invert=True)
+                    tmpTrain = Cpos[TF]
 
-                train = np.concatenate((train, tempTrain))
-                valid = np.concatenate((valid, tempValid))
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                    raise IndexError(
+                        'Selected labels do not correspond to selected class, please leave feedback')
+                train = np.concatenate((train, tmpTrain))
+                valid = np.concatenate((valid, tmpValid))
 
                 self.mask[valid] = 0
 
@@ -324,8 +335,8 @@ class groupCV:
                 print(53 * '=')
             train = np.array([], dtype=int)
             validation = np.array([], dtype=int)
-            for i in self.uniqueY:
-                Ycurrent = np.where(np.array(self.Y) == i)[0]
+            for C in self.uniqueY:
+                Ycurrent = np.where(np.array(self.Y) == C)[0]
                 Ystands = np.array(self.group)[Ycurrent]
 
                 np.random.seed(self.random_state)
@@ -351,17 +362,17 @@ class groupCV:
                         selectedStand = np.random.permutation(
                             Ystand)[:int(len(Ystand) * self.valid_size)]
                 if self.verbose:
-                    print('For class {}, subgroup {}'.format(i, selectedStand))
+                    print('For class {}, subgroup {}'.format(C, selectedStand))
 
                 YinSelectedStandt = np.in1d(Ystands, selectedStand)
-                YinSelectedStand = Ycurrent[YinSelectedStandt]
+                tmpValid = Ycurrent[YinSelectedStandt]
                 validation = np.concatenate(
-                    (validation, np.asarray(YinSelectedStand)))
+                    (validation, tmpValid))
 
                 YnotInSelectedStandt = np.invert(YinSelectedStandt)
-                YnotInSelectedStand = Ycurrent[YnotInSelectedStandt]
+                tmpTrain = Ycurrent[YnotInSelectedStandt]
                 train = np.concatenate(
-                    (train, np.asarray(YnotInSelectedStand)))
+                    (train, tmpTrain))
 
                 if self.valid_size == 1 or self.valid_size == 0.5:
                     del Ystands, Ycurrent
@@ -369,6 +380,11 @@ class groupCV:
                     self.mask[selected] = 0
                     del selected
 
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                    raise IndexError(
+                        'Selected labels do not correspond to selected class, please leave feedback')
+
+                print(20*"=")
                 self.random_state += 1
             self.iterPos += 1
             return train, validation

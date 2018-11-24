@@ -13,7 +13,7 @@ Spatial Leave-One-SubGroup-Out (SLOSGO)
 This example shows how to make a Spatial Leave-One-Out using subgroup,
 called here a Spatial Leave-One-SubGroup-Out.
 
-In this example, it shows how to use just once a raster.
+In this example, it shows how to use just once a raster.()
 
 
 
@@ -101,9 +101,8 @@ Create CV
 
  .. code-block:: none
 
-    _splits is 2
-    (11201,) (3329,)
-    (11545,) (4091,)
+    (63235,) (3329,)
+    (63235,) (4091,)
 
 
 Draw image
@@ -141,7 +140,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.981 seconds)
+**Total running time of the script:** ( 0 minutes  2.855 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:

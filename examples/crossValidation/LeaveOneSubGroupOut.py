@@ -29,7 +29,6 @@ group = 'uniquefid'
 valid_size = 0.5 # Means 50%
 LOSGO = LeaveOneSubGroupOut(vector,field,group,
                             verbose=False,random_state=12)
-
 ###############################################################################
 # .. note::
 #    There is no need to specify a bandPrefix. 
@@ -37,7 +36,7 @@ LOSGO = LeaveOneSubGroupOut(vector,field,group,
 
 for tr,vl in LOSGO.split():
     print(tr,vl)
-
+        
 ###############################################################################
 # Differences with sklearn
 # -------------------------------------------

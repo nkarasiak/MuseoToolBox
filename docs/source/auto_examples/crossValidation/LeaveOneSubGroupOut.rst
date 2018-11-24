@@ -66,7 +66,6 @@ Create CV
 
 
 
-
 .. note::
    There is no need to specify a bandPrefix. 
    If bandPrefix is not specified, scipt will only generate the centroid
@@ -78,7 +77,7 @@ Create CV
 
     for tr,vl in LOSGO.split():
         print(tr,vl)
-
+        
 
 
 
@@ -89,7 +88,17 @@ Create CV
 
  .. code-block:: none
 
+    ====================
+    ====================
+    ====================
+    ====================
+    ====================
     [ 1  2  3  7  8  4  6  9 14 16 10 13] [ 0  5 15 12 11]
+    ====================
+    ====================
+    ====================
+    ====================
+    ====================
     [ 0  1  2  3  7  5  6  9 15 16 12 11] [ 8  4 14 10 13]
 
 
@@ -149,7 +158,7 @@ as MuseoToolBox use one group per Y label
     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15] [16]
 
 
-**Total running time of the script:** ( 0 minutes  0.249 seconds)
+**Total running time of the script:** ( 0 minutes  0.801 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

@@ -6,7 +6,7 @@ Spatial Leave-One-SubGroup-Out (SLOSGO)
 This example shows how to make a Spatial Leave-One-Out using subgroup,
 called here a Spatial Leave-One-SubGroup-Out.
 
-In this example, it shows how to use just once a raster.
+In this example, it shows how to use just once a raster.()
 
 """
 

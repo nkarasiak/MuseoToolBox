@@ -166,11 +166,7 @@ class learnAndPredict:
     def __learn__(self, X, Y, classifier, param_grid, outStatsFromCV, cv):
         self.outStatsFromCV = outStatsFromCV
         from sklearn.model_selection import GridSearchCV
-        if cv is None:
-            from sklearn.model_selection import StratifiedKFold
-            cv = StratifiedKFold(n_splits=3)
-
-        if outStatsFromCV is True:
+        if outStatsFromCV is True and cv is not None:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(X, Y) if cv is not None):
                 self.CV.append((tr, vl))
