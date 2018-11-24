@@ -383,8 +383,8 @@ class learnAndPredict:
             # ,statsFromConfusionMatrix,
             from ..stats.statsFromConfusionMatrix import confusionMatrix as computeStats
 
-            results = []
             for train_index, test_index in self.CV:
+                results = []
                 X_train, X_test = self.X[train_index], self.X[test_index]
                 Y_train, Y_test = self.Y[train_index], self.Y[test_index]
 
