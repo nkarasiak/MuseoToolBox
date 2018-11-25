@@ -20,7 +20,7 @@ from ._sampleSelection import _sampleSelection
 
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inVector,
+                 inVector=None,
                  inField=None,
                  inGroup=None,
                  valid_size=0.5,
@@ -61,7 +61,7 @@ class LeavePSubGroupOut(_sampleSelection):
                 'Percent must be between 0 and 1 and must be a float')
         self.Y = inVector
         self.inField = inField
-        self.group = inGroup
+        self.groups = inGroup
 
         self.params = dict(
             valid_size=valid_size,
@@ -72,7 +72,7 @@ class LeavePSubGroupOut(_sampleSelection):
 
 class LeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inVector,
+                 inVector=None,
                  inField=None,
                  inGroup=None,
                  n_splits=False,
@@ -116,7 +116,7 @@ class LeaveOneSubGroupOut(_sampleSelection):
 class SpatialLeavePSideOut(_sampleSelection):
     def __init__(self,
                  inRaster,
-                 inVector,
+                 inVector=None,
                  inField=None,
                  distanceMatrix=None,
                  minTrain=None,
@@ -164,8 +164,8 @@ class SpatialLeavePSideOut(_sampleSelection):
 
 class SpatialLeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inRaster,
-                 inVector,
+                 inRaster=None,
+                 inVector=None,
                  inField=None,
                  inGroup=None,
                  distanceThresold=None,
@@ -292,7 +292,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 
 class RandomCV(_sampleSelection):
     def __init__(self,
-                 inVector,
+                 inVector=None,
                  inField=None,
                  train_size=0.5,
                  n_splits=5,

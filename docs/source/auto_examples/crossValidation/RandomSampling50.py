@@ -13,7 +13,7 @@ This example shows how to make a Random Sampling with
 # -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import RandomCV
-from MuseoToolBox import datasets
+from MuseoToolBox import datasets,rasterTools,vectorTools
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -21,33 +21,30 @@ from MuseoToolBox import datasets
 
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
-group = 'uniquefid'
+y = vectorTools.readValuesFromVector(vector,field)
 
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(vector,field,train_size=0.5,n_splits=10,
+RS50 = RandomCV(train_size=0.5,n_splits=10,
                 random_state=12,verbose=False)
-
-for tr,vl in RS50.split():
+for tr,vl in RS50.split(X=None,y=y):
     print(tr,vl)
-    
-######################################
-# Show label of eahc train/validation
-from MuseoToolBox import vectorTools
-Y=vectorTools.readValuesFromVector(vector,field)
-for tr,vl in RS50.split():
-    print(Y[tr],Y[vl])
 
 ##############################################################################
+# Show label
+for tr,vl in RS50.split(X=None,y=y):
+    print(y[tr],y[vl])
+    
+##############################################################################
 # .. note::
-#    The first one is made with polygon id only.
+#    The first one is made with polygon only.
 #    When learning/predicting, all pixels will be taken in account
+#    TO generate a full X and y labels, extract samples from ROI
 
-from MuseoToolBox import rasterTools
-X,Y = rasterTools.getSamplesFromROI(raster,vector,field)
+X,y=rasterTools.getSamplesFromROI(raster,vector,field)
 
-for tr,vl in RS50.split(X,Y):
+for tr,vl in RS50.split(X,y):
     print(tr.shape,vl.shape)
     
     

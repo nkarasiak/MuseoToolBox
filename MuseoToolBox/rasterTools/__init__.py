@@ -148,12 +148,15 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         The label of the pixel
 
     """
+    if 'verbose' in kwargs.keys():
+        verbose = kwargs['verbose']
+    else:
+        verbose = False
     # Open Raster
     raster = gdal.Open(inRaster, gdal.GA_ReadOnly)
     if raster is None:
-        print('Impossible to open ' + inRaster)
+        raise ImportError('Impossible to open ' + inRaster)
         # exit()
-
     # Convert vector to raster
 
     nFields = len(fields)
@@ -162,7 +165,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     rois = []
     temps = []
     for field in fields:
-        pushFeedback("Values from '{}' field will be extracted".format(field))
+        if verbose:
+            pushFeedback("Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
         rstField = rasterize(inRaster, inVector, field,
                              rstField, gdal.GDT_Float64)

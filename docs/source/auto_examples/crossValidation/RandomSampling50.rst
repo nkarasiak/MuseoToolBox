@@ -24,7 +24,7 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import RandomCV
-    from MuseoToolBox import datasets
+    from MuseoToolBox import datasets,rasterTools,vectorTools
 
 
 
@@ -42,7 +42,7 @@ Load HistoricalMap dataset
 
     raster,vector = datasets.getHistoricalMap()
     field = 'Class'
-    group = 'uniquefid'
+    y = vectorTools.readValuesFromVector(vector,field)
 
 
 
@@ -57,12 +57,11 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(vector,field,train_size=0.5,n_splits=10,
+    RS50 = RandomCV(train_size=0.5,n_splits=10,
                     random_state=12,verbose=False)
-
-    for tr,vl in RS50.split():
+    for tr,vl in RS50.split(X=None,y=y):
         print(tr,vl)
-    
+
 
 
 
@@ -85,17 +84,15 @@ Create CV
     [ 2  3  8  4  5 15 16 10 11] [ 0  1  7  6  9 14 12 13]
 
 
-Show label of eahc train/validation
+Show label
 
 
 
 .. code-block:: python
 
-    from MuseoToolBox import vectorTools
-    Y=vectorTools.readValuesFromVector(vector,field)
-    for tr,vl in RS50.split():
-        print(Y[tr],Y[vl])
-
+    for tr,vl in RS50.split(X=None,y=y):
+        print(y[tr],y[vl])
+    
 
 
 
@@ -119,18 +116,18 @@ Show label of eahc train/validation
 
 
 .. note::
-   The first one is made with polygon id only.
+   The first one is made with polygon only.
    When learning/predicting, all pixels will be taken in account
+   TO generate a full X and y labels, extract samples from ROI
 
 
 
 .. code-block:: python
 
 
-    from MuseoToolBox import rasterTools
-    X,Y = rasterTools.getSamplesFromROI(raster,vector,field)
+    X,y=rasterTools.getSamplesFromROI(raster,vector,field)
 
-    for tr,vl in RS50.split(X,Y):
+    for tr,vl in RS50.split(X,y):
         print(tr.shape,vl.shape)
     
     
@@ -144,8 +141,7 @@ Show label of eahc train/validation
 
  .. code-block:: none
 
-    Values from 'Class' field will be extracted
-    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     (6322,) (6325,)
     (6325,) (6322,)
     (6322,) (6325,)
@@ -179,7 +175,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.173 seconds)
+**Total running time of the script:** ( 0 minutes  0.141 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

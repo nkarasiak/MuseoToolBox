@@ -20,8 +20,8 @@ class distanceCV:
     def __init__(
             self,
             X=None,
+            y=None,
             distanceMatrix=None,
-            Y=None,
             distanceThresold=1000,
             minTrain=False,
             SLOO=True,
@@ -30,7 +30,7 @@ class distanceCV:
             stats=False,
             verbose=False,
             random_state=False,
-            group=False,
+            groups=False,
             distanceLabel=False):
         """Compute train/validation array with Spatial distance analysis.
 
@@ -67,27 +67,27 @@ class distanceCV:
         self.name = 'SLOO'
         self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
-        self.Y = np.copy(Y)
+        self.Y = y
         self.iterPos = 0
         self.minTrain = minTrain
         self.distanceLabel = distanceLabel
         if self.minTrain is None:
             self.minTrain = -1
 
-        self.group = group
-        if self.group is not False and self.distanceLabel is False:
+        self.groups = groups
+        if self.groups is not False and self.distanceLabel is False:
             raise Exception(
                 'You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
         self.useMaxDistance = useMaxDistance
         self.stats = stats
-        if self.group is False:
+        if self.groups is False:
             self.minEffectiveClass = min(
                 [len(self.Y[self.Y == i]) for i in np.unique(self.Y)])
         else:
             self.minEffectiveClass = min(
-                [len(np.unique(group[np.where(Y == i)[0]])) for i in np.unique(self.Y)])
+                [len(np.unique(groups[np.where(y == i)[0]])) for i in np.unique(self.Y)])
 
         if n_splits:
             self.n_splits = n_splits
@@ -135,29 +135,29 @@ class distanceCV:
                     self.ROI = np.random.permutation(CTroi)[0]
 
                 # When doing Leave-One-Out per subgroup
-                if self.group is not False:
+                if self.groups is not False:
                     if self.verbose > 1:
                         print('ROI stand is ' +
-                              str(self.group[self.ROI]) +
+                              str(self.groups[self.ROI]) +
                               ' for label ' +
                               str(C))
 
                     self.ROI = np.random.permutation(CT)[0]
                     Tstand = self.distanceLabel[np.isin(
-                        self.distanceLabel, np.unique(self.group[CT]))]
+                        self.distanceLabel, np.unique(self.groups[CT]))]
                     TstandTF = np.isin(self.distanceLabel, Tstand)
                     standPos = np.argwhere(
-                        self.group[self.ROI] == self.distanceLabel)[0][0]
+                        self.groups[self.ROI] == self.distanceLabel)[0][0]
                     distanceROI = (self.distanceArray[standPos, :])
                     distanceROI = distanceROI[TstandTF]
                     tmpValid = np.where(
-                        self.group == self.group[self.ROI])[0].astype(np.int64)
+                        self.groups == self.groups[self.ROI])[0].astype(np.int64)
                     #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
                     tmpTrainGroup = np.unique(
                         self.distanceLabel[CT][np.where(distanceROI >= self.distanceThresold)[0]])
                     tmpTrainGroup = tmpTrainGroup[tmpTrainGroup !=
-                                                  self.group[self.ROI]]
-                    tmpTrain = np.in1d(self.group, tmpTrainGroup).flatten()
+                                                  self.groups[self.ROI]]
+                    tmpTrain = np.in1d(self.groups, tmpTrainGroup).flatten()
 
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
@@ -216,11 +216,11 @@ class randomPerClass:
 
     """
 
-    def __init__(self, X=None, Y=None, train_size=0.5,
+    def __init__(self, X=None, y=None, train_size=0.5,
                  valid_size=False, n_splits=5, random_state=None, verbose=False):
 
         self.name = 'randomPerClass'
-        self.Y = Y
+        self.Y = y
         self.train_size = train_size
         self.n_splits = n_splits
         if n_splits is False:
@@ -281,12 +281,12 @@ class randomPerClass:
 
 
 class groupCV:
-    def __init__(self, X=None, Y=None, group=None, n_splits=False,
+    def __init__(self, X=None, y=None, groups=None, n_splits=False,
                  valid_size=1, random_state=False, verbose=False):
         """Compute train/validation per group.
         Y : array-like
             contains class for each ROI.
-        group : array-like
+        groups : array-like
             contains goup number for each ROI.
         valid_size : int (1) or float (0.01 to 0.99)
             If 1 Leave-One-Group Out.
@@ -297,9 +297,9 @@ class groupCV:
         """
         self.name = 'standCV'
         self.verbose = verbose
-        self.Y = Y
+        self.Y = y
         self.uniqueY = np.unique(self.Y)
-        self.group = group
+        self.groups = groups
 
         self.valid_size = valid_size
         self.iterPos = 1
@@ -309,18 +309,18 @@ class groupCV:
             self.n_splits = n_splits
         else:
             n_splits = []
-            for i in np.unique(Y):
+            for i in np.unique(self.Y):
                 standNumber = np.unique(
-                    np.array(group)[
+                    np.array(groups)[
                         np.where(
-                            np.array(Y).flatten() == i)])
+                            np.array(self.Y).flatten() == i)])
 
                 n_splits.append(standNumber.shape[0])
             self.n_splits = np.amin(n_splits)
             if self.n_splits == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-        self.mask = np.ones(np.asarray(group).shape, dtype=bool)
+        self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
 
     def __iter__(self):
         return self
@@ -337,7 +337,7 @@ class groupCV:
             validation = np.array([], dtype=int)
             for C in self.uniqueY:
                 Ycurrent = np.where(np.array(self.Y) == C)[0]
-                Ystands = np.array(self.group)[Ycurrent]
+                Ystands = np.array(self.groups)[Ycurrent]
 
                 np.random.seed(self.random_state)
                 # Only choose an unselected stand
@@ -376,7 +376,7 @@ class groupCV:
 
                 if self.valid_size == 1 or self.valid_size == 0.5:
                     del Ystands, Ycurrent
-                    selected = np.in1d(self.group, selectedStand)
+                    selected = np.in1d(self.groups, selectedStand)
                     self.mask[selected] = 0
                     del selected
 
@@ -384,7 +384,6 @@ class groupCV:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 
-                print(20*"=")
                 self.random_state += 1
             self.iterPos += 1
             return train, validation

@@ -73,6 +73,8 @@ class _sampleSelection:
                 self.Y = self.Y
                 if isinstance(self.Y, list):
                     self.Y = np.array(self.Y)
+            elif self.Y is None:
+                pass
             else:
                 self.Y, self.fts, self.srs = vectorTools.readValuesFromVector(
                     self.Y, self.inField, getFeatures=True, verbose=self.verbose)
@@ -88,10 +90,9 @@ class _sampleSelection:
         # For Stand Split
         if self.samplingType == 'Group':
             #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
-            if not self.inVectorIsArray:
-                self.Y, self.group, self.fts, self.srs = vectorTools.readValuesFromVector(
+            if not self.inVectorIsArray and self.Y is not None:
+                self.Y, self.groups, self.fts, self.srs = vectorTools.readValuesFromVector(
                     self.Y, self.inField, self.group, getFeatures=True, verbose=self.verbose)
-            self.params['group'] = self.group
             # (Y,S,verbose=self.verbose,**self.params)
             self.crossvalidation = crossValidationClass.groupCV
 
@@ -101,10 +102,10 @@ class _sampleSelection:
         if not self.inVectorIsArray:
             self.Y_, self.fts, self.srs = vectorTools.readValuesFromVector(
                 self.Y, self.inField, getFeatures=True, verbose=self.verbose)
-            if hasattr(self, 'group'):
-                X, self.Y, group = rasterTools.getSamplesFromROI(
+            if hasattr(self, 'groups'):
+                X, self.Y, groups = rasterTools.getSamplesFromROI(
                     self.inRaster, self.Y, self.inField, self.group, verbose=self.verbose)
-                self.params['group'] = group
+                self.params['groups'] = groups
             else:
                 X, self.Y = rasterTools.getSamplesFromROI(
                     self.inRaster, self.Y, self.inField, verbose=self.verbose)
@@ -116,8 +117,8 @@ class _sampleSelection:
             else:
                 self.SLOOnotSamesize = False
         else:
-            if hasattr(self, 'group'):
-                self.params['group'] = self.group
+            if hasattr(self, 'groups'):
+                self.params['groups'] = self.groups
 
     def reinitialize(self):
         _sampleSelection.__init__(self)
@@ -127,20 +128,21 @@ class _sampleSelection:
         for idx, ext in enumerate(self.extensions):
             print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
 
-    def get_n_splits(self, params=None, X=None, Y=None, groups=None):
-        n_splits = self.crossvalidation(
-            X=None, Y=Y, verbose=self.verbose, **self.params).n_splits
+    def get_n_splits(self,X=None,y=None,groups=None):
+        if y is not None:
+            self.y = y
+        n_splits = self.crossvalidation(y=y,groups=groups, verbose=self.verbose, **self.params).n_splits
         return n_splits
 
-    def split(self, X=None, Y=None, groups=None):
-        if Y is None:
-            Y = self.Y
-        Y = Y.reshape(-1, 1)
+    def split(self, X=None, y=None, groups=None):
+        if y is None: y = self.Y
+        y = y.reshape(-1, 1)
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
+        
         return self.crossvalidation(
-            X=None, Y=Y, verbose=self.verbose, **self.params)
+            X=X, y=y,groups=groups,verbose=self.verbose, **self.params)
 
     def getCrossValidation(self):
         if self.__alreadyRead:

@@ -23,7 +23,7 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-    from MuseoToolBox import datasets
+    from MuseoToolBox import datasets,rasterTools
 
 
 
@@ -42,11 +42,18 @@ Load HistoricalMap dataset
     raster,vector = datasets.getHistoricalMap()
     field = 'Class'
     group = 'uniquefid'
+    X,y,s = rasterTools.getSamplesFromROI(raster,vector,field,group)
 
 
 
 
+.. rst-class:: sphx-glr-script-out
 
+ Out:
+
+ .. code-block:: none
+
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
 
 
 Create CV
@@ -58,8 +65,8 @@ Create CV
 
 
     valid_size = 0.5 # Means 50%
-    LOSGO = LeaveOneSubGroupOut(vector,field,group,
-                                verbose=False,random_state=12)
+    LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
+
 
 
 
@@ -74,10 +81,10 @@ Create CV
 
 .. code-block:: python
 
+    LOSGO.get_n_splits(X,y,s)
+    for tr,vl in LOSGO.split(X,y,s):
+        print(tr.shape,vl.shape)
 
-    for tr,vl in LOSGO.split():
-        print(tr,vl)
-        
 
 
 
@@ -88,18 +95,8 @@ Create CV
 
  .. code-block:: none
 
-    ====================
-    ====================
-    ====================
-    ====================
-    ====================
-    [ 1  2  3  7  8  4  6  9 14 16 10 13] [ 0  5 15 12 11]
-    ====================
-    ====================
-    ====================
-    ====================
-    ====================
-    [ 0  1  2  3  7  5  6  9 15 16 12 11] [ 8  4 14 10 13]
+    (9394,) (3253,)
+    (10180,) (2467,)
 
 
 Differences with sklearn
@@ -112,12 +109,10 @@ as MuseoToolBox use one group per Y label
 .. code-block:: python
 
     from sklearn.model_selection import LeaveOneGroupOut
-    from MuseoToolBox import vectorTools
 
-    Y,Groups = vectorTools.readValuesFromVector(vector,field,group)
     LOGO = LeaveOneGroupOut()
-    for tr,vl in LOGO.split(X=Y,y=Y,groups=Groups):
-        print(tr,vl)
+    for tr,vl in LOGO.split(X=X,y=y,groups=s):
+        print(tr.shape,vl.shape)
     # Plot example in image
     
     import numpy as np
@@ -139,26 +134,26 @@ as MuseoToolBox use one group per Y label
 
  .. code-block:: none
 
-    [ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [0]
-    [ 0  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [1]
-    [ 0  1  3  4  5  6  7  8  9 10 11 12 13 14 15 16] [2]
-    [ 0  1  2  4  5  6  7  8  9 10 11 12 13 14 15 16] [3]
-    [ 0  1  2  3  5  6  7  8  9 10 11 12 13 14 15 16] [4]
-    [ 0  1  2  3  4  6  7  8  9 10 11 12 13 14 15 16] [5]
-    [ 0  1  2  3  4  5  7  8  9 10 11 12 13 14 15 16] [6]
-    [ 0  1  2  3  4  5  6  8  9 10 11 12 13 14 15 16] [7]
-    [ 0  1  2  3  4  5  6  7  9 10 11 12 13 14 15 16] [8]
-    [ 0  1  2  3  4  5  6  7  8 10 11 12 13 14 15 16] [9]
-    [ 0  1  2  3  4  5  6  7  8  9 11 12 13 14 15 16] [10]
-    [ 0  1  2  3  4  5  6  7  8  9 10 12 13 14 15 16] [11]
-    [ 0  1  2  3  4  5  6  7  8  9 10 11 13 14 15 16] [12]
-    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 14 15 16] [13]
-    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 15 16] [14]
-    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 16] [15]
-    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15] [16]
+    (11166,) (1481,)
+    (11511,) (1136,)
+    (12125,) (522,)
+    (10323,) (2324,)
+    (12116,) (531,)
+    (11686,) (961,)
+    (12382,) (265,)
+    (11434,) (1213,)
+    (11781,) (866,)
+    (12111,) (536,)
+    (12262,) (385,)
+    (12641,) (6,)
+    (12507,) (140,)
+    (12645,) (2,)
+    (11711,) (936,)
+    (12149,) (498,)
+    (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.801 seconds)
+**Total running time of the script:** ( 0 minutes  0.396 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

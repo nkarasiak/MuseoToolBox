@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function
 import numpy as np
 
 
@@ -39,7 +38,7 @@ def commissionOmission(table):
     return com, om
 
 
-class confusionMatrix:
+class computeConfusionMatrix:
     def __init__(self, yp, yr, kappa=False, OA=False, F1=False):
         """
         Compute confusion matrix given label predicted and label reality.

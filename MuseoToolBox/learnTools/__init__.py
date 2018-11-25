@@ -178,7 +178,8 @@ class learnAndPredict:
                 self.classifier,
                 param_grid=param_grid,
                 cv=self.CV,
-                n_jobs=self.n_jobs)
+                n_jobs=self.n_jobs,
+                verbose=self.verbose+1)
             grid.fit(X, Y)
             self.model = grid.best_estimator_
             self.model.fit(X, Y)
@@ -377,7 +378,7 @@ class learnAndPredict:
                 'outStatsFromCV in fromRaster or fromVector must be True')
         else:
             # ,statsFromConfusionMatrix,
-            from ..stats.statsFromConfusionMatrix import confusionMatrix as computeStats
+            from ..stats import computeConfusionMatrix as computeStats
 
             for train_index, test_index in self.CV:
                 results = []

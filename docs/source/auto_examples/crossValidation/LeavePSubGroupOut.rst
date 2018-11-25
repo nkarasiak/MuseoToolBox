@@ -23,7 +23,7 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import LeavePSubGroupOut
-    from MuseoToolBox import datasets
+    from MuseoToolBox import datasets,rasterTools
 
 
 
@@ -57,8 +57,7 @@ Create CV
 .. code-block:: python
 
     valid_size = 0.5 # Means 50%
-    LPSGO = LeavePSubGroupOut(vector,field,group,
-                              valid_size = valid_size,n_splits = 10,
+    LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits = 10,
                               random_state=12,verbose=False)
 
 
@@ -75,9 +74,9 @@ Create CV
 
 .. code-block:: python
 
-
-    for tr,vl in LPSGO.split():
-        print(tr,vl)
+    X,y,s=rasterTools.getSamplesFromROI(raster,vector,field,group)
+    for tr,vl in LPSGO.split(X,y,s):
+        print(tr.shape,vl.shape)
 
 
 
@@ -89,16 +88,17 @@ Create CV
 
  .. code-block:: none
 
-    [ 2  3  8  4  6 14 16 10 13] [ 0  1  7  5  9 15 12 11]
-    [ 0  1  7  5  9 15 12 11] [ 2  3  8  4  6 14 16 10 13]
-    [ 0  7  8  6  9 15 16 10 13] [ 1  2  3  4  5 14 12 11]
-    [ 1  2  3  4  5 14 12 11] [ 0  7  8  6  9 15 16 10 13]
-    [ 2  3  7  4  9 14 15 12 13] [ 0  1  8  5  6 16 10 11]
-    [ 0  1  8  5  6 16 10 11] [ 2  3  7  4  9 14 15 12 13]
-    [ 2  3  7  4  9 14 15 12 13] [ 0  1  8  5  6 16 10 11]
-    [ 0  1  8  5  6 16 10 11] [ 2  3  7  4  9 14 15 12 13]
-    [ 3  7  8  5  9 14 15 12 13] [ 0  1  2  4  6 16 10 11]
-    [ 0  1  2  4  6 16 10 11] [ 3  7  8  5  9 14 15 12 13]
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
+    (6676,) (5971,)
+    (5971,) (6676,)
+    (6091,) (6556,)
+    (6556,) (6091,)
+    (6702,) (5945,)
+    (5945,) (6702,)
+    (6702,) (5945,)
+    (5945,) (6702,)
+    (7476,) (5171,)
+    (5171,) (7476,)
 
 
 Plot example in image
@@ -124,7 +124,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.052 seconds)
+**Total running time of the script:** ( 0 minutes  0.141 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeavePSubGroupOut.py:
