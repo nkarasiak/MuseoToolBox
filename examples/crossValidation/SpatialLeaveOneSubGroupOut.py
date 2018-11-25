@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Spatial Leave-One-SubGroup-Out (SLOSGO)
+Spatial Leave-One-SubGroup-Out / No raster (SLOSGO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out using subgroup,
 called here a Spatial Leave-One-SubGroup-Out.
 
-In this example, it shows how to use just once a raster.()
+In this example, it shows how to use just once a raster.
 
 """
 
@@ -15,6 +15,8 @@ In this example, it shows how to use just once a raster.()
 # -------------------------------------------
 
 from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
+from MuseoToolBox.vectorTools import getDistanceMatrix
+from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox import datasets
 ##############################################################################
 # Load HistoricalMap dataset
@@ -24,20 +26,26 @@ raster,vector = datasets.getHistoricalMap()
 field = 'Class'
 subGroup = 'uniquefid'
 
+
+##############################################################################
+# Get distance Matrix and label
+# -------------------------------------------
+
+distanceMatrix,distanceLabel = getDistanceMatrix(raster,vector,subGroup)
+X,y,s = getSamplesFromROI(raster,vector,field,subGroup)
 ##############################################################################
 # Create CV
 # -------------------------------------------
-
-SLOSGO = SpatialLeaveOneSubGroupOut(raster,vector,field,subGroup,
-                                    distanceThresold=20,
-                                    random_state=12,verbose=False)
-
+SLOSGO = SpatialLeaveOneSubGroupOut(distanceMatrix=distanceMatrix,
+                                    distanceLabel=distanceLabel,
+                                    distanceThresold=100,
+                                    random_state=12,n_splits=False)
 ###############################################################################
 # .. note::
 #    There is no need to specify a bandPrefix. 
 #    If bandPrefix is not specified, scipt will only generate the centroid
 
-for tr,vl in SLOSGO.split():
+for tr,vl in SLOSGO.split(X,y,s):
     print(tr.shape,vl.shape)
 
 #############################################

@@ -134,24 +134,35 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     *fields : str.
         Each field to extract label/value from.
     **kwargs:
-        Only two keyword args are accepted:
+        These args are accepted:
             getCoords : bool.
                 If getCoords, will return coords for each point.
             onlyCoords : bool.
                 If true, with only return coords, no X,Y...
-
+            verbose : bool, or int.
+                If true or >1, will print evolution.
+    
     Returns
     -------
     X: arr.
         The sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each line of the matrix is a pixel.
     Y: arr.
-        The label of the pixel
-
+        The label of the pixel.
+        
     """
+    # generate kwargs value
     if 'verbose' in kwargs.keys():
         verbose = kwargs['verbose']
     else:
         verbose = False
+    if 'getCoords' in kwargs:
+        getCoords = kwargs['getCoords']
+    else:
+        getCoords = False
+    if 'onlyCoords' in kwargs:
+        onlyCoords = kwargs['onlyCoords']
+    else:
+        onlyCoords = False
     # Open Raster
     raster = gdal.Open(inRaster, gdal.GA_ReadOnly)
     if raster is None:
@@ -181,20 +192,6 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
         rois.append(roiField)
         temps.append(rstField)
-
-    # generate kwargs value
-    if 'getCoords' in kwargs:
-        getCoords = kwargs['getCoords']
-    else:
-        getCoords = False
-    if 'onlyCoords' in kwargs:
-        onlyCoords = kwargs['onlyCoords']
-    else:
-        onlyCoords = False
-    if 'verbose' in kwargs:
-        verbose = kwargs['verbose']
-    else:
-        verbose = 1
 
     # Get block size
     band = raster.GetRasterBand(1)

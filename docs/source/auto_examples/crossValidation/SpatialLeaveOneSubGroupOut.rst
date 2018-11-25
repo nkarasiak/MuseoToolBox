@@ -7,13 +7,13 @@
 .. _sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:
 
 
-Spatial Leave-One-SubGroup-Out (SLOSGO)
+Spatial Leave-One-SubGroup-Out / No raster (SLOSGO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out using subgroup,
 called here a Spatial Leave-One-SubGroup-Out.
 
-In this example, it shows how to use just once a raster.()
+In this example, it shows how to use just once a raster.
 
 
 
@@ -26,6 +26,8 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
+    from MuseoToolBox.vectorTools import getDistanceMatrix
+    from MuseoToolBox.rasterTools import getSamplesFromROI
     from MuseoToolBox import datasets
 
 
@@ -51,7 +53,8 @@ Load HistoricalMap dataset
 
 
 
-Create CV
+
+Get distance Matrix and label
 -------------------------------------------
 
 
@@ -59,10 +62,8 @@ Create CV
 .. code-block:: python
 
 
-    SLOSGO = SpatialLeaveOneSubGroupOut(raster,vector,field,subGroup,
-                                        distanceThresold=20,
-                                        random_state=12,verbose=False)
-
+    distanceMatrix,distanceLabel = getDistanceMatrix(raster,vector,subGroup)
+    X,y,s = getSamplesFromROI(raster,vector,field,subGroup)
 
 
 
@@ -73,10 +74,24 @@ Create CV
 
  .. code-block:: none
 
-    Values from 'uniquefid' field will be extracted
-    Values from 'Class' field will be extracted
-    Values from 'uniquefid' field will be extracted
-    Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.
+    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
+
+
+Create CV
+-------------------------------------------
+
+
+
+.. code-block:: python
+
+    SLOSGO = SpatialLeaveOneSubGroupOut(distanceMatrix=distanceMatrix,
+                                        distanceLabel=distanceLabel,
+                                        distanceThresold=100,
+                                        random_state=12,n_splits=False)
+
+
+
+
 
 
 .. note::
@@ -88,7 +103,7 @@ Create CV
 .. code-block:: python
 
 
-    for tr,vl in SLOSGO.split():
+    for tr,vl in SLOSGO.split(X,y,s):
         print(tr.shape,vl.shape)
 
 
@@ -140,7 +155,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  2.855 seconds)
+**Total running time of the script:** ( 0 minutes  1.274 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:

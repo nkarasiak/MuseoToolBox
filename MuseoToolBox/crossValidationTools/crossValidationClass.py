@@ -30,7 +30,7 @@ class distanceCV:
             stats=False,
             verbose=False,
             random_state=False,
-            groups=False,
+            groups=None,
             distanceLabel=False):
         """Compute train/validation array with Spatial distance analysis.
 
@@ -75,14 +75,14 @@ class distanceCV:
             self.minTrain = -1
 
         self.groups = groups
-        if self.groups is not False and self.distanceLabel is False:
+        if self.groups is not None and self.distanceLabel is False:
             raise Exception(
                 'You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
         self.useMaxDistance = useMaxDistance
         self.stats = stats
-        if self.groups is False:
+        if self.groups is None:
             self.minEffectiveClass = min(
                 [len(self.Y[self.Y == i]) for i in np.unique(self.Y)])
         else:
@@ -135,7 +135,7 @@ class distanceCV:
                     self.ROI = np.random.permutation(CTroi)[0]
 
                 # When doing Leave-One-Out per subgroup
-                if self.groups is not False:
+                if self.groups is not None:
                     if self.verbose > 1:
                         print('ROI stand is ' +
                               str(self.groups[self.ROI]) +
@@ -216,7 +216,7 @@ class randomPerClass:
 
     """
 
-    def __init__(self, X=None, y=None, train_size=0.5,
+    def __init__(self, X=None, y=None, groups=None,train_size=0.5,
                  valid_size=False, n_splits=5, random_state=None, verbose=False):
 
         self.name = 'randomPerClass'

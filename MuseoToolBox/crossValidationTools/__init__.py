@@ -229,8 +229,8 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
 class SpatialLeaveOnePixelOut(_sampleSelection):
     def __init__(self,
-                 inRaster,
-                 inVector,
+                 inRaster=None,
+                 inVector=None,
                  inField=None,
                  distanceThresold=None,
                  distanceMatrix=None,

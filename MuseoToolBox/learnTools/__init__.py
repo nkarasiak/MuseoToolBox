@@ -246,7 +246,7 @@ class learnAndPredict:
         Xpredict = self.model.predict(X)
         return Xpredict
 
-    def predictConfidencePerClassFromArray(self, X):
+    def predictConfidencePerClass(self, X):
         """
         Predict label from array.
 
@@ -267,7 +267,7 @@ class learnAndPredict:
         self.Xpredict = Xpredict
         return Xpredict
 
-    def predictConfidenceOfPredictedClassFromArray(self, X):
+    def predictConfidenceOfPredictedClass(self, X):
         """
         Predict label from array.
 

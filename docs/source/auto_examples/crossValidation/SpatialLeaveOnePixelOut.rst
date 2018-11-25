@@ -26,7 +26,7 @@ Import librairies
 
 
     from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
-    from MuseoToolBox import datasets
+    from MuseoToolBox import datasets,rasterTools,vectorTools
 
 
 
@@ -43,6 +43,8 @@ Load HistoricalMap dataset
 
     raster,vector = datasets.getHistoricalMap()
     field = 'Class'
+    X,y = rasterTools.getSamplesFromROI(raster,vector,field)
+    distanceMatrix = vectorTools.getDistanceMatrix(raster,vector)
 
 
 
@@ -59,21 +61,13 @@ n_splits will be the number  of the least populated class
 .. code-block:: python
 
 
-    SLOPO = SpatialLeaveOnePixelOut(raster,vector,'Class',distanceThresold=100,random_state=12)
+    SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
+                                    random_state=12)
 
 
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Values from 'False' field will be extracted
-    Values from 'Class' field will be extracted
-    Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.
 
 
 .. note::
@@ -84,8 +78,8 @@ n_splits will be the number  of the least populated class
 
 .. code-block:: python
 
-    SLOPO.get_n_splits()
-    for tr,vl in SLOPO.split():
+    SLOPO.get_n_splits(X,y)
+    for tr,vl in SLOPO.split(X,y):
         print(tr.shape,vl.shape)
 
 
@@ -98,8 +92,6 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    _splits is 1
-    _splits is 8
     (8105,) (5,)
     (10598,) (5,)
     (8710,) (5,)
@@ -142,7 +134,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  2.020 seconds)
+**Total running time of the script:** ( 0 minutes  1.281 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

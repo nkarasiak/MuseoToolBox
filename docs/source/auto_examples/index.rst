@@ -45,26 +45,6 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/SpatialLeaveOnePixelOut
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
 
 .. only:: html
@@ -105,6 +85,26 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/SpatialLeaveOnePixelOut
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out using subgroup, called here a Spatial Le...">
 
 .. only:: html
@@ -122,46 +122,6 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
    :hidden:
 
    /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_noRaster_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut_noRaster.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/SpatialLeaveOnePixelOut_noRaster
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out using subgroup, called here a Spatial Le...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_noRaster_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut_noRaster.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut_noRaster
 .. raw:: html
 
     <div style='clear:both'></div>

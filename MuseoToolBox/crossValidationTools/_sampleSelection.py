@@ -47,13 +47,8 @@ class _sampleSelection:
             If you need to regenerate the cross validation, you need to reinitialize it.
 
         """
-        if isinstance(self.Y, (np.ndarray, list)):
-            self.inVectorIsArray = True
-        else:
-            self.inVectorIsArray = False
-
-        self.extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
-        self.driversName = [
+        self.__extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
+        self.__driversName = [
             'SQLITE',
             'ESRI Shapefile',
             'netCDF',
@@ -69,37 +64,20 @@ class _sampleSelection:
             self.params['random_state'] = int(time.time())
         # Totally random
         if self.samplingType == 'random':
-            if self.inVectorIsArray:
-                self.Y = self.Y
-                if isinstance(self.Y, list):
-                    self.Y = np.array(self.Y)
-            elif self.Y is None:
-                pass
-            else:
-                self.Y, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.Y, self.inField, getFeatures=True, verbose=self.verbose)
-
-            # (Y=self.Y, verbose=self.verbose, **self.params)
             self.crossvalidation = crossValidationClass.randomPerClass
 
         if self.samplingType == 'Spatial':
             self.__prepareDistanceCV()
-            # (Y=self.Y, verbose=self.verbose, **self.params)
             self.crossvalidation = crossValidationClass.distanceCV
 
         # For Stand Split
         if self.samplingType == 'Group':
-            #FIDs,STDs,srs,fts = vectorTools.readFieldVector(inVector,inField,inStand,getFeatures=True)
-            if not self.inVectorIsArray and self.Y is not None:
-                self.Y, self.groups, self.fts, self.srs = vectorTools.readValuesFromVector(
-                    self.Y, self.inField, self.group, getFeatures=True, verbose=self.verbose)
-            # (Y,S,verbose=self.verbose,**self.params)
             self.crossvalidation = crossValidationClass.groupCV
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
         # For Spatial-Leave-One-Out
-        if not self.inVectorIsArray:
+        if not self.inVectorIsArray and self.Y is not None:
             self.Y_, self.fts, self.srs = vectorTools.readValuesFromVector(
                 self.Y, self.inField, getFeatures=True, verbose=self.verbose)
             if hasattr(self, 'groups'):
@@ -112,7 +90,6 @@ class _sampleSelection:
 
             if self.Y_.shape[0] != self.Y.shape[0]:
                 self.SLOOnotSamesize = True
-                self.errorSLOOmsg = 'Number of features if different of number of pixels. Please use rasterTools.sampleExtraction if you want to save as vector the Cross-Validation.'
                 print(self.errorSLOOmsg)
             else:
                 self.SLOOnotSamesize = False
@@ -125,8 +102,8 @@ class _sampleSelection:
 
     def getSupportedExtensions(self):
         print('Museo ToolBox supported extensions are : ')
-        for idx, ext in enumerate(self.extensions):
-            print(3 * ' ' + '- ' + self.driversName[idx] + ' : ' + ext)
+        for idx, ext in enumerate(self.__extensions):
+            print(3 * ' ' + '- ' + self.__driversName[idx] + ' : ' + ext)
 
     def get_n_splits(self,X=None,y=None,groups=None):
         if y is not None:
@@ -150,38 +127,42 @@ class _sampleSelection:
         self.__alreadyRead = True
         return self.crossvalidation
 
-    def saveVectorFiles(self, outVector):
-        if self.inVectorIsArray:
-            raise Exception(
-                'To save vector files, you need to use in input a vector, not an array')
-        if self.samplingType == 'SLOO':
-            if self.SLOOnotSamesize:
-                raise Exception(self.errorSLOOmsg)
-        self.__fileName, self.__ext = os.path.splitext(outVector)
+    def saveVectorFiles(self,vector,field,groupsField=None,outVector=None):
+        print("""Warning : This function generates vector files according to your vector.
+    The number of features may differ from the number of pixels used in classification.
+    If you want to save every ROI pixels in the vector, please use rasterTools.sampleExtraction before.""")
 
-        if self.__ext[1:] not in self.extensions:
+        fileName, self.__ext = os.path.splitext(outVector)
+
+        if self.__ext[1:] not in self.__extensions:
             print(
-                'Your extension {} is not recognized as a valid extension for saving shape.'.format(
-                    self.__ext))
+                'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
             self.getSupportedExtensions()
-            print('We recommend you to use sqlite extension.')
-
+            raise Exception('We recommend you to use sqlite/gpkg extension.')
+        
+        if groupsField is None:
+            groups = None
+            y,fts,srs = vectorTools.readValuesFromVector(
+                    vector,field,getFeatures=True,verbose=self.verbose)
         else:
-            if self.__alreadyRead:
-                self.reinitialize()
-            listOutput = []
-            self.cv = []
-            for idx, trvl in enumerate(self.crossvalidation):
-                self.cv.append([trvl[0], trvl[1]])
-                trFeat = [self.fts[int(i)] for i in trvl[0]]
-                vlFeat = [self.fts[int(i)] for i in trvl[1]]
-                tr = self.__fileName + '_train_' + str(idx) + self.__ext
-                vl = self.__fileName + '_valid_' + str(idx) + self.__ext
-                self.__saveToShape__(trFeat, self.srs, tr)
-                self.__saveToShape__(vlFeat, self.srs, vl)
-                listOutput.append([tr, vl])
-            self.__alreadyRead = True
-            return listOutput
+            y,groups,fts,srs = vectorTools.readValuesFromVector(
+                    vector,field,groupsField,getFeatures=True,verbose=self.verbose)
+    
+        if self.__alreadyRead:
+            self.reinitialize()
+        listOutput = []
+        self.cv = []
+        for idx, trvl in enumerate(self.split(None,y,groups)):
+            self.cv.append([trvl[0], trvl[1]])
+            trFeat = [fts[int(i)] for i in trvl[0]]
+            vlFeat = [fts[int(i)] for i in trvl[1]]
+            tr = fileName + '_train_' + str(idx) + self.__ext
+            vl = fileName + '_valid_' + str(idx) + self.__ext
+            self.__saveToShape__(trFeat, srs, tr)
+            self.__saveToShape__(vlFeat, srs, vl)
+            listOutput.append([tr, vl])
+        self.__alreadyRead = True
+        return listOutput
 
     def __saveToShape__(self, array, srs, outShapeFile):
         # Parse a delimited text file of volcano data and create a shapefile
@@ -190,8 +171,8 @@ class _sampleSelection:
         import ogr
 
         driverIdx = [x for x, i in enumerate(
-            self.extensions) if i == self.__ext[1:]][0]
-        outDriver = ogr.GetDriverByName(self.driversName[driverIdx])
+            self.__extensions) if i == self.__ext[1:]][0]
+        outDriver = ogr.GetDriverByName(self.__driversName[driverIdx])
 
         # create the data source
         if os.path.exists(outShapeFile):
