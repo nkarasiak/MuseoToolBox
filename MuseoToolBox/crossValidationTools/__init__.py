@@ -54,7 +54,7 @@ class LeavePSubGroupOut(_sampleSelection):
         self.samplingType = 'Group'
         self.verbose = verbose
 
-        self.crossvalidation = _cvc.distanceCV
+        self.crossvalidation = _cvc.groupCV
 
         if isinstance(valid_size, float):
             if valid_size > 1 or valid_size < 0:

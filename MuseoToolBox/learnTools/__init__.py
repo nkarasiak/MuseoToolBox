@@ -54,8 +54,9 @@ class learnAndPredict:
     def learnFromVector(
             self,
             X,
-            Y,
-            classifier,
+            y,
+            group=None,
+            classifier=None,
             param_grid=None,
             outStatsFromCV=True,
             scale=False,
@@ -84,7 +85,8 @@ class learnAndPredict:
         """
         self.classifier = classifier
         self.param_grid = param_grid
-        self.Y = Y
+        self.y = y
+        self.group = group
 
         if cv is not None and self.param_grid is None:
             raise Exception(
@@ -97,7 +99,8 @@ class learnAndPredict:
 
         self.__learn__(
             self.X,
-            self.Y,
+            self.y,
+            self.group,
             classifier,
             param_grid,
             outStatsFromCV,
@@ -108,6 +111,7 @@ class learnAndPredict:
             inRaster,
             inVector,
             inField,
+            inGroup,
             classifier,
             param_grid=None,
             outStatsFromCV=True,
@@ -144,11 +148,18 @@ class learnAndPredict:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
 
-        X, Y = getSamplesFromROI(
-            inRaster, inVector, inField, verbose=self.verbose)
-        self.Y = Y
-
+        if inGroup is None:
+            group = None
+            X, y = getSamplesFromROI(
+                    inRaster, inVector, inField, verbose=self.verbose)
+        else:
+            X, y, group = getSamplesFromROI(
+            inRaster, inVector, inField, inGroup, verbose=self.verbose)
+        
+        self.y = y
         self.X = X
+        self.group = group
+        
         if scale:
             self.scale = True
             self.scaleX()
@@ -157,18 +168,19 @@ class learnAndPredict:
 
         self.__learn__(
             self.X,
-            self.Y,
+            self.y,
+            self.group,
             classifier,
             param_grid,
             outStatsFromCV,
             cv)
 
-    def __learn__(self, X, Y, classifier, param_grid, outStatsFromCV, cv):
+    def __learn__(self, X, y, groups, classifier, param_grid, outStatsFromCV, cv):
         self.outStatsFromCV = outStatsFromCV
         from sklearn.model_selection import GridSearchCV
         if outStatsFromCV is True and cv is not None:
             self.CV = []
-            for tr, vl in (cv for cv in cv.split(X, Y) if cv is not None):
+            for tr, vl in (cv for cv in cv.split(X,y,groups) if cv is not None):
                 self.CV.append((tr, vl))
         else:
             self.CV = cv
@@ -180,15 +192,15 @@ class learnAndPredict:
                 cv=self.CV,
                 n_jobs=self.n_jobs,
                 verbose=self.verbose + 1)
-            grid.fit(X, Y)
+            grid.fit(X,y,groups)
             self.model = grid.best_estimator_
-            self.model.fit(X, Y)
+            self.model.fit(X,y)
             for key in self.param_grid.keys():
                 message = 'best ' + key + ' : ' + str(grid.best_params_[key])
                 print(message)
 
         else:
-            self.model = self.classifier.fit(X=X, y=Y)
+            self.model = self.classifier.fit(X=X, y=y)
 
     def saveModel(self, path):
         """
@@ -322,7 +334,7 @@ class learnAndPredict:
         from ..rasterTools import rasterMath
         from ..rasterTools import getGdalDTFromMinMaxValues
         rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
-        gdalDT = getGdalDTFromMinMaxValues(int(np.amax(np.unique(self.Y))))
+        gdalDT = getGdalDTFromMinMaxValues(int(np.amax(np.unique(self.y))))
         rM.addFunction(
             self.predictFromArray,
             outRaster,
@@ -383,7 +395,7 @@ class learnAndPredict:
             for train_index, test_index in self.CV:
                 results = []
                 X_train, X_test = self.X[train_index], self.X[test_index]
-                Y_train, Y_test = self.Y[train_index], self.Y[test_index]
+                Y_train, Y_test = self.y[train_index], self.y[test_index]
 
                 self.model.fit(X_train, Y_train)
                 X_pred = self.model.predict(X_test)
