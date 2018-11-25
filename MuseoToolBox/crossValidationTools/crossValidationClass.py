@@ -174,10 +174,11 @@ class distanceCV:
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
                 del CT
-                if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
+                if emptyTrain is False:
+                    if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
                         self.y[tmpValid]) or self.y[tmpValid][0] != C:
-                    raise IndexError(
-                        'Selected labels do not correspond to selected class, please leave feedback')
+                        raise IndexError(
+                                'Selected labels do not correspond to selected class, please leave feedback')
 
                 #
                 validation = np.concatenate((validation, tmpValid))
