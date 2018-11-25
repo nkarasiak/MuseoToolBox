@@ -16,6 +16,7 @@ from __future__ import absolute_import, print_function
 
 from ..vectorTools import getDistanceMatrix
 from ._sampleSelection import _sampleSelection
+from . import crossValidationClass as _cvc
 
 
 class LeavePSubGroupOut(_sampleSelection):
@@ -53,6 +54,8 @@ class LeavePSubGroupOut(_sampleSelection):
         self.samplingType = 'Group'
         self.verbose = verbose
 
+        self.crossvalidation = _cvc.distanceCV
+
         if isinstance(valid_size, float):
             if valid_size > 1 or valid_size < 0:
                 raise Exception('Percent must be between 0 and 1')
@@ -67,6 +70,7 @@ class LeavePSubGroupOut(_sampleSelection):
             valid_size=valid_size,
             n_splits=n_splits,
             random_state=random_state)
+
         _sampleSelection.__init__(self)
 
 
@@ -102,6 +106,8 @@ class LeaveOneSubGroupOut(_sampleSelection):
         """
         self.samplingType = 'Group'
         self.verbose = verbose
+
+        self.crossvalidation = _cvc.groupCV
 
         self.Y = inVector
         self.inField = inField
@@ -148,6 +154,8 @@ class SpatialLeavePSideOut(_sampleSelection):
         """
         self.samplingType = 'Spatial'
         self.verbose = verbose
+
+        self.crossvalidation = _cvc.distanceCV
 
         self.inRaster = inRaster
         self.Y = inVector
@@ -207,6 +215,8 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
         """
         self.samplingType = 'Spatial'
         self.verbose = verbose
+
+        self.crossvalidation = _cvc.distanceCV
 
         if distanceMatrix is None:
             distanceMatrix, distanceLabel = getDistanceMatrix(
@@ -272,6 +282,8 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         self.samplingType = 'Spatial'
         self.verbose = verbose
 
+        self.crossvalidation = _cvc.distanceCV
+
         if distanceMatrix is None:
             distanceMatrix = getDistanceMatrix(
                 inRaster, inVector, verbose=verbose)
@@ -324,8 +336,11 @@ class RandomCV(_sampleSelection):
         self.Y = inVector
         self.inField = inField
 
+        self.crossvalidation = _cvc.randomPerClass
+
         self.params = dict(
             train_size=train_size,
             random_state=random_state,
             n_splits=n_splits)
+
         _sampleSelection.__init__(self)

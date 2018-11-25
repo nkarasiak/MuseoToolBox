@@ -179,7 +179,7 @@ class learnAndPredict:
                 param_grid=param_grid,
                 cv=self.CV,
                 n_jobs=self.n_jobs,
-                verbose=self.verbose+1)
+                verbose=self.verbose + 1)
             grid.fit(X, Y)
             self.model = grid.best_estimator_
             self.model.fit(X, Y)

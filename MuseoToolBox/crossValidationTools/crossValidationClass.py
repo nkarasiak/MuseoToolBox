@@ -102,7 +102,7 @@ class distanceCV:
             self.n_splits = self.minEffectiveClass
 
         if self.verbose:
-            print('n_splits:'+str(self.n_splits))
+            print('n_splits:' + str(self.n_splits))
         self.random_state = random_state
         self.mask = np.ones(np.asarray(self.Y).shape, dtype=bool)
 
@@ -175,7 +175,8 @@ class distanceCV:
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
                 del CT
-                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(
+                        self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 
@@ -216,7 +217,7 @@ class randomPerClass:
 
     """
 
-    def __init__(self, X=None, y=None, groups=None,train_size=0.5,
+    def __init__(self, X=None, y=None, groups=None, train_size=0.5,
                  valid_size=False, n_splits=5, random_state=None, verbose=False):
 
         self.name = 'randomPerClass'
@@ -264,7 +265,8 @@ class randomPerClass:
                     TF = np.in1d(Cpos, tmpValid, invert=True)
                     tmpTrain = Cpos[TF]
 
-                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(
+                        self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
                 train = np.concatenate((train, tmpTrain))
@@ -380,7 +382,8 @@ class groupCV:
                     self.mask[selected] = 0
                     del selected
 
-                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
+                if not np.all(self.Y[tmpTrain]) or self.Y[tmpTrain][0] != C or not np.all(
+                        self.Y[tmpValid]) or self.Y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 

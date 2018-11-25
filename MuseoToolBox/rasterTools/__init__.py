@@ -95,9 +95,10 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
     }
 
     if numpyDT is None:
-        return gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
+        code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
-        return NP2GDAL_CONVERSION[numpyDT]
+        code = NP2GDAL_CONVERSION[numpyDT]
+    return code
 
 
 def convertGdalDataTypeToOTB(gdalDT):
@@ -141,14 +142,14 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 If true, with only return coords, no X,Y...
             verbose : bool, or int.
                 If true or >1, will print evolution.
-    
+
     Returns
     -------
     X: arr.
         The sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each line of the matrix is a pixel.
     Y: arr.
         The label of the pixel.
-        
+
     """
     # generate kwargs value
     if 'verbose' in kwargs.keys():
@@ -177,7 +178,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     temps = []
     for field in fields:
         if verbose:
-            pushFeedback("Values from '{}' field will be extracted".format(field))
+            pushFeedback(
+                "Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
         rstField = rasterize(inRaster, inVector, field,
                              rstField, gdal.GDT_Float64)
@@ -206,15 +208,15 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     nc = raster.RasterXSize
     nl = raster.RasterYSize
 
-    ulx, xres, xskew, uly, yskew, yres = raster.GetGeoTransform()
+    # ulx, xres, xskew, uly, yskew, yres = raster.GetGeoTransform()
 
     if getCoords is True or onlyCoords is True:
-        coords = np.array([], dtype=np.uint64).reshape(0, 2)
+        coords = np.array([], dtype=np.int64).reshape(0, 2)
 
     # Read block data
     X = np.array([], dtype=convertGdalAndNumpyDataType(gdalDT)).reshape(0, d)
     #Y = np.array([],dtype=np.int16).reshape(0,1)
-    F = np.array([], dtype=np.uint64).reshape(
+    F = np.array([], dtype=np.int64).reshape(
         0, nFields)  # now support multiple fields
 
     # for progress bar
@@ -255,7 +257,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 # Load the Variables
                 if not onlyCoords:
                     # extract values from each field
-                    Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.uint64)
+                    Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.int64)
                     for idx, roiTemp in enumerate(rois):
                         roiField = roiTemp.GetRasterBand(
                             1).ReadAsArray(j, i, cols, lines)
@@ -349,6 +351,8 @@ class rasterMath:
         # Not working for the moment
         parallel = False
         self.parallel = parallel
+        
+        self.driver = gdal.GetDriverByName('GTiff')
 
         # Load raster
         self.openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
@@ -419,7 +423,6 @@ class rasterMath:
         functionKwargs : False, or dict type.
             If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
         """
-        self.driver = gdal.GetDriverByName('GTiff')
 
         if outGdalDT is False:
             dtypeName = function(self.getRandomBlock()).dtype.name
@@ -550,34 +553,6 @@ class rasterMath:
         if self.parallel:
             raise Exception(
                 'Sorry, parallel is not supported for the moment...')
-            """
-            try:
-                from joblib import Parallel, delayed
-            except :
-                raise ImportError('Please install joblib to use multiprocessing')
-            def processParallel(X,mask,i,j,cols,lines,outputNBand,fun):
-                tmp = np.copy(X)
-                tmp[mask[:,0],:outputNBand] = fun(tmp[mask[:,0],:])
-
-                return tmp,mask,i,j,cols,lines,idx
-
-                #return X
-            #self.resFromIterBlock= []
-            #self.resFromIterBlock.extend(self.__iterBlock__(getBlock=False))
-
-            for idx,fun in enumerate(self.functions):
-                outputNBand = self.outputs[idx].RasterCount
-                for X,mask,i,j,cols,lines,idx in Paralletrough l(n_jobs=self.parallel)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
-                    if verbose:
-                        self.pb.addPosition(j)
-                    #for X,mask,i,j,cols,lines,idx in Parallel(n_jobs=self.parallel,verbose=False)(delayed(processParallel)(X,mask,i,j,cols,lines,outputNBand,fun) for X,mask,i,j,cols,lines in self.__iterBlock__(getBlock=True)):
-                    for ind in range(self.outputs[idx].RasterCount):
-                        indGdal = int(ind+1)
-                        curBand = self.outputs[idx].GetRasterBand(indGdal)
-                        curBand.WriteArray(X[:,ind].reshape(lines,cols),i,j)
-                        curBand.FlushCache()
-                    self.outputs[idx].GetRasterBand(1).SetNoDataValue(self.outNoData)
-            """
         else:
 
             for X, mask, col, line, cols, lines in self.__iterBlock__(

@@ -62,17 +62,6 @@ class _sampleSelection:
         if self.params['random_state'] is None:
             import time
             self.params['random_state'] = int(time.time())
-        # Totally random
-        if self.samplingType == 'random':
-            self.crossvalidation = crossValidationClass.randomPerClass
-
-        if self.samplingType == 'Spatial':
-            self.__prepareDistanceCV()
-            self.crossvalidation = crossValidationClass.distanceCV
-
-        # For Stand Split
-        if self.samplingType == 'Group':
-            self.crossvalidation = crossValidationClass.groupCV
 
     def __prepareDistanceCV(self):
         # Split at maximum distance beyond each point
@@ -105,21 +94,26 @@ class _sampleSelection:
         for idx, ext in enumerate(self.__extensions):
             print(3 * ' ' + '- ' + self.__driversName[idx] + ' : ' + ext)
 
-    def get_n_splits(self,X=None,y=None,groups=None):
+    def get_n_splits(self, X=None, y=None, groups=None):
         if y is not None:
             self.y = y
-        n_splits = self.crossvalidation(y=y,groups=groups, verbose=self.verbose, **self.params).n_splits
+        n_splits = self.crossvalidation(
+            y=y,
+            groups=groups,
+            verbose=self.verbose,
+            **self.params).n_splits
         return n_splits
 
     def split(self, X=None, y=None, groups=None):
-        if y is None: y = self.Y
+        if y is None:
+            y = self.Y
         y = y.reshape(-1, 1)
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
-        
+
         return self.crossvalidation(
-            X=X, y=y,groups=groups,verbose=self.verbose, **self.params)
+            X=X, y=y, groups=groups, verbose=self.verbose, **self.params)
 
     def getCrossValidation(self):
         if self.__alreadyRead:
@@ -127,7 +121,7 @@ class _sampleSelection:
         self.__alreadyRead = True
         return self.crossvalidation
 
-    def saveVectorFiles(self,vector,field,groupsField=None,outVector=None):
+    def saveVectorFiles(self, vector, field, groupsField=None, outVector=None):
         print("""Warning : This function generates vector files according to your vector.
     The number of features may differ from the number of pixels used in classification.
     If you want to save every ROI pixels in the vector, please use rasterTools.sampleExtraction before.""")
@@ -139,20 +133,20 @@ class _sampleSelection:
                 'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
             self.getSupportedExtensions()
             raise Exception('We recommend you to use sqlite/gpkg extension.')
-        
+
         if groupsField is None:
             groups = None
-            y,fts,srs = vectorTools.readValuesFromVector(
-                    vector,field,getFeatures=True,verbose=self.verbose)
+            y, fts, srs = vectorTools.readValuesFromVector(
+                vector, field, getFeatures=True, verbose=self.verbose)
         else:
-            y,groups,fts,srs = vectorTools.readValuesFromVector(
-                    vector,field,groupsField,getFeatures=True,verbose=self.verbose)
-    
+            y, groups, fts, srs = vectorTools.readValuesFromVector(
+                vector, field, groupsField, getFeatures=True, verbose=self.verbose)
+
         if self.__alreadyRead:
             self.reinitialize()
         listOutput = []
         self.cv = []
-        for idx, trvl in enumerate(self.split(None,y,groups)):
+        for idx, trvl in enumerate(self.split(None, y, groups)):
             self.cv.append([trvl[0], trvl[1]])
             trFeat = [fts[int(i)] for i in trvl[0]]
             vlFeat = [fts[int(i)] for i in trvl[1]]
