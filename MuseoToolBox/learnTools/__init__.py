@@ -305,8 +305,8 @@ class learnAndPredict:
             self,
             inRaster,
             outRaster,
-            outConfidencePerClass=False,
-            outConfidence=False,
+            confidencePerClass=False,
+            confidence=False,
             inMaskRaster=False,
             outNoData=0):
         """
@@ -334,24 +334,25 @@ class learnAndPredict:
         from ..rasterTools import rasterMath
         from ..rasterTools import getGdalDTFromMinMaxValues
         rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
-        gdalDT = getGdalDTFromMinMaxValues(int(np.amax(np.unique(self.y))))
+        
+        gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
         rM.addFunction(
             self.predictFromArray,
             outRaster,
             1,
             gdalDT,
             outNoData=0)
-        if outConfidencePerClass:
+        if confidencePerClass:
             rM.addFunction(
-                self.predictConfidencePerClassFromArray,
-                outConfidencePerClass,
+                self.predictConfidencePerClass,
+                confidencePerClass,
                 outNBand=False,
                 outGdalDT=3,
                 outNoData=-9999)
-        if outConfidence:
+        if confidence:
             rM.addFunction(
-                self.predictConfidenceOfPredictedClassFromArray,
-                outConfidence,
+                self.predictConfidenceOfPredictedClass,
+                confidence,
                 outNBand=False,
                 outGdalDT=3,
                 outNoData=-9999)

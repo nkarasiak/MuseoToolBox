@@ -143,9 +143,9 @@ class distanceCV:
                               str(C))
 
                     self.ROI = np.random.permutation(CT)[0]
-                    Tstand = self.distanceLabel[np.isin(
-                        self.distanceLabel, np.unique(self.groups[CT]))]
-                    TstandTF = np.isin(self.distanceLabel, Tstand)
+                    #Tstand = self.distanceLabel[np.isin(
+                     #   self.distanceLabel, np.unique(self.groups[CT]))]
+                    #TstandTF = np.isin(self.distanceLabel, Tstand)
                     standPos = np.argwhere(
                         self.groups[self.ROI] == self.distanceLabel)[0][0]
                     distanceROI = (self.distanceArray[standPos, :])

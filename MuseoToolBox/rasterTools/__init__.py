@@ -40,7 +40,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     maxAbsValue = np.amax(np.abs([maxValue, minValue]))
 
     # if values are integer
-    if isinstance(maxValue, int):
+    if isinstance(maxAbsValue,(int,np.integer)):
         if minValue >= 0:
             if maxValue <= 255:
                 gdalDT = gdal.GDT_Byte
@@ -55,7 +55,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
                 gdalDT = gdal.GDT_Int32
 
     # if values are float
-    if isinstance(maxValue, float):
+    if isinstance(maxAbsValue, float):
         if maxAbsValue <= +3.4E+38:
             gdalDT = gdal.GDT_Float32
         else:
