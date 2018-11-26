@@ -240,9 +240,10 @@ class learnAndPredict:
 
         # if not self.scale but scale was used in a previous call of
         # learnAndPredict
-        if type(self.model[1]).__name__ == 'StandardScaler':
-            self.scale = True
-            self.model, self.scaler = np.load(path)
+        if self.scale is False:
+            if type(self.model[1]).__name__ == 'StandardScaler':
+                self.scale = True
+                self.model, self.scaler = np.load(path)
 
     def predictFromArray(self, X):
         """
@@ -336,13 +337,16 @@ class learnAndPredict:
         rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
         
         gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
+        
         rM.addFunction(
             self.predictFromArray,
             outRaster,
-            1,
-            gdalDT,
-            outNoData=0)
+            outNBand=1,
+            outGdalDT=gdalDT,
+            outNoData=outNoData)
+        
         noDataConfidence=-9999
+        
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
@@ -350,6 +354,7 @@ class learnAndPredict:
                 outNBand=False,
                 outGdalDT=getGdalDTFromMinMaxValues(100,noDataConfidence),
                 outNoData=noDataConfidence)
+            
         if confidence:
             rM.addFunction(
                 self.predictConfidenceOfPredictedClass,

@@ -576,7 +576,7 @@ class rasterMath:
                         self.pb.addPosition(line)
 
                 for idx, fun in enumerate(self.functions):
-                    if not self.outputNoData[idx]:
+                    if self.outputNoData[idx] is False:
                         self.outputNoData[idx] = self.nodata
 
                     maxBands = self.outputs[idx].RasterCount
@@ -609,6 +609,7 @@ class rasterMath:
                     band = self.outputs[idx].GetRasterBand(1)
                     band.SetNoDataValue(self.outputNoData[idx])
                     band.FlushCache()
+                    
             band = None
             for idx, fun in enumerate(self.functions):
                 print(
