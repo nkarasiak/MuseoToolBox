@@ -49,9 +49,9 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
             elif maxValue >= 65535:
                 gdalDT = gdal.GDT_UInt32
         elif minValue < 0:
-            if maxValue > 255 and maxAbsValue <= 65535:
+            if minValue > -65535:
                 gdalDT = gdal.GDT_Int16
-            elif maxAbsValue > 65535:
+            else:
                 gdalDT = gdal.GDT_Int32
 
     # if values are float

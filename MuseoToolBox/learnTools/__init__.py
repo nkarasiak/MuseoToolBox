@@ -342,20 +342,21 @@ class learnAndPredict:
             1,
             gdalDT,
             outNoData=0)
+        noDataConfidence=-9999
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
                 confidencePerClass,
                 outNBand=False,
-                outGdalDT=3,
-                outNoData=-9999)
+                outGdalDT=getGdalDTFromMinMaxValues(100,noDataConfidence),
+                outNoData=noDataConfidence)
         if confidence:
             rM.addFunction(
                 self.predictConfidenceOfPredictedClass,
                 confidence,
-                outNBand=False,
-                outGdalDT=3,
-                outNoData=-9999)
+                outNBand=1,
+                outGdalDT=getGdalDTFromMinMaxValues(100,noDataConfidence),
+                outNoData=noDataConfidence)
         rM.run()
 
     def getStatsFromCV(
