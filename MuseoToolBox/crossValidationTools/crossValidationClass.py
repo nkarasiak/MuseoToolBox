@@ -54,6 +54,8 @@ class distanceCV:
             False : as loop as min effective class
         group : array
             contain class (like Y), e.g. able to do a SLOO per Stand if you put your stand number here.
+        stat : str.
+            Path where to save csv stat (label, n trains, and mean distance between training per class).
 
         Returns
         -------
@@ -105,7 +107,10 @@ class distanceCV:
             print('n_splits:' + str(self.n_splits))
         self.random_state = random_state
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-
+        self.Stats= stats
+        if self.stats:    
+            self.Cstats=[]
+            
     def __iter__(self):
         return self
 
@@ -183,10 +188,18 @@ class distanceCV:
                 #
                 validation = np.concatenate((validation, tmpValid))
                 train = np.concatenate((train, tmpTrain))
+                if self.stats:
+                    CTdistTrain=np.array(self.distanceArray[tmpTrain])[:,tmpTrain]
+                    if len(CTdistTrain) > 1:
+                        CTdistTrain=np.mean(np.triu(CTdistTrain)[np.triu(CTdistTrain)!=0])
+                    self.Cstats.append([C,tmpTrain.shape[0],CTdistTrain])
+
 
             if self.verbose:
                 print('Validation samples : ' + str(len(validation)))
                 print('Training samples : ' + str(len(train)))
+            if self.stats:
+                np.savetxt(self.stats,self.Cstats,fmt='%d',header="Label,Ntrain,Mean dist train")
 
             self.iterPos += 1
             # Mask selected validation
