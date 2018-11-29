@@ -124,7 +124,7 @@ class _sampleSelection:
     def saveVectorFiles(self, vector, field, groupsField=None, outVector=None):
         print("""Warning : This function generates vector files according to your vector.
     The number of features may differ from the number of pixels used in classification.
-    If you want to save every ROI pixels in the vector, please use rasterTools.sampleExtraction before.""")
+    If you want to save every ROI pixels in the vector, please use vectorTools.sampleExtraction before.""")
 
         fileName, self.__ext = os.path.splitext(outVector)
 

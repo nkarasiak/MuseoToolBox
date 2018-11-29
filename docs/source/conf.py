@@ -52,11 +52,12 @@ extensions = [
     ]
 
 autosummary_generate = True
+numpydoc_show_class_members=False 
 imported_members=True
 autoclass_content = 'both'
 autodoc_default_flags = ['members', 'inherited-members','undoc-members']
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -72,8 +73,8 @@ project = 'Museo ToolBox'
 copyright = '2018, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
 sphinx_gallery_conf = {
-     'backreferences_dir'  : 'gen_modules/backreferences',
-     'doc_module': ('MuseoToolBox'),
+     'backreferences_dir'  : os.path.join('modules','backreferences'),
+     'doc_module':'MuseoToolBox',
          # path to your examples scripts
      'examples_dirs': '../../examples',
      'filename_pattern' : '/',
@@ -207,6 +208,4 @@ texinfo_documents = [
      author, 'MuseoToolBox', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 

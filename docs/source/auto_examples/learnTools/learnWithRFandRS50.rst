@@ -23,9 +23,9 @@ Import librairies
 .. code-block:: python
 
 
+    from MuseoToolBox.learnTools import learnAndPredict
     from MuseoToolBox.crossValidationTools import RandomCV
-    from MuseoToolBox import datasets,rasterTools,vectorTools
-    from MuseoToolBox import learnTools
+    from MuseoToolBox import datasets
     from sklearn.ensemble import RandomForestClassifier
 
 
@@ -82,7 +82,7 @@ Initialize Random-Forest
 
 
 
-Initialize Random-Forest
+Start learning
 ---------------------------
 
 
@@ -91,9 +91,32 @@ Initialize Random-Forest
 
 
 
-    LAP = learnTools.learnAndPredict()
+    LAP = learnAndPredict()
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Received groups value, but randomCV don't use it
+    Fitting 10 folds for each of 2 candidates, totalling 20 fits
+    best n_estimators : 200
+
+
+Get kappa from each fold
+---------------------------
+
+
+
+.. code-block:: python
+
   
     for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
         print(kappa)
@@ -108,8 +131,6 @@ Initialize Random-Forest
 
  .. code-block:: none
 
-    Fitting 10 folds for each of 2 candidates, totalling 20 fits
-    best n_estimators : 200
     [0.94635897652909906]
     [0.93926877916972007]
     [0.9424138426326939]
@@ -122,15 +143,16 @@ Initialize Random-Forest
     [0.9395504758785389]
 
 
-Initialize Random-Forest
----------------------------
+Get each confusion matrix from folds
+-----------------------------------------------
 
 
 
 .. code-block:: python
 
-    
-    LAP.predictFromRaster(raster,'/tmp/classification.tif')
+
+    for cm in LAP.getStatsFromCV(confusionMatrix=True):
+        print(cm)
 
 
 
@@ -142,7 +164,79 @@ Initialize Random-Forest
 
  .. code-block:: none
 
-    Prediction...  [##################......................]45%    Prediction...  [####################################....]90%    Saved /tmp/classification.tif using function predictFromArray
+    [array([[3682,   77,    2,   10,    0],
+           [  55, 1079,    1,   12,    0],
+           [   2,    0, 1138,    0,    0],
+           [  13,   18,    0,  232,    0],
+           [   4,    0,    0,    0,    0]])]
+    [array([[3687,   75,    1,    8,    0],
+           [  97, 1036,    0,   13,    0],
+           [   0,    0, 1139,    0,    0],
+           [   5,   17,    3,  237,    0],
+           [   2,    2,    0,    0,    0]])]
+    [array([[3687,   70,    1,   13,    0],
+           [  73, 1061,    1,   12,    0],
+           [   2,    0, 1138,    0,    0],
+           [   9,   29,    2,  223,    0],
+           [   4,    0,    0,    0,    0]])]
+    [array([[3700,   61,    2,    8,    0],
+           [  84, 1047,    0,   15,    0],
+           [   0,    0, 1139,    0,    0],
+           [   7,   12,    2,  241,    0],
+           [   3,    1,    0,    0,    0]])]
+    [array([[3697,   68,    0,    6,    0],
+           [  88, 1049,    0,   10,    0],
+           [   0,    0, 1140,    0,    0],
+           [   8,   21,    2,  232,    0],
+           [   4,    0,    0,    0,    0]])]
+    [array([[3700,   62,    2,    7,    0],
+           [  77, 1053,    1,   15,    0],
+           [   0,    0, 1139,    0,    0],
+           [  16,   23,    1,  222,    0],
+           [   4,    0,    0,    0,    0]])]
+    [array([[3681,   75,    1,   14,    0],
+           [  80, 1057,    0,   10,    0],
+           [   0,    0, 1140,    0,    0],
+           [  10,   17,    1,  235,    0],
+           [   3,    1,    0,    0,    0]])]
+    [array([[3703,   58,    2,    8,    0],
+           [  59, 1063,    1,   23,    0],
+           [   3,    0, 1136,    0,    0],
+           [  10,   20,    3,  229,    0],
+           [   4,    0,    0,    0,    0]])]
+    [array([[3704,   58,    3,    6,    0],
+           [  75, 1061,    1,   10,    0],
+           [   0,    0, 1140,    0,    0],
+           [  12,   19,    1,  231,    0],
+           [   3,    0,    1,    0,    0]])]
+    [array([[3686,   71,    1,   13,    0],
+           [  87, 1041,    0,   18,    0],
+           [   2,    0, 1137,    0,    0],
+           [   9,   15,    2,  236,    0],
+           [   4,    0,    0,    0,    0]])]
+
+
+Predict map
+---------------------------
+
+
+
+.. code-block:: python
+
+    
+    LAP.predictRaster(raster,'/tmp/classification.tif')
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Prediction...  [##################......................]45%    Prediction...  [####################################....]90%    Saved /tmp/classification.tif using function predictArray
 
 
 Plot example
@@ -153,7 +247,6 @@ Plot example
 
 
 
-    import numpy as np
     from matplotlib import pyplot as plt
     import gdal
     src=gdal.Open('/tmp/classification.tif')
@@ -169,7 +262,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  36.258 seconds)
+**Total running time of the script:** ( 0 minutes  53.225 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

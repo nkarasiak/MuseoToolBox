@@ -1,22 +1,18 @@
-Documentation
+Documentation API
 ===================
-    
-rasterTools
-------------
 
-.. automodule:: MuseoToolBox.rasterTools
+.. currentmodule:: MuseoToolBox
+
+.. automodule:: MuseoToolBox
+   :no-members:
+   :no-inherited-members:
+
+
+.. autosummary::
+   :toctree: modules/
+   :template: module.rst
    
-vectorTools
-------------
-
-.. automodule:: MuseoToolBox.vectorTools
-
-crossValidationTools
-----------------------
-
-.. automodule:: MuseoToolBox.crossValidationTools
-   
-learningTools
---------------
-
-.. autoclass:: MuseoToolBox.learnTools.learnAndPredict
+   rasterTools
+   vectorTools
+   learnTools
+   crossValidationTools

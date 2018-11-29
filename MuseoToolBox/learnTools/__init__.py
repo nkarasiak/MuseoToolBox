@@ -20,7 +20,7 @@ class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
-        After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictFromRaster() or predictFromArray().
+        After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
 
 
         Parameters
@@ -245,7 +245,7 @@ class learnAndPredict:
                 self.scale = True
                 self.model, self.scaler = np.load(path)
 
-    def predictFromArray(self, X):
+    def predictArray(self, X):
         """
         Predict label from array.
 
@@ -302,7 +302,7 @@ class learnAndPredict:
             Xpredict = np.amax(self.model.predict_proba(X) * 100, axis=1)
         return Xpredict
 
-    def predictFromRaster(
+    def predictRaster(
             self,
             inRaster,
             outRaster,
@@ -312,7 +312,7 @@ class learnAndPredict:
             outNoData=0):
         """
         Predict label from raster using previous learned model.
-        This function will call self.predictFromArray(X).
+        This function will call self.predictArray(X).
 
         Parameters
         ----------
@@ -339,7 +339,7 @@ class learnAndPredict:
         gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
         
         rM.addFunction(
-            self.predictFromArray,
+            self.predictArray,
             outRaster,
             outNBand=1,
             outGdalDT=gdalDT,

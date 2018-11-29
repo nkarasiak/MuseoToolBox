@@ -21,9 +21,6 @@ from . import crossValidationClass as _cvc
 
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inVector=None,
-                 inField=None,
-                 inGroup=None,
                  valid_size=0.5,
                  n_splits=5,
                  random_state=None,
@@ -51,7 +48,6 @@ class LeavePSubGroupOut(_sampleSelection):
         -------
         List : list with the sampling type and the parameters for the groupCV.
         """
-        self.samplingType = 'Group'
         self.verbose = verbose
 
         self.crossvalidation = _cvc.groupCV
@@ -62,9 +58,6 @@ class LeavePSubGroupOut(_sampleSelection):
         else:
             raise Exception(
                 'Percent must be between 0 and 1 and must be a float')
-        self.Y = inVector
-        self.inField = inField
-        self.groups = inGroup
 
         self.params = dict(
             valid_size=valid_size,
@@ -76,9 +69,6 @@ class LeavePSubGroupOut(_sampleSelection):
 
 class LeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inVector=None,
-                 inField=None,
-                 inGroup=None,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
@@ -104,14 +94,10 @@ class LeaveOneSubGroupOut(_sampleSelection):
         -------
         List : list with the sampling type and the parameters for the groupCV.
         """
-        self.samplingType = 'Group'
         self.verbose = verbose
 
         self.crossvalidation = _cvc.groupCV
 
-        self.Y = inVector
-        self.inField = inField
-        self.group = inGroup
         self.params = dict(
             valid_size=1,
             n_splits=n_splits,
@@ -157,10 +143,6 @@ class SpatialLeavePSideOut(_sampleSelection):
 
         self.crossvalidation = _cvc.distanceCV
 
-        self.inRaster = inRaster
-        self.Y = inVector
-        self.inField = inField
-
         self.params = dict(
             distanceMatrix=distanceMatrix,
             minTrain=minTrain,
@@ -172,10 +154,6 @@ class SpatialLeavePSideOut(_sampleSelection):
 
 class SpatialLeaveOneSubGroupOut(_sampleSelection):
     def __init__(self,
-                 inRaster=None,
-                 inVector=None,
-                 inField=None,
-                 inGroup=None,
                  distanceThresold=None,
                  distanceMatrix=None,
                  distanceLabel=None,
@@ -222,11 +200,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
             distanceMatrix, distanceLabel = getDistanceMatrix(
                 inRaster, inVector, inGroup, verbose=verbose)
 
-        self.inRaster = inRaster
-        self.Y = inVector
-        self.inField = inField
-        self.group = inGroup
-
         self.params = dict(
             distanceMatrix=distanceMatrix,
             distanceThresold=distanceThresold,
@@ -239,9 +212,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
 class SpatialLeaveOnePixelOut(_sampleSelection):
     def __init__(self,
-                 inRaster=None,
-                 inVector=None,
-                 inField=None,
                  distanceThresold=None,
                  distanceMatrix=None,
                  n_splits=False,
@@ -278,19 +248,10 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         ----------
         See : https://doi.org/10.1111/geb.12161.
         """
-
         self.samplingType = 'Spatial'
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
-
-        if distanceMatrix is None:
-            distanceMatrix = getDistanceMatrix(
-                inRaster, inVector, verbose=verbose)
-
-        self.inRaster = inRaster
-        self.Y = inVector
-        self.inField = inField
 
         self.params = dict(
             distanceMatrix=distanceMatrix,
@@ -304,8 +265,6 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 
 class RandomCV(_sampleSelection):
     def __init__(self,
-                 inVector=None,
-                 inField=None,
                  train_size=0.5,
                  n_splits=5,
                  random_state=None,
@@ -333,8 +292,6 @@ class RandomCV(_sampleSelection):
         """
         self.samplingType = 'random'
         self.verbose = verbose
-        self.Y = inVector
-        self.inField = inField
 
         self.crossvalidation = _cvc.randomPerClass
 

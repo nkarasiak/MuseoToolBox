@@ -240,6 +240,9 @@ class randomPerClass:
         if n_splits is False:
             self.n_splits = min([len(self.y == C) for C in np.unique(y)])
 
+        if groups is not None:
+            print("Received groups value, but randomCV don't use it")
+        
         self.random_state = random_state
         self.valid_size = valid_size
         self.iterPos = 1

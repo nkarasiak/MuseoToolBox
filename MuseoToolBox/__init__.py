@@ -13,9 +13,6 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import
-from . import vectorTools, rasterTools, crossValidationTools, datasets
-from .learnTools import learnAndPredict
-from .vectorTools import readValuesFromVector
-from .rasterTools import rasterMath, getSamplesFromROI
+from . import learnTools, vectorTools, rasterTools, crossValidationTools, datasets
 
 __version__ = "0.9"

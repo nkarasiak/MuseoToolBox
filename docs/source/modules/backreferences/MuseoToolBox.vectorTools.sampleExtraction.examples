@@ -1,0 +1,22 @@
+
+
+Examples using ``MuseoToolBox.vectorTools.sampleExtraction``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to extract from polygons or points each pixel centroid located in the ve...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
+
+        :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`

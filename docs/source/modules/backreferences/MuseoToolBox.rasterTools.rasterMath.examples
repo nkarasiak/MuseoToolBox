@@ -1,0 +1,22 @@
+
+
+Examples using ``MuseoToolBox.rasterTools.rasterMath``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Test rasterMath">
+
+.. only:: html
+
+    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_rasterMath_thumb.png
+
+        :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`

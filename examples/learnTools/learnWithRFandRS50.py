@@ -12,9 +12,9 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
+from MuseoToolBox.learnTools import learnAndPredict
 from MuseoToolBox.crossValidationTools import RandomCV
-from MuseoToolBox import datasets,rasterTools,vectorTools
-from MuseoToolBox import learnTools
+from MuseoToolBox import datasets
 from sklearn.ensemble import RandomForestClassifier
 
 ##############################################################################
@@ -40,24 +40,34 @@ classifier = RandomForestClassifier()
 # ---------------------------
 
 
-LAP = learnTools.learnAndPredict()
+LAP = learnAndPredict()
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+
+##############################################################################
+# Get kappa from each fold
+# ---------------------------
   
 for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
     print(kappa)
 
 ##############################################################################
+# Get each confusion matrix from folds
+# -----------------------------------------------
+
+for cm in LAP.getStatsFromCV(confusionMatrix=True):
+    print(cm)
+
+##############################################################################
 # Predict map
 # ---------------------------
     
-LAP.predictFromRaster(raster,'/tmp/classification.tif')
+LAP.predictRaster(raster,'/tmp/classification.tif')
 
 ##########################
 # Plot example
 
 
-import numpy as np
 from matplotlib import pyplot as plt
 import gdal
 src=gdal.Open('/tmp/classification.tif')

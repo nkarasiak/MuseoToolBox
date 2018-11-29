@@ -7,10 +7,10 @@
 .. _sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py:
 
 
-Learn with Random-Forest and  compare Cross-Validation methods
+Learn with Random-Forest and compare Cross-Validation methods
 ===============================================================
 
-This example shows how to make a classification with different cross-validation methods
+This example shows how to make a classification with different cross-validation methods.
 
 
 
@@ -22,10 +22,11 @@ Import librairies
 .. code-block:: python
 
 
+    from MuseoToolBox.learnTools import learnAndPredict
     from MuseoToolBox.crossValidationTools import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
-    from MuseoToolBox import datasets,rasterTools,vectorTools
-    from MuseoToolBox import learnTools
+    from MuseoToolBox import datasets
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import StratifiedKFold
 
 
 
@@ -67,7 +68,7 @@ Initialize Random-Forest
 
 
 
-Initialize Random-Forest
+Create list of different CV
 ---------------------------
 
 
@@ -75,18 +76,12 @@ Initialize Random-Forest
 .. code-block:: python
 
 
-    CVs = [RandomCV(),LeavePSubGroupOut(),LeaveOneSubGroupOut()]
+    CVs = [RandomCV(),LeavePSubGroupOut(),LeaveOneSubGroupOut(),StratifiedKFold()]
     kappas=[]
+
+    LAP = learnAndPredict()
+
     for cv in CVs : 
-        LAP = learnTools.learnAndPredict()
-    
-        ##############################################################################
-        # Define group only when needed
-    
-        if cv == RandomCV():
-            group=None
-        else:
-            group=group
         
         LAP.learnFromRaster(raster,vector,inField=field,inGroup=group,cv=cv,
                             classifier=classifier,param_grid=dict(n_estimators=[100,200]))
@@ -111,29 +106,37 @@ Initialize Random-Forest
 
  .. code-block:: none
 
+    Received groups value, but randomCV don't use it
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.94285968078707694]
-    [0.94466130404052151]
-    [0.94439084090654746]
-    [0.94148911023938175]
-    [0.94290610032434508]
+    [0.94169994306848903]
+    [0.94391869147787955]
+    [0.94807225199295819]
+    [0.93797013086917802]
+    [0.9423882031859746]
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.87865624774811169]
-    [0.77925469154618388]
-    [0.70972664904892513]
-    [0.78012451942974426]
-    [0.69598230861370569]
+    [0.77323834382370704]
+    [0.79569486210638019]
+    [0.65384810198535337]
+    [0.74272087034893419]
+    [0.84051840514572429]
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
+    best n_estimators : 200
     Kappa for RandomCV
-    [0.93437923300982351]
-    [0.61251567714893407]
+    [0.7779631363790428]
+    [0.91391701610666098]
+    ====================
+    Fitting 3 folds for each of 2 candidates, totalling 6 fits
+    best n_estimators : 200
+    Kappa for RandomCV
+    [0.91596913520484835]
+    [0.87837375589853495]
+    [0.8038466302102002]
     ====================
 
 
@@ -150,6 +153,7 @@ Plot example
     plt.boxplot(kappas,labels=[str(type(i).__name__) for i in CVs], patch_artist=True)
     plt.grid()
     plt.ylabel('Kappa')
+    plt.xticks(rotation=15)
     plt.show()
 
 
@@ -160,7 +164,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  32.061 seconds)
+**Total running time of the script:** ( 0 minutes  46.985 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

@@ -108,7 +108,7 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. _learnTools:
 
-leanrTools
+learnTools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.learnTools` module.
@@ -138,7 +138,7 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
 
 .. only:: html
 
@@ -155,6 +155,39 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
    :hidden:
 
    /auto_examples/learnTools/learnWithRFandCompareCV
+.. raw:: html
+
+    <div style='clear:both'></div>
+
+.. _rasterTools:
+
+rasterTools
+------------------------
+
+Examples related to the :mod:`museotoolbox.rasterTools` module.
+
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Test rasterMath">
+
+.. only:: html
+
+    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_rasterMath_thumb.png
+
+        :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/rasterTools/rasterMath
 .. raw:: html
 
     <div style='clear:both'></div>
