@@ -11,8 +11,9 @@ This example shows how to make a Leave-One-SubGroup-Out.
 # Import librairies
 # -------------------------------------------
 
+from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-from MuseoToolBox import datasets,rasterTools
+from MuseoToolBox import datasets
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -21,7 +22,7 @@ from MuseoToolBox import datasets,rasterTools
 raster,vector = datasets.getHistoricalMap()
 field = 'Class'
 group = 'uniquefid'
-X,y,s = rasterTools.getSamplesFromROI(raster,vector,field,group)
+X,y,s = getSamplesFromROI(raster,vector,field,group)
 ##############################################################################
 # Create CV
 # -------------------------------------------

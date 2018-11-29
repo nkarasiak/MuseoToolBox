@@ -1,12 +1,11 @@
 # coding: utf-8
-from tools import rasterTools
+from MuseoToolBox import rasterTools
+import os
 from scipy import stats
 import numpy as np
 import sys
-sys.path.append("..")
 
-
-class computeClassificationStability():
+class modalClass():
     def __init__(
             self,
             inRaster,
@@ -15,7 +14,7 @@ class computeClassificationStability():
             outGdalDT,
             outNoData):
         #process = rasterTools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
-        process = rasterTools.readAndWriteRaster(inRaster, inMaskRaster)
+        process = rasterTools.rasterMath(inRaster, inMaskRaster)
         process.addFunction(self.stabCalc, outRaster, 2, 3, outNoData)
         process.run()
 
@@ -27,15 +26,65 @@ class computeClassificationStability():
 # process.iterProcessAndWrite(returnArr)
 
 
-if __name__ == '__main__':
-    inRaster = "/mnt/DATA/Formosat_2006-2014/v2/classification/SVM/SLOO_meanAllYearFromMedian/level3/10.vrt"
-    #inRaster = "/mnt/DATA/Sentinel-2/2017/5days/SITS_forestMask.tif"
-    outRaster = "/mnt/DATA/Formosat_2006-2014/v2/classification/SVM/SLOO_meanAllYearFromMedian/modal.tif"
-    inMaskRaster = False  # "/mnt/DATA/Formosat_2006-2014/v2/data/forestMask.tif"
+def main(argv=None, apply_config=True):
+    import argparse
+    if len(sys.argv) == 1:
+        prog = os.path.basename(sys.argv[0])
+        print(sys.argv[0] + ' [options]')
+        print("Help : ", prog, " --help")
+        print("or : ", prog, " -h")
+        print(
+            2 *
+            ' ' +
+            "example 1 : ",
+            prog,
+            " -in raster.tif -out modal.tif")
+        sys.exit(-1)
 
-    computeClassificationStability(
-        inRaster,
-        outRaster,
-        inMaskRaster,
-        outGdalDT=3,
-        outNoData=0)
+    else:
+        usage = "usage: %prog [options] "
+        parser = argparse.ArgumentParser(
+            description="Compute modal class (first band) and number of agreements (second band).",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        parser.add_argument(
+            "-in",
+            "--image",
+            dest="inRaster",
+            action="store",
+            help="Image to extract values from and to generate centroid from output vector",
+            required=True)
+
+        parser.add_argument(
+            "-inm",
+            "--inMaskRaster",
+            dest="inMaskRaster",
+            action="store",
+            help="Vector to fill with raster values",
+            required=False,
+            default=False,
+            type=str)
+
+        parser.add_argument(
+            "-out",
+            "--outRaster",
+            dest="outRaster",
+            action="store",
+            help="Raster to save (geotif)",
+            required=True,
+            type=str)
+        args = parser.parse_args()
+    
+        computeClassificationStability(
+                inRaster=args.inRaster,
+                outRaster=args.outRaster,
+                inMaskRaster=args.inMaskRaster,
+                outGdalDT=3,
+                outNoData=0)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+
+

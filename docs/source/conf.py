@@ -48,9 +48,11 @@ extensions = [
     'nbsphinx',#'sphinx.ext.linkcode',
     'sphinx.ext.doctest',
     'sphinx_gallery.gen_gallery'
+    #'sphinx_automodapi.automodapi'
     ]
 
 autosummary_generate = True
+imported_members=True
 autoclass_content = 'both'
 autodoc_default_flags = ['members', 'inherited-members','undoc-members']
 # Add any paths that contain templates here, relative to this directory.
@@ -69,10 +71,9 @@ master_doc = 'index'
 project = 'Museo ToolBox'
 copyright = '2018, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
-
 sphinx_gallery_conf = {
      'backreferences_dir'  : 'gen_modules/backreferences',
-     'doc_module': ('sphinx_gallery','MuseoToolBox'),
+     'doc_module': ('MuseoToolBox'),
          # path to your examples scripts
      'examples_dirs': '../../examples',
      'filename_pattern' : '/',

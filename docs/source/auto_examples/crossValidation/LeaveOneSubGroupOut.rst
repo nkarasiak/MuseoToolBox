@@ -22,8 +22,9 @@ Import librairies
 .. code-block:: python
 
 
+    from MuseoToolBox.rasterTools import getSamplesFromROI
     from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-    from MuseoToolBox import datasets,rasterTools
+    from MuseoToolBox import datasets
 
 
 
@@ -42,18 +43,11 @@ Load HistoricalMap dataset
     raster,vector = datasets.getHistoricalMap()
     field = 'Class'
     group = 'uniquefid'
-    X,y,s = rasterTools.getSamplesFromROI(raster,vector,field,group)
+    X,y,s = getSamplesFromROI(raster,vector,field,group)
 
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
 
 
 Create CV
@@ -153,7 +147,7 @@ as MuseoToolBox use one group per Y label
     (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.195 seconds)
+**Total running time of the script:** ( 0 minutes  0.258 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

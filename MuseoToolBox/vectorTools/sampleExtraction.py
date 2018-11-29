@@ -46,7 +46,7 @@ class sampleExtraction:
         uniqueFID : str, default None.
             If None, will add a field called 'uniquefid' in the output vector.
         bandPrefix : str, default None.
-            If bandPrefix (e.g. 'band_'), will extract values from raster.
+            If bandPrefix (e.g. 'band'), will extract values from raster.
         """
         self.__verbose = verbose
         if uniqueFID:
@@ -162,7 +162,7 @@ class createPointLayer:
         Parameters
         -------
         bandPrefix : str.
-            Prefix for each band (E.g. 'band_')
+            Prefix for each band (E.g. 'band')
         nBands : int.
             Number of band to save.
         """

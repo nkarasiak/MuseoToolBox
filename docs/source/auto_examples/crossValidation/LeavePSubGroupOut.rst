@@ -88,7 +88,6 @@ Create CV
 
  .. code-block:: none
 
-    Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     (6676,) (5971,)
     (5971,) (6676,)
     (6091,) (6556,)
@@ -124,7 +123,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.115 seconds)
+**Total running time of the script:** ( 0 minutes  0.102 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeavePSubGroupOut.py:

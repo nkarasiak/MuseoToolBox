@@ -65,26 +65,6 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/LeaveOneSubGroupOut
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
 
 .. only:: html
@@ -105,13 +85,13 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out using subgroup, called here a Spatial Le...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -121,7 +101,7 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut
+   /auto_examples/crossValidation/LeaveOneSubGroupOut
 .. raw:: html
 
     <div style='clear:both'></div>
