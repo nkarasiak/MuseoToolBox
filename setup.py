@@ -41,7 +41,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': [
             'mtb_sampleExtraction=MuseoToolBox.vectorTools.sampleExtraction:main',
-            'mtb_getModalClass=MuseoToolBox.stats.computeClassificationStability:main'
+            'mtb_modalClass=MuseoToolBox.stats.computeClassificationStability:main'
         ],
     }
  )

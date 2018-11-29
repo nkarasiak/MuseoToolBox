@@ -1,5 +1,5 @@
 # coding: utf-8
-from MuseoToolBox import rasterTools
+from .. import rasterTools
 import os
 from scipy import stats
 import numpy as np
@@ -14,6 +14,7 @@ class modalClass():
             outGdalDT,
             outNoData):
         #process = rasterTools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
+        
         process = rasterTools.rasterMath(inRaster, inMaskRaster)
         process.addFunction(self.stabCalc, outRaster, 2, 3, outNoData)
         process.run()
@@ -23,10 +24,9 @@ class modalClass():
         tmpStack = np.column_stack((tmp[0], tmp[1]))
         return tmpStack
 
-# process.iterProcessAndWrite(returnArr)
 
 
-def main(argv=None, apply_config=True):
+def modalClassCLI(argv=None, apply_config=True):
     import argparse
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
@@ -75,7 +75,7 @@ def main(argv=None, apply_config=True):
             type=str)
         args = parser.parse_args()
     
-        computeClassificationStability(
+        modalClass(
                 inRaster=args.inRaster,
                 outRaster=args.outRaster,
                 inMaskRaster=args.inMaskRaster,
@@ -84,7 +84,7 @@ def main(argv=None, apply_config=True):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(modalClassCLI())
 
 
 

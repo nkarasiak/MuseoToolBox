@@ -15,7 +15,6 @@ help :
 	@echo "    notebook - launch ipython3 notebook"
 build :
 	$(PYTHON) setup.py build
-
 buildext :
 	$(PYTHON) setup.py build_ext --inplace
 
@@ -48,11 +47,6 @@ doc :
 	# rm -rf docs/build/html/ docs/source/auto_examples/
 	cd docs/ && make html
 
-renegeratenb:
-	jupyter nbconvert
-notebook :
-	ipython3 notebook --notebook-dir=notebooks/
-	
 bench : 
 	@git stash  >/dev/null 2>&1
 	@echo 'Branch master'

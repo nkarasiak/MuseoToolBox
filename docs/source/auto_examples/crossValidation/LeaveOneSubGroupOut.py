@@ -11,8 +11,8 @@ This example shows how to make a Leave-One-SubGroup-Out.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
+from MuseoToolBox.rasterTools import getSamplesFromROI
 from MuseoToolBox import datasets
 
 ##############################################################################
