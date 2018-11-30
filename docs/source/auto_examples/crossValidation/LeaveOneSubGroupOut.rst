@@ -68,8 +68,7 @@ Create CV
 
 
 .. note::
-   There is no need to specify a bandPrefix. 
-   If bandPrefix is not specified, scipt will only generate the centroid
+   Split is made to generate each fold
 
 
 
@@ -102,6 +101,7 @@ as MuseoToolBox use one group per Y label
 
 .. code-block:: python
 
+    
     from sklearn.model_selection import LeaveOneGroupOut
 
     LOGO = LeaveOneGroupOut()
@@ -147,7 +147,7 @@ as MuseoToolBox use one group per Y label
     (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.236 seconds)
+**Total running time of the script:** ( 0 minutes  0.317 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

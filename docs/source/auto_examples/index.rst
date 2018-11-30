@@ -65,6 +65,26 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/LeaveOneSubGroupOutAndSaveVector
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
 
 .. only:: html
@@ -171,7 +191,27 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Test rasterMath">
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_modalClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/rasterTools/modalClass
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
 
 .. only:: html
 

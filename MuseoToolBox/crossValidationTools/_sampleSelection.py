@@ -25,13 +25,6 @@ class _sampleSelection:
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
 
-        Parameters
-        ----------
-        inVector : str or array.
-            if str, path of the vector. If array, numpy array of labels.
-        inField : str or None if inVector is np.ndarray.
-            if str, field name from the vector.
-
         Functions
         ----------
         split() : Function.
@@ -40,7 +33,7 @@ class _sampleSelection:
         saveVectorFiles() : Need default output name (str).
             To save as many vector files (train/valid) as your Cross Validation method outputs.
 
-        getSupportedExtensions() : Function.
+        __getSupportedExtensions() : Function.
             Show you the list of supported vector extensions type when using saveVectorFiles function.
 
         reinitialize() : Function.
@@ -63,33 +56,10 @@ class _sampleSelection:
             import time
             self.params['random_state'] = int(time.time())
 
-    def __prepareDistanceCV(self):
-        # Split at maximum distance beyond each point
-        # For Spatial-Leave-One-Out
-        if not self.inVectorIsArray and self.Y is not None:
-            self.Y_, self.fts, self.srs = vectorTools.readValuesFromVector(
-                self.Y, self.inField, getFeatures=True, verbose=self.verbose)
-            if hasattr(self, 'groups'):
-                X, self.Y, groups = rasterTools.getSamplesFromROI(
-                    self.inRaster, self.Y, self.inField, self.group, verbose=self.verbose)
-                self.params['groups'] = groups
-            else:
-                X, self.Y = rasterTools.getSamplesFromROI(
-                    self.inRaster, self.Y, self.inField, verbose=self.verbose)
-
-            if self.Y_.shape[0] != self.Y.shape[0]:
-                self.SLOOnotSamesize = True
-                print(self.errorSLOOmsg)
-            else:
-                self.SLOOnotSamesize = False
-        else:
-            if hasattr(self, 'groups'):
-                self.params['groups'] = self.groups
-
     def reinitialize(self):
         _sampleSelection.__init__(self)
 
-    def getSupportedExtensions(self):
+    def __getSupportedExtensions(self):
         print('Museo ToolBox supported extensions are : ')
         for idx, ext in enumerate(self.__extensions):
             print(3 * ' ' + '- ' + self.__driversName[idx] + ' : ' + ext)
@@ -105,6 +75,28 @@ class _sampleSelection:
         return n_splits
 
     def split(self, X=None, y=None, groups=None):
+        """
+        Split the vector/array according to y and groups.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features), optional
+            Training data, where n_samples is the number of samples
+            and n_features is the number of features.
+        y : array-like, of length n_samples
+            The target variable for supervised learning problems.
+        groups : array-like, with shape (n_samples,), optional
+            Subgroup labels for the samples used while splitting the dataset into
+            train/test set.
+
+        Returns
+        --------
+        train : ndarray
+            The training set indices for that split.
+        test : ndarray
+            The testing set indices for that split.
+
+        """
         if y is None:
             y = self.Y
         y = y.reshape(-1, 1)
@@ -122,16 +114,43 @@ class _sampleSelection:
         return self.crossvalidation
 
     def saveVectorFiles(self, vector, field, groupsField=None, outVector=None):
-        print("""Warning : This function generates vector files according to your vector.
-    The number of features may differ from the number of pixels used in classification.
-    If you want to save every ROI pixels in the vector, please use vectorTools.sampleExtraction before.""")
+        """
+        Save to vector files each fold from the cross-validation.
+
+        Parameters
+        -------------
+        vector : str.
+            Path where the vector is stored.        
+        field : str.
+            Name of the field containing the label.
+        groupsField : str, or None.
+            Name of the field containing the group/subgroup (or None
+        outVector : str.
+            Path and filename to save the different results.
+
+        Returns
+        ----------
+        listOfOutput : list
+            List containing the number of folds * 2
+            train + validation for each fold.
+
+        """
+        import ogr
+        src = ogr.Open(vector)
+        srcLyr = src.GetLayerByIndex()
+        self.wkbType = srcLyr.GetGeomType()
+        if self.wkbType != 1:
+            print("""Warning : This function generates vector files according to your vector.
+        The number of features may differ from the number of pixels used in classification.
+        If you want to save every ROI pixels in the vector, please use vectorTools.sampleExtraction before.""")
+        del src, srcLyr
 
         fileName, self.__ext = os.path.splitext(outVector)
 
         if self.__ext[1:] not in self.__extensions:
             print(
                 'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
-            self.getSupportedExtensions()
+            self.__getSupportedExtensions()
             raise Exception('We recommend you to use sqlite/gpkg extension.')
 
         if groupsField is None:
@@ -179,9 +198,9 @@ class _sampleSelection:
         # create the spatial reference, WGS84
 
         lyrout = ds.CreateLayer(
-            'randomSubset',
+            'crossValidation',
             srs=srs,
-            geom_type=ogr.wkbPoint)
+            geom_type=self.wkbType)
         fields = [
             array[1].GetFieldDefnRef(i).GetName() for i in range(
                 array[1].GetFieldCount())]

@@ -12,9 +12,10 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from matplotlib import pyplot as plt 
+from matplotlib import pyplot as plt
 import numpy as np
 from matplotlib import ticker
+
 
 def heatmap(data, row_labels, col_labels, ax=None,
             cbar_kw={}, cbarlabel="", **kwargs):
@@ -131,19 +132,19 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 if __name__ == '__main__':
     import numpy as np
     import glob
-    csvs =glob.glob('/home/nicolas/Bureau/test/formosat2/2006bis/1/*.csv')
+    csvs = glob.glob('/home/nicolas/Bureau/test/formosat2/2006bis/1/*.csv')
     csv = []
     for c in csvs:
         print(c)
         csv.append(np.loadtxt(c))
-    d = np.mean(csv,axis=2)
-    csv = np.mean(csv,axis=0)*100
+    d = np.mean(csv, axis=2)
+    csv = np.mean(csv, axis=0)*100
     csv = csv.astype(np.int16)
 
     fig, ax = plt.subplots(dpi=150)
-    im, cbar = heatmap(csv,range(13),range(13), ax=ax,
+    im, cbar = heatmap(csv, range(13), range(13), ax=ax,
                        cmap="YlGn", cbarlabel="harvest [t/year]")
     texts = annotate_heatmap(im, valfmt="{x:0d}")
-    
+
     fig.tight_layout()
     plt.show()

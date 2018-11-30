@@ -107,10 +107,10 @@ class distanceCV:
             print('n_splits:' + str(self.n_splits))
         self.random_state = random_state
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        self.Stats= stats
-        if self.stats:    
-            self.Cstats=[]
-            
+        self.Stats = stats
+        if self.stats:
+            self.Cstats = []
+
     def __iter__(self):
         return self
 
@@ -148,8 +148,8 @@ class distanceCV:
                               str(C))
 
                     self.ROI = np.random.permutation(CT)[0]
-                    #Tstand = self.distanceLabel[np.isin(
-                     #   self.distanceLabel, np.unique(self.groups[CT]))]
+                    # Tstand = self.distanceLabel[np.isin(
+                    #   self.distanceLabel, np.unique(self.groups[CT]))]
                     #TstandTF = np.isin(self.distanceLabel, Tstand)
                     standPos = np.argwhere(
                         self.groups[self.ROI] == self.distanceLabel)[0][0]
@@ -160,8 +160,10 @@ class distanceCV:
                     #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
                     tmpTrainGroup = np.unique(
                         self.distanceLabel[np.where(distanceROI >= self.distanceThresold)[0]])
-                    tmpTrainGroup = tmpTrainGroup[np.isin(tmpTrainGroup,self.groups[CT])]
-                    tmpTrain = np.where(np.in1d(self.groups,tmpTrainGroup))[0].flatten()
+                    tmpTrainGroup = tmpTrainGroup[np.isin(
+                        tmpTrainGroup, self.groups[CT])]
+                    tmpTrain = np.where(np.in1d(self.groups, tmpTrainGroup))[
+                        0].flatten()
 
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
@@ -181,25 +183,27 @@ class distanceCV:
                 del CT
                 if emptyTrain is False:
                     if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid]) or self.y[tmpValid][0] != C:
+                            self.y[tmpValid]) or self.y[tmpValid][0] != C:
                         raise IndexError(
-                                'Selected labels do not correspond to selected class, please leave feedback')
+                            'Selected labels do not correspond to selected class, please leave feedback')
 
                 #
                 validation = np.concatenate((validation, tmpValid))
                 train = np.concatenate((train, tmpTrain))
                 if self.stats:
-                    CTdistTrain=np.array(self.distanceArray[tmpTrain])[:,tmpTrain]
+                    CTdistTrain = np.array(self.distanceArray[tmpTrain])[
+                        :, tmpTrain]
                     if len(CTdistTrain) > 1:
-                        CTdistTrain=np.mean(np.triu(CTdistTrain)[np.triu(CTdistTrain)!=0])
-                    self.Cstats.append([C,tmpTrain.shape[0],CTdistTrain])
-
+                        CTdistTrain = np.mean(np.triu(CTdistTrain)[
+                                              np.triu(CTdistTrain) != 0])
+                    self.Cstats.append([C, tmpTrain.shape[0], CTdistTrain])
 
             if self.verbose:
                 print('Validation samples : ' + str(len(validation)))
                 print('Training samples : ' + str(len(train)))
             if self.stats:
-                np.savetxt(self.stats,self.Cstats,fmt='%d',header="Label,Ntrain,Mean dist train")
+                np.savetxt(self.stats, self.Cstats, fmt='%d',
+                           header="Label,Ntrain,Mean dist train")
 
             self.iterPos += 1
             # Mask selected validation
@@ -230,21 +234,22 @@ class randomPerClass:
 
     """
 
-    def __init__(self, X=None, y=None, groups=None, train_size=0.5,
-                 valid_size=False, n_splits=5, random_state=None, verbose=False):
+    def __init__(self, X=None, y=None, groups=None,
+                 valid_size=0.5, n_splits=5,
+                 random_state=None, verbose=False):
 
         self.name = 'randomPerClass'
         self.y = y
-        self.train_size = train_size
+        self.valid_size = valid_size
+        self.train_size = 1-self.valid_size
         self.n_splits = n_splits
         if n_splits is False:
             self.n_splits = min([len(self.y == C) for C in np.unique(y)])
 
         if groups is not None:
             print("Received groups value, but randomCV don't use it")
-        
+
         self.random_state = random_state
-        self.valid_size = valid_size
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
 

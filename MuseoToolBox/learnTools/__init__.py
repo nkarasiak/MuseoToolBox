@@ -151,15 +151,15 @@ class learnAndPredict:
         if inGroup is None:
             group = None
             X, y = getSamplesFromROI(
-                    inRaster, inVector, inField, verbose=self.verbose)
+                inRaster, inVector, inField, verbose=self.verbose)
         else:
             X, y, group = getSamplesFromROI(
-            inRaster, inVector, inField, inGroup, verbose=self.verbose)
-        
+                inRaster, inVector, inField, inGroup, verbose=self.verbose)
+
         self.y = y
         self.X = X
         self.group = group
-        
+
         if scale:
             self.scale = True
             self.scaleX()
@@ -180,7 +180,7 @@ class learnAndPredict:
         from sklearn.model_selection import GridSearchCV
         if outStatsFromCV is True and cv is not None:
             self.CV = []
-            for tr, vl in (cv for cv in cv.split(X,y,groups) if cv is not None):
+            for tr, vl in (cv for cv in cv.split(X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
         else:
             self.CV = cv
@@ -192,9 +192,9 @@ class learnAndPredict:
                 cv=self.CV,
                 n_jobs=self.n_jobs,
                 verbose=self.verbose + 1)
-            grid.fit(X,y,groups)
+            grid.fit(X, y, groups)
             self.model = grid.best_estimator_
-            self.model.fit(X,y)
+            self.model.fit(X, y)
             for key in self.param_grid.keys():
                 message = 'best ' + key + ' : ' + str(grid.best_params_[key])
                 print(message)
@@ -335,32 +335,32 @@ class learnAndPredict:
         from ..rasterTools import rasterMath
         from ..rasterTools import getGdalDTFromMinMaxValues
         rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
-        
+
         gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
-        
+
         rM.addFunction(
             self.predictArray,
             outRaster,
             outNBand=1,
             outGdalDT=gdalDT,
             outNoData=outNoData)
-        
-        noDataConfidence=-9999
-        
+
+        noDataConfidence = -9999
+
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
                 confidencePerClass,
                 outNBand=False,
-                outGdalDT=getGdalDTFromMinMaxValues(100,noDataConfidence),
+                outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
                 outNoData=noDataConfidence)
-            
+
         if confidence:
             rM.addFunction(
                 self.predictConfidenceOfPredictedClass,
                 confidence,
                 outNBand=1,
-                outGdalDT=getGdalDTFromMinMaxValues(100,noDataConfidence),
+                outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
                 outNoData=noDataConfidence)
         rM.run()
 

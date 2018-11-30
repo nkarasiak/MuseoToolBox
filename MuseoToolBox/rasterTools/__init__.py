@@ -40,7 +40,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     maxAbsValue = np.amax(np.abs([maxValue, minValue]))
 
     # if values are integer
-    if isinstance(maxAbsValue,(int,np.integer)):
+    if isinstance(maxAbsValue, (int, np.integer)):
         if minValue >= 0:
             if maxValue <= 255:
                 gdalDT = gdal.GDT_Byte
@@ -351,7 +351,7 @@ class rasterMath:
         # Not working for the moment
         parallel = False
         self.parallel = parallel
-        
+
         self.driver = gdal.GetDriverByName('GTiff')
 
         # Load raster
@@ -609,7 +609,7 @@ class rasterMath:
                     band = self.outputs[idx].GetRasterBand(1)
                     band.SetNoDataValue(self.outputNoData[idx])
                     band.FlushCache()
-                    
+
             band = None
             for idx, fun in enumerate(self.functions):
                 print(

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Leave-One-SubGroup-Out (LOSGO)
-======================================================
+Generate a cross-validation and/or save each fold to a vector file
+===================================================================
 
-This example shows how to make a Leave-One-SubGroup-Out.
+This example shows how to make a Leave-One-SubGroup-Out and save
+each fold as a vector file.
 
 """
 
@@ -32,28 +33,32 @@ LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
 
 ###############################################################################
 # .. note::
-#    Split is made to generate each fold
+#    You can generate the CV and/or save each train/valid fold to a vector file.
+#
+
 LOSGO.get_n_splits(X,y,s)
 for tr,vl in LOSGO.split(X,y,s):
     print(tr.shape,vl.shape)
 
 ###############################################################################
-# Differences with sklearn
-# -------------------------------------------
-# Sklearn do not use subgroups
-# as MuseoToolBox use one group per Y label    
-    
-from sklearn.model_selection import LeaveOneGroupOut
+#  Save each train/valid fold to a vector file (here in polygon type)
+#
 
-LOGO = LeaveOneGroupOut()
-for tr,vl in LOGO.split(X=X,y=y,groups=s):
-    print(tr.shape,vl.shape)
-# Plot example in image
+vectorFiles = LOSGO.saveVectorFiles(vector,field,group,outVector='/tmp/LOSGO.gpkg')
+
+for tr,vl in vectorFiles:
+    print(tr,vl)
+
+###############################################################################
+#  The sampling can be different in vector point or polygon.
+#  So you can generate each centroid of a pixel that contains the polygon.
+# 
     
-import numpy as np
-from matplotlib import pyplot as plt
-plt.scatter(np.random.randint(10,30,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
-plt.axis('off')
-plt.show()
+from MuseoToolBox.vectorTools import sampleExtraction
+vectorPointPerPixel = '/tmp/vectorCentroid.gpkg'
+sampleExtraction(raster,vector,vectorPointPerPixel)
+
+vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,group,outVector='/tmp/LOSGO.gpkg')
+
+for tr,vl in LOSGO.split(X,y,s):
+    print(tr.shape,vl.shape)
