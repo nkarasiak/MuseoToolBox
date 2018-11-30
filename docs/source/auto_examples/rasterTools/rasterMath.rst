@@ -10,7 +10,7 @@
 Basics to use rasterMath
 ===============================================================
 
-Test rasterMath
+Compute substract and addition between two raster bands.
 
 
 
@@ -24,7 +24,7 @@ Import librairies
 
     from MuseoToolBox.rasterTools import rasterMath
     from MuseoToolBox import datasets
-
+    import numpy as np
 
 
 
@@ -40,8 +40,6 @@ Load HistoricalMap dataset
 
 
     raster,vector = datasets.getHistoricalMap()
-    field = 'Class'
-    group = 'uniquefid'
 
 
 
@@ -49,8 +47,8 @@ Load HistoricalMap dataset
 
 
 
-Initialize Random-Forest
----------------------------
+Initialize rasterMath with raster
+------------------------------------
 
 
 
@@ -64,25 +62,101 @@ Initialize Random-Forest
 
 
 
+
 .. rst-class:: sphx-glr-script-out
 
  Out:
 
  .. code-block:: none
 
-    [[ 178.  154.  120.]
-     [ 196.  172.  138.]
-     [ 206.  182.  148.]
+    [[ 194.  174.  149.]
+     [ 199.  179.  154.]
+     [ 210.  190.  165.]
      ..., 
-     [  94.   85.   68.]
-     [ 174.  161.  144.]
-     [ 196.  183.  164.]]
+     [  76.   79.   52.]
+     [ 147.  149.  125.]
+     [ 149.  153.  128.]]
 
 
-Plot example
+Let's suppose you want compute the difference between blue and green band
+I suggest you to define type in numpy array to save space while creating the raster!
 
 
-**Total running time of the script:** ( 0 minutes  0.002 seconds)
+
+.. code-block:: python
+
+
+    x = rM.getRandomBlock()
+
+    def sub(x):
+        return np.array((x[:,0]-x[:,1])).astype(np.int16) 
+
+    def add(x):
+    
+        return np.array((x[:,0]+x[:,1])).astype(np.int16) 
+
+    rM.addFunction(sub,outRaster='/tmp/sub.tif')
+    rM.addFunction(add,outRaster='/tmp/add.tif')
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Using datatype from numpy table : int16
+    Using datatype from numpy table : int16
+
+
+Run the script
+
+
+
+.. code-block:: python
+
+
+    rM.run()
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    rasterMath...  [##################......................]45%    rasterMath...  [####################################....]90%    Saved /tmp/sub.tif using function sub
+    Saved /tmp/add.tif using function add
+
+
+Plot result
+
+
+
+.. code-block:: python
+
+
+    import gdal
+    from matplotlib import pyplot as plt 
+
+    src = gdal.Open('/tmp/sub.tif')
+    plt.imshow(src.ReadAsArray())
+
+
+
+.. image:: /auto_examples/rasterTools/images/sphx_glr_rasterMath_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  0.249 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_rasterMath.py:

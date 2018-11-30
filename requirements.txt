@@ -1,8 +1,12 @@
-numpy
+gdal
+ogr
+osr
 scipy>=1.0
 scikit-learn
 recommonmark
 sphinx>=1.4
 ipykernel
 nbsphinx
-sphinx_autobuild
+matplotlib
+sphinx-gallery
+

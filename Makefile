@@ -14,7 +14,7 @@ help :
 	@echo "    clean - remove any temporary files"
 	@echo "    notebook - launch ipython3 notebook"
 build :
-	$(PYTHON) setup.py build
+	$(PYTHON) setup.py sdist bdist_wheel
 buildext :
 	$(PYTHON) setup.py build_ext --inplace
 

@@ -32,8 +32,7 @@ LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
 
 ###############################################################################
 # .. note::
-#    There is no need to specify a bandPrefix. 
-#    If bandPrefix is not specified, scipt will only generate the centroid
+#    Split is made to generate each fold
 LOSGO.get_n_splits(X,y,s)
 for tr,vl in LOSGO.split(X,y,s):
     print(tr.shape,vl.shape)
@@ -43,6 +42,7 @@ for tr,vl in LOSGO.split(X,y,s):
 # -------------------------------------------
 # Sklearn do not use subgroups
 # as MuseoToolBox use one group per Y label    
+    
 from sklearn.model_selection import LeaveOneGroupOut
 
 LOGO = LeaveOneGroupOut()

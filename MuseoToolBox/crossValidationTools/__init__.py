@@ -107,9 +107,6 @@ class LeaveOneSubGroupOut(_sampleSelection):
 
 class SpatialLeavePSideOut(_sampleSelection):
     def __init__(self,
-                 inRaster,
-                 inVector=None,
-                 inField=None,
                  distanceMatrix=None,
                  minTrain=None,
                  n_splits=False,
@@ -165,10 +162,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
         Parameters
         ----------
-        inRaster : str.
-            Path of the raster.
-        inVector : str.
-            Path of the vector.
         distanceMatrix : None or array.
             If array got from function vectorTools.getDistanceMatrix(inRaster,inVector)
         distanceThresold : int.
@@ -196,10 +189,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
         self.crossvalidation = _cvc.distanceCV
 
-        if distanceMatrix is None:
-            distanceMatrix, distanceLabel = getDistanceMatrix(
-                inRaster, inVector, inGroup, verbose=verbose)
-
         self.params = dict(
             distanceMatrix=distanceMatrix,
             distanceThresold=distanceThresold,
@@ -222,10 +211,6 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 
         Parameters
         ----------
-        inRaster : str.
-            Path of the raster.
-        inVector : str.
-            Path of the vector.
         distanceMatrix : array.
             Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
         distanceThresold : int.
@@ -265,7 +250,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 
 class RandomCV(_sampleSelection):
     def __init__(self,
-                 train_size=0.5,
+                 valid_size=0.5,
                  n_splits=5,
                  random_state=None,
                  verbose=False):
@@ -296,7 +281,7 @@ class RandomCV(_sampleSelection):
         self.crossvalidation = _cvc.randomPerClass
 
         self.params = dict(
-            train_size=train_size,
+            valid_size=valid_size,
             random_state=random_state,
             n_splits=n_splits)
 

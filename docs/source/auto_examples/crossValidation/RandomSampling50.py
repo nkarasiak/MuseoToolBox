@@ -26,7 +26,7 @@ y = vectorTools.readValuesFromVector(vector,field)
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(train_size=0.5,n_splits=10,
+RS50 = RandomCV(valid_size=0.5,n_splits=10,
                 random_state=12,verbose=False)
 for tr,vl in RS50.split(X=None,y=y):
     print(tr,vl)

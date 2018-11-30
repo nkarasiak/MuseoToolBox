@@ -5,6 +5,7 @@ from scipy import stats
 import numpy as np
 import sys
 
+
 class modalClass():
     def __init__(
             self,
@@ -14,7 +15,7 @@ class modalClass():
             outGdalDT,
             outNoData):
         #process = rasterTools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
-        
+
         process = rasterTools.rasterMath(inRaster, inMaskRaster)
         process.addFunction(self.stabCalc, outRaster, 2, 3, outNoData)
         process.run()
@@ -23,7 +24,6 @@ class modalClass():
         tmp = stats.mode(arr, axis=-1)
         tmpStack = np.column_stack((tmp[0], tmp[1]))
         return tmpStack
-
 
 
 def modalClassCLI(argv=None, apply_config=True):
@@ -74,17 +74,14 @@ def modalClassCLI(argv=None, apply_config=True):
             required=True,
             type=str)
         args = parser.parse_args()
-    
+
         modalClass(
-                inRaster=args.inRaster,
-                outRaster=args.outRaster,
-                inMaskRaster=args.inMaskRaster,
-                outGdalDT=3,
-                outNoData=0)
+            inRaster=args.inRaster,
+            outRaster=args.outRaster,
+            inMaskRaster=args.inMaskRaster,
+            outGdalDT=3,
+            outNoData=0)
 
 
 if __name__ == "__main__":
     sys.exit(modalClassCLI())
-
-
-

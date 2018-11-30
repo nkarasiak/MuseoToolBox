@@ -36,6 +36,7 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
+    install_requires=["numpy","scipy","matplotlib"],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -47,7 +48,7 @@ setuptools.setup(
     entry_points = {
         'console_scripts': [
             'mtb_sampleExtraction=MuseoToolBox.vectorTools.sampleExtraction:main',
-            'mtb_modalClass=MuseoToolBox.stats.computeClassificationStability:main'
+            'mtb_modalClass=MuseoToolBox.stats.computeClassificationStability:modalClassCLI'
         ],
     }
  )

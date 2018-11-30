@@ -57,7 +57,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(train_size=0.5,n_splits=10,
+    RS50 = RandomCV(valid_size=0.5,n_splits=10,
                     random_state=12,verbose=False)
     for tr,vl in RS50.split(X=None,y=y):
         print(tr,vl)
@@ -174,7 +174,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.143 seconds)
+**Total running time of the script:** ( 0 minutes  0.173 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

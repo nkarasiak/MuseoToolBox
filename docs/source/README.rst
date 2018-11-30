@@ -12,7 +12,7 @@ The other meaningful contribution is the **rasterMath** function which allow you
 Who build Museo ToolBox ?
 -------------------------
 
-I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series with Sentinel-2. A special thanks to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who gave me the love of good and open-source coding.
+I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who gave me the love of good and open-source coding.
 
 What's the point ?
 ------------------
@@ -20,11 +20,9 @@ What's the point ?
 Today, the main usages of Museo ToolBox are :
 
 
-* **vectorTools**
+* **crossValidationsTools**
 
   * Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
-  * Extract each pixel centroid from polygons in order to have each band value to the vector,
-  * and so extract values from raster to vector in order to learn model with only the vector
 
 * **rasterTools**
 
@@ -33,21 +31,20 @@ Today, the main usages of Museo ToolBox are :
 
 * **learnTools**
 
-  * Based on Scikit-Learn. Still working on it...
+  * Based on Scikit-Learn. Allow to use the cross-Validations from Museo ToolBox or from Scikit-Learn and to extract each kappa/confusion matrix from fold. Ease the way to predict a raster (just give the raster and the classification file to save and Museo will do everything).
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
 
-I thought about Museo ToolBox as a tool to promote the use of spatial sampling (validation/training at least by stand) and to ease the way to compute Satellite Image Time Series, so of course I gave some help.
-
-I build `several python notebooks to give you some nice tutorials : just go to the demo part of Museo ToolBox <https://github.com/lennepkade/MuseoToolBox/tree/demo/>`_.
+I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of cours I gave a lot of examples : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
 How do I install it ?
 ---------------------
 
-For now, I still don't build a pip package, so you have to clone this repository and to had it in your python path.
+A package will be available on pip : 
+``python3 -m pip install MuseoToolBox`` 
 
 Why this name ?
 ---------------
 
-As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, `Museo is the son and disciple of Orfeo <https://it.wikipedia.org/wiki/Museo_(autore_mitico>`_\ ). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation';
+As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, `Museo is the son and disciple of Orfeo <https://it.wikipedia.org/wiki/Museo_(autore_mitico>`_\ ). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.
