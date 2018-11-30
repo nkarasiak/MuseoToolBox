@@ -147,7 +147,7 @@ as MuseoToolBox use one group per Y label
     (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.218 seconds)
+**Total running time of the script:** ( 0 minutes  0.236 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

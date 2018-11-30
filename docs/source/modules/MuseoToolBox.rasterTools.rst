@@ -1,4 +1,4 @@
-MuseoToolBox.rasterTools
+rasterTools
 ========================
 
 .. automodule:: MuseoToolBox.rasterTools

@@ -110,33 +110,33 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.94169994306848903]
-    [0.94391869147787955]
-    [0.94807225199295819]
-    [0.93797013086917802]
-    [0.9423882031859746]
+    [0.94262495481241826]
+    [0.94604042221978635]
+    [0.94229794789651311]
+    [0.94487152450307033]
+    [0.93771756719661881]
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for RandomCV
-    [0.77323834382370704]
-    [0.79569486210638019]
-    [0.65384810198535337]
-    [0.74272087034893419]
-    [0.84051840514572429]
+    [0.66839299125970797]
+    [0.79215269835395463]
+    [0.63743337626285557]
+    [0.81577700792361574]
+    [0.74882418390582572]
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for RandomCV
-    [0.7779631363790428]
-    [0.91391701610666098]
+    [0.85613675866689887]
+    [0.79160218653553194]
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.91596913520484835]
-    [0.87837375589853495]
-    [0.8038466302102002]
+    [0.91804636686640073]
+    [0.88054185470962043]
+    [0.80320271197351745]
     ====================
 
 
@@ -164,7 +164,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  46.985 seconds)
+**Total running time of the script:** ( 0 minutes  36.153 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

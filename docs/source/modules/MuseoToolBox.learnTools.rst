@@ -1,4 +1,4 @@
-MuseoToolBox.learnTools
+learnTools
 =======================
 
 .. automodule:: MuseoToolBox.learnTools

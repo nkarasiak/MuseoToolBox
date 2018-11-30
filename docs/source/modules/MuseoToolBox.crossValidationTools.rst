@@ -1,4 +1,4 @@
-MuseoToolBox.crossValidationTools
+crossValidationTools
 =================================
 
 .. automodule:: MuseoToolBox.crossValidationTools

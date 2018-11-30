@@ -1,12 +1,8 @@
-Documentation API
-===================
-
 .. currentmodule:: MuseoToolBox
 
 .. automodule:: MuseoToolBox
    :no-members:
    :no-inherited-members:
-
 
 .. autosummary::
    :toctree: modules/

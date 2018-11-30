@@ -1,4 +1,4 @@
-MuseoToolBox.vectorTools
+vectorTools
 ========================
 
 .. automodule:: MuseoToolBox.vectorTools

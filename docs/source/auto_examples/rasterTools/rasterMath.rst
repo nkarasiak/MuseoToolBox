@@ -70,19 +70,19 @@ Initialize Random-Forest
 
  .. code-block:: none
 
-    [[ 104.  100.   71.]
-     [ 107.  103.   76.]
-     [ 130.  124.  102.]
+    [[ 178.  154.  120.]
+     [ 196.  172.  138.]
+     [ 206.  182.  148.]
      ..., 
-     [ 182.  173.  158.]
-     [ 164.  158.  146.]
-     [ 116.  109.  101.]]
+     [  94.   85.   68.]
+     [ 174.  161.  144.]
+     [ 196.  183.  164.]]
 
 
 Plot example
 
 
-**Total running time of the script:** ( 0 minutes  0.024 seconds)
+**Total running time of the script:** ( 0 minutes  0.002 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_rasterMath.py:

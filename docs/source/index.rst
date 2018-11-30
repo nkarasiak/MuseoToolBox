@@ -34,17 +34,16 @@ What is MuseoToolBox ?
    self
    
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Examples gallery
 
    auto_examples/index
-   
+  
 .. toctree::
    :maxdepth: 2
    :caption: Documentation API
    
    api
-
       
 Indices and tables
 ==================
