@@ -1,0 +1,10 @@
+-r requirements.txt
+
+# development specific requirements
+recommonmark
+sphinx>=1.4
+numpydoc
+sphinx-rtd-theme
+ipykernel
+nbsphinx
+sphinx-gallery

@@ -1,12 +1,5 @@
-gdal
-ogr
-osr
+numpy >= 1.10
 scipy>=1.0
 scikit-learn
-recommonmark
-sphinx>=1.4
-ipykernel
-nbsphinx
+itertools
 matplotlib
-sphinx-gallery
-

@@ -19,7 +19,7 @@ import numpy as np
 import os
 import tempfile
 
-from ..tools import progressBar, pushFeedback
+from ..internalTools import progressBar, pushFeedback
 
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
@@ -290,13 +290,13 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     # generate output
     toReturn = [X] + [F[:, f] for f in range(nFields)]
 
+    if getCoords:
+        toReturn = toReturn + [coords]
     if onlyCoords:
-        return coords
-    if not getCoords:
-        return toReturn
-    else:
-        toReturn.append(coords)
-        return toReturn
+        toReturn = coords
+    
+
+    return toReturn
 
 
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):

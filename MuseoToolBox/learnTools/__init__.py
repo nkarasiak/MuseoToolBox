@@ -31,6 +31,7 @@ class learnAndPredict:
         self.n_jobs = n_jobs
         self.verbose = verbose
         self.scale = False
+        self.CV = False
 
     def scaleX(self, X=None):
         """
@@ -60,7 +61,7 @@ class learnAndPredict:
             param_grid=None,
             outStatsFromCV=True,
             scale=False,
-            cv=None):
+            cv=False):
         """
         learn Model from vector/array.
 
@@ -92,6 +93,7 @@ class learnAndPredict:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
         self.X = X
+        self.CV = cv
         if scale:
             self.scale = True
             self.scaleX()
@@ -116,7 +118,7 @@ class learnAndPredict:
             param_grid=None,
             outStatsFromCV=True,
             scale=False,
-            cv=None):
+            cv=False):
         """
         learn Model from raster.
 
@@ -144,11 +146,12 @@ class learnAndPredict:
         self.classifier = classifier
         self.param_grid = param_grid
 
-        if cv is not None and self.param_grid is None:
+        if cv is not False and self.param_grid is None:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
-
-        if inGroup is None:
+        self.CV = cv
+        
+        if inGroup is False:
             group = None
             X, y = getSamplesFromROI(
                 inRaster, inVector, inField, verbose=self.verbose)
@@ -194,7 +197,7 @@ class learnAndPredict:
                 verbose=self.verbose + 1)
             grid.fit(X, y, groups)
             self.model = grid.best_estimator_
-            self.model.fit(X, y)
+            self.model.fit(X, y,groups)
             for key in self.param_grid.keys():
                 message = 'best ' + key + ' : ' + str(grid.best_params_[key])
                 print(message)
@@ -216,8 +219,7 @@ class learnAndPredict:
 
         if self.scale:
             np.save(path, [self.model, self.scaler])
-        else:
-            np.save(path, self.model)
+        
 
     def loadModel(self, path):
         """
@@ -392,9 +394,9 @@ class learnAndPredict:
         -------
         Statistics : List of statistics with at least the confusion matrix.
         """
-        if self.outStatsFromCV is False:
+        if self.CV is False:
             raise Exception(
-                'outStatsFromCV in fromRaster or fromVector must be True')
+                'You must have learnt with a Cross-Validation')
         else:
             # ,statsFromConfusionMatrix,
             from ..stats import computeConfusionMatrix as computeStats

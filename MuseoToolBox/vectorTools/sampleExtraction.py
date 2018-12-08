@@ -14,7 +14,7 @@
 # =============================================================================
 from __future__ import absolute_import, print_function
 from .. import vectorTools, rasterTools
-from ..tools import progressBar
+from ..internalTools import progressBar
 
 import sys
 import os

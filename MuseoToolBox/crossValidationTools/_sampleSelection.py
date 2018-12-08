@@ -113,7 +113,7 @@ class _sampleSelection:
         self.__alreadyRead = True
         return self.crossvalidation
 
-    def saveVectorFiles(self, vector, field, groupsField=None, outVector=None):
+    def saveVectorFiles(self, vector, field, raster=None,groupsField=None, outVector=None):
         """
         Save to vector files each fold from the cross-validation.
 
@@ -166,14 +166,15 @@ class _sampleSelection:
         listOutput = []
         self.cv = []
         for idx, trvl in enumerate(self.split(None, y, groups)):
-            self.cv.append([trvl[0], trvl[1]])
-            trFeat = [fts[int(i)] for i in trvl[0]]
-            vlFeat = [fts[int(i)] for i in trvl[1]]
-            tr = fileName + '_train_' + str(idx) + self.__ext
-            vl = fileName + '_valid_' + str(idx) + self.__ext
-            self.__saveToShape__(trFeat, srs, tr)
-            self.__saveToShape__(vlFeat, srs, vl)
-            listOutput.append([tr, vl])
+            if trvl is not None:
+                self.cv.append([trvl[0], trvl[1]])
+                trFeat = [fts[int(i)] for i in trvl[0]]
+                vlFeat = [fts[int(i)] for i in trvl[1]]
+                tr = fileName + '_train_' + str(idx) + self.__ext
+                vl = fileName + '_valid_' + str(idx) + self.__ext
+                self.__saveToShape__(trFeat, srs, tr)
+                self.__saveToShape__(vlFeat, srs, vl)
+                listOutput.append([tr, vl])
         self.__alreadyRead = True
         return listOutput
 

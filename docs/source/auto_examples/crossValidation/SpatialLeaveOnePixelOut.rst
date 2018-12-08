@@ -64,21 +64,30 @@ n_splits will be the number  of the least populated class
     SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                     random_state=12)
 
+    print(SLOPO.get_n_splits(X,y))
 
 
 
 
 
 
-.. note::
-   There is no need to specify a bandPrefix. 
-   If bandPrefix is not specified, scipt will only generate the centroid
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    8
+
+
+Generate each fold
+-------------------------------------------
 
 
 
 .. code-block:: python
 
-    SLOPO.get_n_splits(X,y)
+
     for tr,vl in SLOPO.split(X,y):
         print(tr.shape,vl.shape)
 
@@ -134,7 +143,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.491 seconds)
+**Total running time of the script:** ( 0 minutes  1.735 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

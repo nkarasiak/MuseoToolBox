@@ -33,11 +33,13 @@ distanceMatrix = vectorTools.getDistanceMatrix(raster,vector)
 SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                 random_state=12)
 
-###############################################################################
-# .. note::
-#    There is no need to specify a bandPrefix. 
-#    If bandPrefix is not specified, scipt will only generate the centroid
-SLOPO.get_n_splits(X,y)
+print(SLOPO.get_n_splits(X,y))
+
+
+##############################################################################
+# Generate each fold
+# -------------------------------------------
+
 for tr,vl in SLOPO.split(X,y):
     print(tr.shape,vl.shape)
 

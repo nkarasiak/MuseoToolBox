@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 import numpy as np
-
+           
 
 def commissionOmission(table):
     """

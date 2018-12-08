@@ -200,39 +200,41 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
 
 class SpatialLeaveOnePixelOut(_sampleSelection):
+    """
+    Generate a Cross-Validation with Spatial Leave-One-Out method.
+
+    Parameters
+    ----------
+    distanceMatrix : array.
+        Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+    distanceThresold : int.
+        In pixels.
+    minTrain : int/float, default None.
+        The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
+    SLOO : True or float
+        from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
+    n_splits : default False.
+        If False : will iterate as many times as the smallest number of groups.
+        If int : will iterate the number of groups given in maxIter.
+    random_state : int, default None.
+        If random_state, int, to repeat exactly the same random.
+
+    Returns
+    --------
+    List : list with the sampling type and the parameters for the SLOOCV.
+
+    References
+    ----------
+    See : https://doi.org/10.1111/geb.12161.
+    """
     def __init__(self,
                  distanceThresold=None,
                  distanceMatrix=None,
+                 distanceLabel=False,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Generate a Cross-Validation with Spatial Leave-One-Out method.
 
-        Parameters
-        ----------
-        distanceMatrix : array.
-            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
-        distanceThresold : int.
-            In pixels.
-        minTrain : int/float, default None.
-            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
-        SLOO : True or float
-            from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
-        n_splits : default False.
-            If False : will iterate as many times as the smallest number of groups.
-            If int : will iterate the number of groups given in maxIter.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
-
-        Returns
-        --------
-        List : list with the sampling type and the parameters for the SLOOCV.
-
-        References
-        ----------
-        See : https://doi.org/10.1111/geb.12161.
-        """
         self.samplingType = 'Spatial'
         self.verbose = verbose
 
@@ -241,6 +243,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         self.params = dict(
             distanceMatrix=distanceMatrix,
             distanceThresold=distanceThresold,
+            distanceLabel=distanceLabel,
             minTrain=False,
             SLOO=True,
             n_splits=n_splits,

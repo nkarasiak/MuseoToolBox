@@ -1,0 +1,22 @@
+
+
+Examples using ``MuseoToolBox.chartsTools.plotConfusionMatrix``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, and subplot User/Producer`s accuracy or F1.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_chartsTools_plotConfusion.py`

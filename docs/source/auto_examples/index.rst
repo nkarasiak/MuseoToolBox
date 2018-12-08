@@ -13,6 +13,39 @@ Examples related to  :mod:`museotoolbox` librairie.
 
     <div style='clear:both'></div>
 
+.. _chartsTools:
+
+Charts Tools
+------------------------
+
+Examples related to the :mod:`museotoolbox.chartsTools` module.
+
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, and subplot User/Producer`s accuracy or F1.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/chartsTools/plotConfusion
+.. raw:: html
+
+    <div style='clear:both'></div>
+
 .. _crossvalidationTools:
 
 Cross-Validation Tools

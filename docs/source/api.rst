@@ -12,3 +12,4 @@
    vectorTools
    learnTools
    crossValidationTools
+   chartsTools
