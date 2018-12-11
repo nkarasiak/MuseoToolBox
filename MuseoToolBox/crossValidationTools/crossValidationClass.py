@@ -137,7 +137,7 @@ class distanceCV:
                 if np.where(currentCT)[0].shape[0] == 0: #means no more ROI
                     self.mask[self.y == C] = 1
                     currentCT = np.logical_and(self.y == C, self.mask == 1)
-                    
+
                 self.ROI = np.random.permutation(
                     np.where(currentCT)[0])[0]
                 
@@ -148,7 +148,7 @@ class distanceCV:
                               str(self.groups[self.ROI]) +
                               ' for label ' +
                               str(C))
-
+                
                     self.ROI = np.random.permutation(CT)[0]
                     # Tstand = self.distanceLabel[np.isin(
                     #   self.distanceLabel, np.unique(self.groups[CT]))]
@@ -186,7 +186,8 @@ class distanceCV:
                             self.y[tmpValid]) or self.y[tmpValid][0] != C:
                         raise IndexError(
                             'Selected labels do not correspond to selected class, please leave feedback')
-
+                else:
+                    self.mask[tmpValid] = 0
                 #
                 validation = np.concatenate((validation, tmpValid))
                 train = np.concatenate((train, tmpTrain))
@@ -206,12 +207,15 @@ class distanceCV:
                            header="Label,Ntrain,Mean dist train")
 
             self.iterPos += 1
-            self.mask[validation] = 0
+            print(self.iterPos)
             # Mask selected validation
             if emptyTrain is True : #and self.iterPos < self.n_splits:
-                print('Train has no samples, doing next spatial iteration')
+                
+                if self.verbose>1:
+                    print('Train has no samples, doing next spatial iteration')
                 next(self)
             else:
+                self.mask[validation] = 0
                 return train, validation
         else:
             raise StopIteration()

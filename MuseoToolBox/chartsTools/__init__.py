@@ -69,7 +69,11 @@ class plotConfusionMatrix:
         self.ax.set_xticklabels(['F1'],horizontalalignment='left',rotation=rotation)
 
         self.ax.set_xticks(np.arange(self.cm.shape[1]))
-        self.ax.set_xticklabels(self.xlabels,rotation=rotation,horizontalalignment='center')
+        if rotation!=90:
+            ha='left'
+        else:
+            ha='center'
+        self.ax.set_xticklabels(self.xlabels,rotation=rotation,ha=ha)
 
     def addYlabels(self,labels=None,rotation=0):
         self.yrotation=rotation
