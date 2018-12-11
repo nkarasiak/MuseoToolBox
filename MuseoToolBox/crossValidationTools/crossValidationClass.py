@@ -123,6 +123,7 @@ class distanceCV:
     def next(self):
         #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
         emptyTrain = False
+        
         if self.iterPos < self.n_splits:
             np.random.seed(self.random_state)
             self.random_state += 1
@@ -132,14 +133,20 @@ class distanceCV:
             for C in np.unique(self.y):
                 # Y is True, where C is the unique class
                 CT = np.where(self.y == C)[0]
-                currentCT = np.logical_and(self.y == C, self.mask == 1)
                 
+                currentCT = np.logical_and(self.y == C, self.mask == 1)
+
+                    
                 if np.where(currentCT)[0].shape[0] == 0: #means no more ROI
+                    print(str(C)+' has no entity')
                     self.mask[self.y == C] = 1
                     currentCT = np.logical_and(self.y == C, self.mask == 1)
 
                 self.ROI = np.random.permutation(
                     np.where(currentCT)[0])[0]
+                
+                if C == 1:
+                    print(str(C)+' : '+str(self.ROI)+'  '+str(np.where(currentCT)[0].shape[0])+'/'+str(len(CT)))
                 
                 # When doing Leave-One-Out per subgroup
                 if self.groups is not None:
@@ -180,24 +187,31 @@ class distanceCV:
 
                     if tmpTrain.shape[0] == 0:
                         emptyTrain = True
+                    
                 del CT
-                if emptyTrain is False:
+                if emptyTrain is True:
+                    print('No training for '+str(C))
+                    print('valid is '+str(tmpValid))
+                    self.mask[tmpValid] = 0
+                    
+                    if self.verbose>1:
+                        print('Train has no samples, doing next spatial iteration')
+                    
+                else:
                     if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
                             self.y[tmpValid]) or self.y[tmpValid][0] != C:
                         raise IndexError(
                             'Selected labels do not correspond to selected class, please leave feedback')
-                else:
-                    self.mask[tmpValid] = 0
-                #
-                validation = np.concatenate((validation, tmpValid))
-                train = np.concatenate((train, tmpTrain))
-                if self.stats:
-                    CTdistTrain = np.array(self.distanceArray[tmpTrain])[
-                        :, tmpTrain]
-                    if len(CTdistTrain) > 1:
-                        CTdistTrain = np.mean(np.triu(CTdistTrain)[
-                                              np.triu(CTdistTrain) != 0])
-                    self.Cstats.append([C, tmpTrain.shape[0], CTdistTrain])
+                    #
+                    validation = np.concatenate((validation, tmpValid))
+                    train = np.concatenate((train, tmpTrain))
+                    if self.stats:
+                        CTdistTrain = np.array(self.distanceArray[tmpTrain])[
+                            :, tmpTrain]
+                        if len(CTdistTrain) > 1:
+                            CTdistTrain = np.mean(np.triu(CTdistTrain)[
+                                                  np.triu(CTdistTrain) != 0])
+                        self.Cstats.append([C, tmpTrain.shape[0], CTdistTrain])
 
             if self.verbose:
                 print('Validation samples : ' + str(len(validation)))
@@ -207,14 +221,8 @@ class distanceCV:
                            header="Label,Ntrain,Mean dist train")
 
             self.iterPos += 1
-            print(self.iterPos)
-            # Mask selected validation
-            if emptyTrain is True : #and self.iterPos < self.n_splits:
-                
-                if self.verbose>1:
-                    print('Train has no samples, doing next spatial iteration')
-                next(self)
-            else:
+            # Mask selected validation        
+            if emptyTrain is False:
                 self.mask[validation] = 0
                 return train, validation
         else:

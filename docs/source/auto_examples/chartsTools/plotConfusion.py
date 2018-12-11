@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Plot confusion matrix from Cross-Validation
+Plot confusion matrix from Cross-Validation with F1
 ========================================================
 
-Plot confusion matrix from Cross-Validation, and subplot User/Producer`s
-accuracy or F1.
+Plot confusion matrix from Cross-Validation, with F1 as subplot.
 
 """
 
