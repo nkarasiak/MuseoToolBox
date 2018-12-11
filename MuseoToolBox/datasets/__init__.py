@@ -17,7 +17,29 @@ import os
 __pathFile = os.path.dirname(os.path.realpath(__file__))
 
 
-def getHistoricalMap():
+def getHistoricalMap(centroid=False):
+    """
+    Get French Historical map dataset.
+    
+    Parameters
+    -----------
+    centroid : bool.
+        If true, return the path of the centroid for each feature.
+        
+    Returns
+    -------
+    list of files : list.
+        Raster and vector path, and the centroid if asked.
+    """
+    toReturn = []
+    
     raster = os.path.join(__pathFile, 'historicalmap/map_compress.tif')
     vector = os.path.join(__pathFile, 'historicalmap/train.gpkg')
-    return raster, vector
+    
+    toReturn.append(raster)
+    toReturn.append(vector)
+    if centroid:
+        vectorCentroid = os.path.join(__pathFile, 'historicalmap/train_centroid.gpkg')
+        toReturn.append(vectorCentroid)
+    
+    return toReturn

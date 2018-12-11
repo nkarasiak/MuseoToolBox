@@ -462,7 +462,7 @@ class rasterMath:
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
         dst_ds = self.driver.Create(
-            outRaster, self.nc, self.nl, outNBand, outGdalDT)
+            outRaster, self.nc, self.nl, outNBand, outGdalDT, ['COMPRESS=DEFLATE'])
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
         

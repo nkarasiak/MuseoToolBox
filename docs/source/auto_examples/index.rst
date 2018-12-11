@@ -195,6 +195,26 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
    :hidden:
 
    /auto_examples/crossValidation/LeaveOneSubGroupOut
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut
 .. raw:: html
 
     <div style='clear:both'></div>

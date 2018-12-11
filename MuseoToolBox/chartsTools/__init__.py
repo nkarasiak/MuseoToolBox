@@ -58,7 +58,7 @@ class plotConfusionMatrix:
                  horizontalalignment="center",
                  color="white" if self.cm2[i, j] > thresold else "black",va='center')
                 
-    def addXlabels(self,labels=None,rotation=0,position='top')  :
+    def addXlabels(self,labels=None,rotation=90,position='top')  :
         self.xrotation=rotation
         self.xlabels = labels
         self.xlabelsPos = position
@@ -160,7 +160,7 @@ class plotConfusionMatrix:
                 iVal = np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=1)*100).reshape(-1,1)[i][0])
             except:
                 iVal = 0
-            self.ax1v.text(0,i,iVal,color="white" if iVal>thresold else 'black',ha='center')
+            self.ax1v.text(0,i,iVal,color="white" if iVal>thresold else 'black',ha='center',va='center')
                 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
@@ -168,14 +168,18 @@ class plotConfusionMatrix:
                 jVal = np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=0)*100).reshape(-1,1)[j][0])
             except:
                 jVal = 0 
-            self.ax1h.text(j,0,jVal,color="white" if jVal>thresold else 'black',ha='center')
+            self.ax1h.text(j,0,jVal,color="white" if jVal>thresold else 'black',ha='center',va='center')
         
         self.ax1h.set_yticklabels(['Prod\'s acc.'],rotation=self.yrotation,ha='right',va='center')
         
         
         self.ax1v.xaxis.set_ticks_position('top') # THIS IS THE ONLY CHANGE
         self.ax1v.set_xticks([0])
-        self.ax1v.set_xticklabels(['User\'s acc.'],horizontalalignment='left',rotation=self.xrotation,ha='center')
+        if self.xrotation < 60 :
+            ha = 'left'
+        else:
+            ha = 'center'
+        self.ax1v.set_xticklabels(['User\'s acc.'],horizontalalignment='left',rotation=self.xrotation,ha=ha)
         self.axes.append([self.ax1v,self.ax1h])
         
     def show(self):

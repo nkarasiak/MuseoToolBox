@@ -16,3 +16,4 @@ API
    learnTools
    crossValidationTools
    chartsTools
+   datasets
