@@ -42,7 +42,7 @@ print(SLOPO.get_n_splits(X,y))
 
 for tr,vl in SLOPO.split(X,y):
     print(tr.shape,vl.shape)
-
+    
 #############################################
 # Draw image
 import numpy as np

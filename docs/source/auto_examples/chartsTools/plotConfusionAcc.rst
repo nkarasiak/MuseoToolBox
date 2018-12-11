@@ -1,16 +1,16 @@
 .. note::
     :class: sphx-glr-download-link-note
 
-    Click :ref:`here <sphx_glr_download_auto_examples_chartsTools_plotConfusion.py>` to download the full example code
+    Click :ref:`here <sphx_glr_download_auto_examples_chartsTools_plotConfusionAcc.py>` to download the full example code
 .. rst-class:: sphx-glr-example-title
 
-.. _sphx_glr_auto_examples_chartsTools_plotConfusion.py:
+.. _sphx_glr_auto_examples_chartsTools_plotConfusionAcc.py:
 
 
 Plot confusion matrix from Cross-Validation with F1
 ========================================================
 
-Plot confusion matrix from Cross-Validation, with F1 as subplot.
+Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.
 
 
 
@@ -227,13 +227,13 @@ Plot confusion matrix
     meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
     pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
     pltCM.addText()
-    pltCM.addF1()
+    pltCM.addAccuracy()
     pltCM.colorDiag()
 
 
 
 
-.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusion_001.png
+.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusionAcc_001.png
     :class: sphx-glr-single-img
 
 
@@ -255,16 +255,16 @@ Plot confusion matrix and normalize per class
 
 
 
-.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusion_002.png
+.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusionAcc_002.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  46.099 seconds)
+**Total running time of the script:** ( 0 minutes  33.616 seconds)
 
 
-.. _sphx_glr_download_auto_examples_chartsTools_plotConfusion.py:
+.. _sphx_glr_download_auto_examples_chartsTools_plotConfusionAcc.py:
 
 
 .. only :: html
@@ -276,13 +276,13 @@ Plot confusion matrix and normalize per class
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: plotConfusion.py <plotConfusion.py>`
+     :download:`Download Python source code: plotConfusionAcc.py <plotConfusionAcc.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: plotConfusion.ipynb <plotConfusion.ipynb>`
+     :download:`Download Jupyter notebook: plotConfusionAcc.ipynb <plotConfusionAcc.ipynb>`
 
 
 .. only:: html

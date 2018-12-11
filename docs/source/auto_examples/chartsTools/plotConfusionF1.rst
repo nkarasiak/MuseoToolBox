@@ -1,10 +1,10 @@
 .. note::
     :class: sphx-glr-download-link-note
 
-    Click :ref:`here <sphx_glr_download_auto_examples_chartsTools_plotConfusion.py>` to download the full example code
+    Click :ref:`here <sphx_glr_download_auto_examples_chartsTools_plotConfusionF1.py>` to download the full example code
 .. rst-class:: sphx-glr-example-title
 
-.. _sphx_glr_auto_examples_chartsTools_plotConfusion.py:
+.. _sphx_glr_auto_examples_chartsTools_plotConfusionF1.py:
 
 
 Plot confusion matrix from Cross-Validation with F1
@@ -233,7 +233,7 @@ Plot confusion matrix
 
 
 
-.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusion_001.png
+.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusionF1_001.png
     :class: sphx-glr-single-img
 
 
@@ -255,16 +255,16 @@ Plot confusion matrix and normalize per class
 
 
 
-.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusion_002.png
+.. image:: /auto_examples/chartsTools/images/sphx_glr_plotConfusionF1_002.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  46.099 seconds)
+**Total running time of the script:** ( 0 minutes  34.860 seconds)
 
 
-.. _sphx_glr_download_auto_examples_chartsTools_plotConfusion.py:
+.. _sphx_glr_download_auto_examples_chartsTools_plotConfusionF1.py:
 
 
 .. only :: html
@@ -276,13 +276,13 @@ Plot confusion matrix and normalize per class
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: plotConfusion.py <plotConfusion.py>`
+     :download:`Download Python source code: plotConfusionF1.py <plotConfusionF1.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: plotConfusion.ipynb <plotConfusion.ipynb>`
+     :download:`Download Jupyter notebook: plotConfusionF1.ipynb <plotConfusionF1.ipynb>`
 
 
 .. only:: html

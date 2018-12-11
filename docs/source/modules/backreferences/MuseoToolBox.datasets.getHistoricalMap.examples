@@ -5,7 +5,7 @@ Examples using ``MuseoToolBox.datasets.getHistoricalMap``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, and subplot User/Producer`s accuracy or F1.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
 
 .. only:: html
 
@@ -20,6 +20,42 @@ Examples using ``MuseoToolBox.datasets.getHistoricalMap``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_chartsTools_plotConfusion.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionF1.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
+
+        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionAcc.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionAcc.py`
 
 .. raw:: html
 

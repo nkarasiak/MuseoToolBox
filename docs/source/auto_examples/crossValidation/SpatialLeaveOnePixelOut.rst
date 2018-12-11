@@ -90,7 +90,7 @@ Generate each fold
 
     for tr,vl in SLOPO.split(X,y):
         print(tr.shape,vl.shape)
-
+    
 
 
 
@@ -101,14 +101,22 @@ Generate each fold
 
  .. code-block:: none
 
-    (8105,) (5,)
-    (10598,) (5,)
-    (8710,) (5,)
-    (8126,) (5,)
-    (9931,) (5,)
-    (8898,) (5,)
-    (8878,) (5,)
-    (8435,) (5,)
+    1 : 3632  7542/7542
+    (9553,) (5,)
+    1 : 5427  7541/7542
+    (8259,) (5,)
+    1 : 1649  7540/7542
+    (9584,) (5,)
+    1 : 7623  7539/7542
+    (8706,) (5,)
+    1 : 5073  7538/7542
+    (10700,) (5,)
+    1 : 5765  7537/7542
+    (9122,) (5,)
+    1 : 6938  7536/7542
+    (8101,) (5,)
+    1 : 5927  7535/7542
+    (8448,) (5,)
 
 
 Draw image
@@ -143,7 +151,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.735 seconds)
+**Total running time of the script:** ( 0 minutes  1.721 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:
