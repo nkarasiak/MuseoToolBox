@@ -300,6 +300,23 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
 
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
+    """
+    Rasterize vector to the size of data (raster)
+    
+    Parameters
+    -----------
+    data : str
+        path of raster
+    vectorSrc : str
+        path of vector
+    field : str
+        field to rasteirze (False is no field)
+    outFile : str
+        raster file where to save the rasterization
+    gdt : int
+        gdal GDT datatype (default gdal.GDT_Int16 = 3)
+    """
+
     dataSrc = gdal.Open(data)
     import ogr
     shp = ogr.Open(vectorSrc)
@@ -448,6 +465,7 @@ class rasterMath:
             outRaster, self.nc, self.nl, outNBand, outGdalDT)
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
+        
         self.outputs.append(dst_ds)
 
     def __iterBlock__(self, getBlock=False):

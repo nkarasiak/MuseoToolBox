@@ -15,7 +15,7 @@ Examples related to  :mod:`museotoolbox` librairie.
 
 .. _chartsTools:
 
-Charts Tools
+chartsTools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.chartsTools` module.

@@ -95,11 +95,13 @@ class distanceCV:
             self.n_splits = n_splits
             if self.n_splits > self.minEffectiveClass:
                 print(
-                    'Warning : n_splits cannot be superior to the number of unique samples/stand')
+                    'Warning : n_splits is superior to the number of unique samples/groups')
+                """
                 print(
                     'Warning : n_splits will be {} instead of {}'.format(
                         self.minEffectiveClass, n_splits))
                 self.n_splits = self.minEffectiveClass
+                """
         else:
             self.n_splits = self.minEffectiveClass
 
@@ -130,15 +132,15 @@ class distanceCV:
             for C in np.unique(self.y):
                 # Y is True, where C is the unique class
                 CT = np.where(self.y == C)[0]
-                CTroi = np.where(self.y[self.mask] == C)[0]
-
-                if self.iterPos > 0:
+                currentCT = np.logical_and(self.y == C, self.mask == 1)
+                
+                if np.where(currentCT)[0].shape[0] == 0: #means no more ROI
+                    self.mask[self.y == C] = 1
                     currentCT = np.logical_and(self.y == C, self.mask == 1)
-                    self.ROI = np.random.permutation(
-                        np.where(currentCT)[0])[0]
-                else:
-                    self.ROI = np.random.permutation(CTroi)[0]
-
+                    
+                self.ROI = np.random.permutation(
+                    np.where(currentCT)[0])[0]
+                
                 # When doing Leave-One-Out per subgroup
                 if self.groups is not None:
                     if self.verbose > 1:
@@ -169,10 +171,8 @@ class distanceCV:
                         emptyTrain = True
                 # When doing Leave-One-Out per pixel
                 else:
-                    self.ROI = np.random.permutation(CT)[0]
 
-                    distanceROI = (self.distanceArray[int(self.ROI), :])[
-                        CT]  # get line of distance for specific ROI
+                    distanceROI = (self.distanceArray[int(self.ROI), :])[CT]  # get line of distance for specific ROI
                     tmpValid = np.array(
                         [self.ROI], dtype=np.int64)
                     tmpTrain = CT[distanceROI >
@@ -206,9 +206,9 @@ class distanceCV:
                            header="Label,Ntrain,Mean dist train")
 
             self.iterPos += 1
-            # Mask selected validation
             self.mask[validation] = 0
-            if emptyTrain is True and self.iterPos < self.n_splits:
+            # Mask selected validation
+            if emptyTrain is True : #and self.iterPos < self.n_splits:
                 print('Train has no samples, doing next spatial iteration')
                 next(self)
             else:

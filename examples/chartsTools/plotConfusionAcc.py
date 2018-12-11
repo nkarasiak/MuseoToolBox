@@ -3,7 +3,7 @@
 Plot confusion matrix from Cross-Validation with F1
 ========================================================
 
-Plot confusion matrix from Cross-Validation, with F1 as subplot.
+Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.
 
 """
 
@@ -66,7 +66,7 @@ import numpy as np
 meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
 pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
 pltCM.addText()
-pltCM.addF1()
+pltCM.addAccuracy()
 pltCM.colorDiag()
 
 ##############################################################################

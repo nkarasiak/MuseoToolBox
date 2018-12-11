@@ -66,7 +66,7 @@ for cm in LAP.getStatsFromCV(confusionMatrix=True):
 import numpy as np
 meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
 pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
-pltCM.addText(thresold=1500)
+pltCM.addText()
 pltCM.addF1()
 pltCM.colorDiag()
 
@@ -76,6 +76,6 @@ pltCM.colorDiag()
 
 meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
 pltCM = plotConfusionMatrix(meanCM.astype(int).T)
-pltCM.addText(thresold=50)
+pltCM.addText(alpha_zero=0.3) # in order to hide a little zero values
 pltCM.addF1()
 pltCM.colorDiag()

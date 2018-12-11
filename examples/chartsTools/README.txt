@@ -1,6 +1,6 @@
 .. _chartsTools:
 
-Charts Tools
+chartsTools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.chartsTools` module.

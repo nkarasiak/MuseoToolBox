@@ -1,3 +1,6 @@
+API
+-----------------------
+
 .. currentmodule:: MuseoToolBox
 
 .. automodule:: MuseoToolBox

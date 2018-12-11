@@ -20,7 +20,7 @@ import itertools
 
 
 class plotConfusionMatrix:
-    def __init__(self,cm,**kwargs):      
+    def __init__(self,cm,cmap=plt.cm.Greens,**kwargs):      
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -35,21 +35,23 @@ class plotConfusionMatrix:
         self.xrotation = 0
         self.yrotation = 0
         
-        self.fig = plt.figure(1,tight_layout=True)
-        self.ax.imshow(cm,interpolation='nearest', aspect='equal',cmap=plt.cm.Greens,vmin=self.vmin,vmax=self.vmax)
         self.ax.set_yticks(range(self.cm.shape[0]))
+        
+        self.fig = plt.figure(1,tight_layout=True)
+        self.ax.imshow(cm,interpolation='nearest', aspect='equal',cmap=cmap,vmin=self.vmin,vmax=self.vmax)
+        
         self.kwargs = kwargs
         self.subplot = False
         self.axes.append(self.ax)
-    def addText(self,thresold=False):
+    def addText(self,thresold=False,alpha=1,alpha_zero=1):
         if thresold is False:
-            thresold = np.mean(self.cm)
+            thresold = int(np.amax(self.cm)/2)
         for i, j in itertools.product(range(self.cm.shape[0]), range(self.cm.shape[1])):   
             if not np.ma.is_masked(self.cm[i,j]):
                 #print(cm[i,j])
                 self.ax.text(j, i, str(self.cm[i,j]),
                  horizontalalignment="center",
-                 color="white" if self.cm[i, j] > thresold else '#cccccc' if self.cm[i,j] == 0 else "#444444" ,va='center')
+                 color="white" if self.cm[i, j] > thresold else 'black',va='center',alpha=alpha_zero if self.cm[i,j] == 0 else alpha)
             else:
                 print(self.cm2[i,j])
                 self.ax.text(j, i, str(self.cm2[i,j]),
@@ -113,7 +115,7 @@ class plotConfusionMatrix:
             
             self.ax1v.text(0,i,txt,horizontalalignment="center",color="white" if verticalPlot[i] > 50 else "black",va='center')
         self.axes.append(self.ax1v)
-    def colorDiag(self):
+    def colorDiag(self,matrixCmap=plt.cm.Greens,diagCmap=plt.cm.Reds):
         
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Exception('Array must have the same number of lines and columns')
@@ -124,10 +126,10 @@ class plotConfusionMatrix:
         self.cm2 = np.ma.masked_array(self.cm,mask=np.logical_not(mask))
         self.cm = np.ma.masked_array(self.cm,mask=mask)
         
-        self.ax.imshow(self.cm2,interpolation='nearest',aspect='equal',cmap=plt.cm.Greens,vmin=np.amin(self.cm_),vmax=np.amax(self.cm_),alpha=1)
-        self.ax.imshow(self.cm,interpolation='nearest',aspect='equal',cmap=plt.cm.Reds,vmin=np.amin(self.cm_),vmax=np.amax(self.cm_),alpha=1)
+        self.ax.imshow(self.cm2,interpolation='nearest',aspect='equal',cmap=matrixCmap,vmin=np.amin(self.cm_),vmax=np.amax(self.cm_),alpha=1)
+        self.ax.imshow(self.cm,interpolation='nearest',aspect='equal',cmap=diagCmap,vmin=np.amin(self.cm_),vmax=np.amax(self.cm_),alpha=1)
     
-    def addAccuracy(self):
+    def addAccuracy(self,thresold=50):
         
         if self.subplot is not False:
             raise Warning('You can\'t add two subplots. You already had '+str(self.subplot))
@@ -150,10 +152,19 @@ class plotConfusionMatrix:
         self.ax1h.set_xticks([])
         
         for i in range(self.cm.shape[0]):
-            self.ax1v.text(0,i,np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=1)*100).reshape(-1,1)[i][0]),ha='center')
+            try:
+                iVal = np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=1)*100).reshape(-1,1)[i][0])
+            except:
+                iVal = 0
+            self.ax1v.text(0,i,iVal,color="white" if iVal>thresold else 'black',ha='center')
+                
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
-            self.ax1h.text(j,0,np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=0)*100).reshape(-1,1)[j][0]),ha='center')
+            try:
+                jVal = np.int(np.array(np.diag(self.cm_)/np.sum(self.cm_,axis=0)*100).reshape(-1,1)[j][0])
+            except:
+                jVal = 0 
+            self.ax1h.text(j,0,jVal,color="white" if jVal>thresold else 'black',ha='center')
         
         self.ax1h.set_yticklabels(['Prod\'s acc.'],rotation=self.yrotation,ha='right',va='center')
         

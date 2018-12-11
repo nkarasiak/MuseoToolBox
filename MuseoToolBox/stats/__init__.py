@@ -12,8 +12,8 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
+from __future__ import division 
 import numpy as np
-           
 
 def commissionOmission(table):
     """
@@ -32,9 +32,9 @@ def commissionOmission(table):
     com, om = [[], []]
     for i in range(table.shape[0]):
         com.append((np.sum(table[i, :]) - table[i, i]
-                    ) / float(np.sum(table[i, :])) * 100)
+                    ) / np.sum(table[i, :]) * 100)
         om.append((np.sum(table[:, i]) - table[i, i]) /
-                  float(np.sum(table[:, i])) * 100)
+                  np.sum(table[:, i]) * 100)
     return com, om
 
 
@@ -141,3 +141,13 @@ class statsFromConfusionMatrix:
 
             f1.append(2 * TP / (2 * TP + FP + FN))
         return f1
+
+if __name__ == '__main__':
+               
+    cm = np.random.randint(30,90,100).reshape(10,10)
+    cm[-1,:-1] = 0
+    cm[0:5,5] = 0
+    cm[6:-1,5] = 0
+    cmo = commissionOmission(cm)
+    print(cmo[0][-1] == 0)
+    print(cmo[1][5] == 0)
