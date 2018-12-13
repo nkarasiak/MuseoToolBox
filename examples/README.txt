@@ -1,7 +1,7 @@
 .. _museotoolbox:
 
-MuseoToolBox
+Gallery
 -----------------------
 
-Examples related to  :mod:`museotoolbox` librairie.
+Here you will find all the examples related to  :mod:`museotoolbox` librairy.
 

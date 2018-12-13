@@ -23,7 +23,7 @@ Import librairies
 
 
     from museotoolbox.learnTools import learnAndPredict
-    from museotoolbox.crossValidation import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
+    from museotoolbox import crossValidation
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import StratifiedKFold
@@ -76,7 +76,12 @@ Create list of different CV
 .. code-block:: python
 
 
-    CVs = [RandomCV(),LeavePSubGroupOut(),LeaveOneSubGroupOut(),StratifiedKFold()]
+    CVs = [crossValidation.RandomCV(),
+           crossValidation.LeavePSubGroupOut(),
+           crossValidation.LeaveOneSubGroupOut(),
+           StratifiedKFold() #from sklearn
+           ]
+
     kappas=[]
 
     LAP = learnAndPredict()
@@ -85,7 +90,7 @@ Create list of different CV
         
         LAP.learnFromRaster(raster,vector,inField=field,inGroup=group,cv=cv,
                             classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-        print('Kappa for '+str(type(RandomCV()).__name__))
+        print('Kappa for '+str(type(cv).__name__))
         cvKappa = []
     
         for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
@@ -110,33 +115,33 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.93436245774434634]
-    [0.94621220332623357]
-    [0.93581302375670561]
-    [0.94405558732289641]
-    [0.94271447809040321]
+    [0.93843898260126135]
+    [0.94339037465279474]
+    [0.94024976146049644]
+    [0.93710135986444798]
+    [0.93522537269928463]
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
-    best n_estimators : 100
-    Kappa for RandomCV
-    [0.54184032008011374]
-    [0.66814348715410654]
-    [0.57853143947863084]
-    [0.70313240488317963]
-    [0.69009827983969674]
+    best n_estimators : 200
+    Kappa for LeavePSubGroupOut
+    [0.78341345616606617]
+    [0.79025917043382066]
+    [0.67470876485590259]
+    [0.6921385241270821]
+    [0.80627260898424413]
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
-    Kappa for RandomCV
-    [0.79997587565146144]
-    [0.940662988056157]
+    Kappa for LeaveOneSubGroupOut
+    [0.87147447380292964]
+    [0.70621933864930497]
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
-    Kappa for RandomCV
-    [0.91344604836722598]
-    [0.8784355766013372]
-    [0.81746302313842245]
+    Kappa for StratifiedKFold
+    [0.91496595789947011]
+    [0.87849823025185492]
+    [0.80183465062844717]
     ====================
 
 
@@ -164,7 +169,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  30.461 seconds)
+**Total running time of the script:** ( 0 minutes  50.274 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

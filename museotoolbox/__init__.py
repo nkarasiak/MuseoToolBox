@@ -15,4 +15,4 @@
 from __future__ import absolute_import
 from . import learnTools, vectorTools, rasterTools, crossValidation, datasets, stats, charts
 
-__version__ = "0.9.2"
+__version__ = "0.9.3"
