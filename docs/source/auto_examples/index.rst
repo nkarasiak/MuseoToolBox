@@ -13,12 +13,12 @@ Examples related to  :mod:`museotoolbox` librairie.
 
     <div style='clear:both'></div>
 
-.. _chartsTools:
+.. _charts:
 
-chartsTools
+Charts
 ------------------------
 
-Examples related to the :mod:`museotoolbox.chartsTools` module.
+Examples related to the :mod:`museotoolbox.charts` module.
 
 
 
@@ -29,9 +29,9 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusion_thumb.png
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
 
-        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusion.py`
+        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
 
 .. raw:: html
 
@@ -41,7 +41,7 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/chartsTools/plotConfusion
+   /auto_examples/charts/plotConfusion
 
 .. raw:: html
 
@@ -49,9 +49,9 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
 
-        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionF1.py`
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
 
 .. raw:: html
 
@@ -61,7 +61,7 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/chartsTools/plotConfusionF1
+   /auto_examples/charts/plotConfusionF1
 
 .. raw:: html
 
@@ -69,9 +69,9 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/chartsTools/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
 
-        :ref:`sphx_glr_auto_examples_chartsTools_plotConfusionAcc.py`
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
 
 .. raw:: html
 
@@ -81,17 +81,17 @@ Examples related to the :mod:`museotoolbox.chartsTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/chartsTools/plotConfusionAcc
+   /auto_examples/charts/plotConfusionAcc
 .. raw:: html
 
     <div style='clear:both'></div>
 
-.. _crossvalidationTools:
+.. _crossvalidation:
 
-Cross-Validation Tools
+Cross-Validation
 ------------------------
 
-Examples related to the :mod:`museotoolbox.crossValidationTools` module.
+Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 
 
@@ -221,7 +221,7 @@ Examples related to the :mod:`museotoolbox.crossValidationTools` module.
 
 .. _learnTools:
 
-learnTools
+Learn tools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.learnTools` module.
@@ -274,7 +274,7 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. _rasterTools:
 
-rasterTools
+Raster tools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.rasterTools` module.
@@ -327,12 +327,10 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 
 .. _vectorTools:
 
-vectorTools
+vector tools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.vectorTools` module.
-
-
 
 
 .. raw:: html

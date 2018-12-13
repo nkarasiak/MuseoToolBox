@@ -22,9 +22,9 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-    from MuseoToolBox.rasterTools import getSamplesFromROI
-    from MuseoToolBox import datasets
+    from museotoolbox.crossValidation import LeaveOneSubGroupOut
+    from museotoolbox.rasterTools import getSamplesFromROI
+    from museotoolbox import datasets
 
 
 
@@ -147,7 +147,7 @@ as MuseoToolBox use one group per Y label
     (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.317 seconds)
+**Total running time of the script:** ( 0 minutes  0.078 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

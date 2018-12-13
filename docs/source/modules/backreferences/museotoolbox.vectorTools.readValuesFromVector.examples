@@ -1,0 +1,58 @@
+
+
+Examples using ``museotoolbox.vectorTools.readValuesFromVector``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to read fields values from a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_readVectorFields_thumb.png
+
+        :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to extract from polygons or points each pixel centroid located in the ve...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
+
+        :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`

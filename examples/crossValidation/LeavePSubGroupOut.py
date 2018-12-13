@@ -11,8 +11,8 @@ This example shows how to make a Leave-Percent-SubGroup-Out.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import LeavePSubGroupOut
-from MuseoToolBox import datasets,rasterTools
+from museotoolbox.crossValidation import LeavePSubGroupOut
+from museotoolbox import datasets,rasterTools
 
 ##############################################################################
 # Load HistoricalMap dataset

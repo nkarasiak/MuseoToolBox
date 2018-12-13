@@ -11,8 +11,8 @@ Compute substract and addition between two raster bands.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.rasterTools import rasterMath
-from MuseoToolBox import datasets
+from museotoolbox.rasterTools import rasterMath
+from museotoolbox import datasets
 import numpy as np
 ##############################################################################
 # Load HistoricalMap dataset

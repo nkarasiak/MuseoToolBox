@@ -11,9 +11,9 @@ This example shows how to make a Leave-One-SubGroup-Out.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-from MuseoToolBox.rasterTools import getSamplesFromROI
-from MuseoToolBox import datasets
+from museotoolbox.crossValidation import LeaveOneSubGroupOut
+from museotoolbox.rasterTools import getSamplesFromROI
+from museotoolbox import datasets
 
 ##############################################################################
 # Load HistoricalMap dataset

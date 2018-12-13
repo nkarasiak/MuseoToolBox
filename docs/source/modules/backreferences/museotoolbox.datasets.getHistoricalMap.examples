@@ -1,0 +1,274 @@
+
+
+Examples using ``museotoolbox.datasets.getHistoricalMap``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_modalClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_rasterMath_thumb.png
+
+        :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to read fields values from a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_readVectorFields_thumb.png
+
+        :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to extract from polygons or points each pixel centroid located in the ve...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
+
+        :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`

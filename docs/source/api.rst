@@ -1,9 +1,9 @@
 API
 -----------------------
 
-.. currentmodule:: MuseoToolBox
+.. currentmodule:: museotoolbox
 
-.. automodule:: MuseoToolBox
+.. automodule:: museotoolbox
    :no-members:
    :no-inherited-members:
 
@@ -14,6 +14,6 @@ API
    rasterTools
    vectorTools
    learnTools
-   crossValidationTools
-   chartsTools
+   crossValidation
+   charts
    datasets

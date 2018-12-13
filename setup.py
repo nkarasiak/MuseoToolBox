@@ -17,7 +17,7 @@ import re
 
 __version__ = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
-    open('MuseoToolBox/__init__.py').read()).group(1)
+    open('museotoolbox/__init__.py').read()).group(1)
 
 
 import setuptools
@@ -27,7 +27,7 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name='MuseoToolBox',
+    name='museotoolbox',
     version=__version__,
     description='Raster and vector tools for Remote Sensing and Classification',
     long_description=long_description,
@@ -47,8 +47,8 @@ setuptools.setup(
     zip_safe=False,
     entry_points = {
         'console_scripts': [
-            'mtb_sampleExtraction=MuseoToolBox.vectorTools.sampleExtraction:main',
-            'mtb_modalClass=MuseoToolBox.stats.computeClassificationStability:modalClassCLI'
+            'mtb_sampleExtraction=museotoolbox.vectorTools.sampleExtraction:main',
+            'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
     }
  )

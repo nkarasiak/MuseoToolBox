@@ -9,7 +9,7 @@ I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. 
 
 ## What's the point ?
 Today, the main usages of Museo ToolBox are :
-- **crossValidationsTools**
+- **crossValidation**
   - Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
 - **rasterTools**
   - Extract band value from vector ROI (polygons/points)
@@ -18,11 +18,11 @@ Today, the main usages of Museo ToolBox are :
   - Based on Scikit-Learn. Allow to use the cross-Validations from Museo ToolBox or from Scikit-Learn and to extract each kappa/confusion matrix from fold. Ease the way to predict a raster (just give the raster and the classification file to save and Museo will do everything).
 
 ## That seems cool, but is there some help to use this ?
-I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of cours I gave a lot of examples : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
+I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of course I help you : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
 
 ## How do I install it ?
 A package will be available on pip : 
-`python3 -m pip install MuseoToolBox` 
+`python3 -m pip install museotoolbox` 
 
 ## Why this name ?
 As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.

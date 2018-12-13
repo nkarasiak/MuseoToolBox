@@ -11,9 +11,9 @@ This example shows how to make a classification with different cross-validation 
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.learnTools import learnAndPredict
-from MuseoToolBox.crossValidationTools import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
-from MuseoToolBox import datasets
+from museotoolbox.learnTools import learnAndPredict
+from museotoolbox.crossValidation import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
+from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
 

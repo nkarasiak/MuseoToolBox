@@ -23,9 +23,9 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.learnTools import learnAndPredict
-    from MuseoToolBox.crossValidationTools import RandomCV
-    from MuseoToolBox import datasets
+    from museotoolbox.learnTools import learnAndPredict
+    from museotoolbox.crossValidation import RandomCV
+    from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
 
 
@@ -105,7 +105,6 @@ Start learning
 
  .. code-block:: none
 
-    Received groups value, but randomCV don't use it
     Fitting 10 folds for each of 2 candidates, totalling 20 fits
     best n_estimators : 200
 
@@ -262,7 +261,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  46.814 seconds)
+**Total running time of the script:** ( 0 minutes  37.056 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

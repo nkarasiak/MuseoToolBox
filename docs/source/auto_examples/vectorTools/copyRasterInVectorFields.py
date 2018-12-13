@@ -14,7 +14,7 @@ to learn and predict a model."""
 # Import librairies
 # -------------------------------------------
 
-import MuseoToolBox as mtb
+import museotoolbox as mtb
 from matplotlib import pyplot as plt
 
 ##############################################################################

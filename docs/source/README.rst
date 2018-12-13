@@ -20,7 +20,7 @@ What's the point ?
 Today, the main usages of Museo ToolBox are :
 
 
-* **crossValidationsTools**
+* **crossValidation**
 
   * Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
 
@@ -36,13 +36,13 @@ Today, the main usages of Museo ToolBox are :
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
 
-I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of cours I gave a lot of examples : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
+I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of course I help you : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
 How do I install it ?
 ---------------------
 
 A package will be available on pip : 
-``python3 -m pip install MuseoToolBox`` 
+``python3 -m pip install museotoolbox`` 
 
 Why this name ?
 ---------------

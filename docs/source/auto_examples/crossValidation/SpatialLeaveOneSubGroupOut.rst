@@ -22,8 +22,8 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
-    from MuseoToolBox import datasets,rasterTools,vectorTools
+    from museotoolbox.crossValidation import SpatialLeaveOneSubGroupOut
+    from museotoolbox import datasets,rasterTools,vectorTools
 
 
 
@@ -150,7 +150,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.251 seconds)
+**Total running time of the script:** ( 0 minutes  0.144 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:

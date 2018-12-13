@@ -58,7 +58,7 @@ bench :
 	@git stash apply >/dev/null 2>&1
 	
 autopep8 :
-	autopep8 -ir MuseoToolBox --jobs -1
+	autopep8 -ir museotoolbox --jobs -1
 
 aautopep8 :
-	autopep8 -air MuseoToolBox --jobs -1
+	autopep8 -air museotoolbox --jobs -1

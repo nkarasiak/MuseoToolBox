@@ -14,8 +14,8 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import SpatialLeaveOnePixelOut
-from MuseoToolBox import datasets,rasterTools,vectorTools
+from museotoolbox.crossValidation import SpatialLeaveOnePixelOut
+from museotoolbox import datasets,rasterTools,vectorTools
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------

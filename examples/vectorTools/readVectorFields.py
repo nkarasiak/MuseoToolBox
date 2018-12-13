@@ -10,7 +10,7 @@ a vector file."""
 # Import librairies
 # -------------------
 
-import MuseoToolBox as mtb
+import museotoolbox as mtb
 
 ##############################################################################
 # Load HistoricalMap dataset

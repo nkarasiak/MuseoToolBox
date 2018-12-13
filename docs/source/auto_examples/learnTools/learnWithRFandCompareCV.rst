@@ -22,9 +22,9 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.learnTools import learnAndPredict
-    from MuseoToolBox.crossValidationTools import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
-    from MuseoToolBox import datasets
+    from museotoolbox.learnTools import learnAndPredict
+    from museotoolbox.crossValidation import RandomCV,LeavePSubGroupOut,LeaveOneSubGroupOut
+    from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import StratifiedKFold
 
@@ -110,33 +110,33 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.94470661419944013]
-    [0.94039025979502533]
-    [0.94260154956819764]
-    [0.94045580062597467]
-    [0.93875393552561803]
+    [0.93436245774434634]
+    [0.94621220332623357]
+    [0.93581302375670561]
+    [0.94405558732289641]
+    [0.94271447809040321]
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for RandomCV
-    [0.66796944614322418]
-    [0.69119868103919313]
-    [0.63695701082244527]
-    [0.88361941101663033]
-    [0.66805598422734769]
+    [0.54184032008011374]
+    [0.66814348715410654]
+    [0.57853143947863084]
+    [0.70313240488317963]
+    [0.69009827983969674]
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for RandomCV
-    [0.8104201805803376]
-    [0.94606581978820992]
+    [0.79997587565146144]
+    [0.940662988056157]
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for RandomCV
-    [0.91605974397243639]
-    [0.87991493024786693]
-    [0.81324361361635633]
+    [0.91344604836722598]
+    [0.8784355766013372]
+    [0.81746302313842245]
     ====================
 
 
@@ -164,7 +164,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  48.159 seconds)
+**Total running time of the script:** ( 0 minutes  30.461 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

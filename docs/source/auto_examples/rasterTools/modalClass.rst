@@ -22,7 +22,7 @@ Import librairies
 .. code-block:: python
 
 
-    import MuseoToolBox as mtb
+    import museotoolbox as mtb
     from scipy import stats
     import numpy as np
 
@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[ 160.  151.  134.]
-     [ 113.  104.   87.]
-     [ 154.  143.  125.]
+    [[ 178.  154.  120.]
+     [ 196.  172.  138.]
+     [ 206.  182.  148.]
      ..., 
-     [  95.   94.   74.]
-     [  87.   86.   65.]
-     [  78.   77.   56.]]
+     [  94.   85.   68.]
+     [ 174.  161.  144.]
+     [ 196.  183.  164.]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -152,7 +152,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  4.139 seconds)
+**Total running time of the script:** ( 0 minutes  4.793 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_modalClass.py:

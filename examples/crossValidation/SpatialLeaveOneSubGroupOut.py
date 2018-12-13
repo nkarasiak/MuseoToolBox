@@ -11,8 +11,8 @@ This example shows how to make a Spatial Leave-One-SubGroup-Out.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import SpatialLeaveOneSubGroupOut
-from MuseoToolBox import datasets,rasterTools,vectorTools
+from museotoolbox.crossValidation import SpatialLeaveOneSubGroupOut
+from museotoolbox import datasets,rasterTools,vectorTools
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------

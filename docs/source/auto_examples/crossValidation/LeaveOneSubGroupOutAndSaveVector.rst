@@ -23,9 +23,9 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-    from MuseoToolBox.rasterTools import getSamplesFromROI
-    from MuseoToolBox import datasets
+    from museotoolbox.crossValidation import LeaveOneSubGroupOut
+    from museotoolbox.rasterTools import getSamplesFromROI
+    from museotoolbox import datasets
 
 
 
@@ -103,7 +103,7 @@ Save each train/valid fold to a vector file (here in polygon type)
 .. code-block:: python
 
 
-    vectorFiles = LOSGO.saveVectorFiles(vector,field,group,outVector='/tmp/LOSGO.gpkg')
+    vectorFiles = LOSGO.saveVectorFiles(vector,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
 
     for tr,vl in vectorFiles:
         print(tr,vl)
@@ -138,7 +138,7 @@ So you can generate each centroid of a pixel that contains the polygon.
     vectorPointPerPixel = '/tmp/vectorCentroid.gpkg'
     sampleExtraction(raster,vector,vectorPointPerPixel)
 
-    vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,group,outVector='/tmp/LOSGO.gpkg')
+    vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
 
     for tr,vl in LOSGO.split(X,y,s):
         print(tr.shape,vl.shape)
@@ -152,7 +152,7 @@ So you can generate each centroid of a pixel that contains the polygon.
  .. code-block:: none
 
     Adding 'uniquefid' field to the original vector.
-    Field 'uniquefid' is already in /mnt/DATA/lib/MuseoToolBox/MuseoToolBox/datasets/historicalmap/train.gpkg
+    Field 'uniquefid' is already in /mnt/DATA/lib/MuseoToolBox/museotoolbox/datasets/historicalmap/train.gpkg
     Extract values from raster...
     Values from 'uniquefid' field will be extracted
     Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
@@ -162,7 +162,7 @@ So you can generate each centroid of a pixel that contains the polygon.
     (10180,) (2467,)
 
 
-**Total running time of the script:** ( 0 minutes  2.199 seconds)
+**Total running time of the script:** ( 0 minutes  1.922 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py:

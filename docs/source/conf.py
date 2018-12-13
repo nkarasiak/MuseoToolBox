@@ -74,7 +74,7 @@ copyright = '2018, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
 sphinx_gallery_conf = {
      'backreferences_dir'  : os.path.join('modules','backreferences'),
-     'doc_module':'MuseoToolBox',
+     'doc_module':'museotoolbox',
          # path to your examples scripts
      'examples_dirs': '../../examples',
      'filename_pattern' : '/',
@@ -96,7 +96,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 __version__ = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
-    open('../../MuseoToolBox/__init__.py').read()).group(1)
+    open('../../museotoolbox/__init__.py').read()).group(1)
 
 version = __version__
 # The full version, including alpha/beta/rc tags.

@@ -1,0 +1,112 @@
+
+
+Examples using ``museotoolbox.crossValidation.RandomCV``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`

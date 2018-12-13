@@ -12,9 +12,9 @@ each fold as a vector file.
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import LeaveOneSubGroupOut
-from MuseoToolBox.rasterTools import getSamplesFromROI
-from MuseoToolBox import datasets
+from museotoolbox.crossValidation import LeaveOneSubGroupOut
+from museotoolbox.rasterTools import getSamplesFromROI
+from museotoolbox import datasets
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -44,7 +44,7 @@ for tr,vl in LOSGO.split(X,y,s):
 #  Save each train/valid fold to a vector file (here in polygon type)
 #
 
-vectorFiles = LOSGO.saveVectorFiles(vector,field,group,outVector='/tmp/LOSGO.gpkg')
+vectorFiles = LOSGO.saveVectorFiles(vector,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
 
 for tr,vl in vectorFiles:
     print(tr,vl)
@@ -58,7 +58,7 @@ from MuseoToolBox.vectorTools import sampleExtraction
 vectorPointPerPixel = '/tmp/vectorCentroid.gpkg'
 sampleExtraction(raster,vector,vectorPointPerPixel)
 
-vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,group,outVector='/tmp/LOSGO.gpkg')
+vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
 
 for tr,vl in LOSGO.split(X,y,s):
     print(tr.shape,vl.shape)

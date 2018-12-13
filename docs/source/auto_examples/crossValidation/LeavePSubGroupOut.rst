@@ -22,8 +22,8 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.crossValidationTools import LeavePSubGroupOut
-    from MuseoToolBox import datasets,rasterTools
+    from museotoolbox.crossValidation import LeavePSubGroupOut
+    from museotoolbox import datasets,rasterTools
 
 
 
@@ -123,7 +123,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.183 seconds)
+**Total running time of the script:** ( 0 minutes  0.103 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeavePSubGroupOut.py:

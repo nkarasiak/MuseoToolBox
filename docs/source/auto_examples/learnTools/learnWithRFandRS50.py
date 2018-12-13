@@ -12,9 +12,9 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.learnTools import learnAndPredict
-from MuseoToolBox.crossValidationTools import RandomCV
-from MuseoToolBox import datasets
+from museotoolbox.learnTools import learnAndPredict
+from museotoolbox.crossValidation import RandomCV
+from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 
 ##############################################################################

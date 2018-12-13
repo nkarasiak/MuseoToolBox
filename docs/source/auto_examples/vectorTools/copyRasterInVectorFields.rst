@@ -25,7 +25,7 @@ Import librairies
 .. code-block:: python
 
 
-    import MuseoToolBox as mtb
+    import museotoolbox as mtb
     from matplotlib import pyplot as plt
 
 
@@ -190,7 +190,7 @@ Plot blue and red band
 
 
 
-**Total running time of the script:** ( 0 minutes  2.361 seconds)
+**Total running time of the script:** ( 0 minutes  2.241 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vectorTools_copyRasterInVectorFields.py:

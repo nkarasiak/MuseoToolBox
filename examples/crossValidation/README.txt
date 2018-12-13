@@ -1,7 +1,7 @@
-.. _crossvalidationTools:
+.. _crossvalidation:
 
-Cross-Validation Tools
+Cross-Validation
 ------------------------
 
-Examples related to the :mod:`museotoolbox.crossValidationTools` module.
+Examples related to the :mod:`museotoolbox.crossValidation` module.
 

@@ -23,8 +23,8 @@ Import librairies
 .. code-block:: python
 
 
-    from MuseoToolBox.crossValidationTools import RandomCV
-    from MuseoToolBox import datasets,rasterTools,vectorTools
+    from museotoolbox.crossValidation import RandomCV
+    from museotoolbox import datasets,rasterTools,vectorTools
 
 
 
@@ -174,7 +174,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.173 seconds)
+**Total running time of the script:** ( 0 minutes  0.096 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

@@ -12,8 +12,8 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from MuseoToolBox.crossValidationTools import RandomCV
-from MuseoToolBox import datasets,rasterTools,vectorTools
+from museotoolbox.crossValidation import RandomCV
+from museotoolbox import datasets,rasterTools,vectorTools
 
 ##############################################################################
 # Load HistoricalMap dataset
