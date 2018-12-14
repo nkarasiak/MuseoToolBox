@@ -27,7 +27,6 @@ raster,vector = mtb.datasets.getHistoricalMap()
 rM = mtb.rasterTools.rasterMath(raster)
 
 print(rM.getRandomBlock())
-
 ##########################
 # Let's suppose you want compute the modal classification between several predictions
 # The first band will be the most predicted class, and the second the number of times it has been predicted.

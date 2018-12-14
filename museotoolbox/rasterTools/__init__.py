@@ -393,9 +393,10 @@ class rasterMath:
         self.x_block_size = block_sizes[0]
         self.y_block_size = block_sizes[1]
         self.total = self.nl  # /self.y_block_size
-
         self.pb = progressBar(self.total - 1, message=message)
         self.nodata = band.GetNoDataValue()
+        self.dtype = band.DataType
+        self.ndtype = convertGdalAndNumpyDataType(band.DataType)
 
         if self.nodata is None:
             self.nodata = -9999
@@ -506,7 +507,7 @@ class rasterMath:
         arr : arr with values.
         arrMask : the masked array.
         """
-        arr = np.empty((height * width, self.nb))
+        arr = np.empty((height * width, self.nb),dtype=self.ndtype)
 
         for ind in range(self.nb):
             band = self.openRaster.GetRasterBand(int(ind + 1))
@@ -526,7 +527,7 @@ class rasterMath:
         """
         Filter no data according to a mask or to nodata value set in the raster.
         """
-        outArr = np.zeros((arr.shape))
+        outArr = np.zeros((arr.shape),dtype=self.ndtype)
         outArr[:] = self.nodata
 
         if self.mask:
@@ -562,6 +563,7 @@ class rasterMath:
 
         tmp, mask = self.generateBlockArray(
             lines, cols, width, height, self.mask)
+        
         arr = tmp[mask[:, 0], :]
         return arr
 
