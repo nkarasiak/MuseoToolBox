@@ -245,7 +245,6 @@ Plot example
 .. code-block:: python
 
 
-
     from matplotlib import pyplot as plt
     import gdal
     src=gdal.Open('/tmp/classification.tif')
@@ -261,7 +260,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  37.056 seconds)
+**Total running time of the script:** ( 0 minutes  41.702 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

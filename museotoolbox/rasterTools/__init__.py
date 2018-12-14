@@ -507,7 +507,7 @@ class rasterMath:
         arr : arr with values.
         arrMask : the masked array.
         """
-        arr = np.empty((height * width, self.nb),dtype=self.ndtype)
+        arr = np.empty((height * width, self.nb), dtype=self.ndtype)
 
         for ind in range(self.nb):
             band = self.openRaster.GetRasterBand(int(ind + 1))
@@ -527,7 +527,7 @@ class rasterMath:
         """
         Filter no data according to a mask or to nodata value set in the raster.
         """
-        outArr = np.zeros((arr.shape),dtype=self.ndtype)
+        outArr = np.zeros((arr.shape), dtype=self.ndtype)
         outArr[:] = self.nodata
 
         if self.mask:
@@ -563,7 +563,7 @@ class rasterMath:
 
         tmp, mask = self.generateBlockArray(
             lines, cols, width, height, self.mask)
-        
+
         arr = tmp[mask[:, 0], :]
         return arr
 

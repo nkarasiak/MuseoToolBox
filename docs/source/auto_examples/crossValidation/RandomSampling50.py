@@ -31,8 +31,12 @@ RS50 = RandomCV(valid_size=0.5,n_splits=10,
 for tr,vl in RS50.split(X=None,y=y):
     print(tr,vl)
 
-##############################################################################
+###############################################################################
+# .. note::
+#    Split is made to generate each fold
+
 # Show label
+
 for tr,vl in RS50.split(X=None,y=y):
     print(y[tr],y[vl])
     

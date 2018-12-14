@@ -17,7 +17,7 @@ The :mod:`museotoolbox.learnTools` module gathers learn and predict functions.
 """
 from __future__ import absolute_import, print_function
 import numpy as np
-import pickle
+
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
@@ -210,7 +210,7 @@ class learnAndPredict:
         else:
             self.model = self.classifier.fit(X=X, y=y)
 
-    def saveModel(self, path):
+    def saveModel(self, path, onlySKmodel=False):
         """
         Save model 'myModel.npz' to be loaded later via learnAndPredict.loadModel(path)
 
@@ -218,20 +218,22 @@ class learnAndPredict:
         ----------
         path : str.
             If path ends with npz, perfects, else will add '.npz' after your fileName.
-            
+
         Returns
         -------
         path : str.
             Path and filename with mtb extension.
         """
+        if onlySKmodel:
+            print('FutureWarning : From museotoolbox 1.0, saving only SKlearn model will not be available anymore.')
         if not path.endswith('npz'):
-            path+='.npz'
+            path += '.npz'
 
-        np.savez_compressed(path,LAP=self.__dict__)
-        
+        np.savez_compressed(path, LAP=self.__dict__)
+
         return path
-    
-    def loadModel(self, path):
+
+    def loadModel(self, path, onlySKmodel=False):
         """
         Load model previously saved with learnAndPredict.saveModel(path)
 
@@ -240,8 +242,24 @@ class learnAndPredict:
         path : str.
             If path ends with npy, perfects, else will add '.npy' after your fileName.
         """
-        model = np.load(path)
-        self.__dict__.update(model['LAP'].tolist())
+        if onlySKmodel:
+            print('FutureWarning : From museotoolbox 1.0, saving only SKlearn model will not be available anymore.')
+            if not path.endswith('.npy'):
+                path += '.npy'
+
+            self.model = np.load(path)
+
+            if type(self.model[1]).__name__ == 'StandardScaler':
+                self.scale = True
+                self.model, self.scaler = np.load(path)
+            else:
+                self.scale = False
+
+        else:
+            if not path.endswith('npz'):
+                path += '.npz'
+            model = np.load(path)
+            self.__dict__.update(model['LAP'].tolist())
 
     def predictArray(self, X):
         """

@@ -29,26 +29,6 @@ Examples related to the :mod:`museotoolbox.charts` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
-
-        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/charts/plotConfusion
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
-
-.. only:: html
-
     .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
 
         :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
@@ -62,6 +42,26 @@ Examples related to the :mod:`museotoolbox.charts` module.
    :hidden:
 
    /auto_examples/charts/plotConfusionF1
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/charts/plotConfusion
 
 .. raw:: html
 
@@ -118,26 +118,6 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/LeavePSubGroupOut
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
 
 .. only:: html
@@ -155,26 +135,6 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
    :hidden:
 
    /auto_examples/crossValidation/LeaveOneSubGroupOutAndSaveVector
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/crossValidation/SpatialLeaveOnePixelOut
 
 .. raw:: html
 
@@ -198,6 +158,26 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/SpatialLeaveOnePixelOut
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-SubGroup-Out.">
 
 .. only:: html
@@ -215,6 +195,26 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
    :hidden:
 
    /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/LeavePSubGroupOut
 .. raw:: html
 
     <div style='clear:both'></div>
@@ -327,7 +327,7 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 
 .. _vectorTools:
 
-vector tools
+Vector tools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.vectorTools` module.
