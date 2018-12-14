@@ -84,11 +84,15 @@ Create CV
     [ 2  3  8  4  5 15 16 10 11] [ 0  1  7  6  9 14 12 13]
 
 
-Show label
+.. note::
+   Split is made to generate each fold
 
 
 
 .. code-block:: python
+
+
+    # Show label
 
     for tr,vl in RS50.split(X=None,y=y):
         print(y[tr],y[vl])
@@ -174,7 +178,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.096 seconds)
+**Total running time of the script:** ( 0 minutes  0.157 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

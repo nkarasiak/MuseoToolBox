@@ -94,8 +94,7 @@ Create CV
 
 Differences with sklearn
 -------------------------------------------
-Sklearn do not use subgroups
-as MuseoToolBox use one group per Y label    
+Sklearn do not use subgroups (only groups), so no hierarchical dependances.
 
 
 
@@ -103,23 +102,12 @@ as MuseoToolBox use one group per Y label
 
     
     from sklearn.model_selection import LeaveOneGroupOut
-
     LOGO = LeaveOneGroupOut()
     for tr,vl in LOGO.split(X=X,y=y,groups=s):
         print(tr.shape,vl.shape)
-    # Plot example in image
-    
-    import numpy as np
-    from matplotlib import pyplot as plt
-    plt.scatter(np.random.randint(10,30,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-    plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-    plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
-    plt.axis('off')
-    plt.show()
 
 
-.. image:: /auto_examples/crossValidation/images/sphx_glr_LeaveOneSubGroupOut_001.png
-    :class: sphx-glr-single-img
+
 
 
 .. rst-class:: sphx-glr-script-out
@@ -147,7 +135,29 @@ as MuseoToolBox use one group per Y label
     (11802,) (845,)
 
 
-**Total running time of the script:** ( 0 minutes  0.078 seconds)
+Plot example
+
+
+
+.. code-block:: python
+
+    
+    import numpy as np
+    from matplotlib import pyplot as plt
+    plt.scatter(np.random.randint(10,30,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
+    plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
+    plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
+    plt.axis('off')
+    plt.show()
+
+
+.. image:: /auto_examples/crossValidation/images/sphx_glr_LeaveOneSubGroupOut_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  0.140 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

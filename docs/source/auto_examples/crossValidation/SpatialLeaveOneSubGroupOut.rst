@@ -93,8 +93,8 @@ n_splits will be the number  of the least populated class
     2
 
 
-Generate each fold
--------------------------------------------
+.. note::
+   Split is made to generate each fold
 
 
 
@@ -150,7 +150,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.144 seconds)
+**Total running time of the script:** ( 0 minutes  0.106 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:

@@ -80,12 +80,13 @@ n_splits will be the number  of the least populated class
     8
 
 
-Generate each fold
--------------------------------------------
+.. note::
+   Split is made to generate each fold
 
 
 
 .. code-block:: python
+
 
 
     for tr,vl in SLOPO.split(X,y):
@@ -143,7 +144,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.281 seconds)
+**Total running time of the script:** ( 0 minutes  1.768 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

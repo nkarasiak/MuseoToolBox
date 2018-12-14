@@ -13,6 +13,7 @@ This example shows how to make a Leave-Percent-SubGroup-Out.
 
 from museotoolbox.crossValidation import LeavePSubGroupOut
 from museotoolbox import datasets,rasterTools
+import numpy as np
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -26,16 +27,44 @@ group = 'uniquefid'
 # Create CV
 # -------------------------------------------
 valid_size = 0.5 # Means 50%
-LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits = 10,
+LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits = 5,
                           random_state=12,verbose=False)
+    
+###############################################################################
+# Extract X,y and group.
+# -------------------------------------------
+
+X,y,g=rasterTools.getSamplesFromROI(raster,vector,field,group)
 
 ###############################################################################
 # .. note::
-#    There is no need to specify a bandPrefix. 
-#    If bandPrefix is not specified, scipt will only generate the centroid
-X,y,s=rasterTools.getSamplesFromROI(raster,vector,field,group)
-for tr,vl in LPSGO.split(X,y,s):
+#    Split is made to generate each fold
+
+for tr,vl in LPSGO.split(X,y,g):
     print(tr.shape,vl.shape)
+
+print('y label with number of samples')
+print(np.unique(y[tr],return_counts=True))
+##############################################################################
+# Differences with scikit-learn
+# -------------------------------------------
+from sklearn.model_selection import LeavePGroupsOut
+# You need to specify the number of groups
+LPGO = LeavePGroupsOut(n_groups=2)
+for tr,vl in LPGO.split(X,y,g):
+    print(tr.shape,vl.shape)
+
+##############################################################################
+# With GroupShuffleSplit, won't keep the percentage per subgroup
+# This generate unbalanced classes
+    
+from sklearn.model_selection import GroupShuffleSplit
+GSS = GroupShuffleSplit(test_size=0.5,n_splits=5)
+for tr,vl in GSS.split(X,y,g):
+    print(tr.shape,vl.shape)
+
+print('y label with number of samples')
+print(np.unique(y[tr],return_counts=True))
 
 ###############################################################################
 # Plot example in image

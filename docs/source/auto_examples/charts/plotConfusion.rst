@@ -7,7 +7,7 @@
 .. _sphx_glr_auto_examples_charts_plotConfusion.py:
 
 
-Plot confusion matrix from Cross-Validation with F1
+Plot confusion matrix
 ========================================================
 
 Plot confusion matrix from Cross-Validation, with F1 as subplot.
@@ -56,7 +56,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=10,
+    RS50 = RandomCV(valid_size=0.5,n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -104,8 +104,8 @@ Start learning
 
  .. code-block:: none
 
-    Fitting 10 folds for each of 2 candidates, totalling 20 fits
-    best n_estimators : 200
+    Fitting 2 folds for each of 2 candidates, totalling 4 fits
+    best n_estimators : 100
 
 
 Get kappa from each fold
@@ -129,16 +129,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    [0.94635897652909906]
-    [0.93926877916972007]
-    [0.9424138426326939]
-    [0.9439809301441302]
-    [0.94286057027982639]
-    [0.94247415327533202]
-    [0.94190539222286984]
-    [0.94625949356904848]
-    [0.94642164578108168]
-    [0.9395504758785389]
+    [0.94747759234238516]
+    [0.94009541642977734]
 
 
 Get each confusion matrix from folds
@@ -163,56 +155,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [array([[3682,   77,    2,   10,    0],
-           [  55, 1079,    1,   12,    0],
-           [   2,    0, 1138,    0,    0],
-           [  13,   18,    0,  232,    0],
+    [array([[3685,   72,    2,   12,    0],
+           [  66, 1068,    1,   12,    0],
+           [   1,    0, 1139,    0,    0],
+           [  11,   22,    0,  230,    0],
            [   4,    0,    0,    0,    0]])]
-    [array([[3687,   75,    1,    8,    0],
-           [  97, 1036,    0,   13,    0],
+    [array([[3693,   66,    1,   11,    0],
+           [  99, 1034,    0,   13,    0],
            [   0,    0, 1139,    0,    0],
-           [   5,   17,    3,  237,    0],
-           [   2,    2,    0,    0,    0]])]
-    [array([[3687,   70,    1,   13,    0],
-           [  73, 1061,    1,   12,    0],
-           [   2,    0, 1138,    0,    0],
-           [   9,   29,    2,  223,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3700,   61,    2,    8,    0],
-           [  84, 1047,    0,   15,    0],
-           [   0,    0, 1139,    0,    0],
-           [   7,   12,    2,  241,    0],
+           [   4,   18,    3,  237,    0],
            [   3,    1,    0,    0,    0]])]
-    [array([[3697,   68,    0,    6,    0],
-           [  88, 1049,    0,   10,    0],
-           [   0,    0, 1140,    0,    0],
-           [   8,   21,    2,  232,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3700,   62,    2,    7,    0],
-           [  77, 1053,    1,   15,    0],
-           [   0,    0, 1139,    0,    0],
-           [  16,   23,    1,  222,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3681,   75,    1,   14,    0],
-           [  80, 1057,    0,   10,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   17,    1,  235,    0],
-           [   3,    1,    0,    0,    0]])]
-    [array([[3703,   58,    2,    8,    0],
-           [  59, 1063,    1,   23,    0],
-           [   3,    0, 1136,    0,    0],
-           [  10,   20,    3,  229,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3704,   58,    3,    6,    0],
-           [  75, 1061,    1,   10,    0],
-           [   0,    0, 1140,    0,    0],
-           [  12,   19,    1,  231,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3686,   71,    1,   13,    0],
-           [  87, 1041,    0,   18,    0],
-           [   2,    0, 1137,    0,    0],
-           [   9,   15,    2,  236,    0],
-           [   4,    0,    0,    0,    0]])]
 
 
 Plot confusion matrix
@@ -227,7 +179,6 @@ Plot confusion matrix
     meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
     pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
     pltCM.addText()
-    pltCM.addF1()
     pltCM.colorDiag()
 
 
@@ -246,12 +197,13 @@ Plot confusion matrix and normalize per class
 
 .. code-block:: python
 
-
+    from matplotlib.pyplot import cm as colorMap
     meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
     pltCM = plotConfusionMatrix(meanCM.astype(int).T)
-    pltCM.addText(alpha_zero=0.3) # in order to hide a little zero values
-    pltCM.addF1()
-    pltCM.colorDiag()
+    pltCM.addText(alpha_zero=0.8) # in order to hide a little zero values
+    pltCM.addXlabels(['One','Two','3','Four','Five!'],rotation=90,position='bottom')
+    pltCM.addYlabels(['','','','','']) # to remove labels
+    pltCM.colorDiag(diagColor=colorMap.Blues,matrixColor=colorMap.YlOrBr)
 
 
 
@@ -261,7 +213,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  27.169 seconds)
+**Total running time of the script:** ( 0 minutes  4.874 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:

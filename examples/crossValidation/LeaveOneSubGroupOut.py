@@ -40,15 +40,15 @@ for tr,vl in LOSGO.split(X,y,s):
 ###############################################################################
 # Differences with sklearn
 # -------------------------------------------
-# Sklearn do not use subgroups
-# as MuseoToolBox use one group per Y label    
+# Sklearn do not use subgroups (only groups), so no hierarchical dependances.
     
 from sklearn.model_selection import LeaveOneGroupOut
-
 LOGO = LeaveOneGroupOut()
 for tr,vl in LOGO.split(X=X,y=y,groups=s):
     print(tr.shape,vl.shape)
-# Plot example in image
+
+###############################################################################
+# Plot example
     
 import numpy as np
 from matplotlib import pyplot as plt

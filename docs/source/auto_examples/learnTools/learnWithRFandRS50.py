@@ -67,7 +67,6 @@ LAP.predictRaster(raster,'/tmp/classification.tif')
 ##########################
 # Plot example
 
-
 from matplotlib import pyplot as plt
 import gdal
 src=gdal.Open('/tmp/classification.tif')

@@ -1,6 +1,6 @@
 .. _vectorTools:
 
-vector tools
+Vector tools
 ------------------------
 
 Examples related to the :mod:`museotoolbox.vectorTools` module.

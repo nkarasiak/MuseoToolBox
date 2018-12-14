@@ -33,8 +33,7 @@ LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
 
 ###############################################################################
 # .. note::
-#    You can generate the CV and/or save each train/valid fold to a vector file.
-#
+#    Split is made to generate each fold
 
 LOSGO.get_n_splits(X,y,s)
 for tr,vl in LOSGO.split(X,y,s):

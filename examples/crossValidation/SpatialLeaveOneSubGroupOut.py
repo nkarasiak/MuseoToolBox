@@ -39,9 +39,9 @@ SLOSGO = SpatialLeaveOneSubGroupOut(distanceThresold=100,distanceMatrix=distance
 print(SLOSGO.get_n_splits(X,y,groups))
 
 
-##############################################################################
-# Generate each fold
-# -------------------------------------------
+###############################################################################
+# .. note::
+#    Split is made to generate each fold
 
 for tr,vl in SLOSGO.split(X,y,groups):
     print(tr.shape,vl.shape)

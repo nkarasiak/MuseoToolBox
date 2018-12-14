@@ -69,8 +69,7 @@ Create CV
 
 
 .. note::
-   You can generate the CV and/or save each train/valid fold to a vector file.
-
+   Split is made to generate each fold
 
 
 
@@ -162,7 +161,7 @@ So you can generate each centroid of a pixel that contains the polygon.
     (10180,) (2467,)
 
 
-**Total running time of the script:** ( 0 minutes  1.922 seconds)
+**Total running time of the script:** ( 0 minutes  2.001 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py:

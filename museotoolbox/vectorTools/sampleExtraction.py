@@ -49,9 +49,7 @@ class sampleExtraction:
             If bandPrefix (e.g. 'band'), will extract values from raster.
         """
         self.__verbose = verbose
-        if uniqueFID:
-            uniqueFID = uniqueFID.lower()
-        else:
+        if uniqueFID is None:
             uniqueFID = 'uniquefid'
             if verbose:
                 print("Adding 'uniquefid' field to the original vector.")
