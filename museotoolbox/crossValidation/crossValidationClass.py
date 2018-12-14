@@ -144,6 +144,16 @@ class distanceCV:
                         CT = np.where(self.y == C)[0]
 
                         currentCT = np.logical_and(self.y == C, self.mask == 1)
+    
+                        if np.where(currentCT)[
+                                0].shape[0] == 0:  # means no more ROI
+                            if self.minEffectiveClass == self.n_splits:
+                                raise StopIteration()
+                            print(
+                                str(C) + ' has no more valid pixel.')
+                            self.mask[self.y == C] = 1
+                            currentCT = np.logical_and(self.y == C, self.mask == 1)
+                            
 
                         if np.where(currentCT)[
                                 0].shape[0] == 0:  # means no more ROI
