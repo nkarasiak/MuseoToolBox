@@ -1,53 +1,37 @@
-{{ name }}
+{{ fullname }}
 {{ underline }}
-
+<p> coco c'est moi </p>
 .. automodule:: {{ fullname }}
 
    {% block functions %}
    {% if functions %}
+   .. rubric:: Functions
 
-   Functions
-   ---------
-
+   .. autosummary::
+      :toctree: {{ objname }}
+      :template: function.rst
    {% for item in functions %}
-
-   .. autofunction:: {{ item }}
-
-   .. include:: backreferences/{{fullname}}.{{item}}.examples
-
-   .. raw:: html
-
-	       <div style='clear:both'></div>
-
+      {{ item }}
    {%- endfor %}
    {% endif %}
    {% endblock %}
 
    {% block classes %}
    {% if classes %}
+   .. rubric:: Classes
 
-   Classes
-   -------
-
+   .. autosummary::
+      :toctree: {{ objname }}
+      :template: class.rst
    {% for item in classes %}
-   .. autoclass:: {{ item }}
-      :members:
-
-   .. include:: backreferences/{{fullname}}.{{item}}.examples
-
-   .. raw:: html
-
-	       <div style='clear:both'></div>
-
+      {{ item }}
    {%- endfor %}
    {% endif %}
    {% endblock %}
 
    {% block exceptions %}
    {% if exceptions %}
-
-   Exceptions
-   ----------
+   .. rubric:: Exceptions
 
    .. autosummary::
    {% for item in exceptions %}

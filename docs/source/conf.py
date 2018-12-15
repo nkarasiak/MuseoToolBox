@@ -55,9 +55,9 @@ autosummary_generate = True
 numpydoc_show_class_members=False 
 imported_members=True
 autoclass_content = 'both'
-autodoc_default_flags = ['members', 'inherited-members','undoc-members']
+# autodoc_default_flags = ['members', 'inherited-members','undoc-members']
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['templates']
+templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
