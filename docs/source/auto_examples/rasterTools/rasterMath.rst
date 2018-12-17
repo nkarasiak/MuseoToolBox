@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[ 213.  175.  164.]
-     [ 206.  170.  158.]
-     [ 212.  175.  166.]
+    [[175 165 153]
+     [ 69  59  47]
+     [174 166 153]
      ..., 
-     [ 103.   76.   67.]
-     [ 140.  105.   99.]
-     [ 151.  112.  107.]]
+     [197 191 179]
+     [127 123 114]
+     [168 165 160]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -145,7 +145,7 @@ Plot result
     import gdal
     from matplotlib import pyplot as plt 
 
-    src = gdal.Open('/tmp/sub.tif')
+    src = gdal.Open('/tmp/add.tif')
     plt.imshow(src.ReadAsArray())
 
 
@@ -156,7 +156,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.429 seconds)
+**Total running time of the script:** ( 0 minutes  0.673 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_rasterMath.py:

@@ -1,11 +1,11 @@
+.. _museotoolbox_api_reference:
+
 API Reference
------------------------
+=============
+
+The complete Museo ToolBox project is automatically documented for every module.
 
 .. currentmodule:: museotoolbox
-
-.. automodule:: museotoolbox
-   :no-members:
-   :no-inherited-members:
 
 .. autosummary::
    :toctree: modules/

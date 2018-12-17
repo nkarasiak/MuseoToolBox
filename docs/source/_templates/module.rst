@@ -1,6 +1,6 @@
-{{ fullname }}
+{{ objname }}
 {{ underline }}
-<p> coco c'est moi </p>
+
 .. automodule:: {{ fullname }}
 
    {% block functions %}
@@ -39,4 +39,3 @@
    {%- endfor %}
    {% endif %}
    {% endblock %}
-

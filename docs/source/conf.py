@@ -42,17 +42,18 @@ source_parsers = {
 }
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinx.ext.autosummary',
-    'nbsphinx',#'sphinx.ext.linkcode',
-    'sphinx.ext.doctest',
-    'sphinx_gallery.gen_gallery'
+    'sphinx_gallery.gen_gallery',
+    'nbsphinx'
+    #'sphinx.ext.linkcode',
     #'sphinx_automodapi.automodapi'
     ]
 
 autosummary_generate = True
-numpydoc_show_class_members=False 
+# numpydoc_show_class_members=False 
 imported_members=True
 autoclass_content = 'both'
 # autodoc_default_flags = ['members', 'inherited-members','undoc-members']
@@ -63,10 +64,11 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ['.rst','.md']
+source_suffix = ['.rst']
 
 # The master toctree document.
 master_doc = 'index'
+
 
 # General information about the project.
 project = 'Museo ToolBox'

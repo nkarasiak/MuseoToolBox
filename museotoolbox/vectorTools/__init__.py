@@ -34,9 +34,10 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
         Path of the raster file.
     inVector : str
         Path of the vector file.
+        
     Returns
     --------
-    distanceMatrix : array.
+    distanceMatrix : array of shape (nSamples,nSamples) 
     """
     if inLevel is not False:
         onlyCoords = False
@@ -100,14 +101,29 @@ def readValuesFromVector(vector, *args, **kwargs):
         Vector path ('myFolder/class.shp',str).
     *args : str
         Field name containing the field to extract values from (i.e. 'class', str).
-    **kwargs : arg
-        bandPrefix = 'band-' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band-').
-        getFeatures = True, will return features in one list AND spatial Reference.
+    **kwargs : arg  
+        - bandPrefix = 'band-' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band-').
+        - getFeatures = True, will return features in one list AND spatial Reference.
 
     Returns
     -------
-      Y : arr.
-          As many array as arguments. For bandPrefix, will return one array with n dimension.
+    List values, same length as number of parameters.
+    If bandPrefix as parameters, will return one array with n dimension.
+          
+    See also
+    ---------
+    museotoolbox.rasterTools.getSamplesFromROI : extract raster values from vector file.
+    
+    Examples
+    ---------
+    
+    >>> from museotoolbox.datasets import getHistoricalMap
+    >>> _,vector=getHistoricalMap()
+    >>> Y = readValuesFromVector(vector,'Class')
+    array([1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 4, 5, 4, 5, 3, 3, 3], dtype=int32)
+    >>> Y,fid = readValuesFromVector(vector,'Class','uniquefid')
+    (array([1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 4, 5, 4, 5, 3, 3, 3], dtype=int32),
+     array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17], dtype=int32))
     """
 
     try:
@@ -211,6 +227,21 @@ def readValuesFromVector(vector, *args, **kwargs):
 
 
 def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
+    """
+    Add a field in the vecotr with an unique value
+    for each of the feature.
+    
+    Parameters
+    -----------
+    inVector : str
+        Path of the vector file.
+    uniqueField : str
+        Name of the field to create
+        
+    Returns
+    --------
+    inVector : str
+    """
     inDriverName = getDriverAccordingToFileName(inVector)
     inDriver = ogr.GetDriverByName(inDriverName)
     inSrc = inDriver.Open(inVector, 1)  # 1 for writable

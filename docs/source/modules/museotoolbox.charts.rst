@@ -9,19 +9,13 @@ charts
 
    
    
+   .. rubric:: Classes
 
-   Classes
-   -------
-
+   .. autosummary::
+      :toctree: charts
+      :template: class.rst
    
-   .. autoclass:: plotConfusionMatrix
-      :members:
-
-   .. include:: backreferences/museotoolbox.charts.plotConfusionMatrix.examples
-
-   .. raw:: html
-
-	       <div style='clear:both'></div>
+      plotConfusionMatrix
    
    
 

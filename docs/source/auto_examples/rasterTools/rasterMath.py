@@ -55,5 +55,5 @@ rM.run()
 import gdal
 from matplotlib import pyplot as plt 
 
-src = gdal.Open('/tmp/sub.tif')
+src = gdal.Open('/tmp/add.tif')
 plt.imshow(src.ReadAsArray())

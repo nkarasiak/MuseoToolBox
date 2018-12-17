@@ -5,19 +5,13 @@ datasets
 
    
    
+   .. rubric:: Functions
 
-   Functions
-   ---------
-
+   .. autosummary::
+      :toctree: datasets
+      :template: function.rst
    
-
-   .. autofunction:: getHistoricalMap
-
-   .. include:: backreferences/museotoolbox.datasets.getHistoricalMap.examples
-
-   .. raw:: html
-
-	       <div style='clear:both'></div>
+      getHistoricalMap
    
    
 

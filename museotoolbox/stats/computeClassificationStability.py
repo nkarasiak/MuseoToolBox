@@ -6,27 +6,50 @@ import numpy as np
 import sys
 
 
-class modalClass():
+class modalClass:
+    """
+    Compute modal class and number of agreements.
+    
+    Parameters
+    -----------
+    
+    inRaster : str
+        The raster (at least 2 bands)
+    outRaster : str
+        The output raster.
+    inMaskRaster : str or False,
+        The mask raster (0 = to mask, >0 : no mask).
+    """
     def __init__(
             self,
             inRaster,
             outRaster,
-            inMaskRaster,
-            outGdalDT,
-            outNoData):
+            inMaskRaster):
         #process = rasterTools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
 
         process = rasterTools.rasterMath(inRaster, inMaskRaster)
-        process.addFunction(self.stabCalc, outRaster, 2, 3, outNoData)
+        process.addFunction(self.stabCalc, outRaster, 2, 3, 0)
         process.run()
 
     def stabCalc(self, arr):
+        """
+        Compute modal and number of agreements.
+        
+        Parameters
+        -----------
+        arr : array.
+            The array where to compute stats from.
+            
+        Returns
+        --------
+        arr : array of shape (:,2).
+        """
         tmp = stats.mode(arr, axis=-1)
         tmpStack = np.column_stack((tmp[0], tmp[1]))
         return tmpStack
 
 
-def modalClassCLI(argv=None, apply_config=True):
+def __modalClassCLI(argv=None, apply_config=True):
     import argparse
     if len(sys.argv) == 1:
         prog = os.path.basename(sys.argv[0])
@@ -78,10 +101,8 @@ def modalClassCLI(argv=None, apply_config=True):
         modalClass(
             inRaster=args.inRaster,
             outRaster=args.outRaster,
-            inMaskRaster=args.inMaskRaster,
-            outGdalDT=3,
-            outNoData=0)
+            inMaskRaster=args.inMaskRaster)
 
 
 if __name__ == "__main__":
-    sys.exit(modalClassCLI())
+    sys.exit(__modalClassCLI())
