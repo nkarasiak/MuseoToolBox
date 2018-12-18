@@ -19,6 +19,7 @@ from __future__ import absolute_import, print_function
 import os
 from osgeo import ogr
 import numpy as np
+from ..internalTools import progressBar
 
 from .sampleExtraction import sampleExtraction
 from .. import rasterTools
@@ -70,9 +71,16 @@ def getDriverAccordingToFileName(fileName):
         Path of the vector with extension.
 
     Returns
-    ----------
+    -------
     driverName : str
         'SQLITE', 'GPKG', 'ESRI Shapefile'...
+        
+    Examples
+    --------
+    >>> mtb.vectorTools.getDriverAccordingToFileName('goVegan.gpkg')
+    'GPKG'
+    >>> getDriverAccordingToFileName('stopEatingAnimals.shp')
+    'ESRI Shapefile'
     """
     extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
     driversName = ['SQLITE', 'ESRI Shapefile', 'netCDF', 'GPX', 'GPKG']
@@ -116,7 +124,6 @@ def readValuesFromVector(vector, *args, **kwargs):
     
     Examples
     ---------
-    
     >>> from museotoolbox.datasets import getHistoricalMap
     >>> _,vector=getHistoricalMap()
     >>> Y = readValuesFromVector(vector,'Class')
@@ -228,7 +235,7 @@ def readValuesFromVector(vector, *args, **kwargs):
 
 def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
     """
-    Add a field in the vecotr with an unique value
+    Add a field in the vector with an unique value
     for each of the feature.
     
     Parameters
@@ -240,8 +247,15 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         
     Returns
     --------
-    inVector : str
+    None
+    
+    Examples
+    ---------
+    >>> addUniqueIDForVector('myDB.gpkg',uniqueField='polygonid')
+    Adding polygonid [########################################]100%
     """
+    pB = progressBar(100,message='Adding '+uniqueField)
+    
     inDriverName = getDriverAccordingToFileName(inVector)
     inDriver = ogr.GetDriverByName(inDriverName)
     inSrc = inDriver.Open(inVector, 1)  # 1 for writable
@@ -267,8 +281,9 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         FIDs = [feat.GetFID() for feat in inLyr]
 
         ThisID = 1
-
-        for FID in FIDs:
+        
+        for idx,FID in enumerate(FIDs):
+            pB.addPosition(idx/len(FIDs)+1*100)
             feat = inLyr.GetFeature(FID)
             #ThisID = int(feat.GetFGetFeature(feat))
             # Write the FID to the ID field
@@ -280,4 +295,3 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         if inDriverName == 'SQLITE':
             inLyr.CommitTransaction()
         inSrc.Destroy()
-    return inVector

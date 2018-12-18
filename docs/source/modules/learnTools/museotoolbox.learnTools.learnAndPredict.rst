@@ -22,6 +22,7 @@ learnAndPredict
       ~learnAndPredict.predictConfidenceOfPredictedClass
       ~learnAndPredict.predictConfidencePerClass
       ~learnAndPredict.predictRaster
+      ~learnAndPredict.saveCMFromCV
       ~learnAndPredict.saveModel
       ~learnAndPredict.scaleX
    

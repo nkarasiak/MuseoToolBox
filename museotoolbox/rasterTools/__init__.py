@@ -199,7 +199,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     >>> from museotoolbox.datasets import getHistoricalMap
     >>> raster,vector=getHistoricalMap()
     >>> X,Y = getSamplesFromROI(raster,vector,'Class')
-    >>> print(X)
+    >>> X
     array([[ 213.,  189.,  151.],
        [ 223.,  198.,  158.],
        [ 212.,  188.,  150.],
@@ -207,11 +207,11 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
        [ 144.,  140.,  105.],
        [  95.,   92.,   57.],
        [ 141.,  137.,  102.]])
-    >>> print(X.shape)
+    >>> X.shape
     (12647,3)
-    >>> print(Y)
+    >>> Y
     [3 3 3 ..., 1 1 1]
-    >>> print(Y.shape)
+    >>> Y.shape
     (12647,)
     """
     # generate kwargs value

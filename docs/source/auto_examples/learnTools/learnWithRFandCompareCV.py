@@ -29,7 +29,7 @@ group = 'uniquefid'
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier()
+classifier = RandomForestClassifier(random_state=12)
 
 ##############################################################################
 # Create list of different CV

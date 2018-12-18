@@ -60,7 +60,7 @@ Initialize Random-Forest
 .. code-block:: python
 
 
-    classifier = RandomForestClassifier()
+    classifier = RandomForestClassifier(random_state=12)
 
 
 
@@ -115,33 +115,33 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.93843898260126135]
-    [0.94339037465279474]
-    [0.94024976146049644]
-    [0.93710135986444798]
-    [0.93522537269928463]
+    [0.94126836977040407]
+    [0.9445235655078964]
+    [0.94126836977040407]
+    [0.9445235655078964]
+    [0.94126836977040407]
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for LeavePSubGroupOut
-    [0.78341345616606617]
-    [0.79025917043382066]
-    [0.67470876485590259]
-    [0.6921385241270821]
-    [0.80627260898424413]
+    [0.67801520805520388]
+    [0.74558080975258245]
+    [0.67801520805520388]
+    [0.74558080975258245]
+    [0.67801520805520388]
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
+    best n_estimators : 200
     Kappa for LeaveOneSubGroupOut
-    [0.87147447380292964]
-    [0.70621933864930497]
+    [0.74342330012819913]
+    [0.65358340001044657]
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
     Kappa for StratifiedKFold
-    [0.91496595789947011]
-    [0.87849823025185492]
-    [0.80183465062844717]
+    [0.9192439219495333]
+    [0.87923405868862392]
+    [0.80966792713243985]
     ====================
 
 
@@ -169,7 +169,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  50.274 seconds)
+**Total running time of the script:** ( 0 minutes  37.014 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

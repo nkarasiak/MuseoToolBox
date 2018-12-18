@@ -26,6 +26,16 @@ np.seterr(divide='ignore', invalid='ignore')
 
 
 class plotConfusionMatrix:
+    """
+    Plot a confusion matrix with imshow of pyplot.
+    Customize color (e.g. diagonal color), add subplots with F1 or Producer/User accuracy.
+    
+    Examples
+    --------
+    >>> plot = mtb.charts.plotConfusionMatrix([[5,6],[1,8]])
+    >>> plot.addText()
+    >>> plot.addF1()
+    """
     def __init__(self, cm, cmap=plt.cm.Greens, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
@@ -69,6 +79,21 @@ class plotConfusionMatrix:
         self.axes.append(self.ax)
 
     def addText(self, thresold=False, alpha=1, alpha_zero=1):
+        """
+        Add value of each case on the matrix image.
+        
+        Parameters
+        ----------
+        thresold : False or integer.
+        alpha : float, default 1.
+            Value from 0 to 1.
+        alpha_zero : float, default 1.
+            Value alpha for 0 values, from 0 to 1.
+            
+        Examples
+        --------
+        >>> plot.addText(alpha_zero=0.5)
+        """
         if thresold is False:
             thresold = int(np.amax(self.cm) / 2)
         for i, j in itertools.product(
@@ -85,6 +110,22 @@ class plotConfusionMatrix:
                              color="white" if self.cm2[i, j] > thresold else "black", va='center')
 
     def addXlabels(self, labels=None, rotation=90, position='top'):
+        """
+        Add labels for X.
+        
+        Parameters
+        ----------
+        labels : None
+            If labels, best with same len as the X shape.
+        rotation : int, default 90.
+            Int, 45 or 90 is best.
+        position : str, default 'top'.
+            'top' or 'bottom'.
+        
+        Examples
+        --------
+        >>> plot.addText(labels=['Tofu','Houmous'],alpha_zero=0.5,rotation=45)
+        """
         self.xrotation = rotation
         self.xlabels = labels
         self.xlabelsPos = position
@@ -105,6 +146,25 @@ class plotConfusionMatrix:
         self.ax.set_xticklabels(self.xlabels, rotation=rotation, ha=ha)
 
     def addMean(self, xLabel='', yLabel='', thresold=50, vmin=0, vmax=100):
+        """
+        Add Mean for both axis.
+        
+        Parameters
+        ----------
+        xLabel : str
+            The label for X (i.e. 'All species')
+        yLabel : str
+            The label for Y (i.e. 'All years')
+        thresold : int, default 50.
+        vmin : int.
+            Minimum value for colormap.
+        vmax : 
+            Maximum value for colormap.
+        
+        Examples
+        --------
+        >>> plot.addMean(xLabel='all species',yLabel='all years')
+        """
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
@@ -182,6 +242,20 @@ class plotConfusionMatrix:
         self.axes.append([self.ax1v, self.ax1h])
 
     def addYlabels(self, labels=None, rotation=0):
+        """
+        Add labels for Y.
+        
+        Parameters
+        ----------
+        labels : None
+            If labels, best with same len as the X shape.
+        rotation : int, default 90.
+            Int, 45 or 90 is best.
+        
+        Examples
+        --------
+        >>> plot.addYlabels(labels=['Fried','Raw'])
+        """
         self.yrotation = rotation
         self.ylabels = labels
         self.ax.set_yticklabels(
@@ -190,6 +264,13 @@ class plotConfusionMatrix:
             horizontalalignment='right')
 
     def addF1(self):
+        """
+        Add F1 subplot.
+        
+        Examples
+        --------
+        >>> plot.addF1()
+        """
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
@@ -251,7 +332,18 @@ class plotConfusionMatrix:
         self.axes.append(self.ax1v)
 
     def addAccuracy(self, thresold=50):
-
+        """
+        Add user and producer accuracy.
+        
+        Parameters
+        ----------
+        thresold : int, default 50
+            The thresold value where text will be in white instead of black.
+        
+        Examples
+        --------
+        >>> plot.addAccuracy()
+        """
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
@@ -319,7 +411,19 @@ class plotConfusionMatrix:
         self.axes.append([self.ax1v, self.ax1h])
 
     def colorDiag(self, diagColor=plt.cm.Greens, matrixColor=plt.cm.Reds):
-
+        """
+        Add user and producer accuracy.
+        
+        Parameters
+        ----------
+        diagcolor : pyplot colormap, default plt.cm.Greens.
+        matrixColor : pyplot colormap, default plt.cm.Reds
+        
+        Examples
+        --------
+        >>> plot.colorDiag()
+        """
+        
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Exception(
                 'Array must have the same number of lines and columns')
@@ -354,9 +458,26 @@ class plotConfusionMatrix:
             alpha=1)
 
     def show(self):
+        """
+        To force plotting the graph
+        """
+        
         plt.show(self.fig)
 
     def saveTo(self, path, dpi=150):
+        """
+        Save the plot
+        
+        Parameters
+        ----------
+        path : str
+            The path of the file to save.
+        dpi : int, default 150.
+        
+        Examples
+        --------
+        >>> plot.saveTo('/tmp/contofu.pdf',dpi=300)
+        """
         self.fig.savefig(path, dpi=dpi, bbox_inches='tight')
 
     def setWhiteBorders(self):
