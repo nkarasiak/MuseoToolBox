@@ -48,16 +48,16 @@ LAP.learnFromRaster(raster,vector,field,cv=RS50,
 # Get kappa from each fold
 # ---------------------------
   
-for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-    print(kappa)
+for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+    print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 cms = []
-for cm in LAP.getStatsFromCV(confusionMatrix=True):
-    cms.append(cm)
-    print(cm)
+for stats in LAP.getStatsFromCV(confusionMatrix=True):
+    cms.append(stats['confusionMatrix'])
+    print(stats['confusionMatrix'])
     
 ##############################################################################
 # Plot confusion matrix
@@ -69,7 +69,7 @@ import numpy as np
 
 labels = ['Forest','Agriculture','Bare soil','Water','Building']
 from matplotlib.pyplot import cm as colorMap
-meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
+meanCM = np.mean(cms,axis=0).astype(np.int16)
 pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
 pltCM.addText()
 pltCM.addXlabels(labels,rotation=90)

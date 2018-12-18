@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[175 165 153]
-     [ 69  59  47]
-     [174 166 153]
+    [[160 148 124]
+     [154 142 118]
+     [188 176 152]
      ..., 
-     [197 191 179]
-     [127 123 114]
-     [168 165 160]]
+     [187 164 132]
+     [193 166 136]
+     [178 152 119]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -156,7 +156,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.673 seconds)
+**Total running time of the script:** ( 0 minutes  0.423 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_rasterMath.py:

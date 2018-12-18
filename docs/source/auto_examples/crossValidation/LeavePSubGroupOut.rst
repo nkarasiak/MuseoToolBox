@@ -106,13 +106,13 @@ Extract X,y and group.
 
  .. code-block:: none
 
-    (6676,) (5971,)
-    (5971,) (6676,)
-    (6091,) (6556,)
-    (6556,) (6091,)
-    (6702,) (5945,)
+    (5998,) (6649,)
+    (6649,) (5998,)
+    (5998,) (6649,)
+    (6649,) (5998,)
+    (5998,) (6649,)
     y label with number of samples
-    (array([1, 2, 3, 4, 5]), array([4059, 1067, 1434,  140,    2]))
+    (array([1, 2, 3, 4, 5]), array([3712,  801, 1343,  140,    2]))
 
 
 Differences with scikit-learn
@@ -302,13 +302,13 @@ This generate unbalanced classes
 
  .. code-block:: none
 
-    (5482,) (7165,)
-    (5319,) (7328,)
-    (8225,) (4422,)
-    (4757,) (7890,)
-    (7203,) (5444,)
+    (6715,) (5932,)
+    (7361,) (5286,)
+    (4232,) (8415,)
+    (4847,) (7800,)
+    (6151,) (6496,)
     y label with number of samples
-    (array([1, 2, 3, 4]), array([4403, 1226, 1434,  140]))
+    (array([1, 2, 4, 5]), array([4673, 1332,  140,    6]))
 
 
 Plot example in image
@@ -334,7 +334,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.154 seconds)
+**Total running time of the script:** ( 0 minutes  0.095 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeavePSubGroupOut.py:

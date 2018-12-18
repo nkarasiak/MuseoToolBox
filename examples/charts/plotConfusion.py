@@ -38,7 +38,6 @@ classifier = RandomForestClassifier()
 # Start learning
 # ---------------------------
 
-
 LAP = learnAndPredict()
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
@@ -47,23 +46,23 @@ LAP.learnFromRaster(raster,vector,field,cv=RS50,
 # Get kappa from each fold
 # ---------------------------
   
-for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-    print(kappa)
+for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+    print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 cms = []
-for cm in LAP.getStatsFromCV(confusionMatrix=True):
-    cms.append(cm)
-    print(cm)
+for stats in LAP.getStatsFromCV(confusionMatrix=True):
+    cms.append(stats['confusionMatrix'])
+    print(stats['confusionMatrix'])
     
 ##############################################################################
 # Plot confusion matrix
 # -----------------------------------------------
     
 import numpy as np
-meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
+meanCM = np.mean(cms,axis=0).astype(np.int16)
 pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
 pltCM.addText()
 pltCM.colorDiag()
@@ -72,8 +71,8 @@ pltCM.colorDiag()
 # Plot confusion matrix and normalize per class
 # -----------------------------------------------
 from matplotlib.pyplot import cm as colorMap
-meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-pltCM = plotConfusionMatrix(meanCM.astype(int).T)
+meanCMnorm = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
+pltCM = plotConfusionMatrix(meanCMnorm.astype(int).T)
 pltCM.addText(alpha_zero=0.8) # in order to hide a little zero values
 pltCM.addXlabels(['One','Two','3','Four','Five!'],rotation=90,position='bottom')
 pltCM.addYlabels(['','','','','']) # to remove labels

@@ -117,8 +117,8 @@ Get kappa from each fold
 .. code-block:: python
 
   
-    for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-        print(kappa)
+    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        print(stats['kappa'])
 
 
 
@@ -130,8 +130,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    [0.94497389503495366]
-    [0.94285204942592638]
+    0.942019668257
+    0.942016573896
 
 
 Get each confusion matrix from folds
@@ -142,9 +142,9 @@ Get each confusion matrix from folds
 .. code-block:: python
 
     cms = []
-    for cm in LAP.getStatsFromCV(confusionMatrix=True):
-        cms.append(cm)
-        print(cm)
+    for stats in LAP.getStatsFromCV(confusionMatrix=True):
+        cms.append(stats['confusionMatrix'])
+        print(stats['confusionMatrix'])
     
 
 
@@ -156,16 +156,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [array([[3685,   74,    2,   10,    0],
-           [  72, 1061,    1,   13,    0],
-           [   2,    0, 1138,    0,    0],
-           [  12,   18,    0,  233,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3691,   68,    1,   11,    0],
-           [  93, 1040,    0,   13,    0],
-           [   0,    0, 1139,    0,    0],
-           [   5,   16,    3,  238,    0],
-           [   2,    1,    1,    0,    0]])]
+    [[3680   78    2   11    0]
+     [  68 1068    1   10    0]
+     [   0    0 1140    0    0]
+     [  10   21    3  229    0]
+     [   4    0    0    0    0]]
+    [[3690   69    1   11    0]
+     [  87 1043    0   16    0]
+     [   2    0 1137    0    0]
+     [  12   18    1  231    0]
+     [   4    0    0    0    0]]
 
 
 Plot confusion matrix
@@ -182,7 +182,7 @@ Plot confusion matrix
 
     labels = ['Forest','Agriculture','Bare soil','Water','Building']
     from matplotlib.pyplot import cm as colorMap
-    meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
+    meanCM = np.mean(cms,axis=0).astype(np.int16)
     pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
     pltCM.addText()
     pltCM.addXlabels(labels,rotation=90)
@@ -225,7 +225,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  3.427 seconds)
+**Total running time of the script:** ( 0 minutes  3.055 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionAcc.py:

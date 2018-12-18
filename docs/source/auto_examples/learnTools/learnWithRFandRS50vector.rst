@@ -116,13 +116,8 @@ Get kappa from each fold
 .. code-block:: python
 
   
-<<<<<<< HEAD
     for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
         print(stats['kappa'])
-=======
-    for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-        print(kappa)
->>>>>>> master
 
 
 
@@ -134,7 +129,6 @@ Get kappa from each fold
 
  .. code-block:: none
 
-<<<<<<< HEAD
     0.942560083148
     0.94227598585
     0.942560083148
@@ -145,18 +139,6 @@ Get kappa from each fold
     0.94227598585
     0.942560083148
     0.94227598585
-=======
-    [0.94256008314765816]
-    [0.94227598585009031]
-    [0.94256008314765816]
-    [0.94227598585009031]
-    [0.94256008314765816]
-    [0.94227598585009031]
-    [0.94256008314765816]
-    [0.94227598585009031]
-    [0.94256008314765816]
-    [0.94227598585009031]
->>>>>>> master
 
 
 Get each confusion matrix from folds
@@ -167,13 +149,8 @@ Get each confusion matrix from folds
 .. code-block:: python
 
 
-<<<<<<< HEAD
     for stats in LAP.getStatsFromCV(confusionMatrix=True):
         print(stats['confusionMatrix'])
-=======
-    for cm in LAP.getStatsFromCV(confusionMatrix=True):
-        print(cm)
->>>>>>> master
     
 
 
@@ -185,7 +162,6 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-<<<<<<< HEAD
     [[3677   80    2   12    0]
      [  67 1068    1   11    0]
      [   0    0 1140    0    0]
@@ -249,7 +225,6 @@ Only get accuracies score (OA and Kappa)
     for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=False):
         print(stats)
     
-    
 
 
 
@@ -270,58 +245,6 @@ Only get accuracies score (OA and Kappa)
     {'kappa': 0.9422759858500902, 'OA': 0.96678266371401456}
     {'kappa': 0.94256008314765816, 'OA': 0.96679841897233199}
     {'kappa': 0.9422759858500902, 'OA': 0.96678266371401456}
-=======
-    [array([[3677,   80,    2,   12,    0],
-           [  67, 1068,    1,   11,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   20,    3,  230,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3693,   68,    1,    9,    0],
-           [  82, 1050,    0,   14,    0],
-           [   2,    0, 1137,    0,    0],
-           [  12,   17,    1,  232,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3677,   80,    2,   12,    0],
-           [  67, 1068,    1,   11,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   20,    3,  230,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3693,   68,    1,    9,    0],
-           [  82, 1050,    0,   14,    0],
-           [   2,    0, 1137,    0,    0],
-           [  12,   17,    1,  232,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3677,   80,    2,   12,    0],
-           [  67, 1068,    1,   11,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   20,    3,  230,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3693,   68,    1,    9,    0],
-           [  82, 1050,    0,   14,    0],
-           [   2,    0, 1137,    0,    0],
-           [  12,   17,    1,  232,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3677,   80,    2,   12,    0],
-           [  67, 1068,    1,   11,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   20,    3,  230,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3693,   68,    1,    9,    0],
-           [  82, 1050,    0,   14,    0],
-           [   2,    0, 1137,    0,    0],
-           [  12,   17,    1,  232,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3677,   80,    2,   12,    0],
-           [  67, 1068,    1,   11,    0],
-           [   0,    0, 1140,    0,    0],
-           [  10,   20,    3,  230,    0],
-           [   3,    0,    1,    0,    0]])]
-    [array([[3693,   68,    1,    9,    0],
-           [  82, 1050,    0,   14,    0],
-           [   2,    0, 1137,    0,    0],
-           [  12,   17,    1,  232,    0],
-           [   4,    0,    0,    0,    0]])]
->>>>>>> master
 
 
 Save each confusion matrix from folds
@@ -332,13 +255,8 @@ Save each confusion matrix from folds
 .. code-block:: python
 
 
-<<<<<<< HEAD
     LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
-    
-=======
-    LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=False)
-
->>>>>>> master
+  
 
 
 
@@ -390,11 +308,7 @@ Plot example
 
 
 
-<<<<<<< HEAD
-**Total running time of the script:** ( 0 minutes  40.160 seconds)
-=======
-**Total running time of the script:** ( 0 minutes  35.037 seconds)
->>>>>>> master
+**Total running time of the script:** ( 0 minutes  34.493 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50vector.py:

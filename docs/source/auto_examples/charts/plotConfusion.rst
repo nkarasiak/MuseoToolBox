@@ -89,7 +89,6 @@ Start learning
 .. code-block:: python
 
 
-
     LAP = learnAndPredict()
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
@@ -105,7 +104,7 @@ Start learning
  .. code-block:: none
 
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
+    best n_estimators : 200
 
 
 Get kappa from each fold
@@ -116,8 +115,8 @@ Get kappa from each fold
 .. code-block:: python
 
   
-    for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-        print(kappa)
+    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        print(stats['kappa'])
 
 
 
@@ -129,8 +128,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    [0.94747759234238516]
-    [0.94009541642977734]
+    0.941732883444
+    0.942036415315
 
 
 Get each confusion matrix from folds
@@ -141,9 +140,9 @@ Get each confusion matrix from folds
 .. code-block:: python
 
     cms = []
-    for cm in LAP.getStatsFromCV(confusionMatrix=True):
-        cms.append(cm)
-        print(cm)
+    for stats in LAP.getStatsFromCV(confusionMatrix=True):
+        cms.append(stats['confusionMatrix'])
+        print(stats['confusionMatrix'])
     
 
 
@@ -155,16 +154,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [array([[3685,   72,    2,   12,    0],
-           [  66, 1068,    1,   12,    0],
-           [   1,    0, 1139,    0,    0],
-           [  11,   22,    0,  230,    0],
-           [   4,    0,    0,    0,    0]])]
-    [array([[3693,   66,    1,   11,    0],
-           [  99, 1034,    0,   13,    0],
-           [   0,    0, 1139,    0,    0],
-           [   4,   18,    3,  237,    0],
-           [   3,    1,    0,    0,    0]])]
+    [[3676   81    2   12    0]
+     [  70 1065    1   11    0]
+     [   0    0 1140    0    0]
+     [   9   20    3  231    0]
+     [   4    0    0    0    0]]
+    [[3688   71    1   11    0]
+     [  84 1050    0   12    0]
+     [   2    0 1137    0    0]
+     [  11   19    1  231    0]
+     [   4    0    0    0    0]]
 
 
 Plot confusion matrix
@@ -176,7 +175,7 @@ Plot confusion matrix
 
     
     import numpy as np
-    meanCM = np.mean(cms,axis=0)[0,:,:].astype(np.int16)
+    meanCM = np.mean(cms,axis=0).astype(np.int16)
     pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
     pltCM.addText()
     pltCM.colorDiag()
@@ -213,7 +212,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  4.874 seconds)
+**Total running time of the script:** ( 0 minutes  6.244 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:
