@@ -40,7 +40,7 @@ def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     Returns
     -------
     gdalDT : integer.
-    
+
     Examples
     ---------
     >>> getGdalDTFromMinMaxValues(260)
@@ -91,9 +91,9 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
     Returns
     --------
         dt : the data type (int for Gdal or type for numpy)
-        
+
     Examples
-    ---------    
+    ---------
     >>> convertGdalAndNumpyDataType(gdal.GDT_Int16)
     numpy.int16
     >>> convertGdalAndNumpyDataType(gdal.GDT_Float64)
@@ -138,22 +138,34 @@ def convertGdalDataTypeToOTB(gdalDT):
     ----------
     str format of OTB datatype
         availableCode = uint8/uint16/int16/uint32/int32/float/double
-        
+
     Examples
     ---------
     >>> convertGdalDataTypeToOTB(gdal.GDT_Float32)
     'float'
     >>> convertGdalDataTypeToOTB(gdal.GDT_Byte)
-    'uint8' 
+    'uint8'
     >>> convertGdalDataTypeToOTB(gdal.GDT_UInt32)
     'uint32'
     >>> convertGdalDataTypeToOTB(gdal.GDT_CFloat64)
     'cdouble'
     """
-    #uint8/uint16/int16/uint32/int32/float/double/cint16/cint32/cfloat/cdouble
-    code = ['uint8','uint8', 'uint16', 'int16', 'uint32', 'int32', 'float','double','cint16','cint32','cfloat','cdouble']
+    # uint8/uint16/int16/uint32/int32/float/double/cint16/cint32/cfloat/cdouble
+    code = [
+        'uint8',
+        'uint8',
+        'uint16',
+        'int16',
+        'uint32',
+        'int32',
+        'float',
+        'double',
+        'cint16',
+        'cint32',
+        'cfloat',
+        'cdouble']
     if gdalDT > len(code):
-        otbDT=('cdouble')
+        otbDT = ('cdouble')
     else:
         otbDT = code[gdalDT]
 
@@ -193,7 +205,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     See also
     ---------
     museotoolbox.vectorTools.readValuesFromVector : read field values from vector file.
-    
+
     Examples
     ---------
     >>> from museotoolbox.datasets import getHistoricalMap
@@ -203,7 +215,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     array([[ 213.,  189.,  151.],
        [ 223.,  198.,  158.],
        [ 212.,  188.,  150.],
-       ..., 
+       ...,
        [ 144.,  140.,  105.],
        [  95.,   92.,   57.],
        [ 141.,  137.,  102.]])
@@ -355,10 +367,10 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         toReturn = coords
     else:
         toReturn = [X] + [F[:, f] for f in range(nFields)]
-    
+
         if getCoords:
             toReturn = toReturn + [coords]
-    
+
     return toReturn
 
 
@@ -378,7 +390,7 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
         raster file where to save the rasterization
     gdt : int
         gdal GDT datatype (default gdal.GDT_Int16 = 3)
-        
+
     Returns
     --------
     outFile : str
@@ -426,7 +438,7 @@ class rasterMath:
     Returns
     -------
     None
-        
+
     Examples
     ---------
     >>> rM = rasterMath('tmp.tif')
@@ -520,7 +532,9 @@ class rasterMath:
             if functionKwargs is False:
                 dtypeName = function(self.getRandomBlock()).dtype.name
             else:
-                dtypeName = function(self.getRandomBlock(),**functionKwargs).dtype.name
+                dtypeName = function(
+                    self.getRandomBlock(),
+                    **functionKwargs).dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
             pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
 

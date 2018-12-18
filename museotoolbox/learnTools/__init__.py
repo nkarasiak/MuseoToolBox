@@ -23,6 +23,7 @@ from sklearn import metrics
 
 from ..stats import computeConfusionMatrix
 
+
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
@@ -34,7 +35,7 @@ class learnAndPredict:
         n_jobs : int, default 1.
             Number of cores to be used by ``sklearn`` in grid-search.
         verbose : boolean, or int.
-        
+
         Examples
         --------
         >>> import museotoolbox as mtb
@@ -396,7 +397,7 @@ class learnAndPredict:
             outNoData=outNoData)
 
         noDataConfidence = -9999
-        
+
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
@@ -413,20 +414,20 @@ class learnAndPredict:
                 outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
                 outNoData=noDataConfidence)
         rM.run()
-    
-    def saveCMFromCV(self,savePath,prefix='',header=True):
+
+    def saveCMFromCV(self, savePath, prefix='', header=True):
         """
         Save each confusion matrix (csv format) from cross-validation.
-        
+
         For each matrix, will save as header :
-            
+
         - The number of training samples per class,
         - The F1-score per class,
         - Overall Accuracy,
         - Kappa.
-        
-        Example of confusion matrix saved as csv : 
-            
+
+        Example of confusion matrix saved as csv :
+
         +-------------------------+------------+
         | # Training samples : 90,80           |
         +-------------------------+------------+
@@ -440,10 +441,10 @@ class learnAndPredict:
         +-------------------------+------------+
         |           10            |     70     |
         +-------------------------+------------+
-        
+
         - **In X (columns)** : prediction (95 predicted labels for class 1).
         - **In Y (lines)** : reference (90 labels from class 1).
-        
+
         Parameters
         ----------
         savePath : str.
@@ -453,11 +454,11 @@ class learnAndPredict:
             If prefix, will add this prefix before the csv name (i.e. 0.csv)
         header : boolean, default True.
             If header is False, will only save confusion matrix.
-        
+
         Returns
         -------
         None
-        
+
         Examples
         --------
         After having learned with :mod:`museotoolbox.learnTools.learnAndPredict` :
@@ -469,48 +470,63 @@ class learnAndPredict:
         array([[85,  5],
         [10, 70]])
         """
-        def __computeStatsPerCV(statsidx,trvl,savePath,prefix,header):
-            outFile = savePath +'/' + prefix +str(statsidx) +'.csv'
-            dictStats = self.__getStatsFromCVidx(statsidx,trvl,True,header,header,header,header)
-         
-            if header:              
-                np_header = 'Training samples : '+','.join(str(tr) for tr in dictStats['nTrain']) +\
-                '\nF1 : '+','.join(str(np.round(f*100,2)) for f in dictStats['F1'])+\
-                '\nOA : {}'.format(np.round(dictStats['OA']*100),2) +\
-                '\nKappa : {}'.format(np.round(dictStats['kappa']*100),2)
+        def __computeStatsPerCV(statsidx, trvl, savePath, prefix, header):
+            outFile = savePath + '/' + prefix + str(statsidx) + '.csv'
+            dictStats = self.__getStatsFromCVidx(
+                statsidx, trvl, True, header, header, header, header)
+
+            if header:
+                np_header = 'Training samples : ' + ','.join(str(tr) for tr in dictStats['nTrain']) +\
+                    '\nF1 : ' + ','.join(str(np.round(f * 100, 2)) for f in dictStats['F1']) +\
+                    '\nOA : {}'.format(np.round(dictStats['OA'] * 100), 2) +\
+                    '\nKappa : {}'.format(
+                        np.round(dictStats['kappa'] * 100), 2)
             else:
-                np_header=''
-                
+                np_header = ''
+
             np.savetxt(
                 outFile,
                 dictStats['confusionMatrix'],
                 header=np_header,
                 fmt='%0.d')
-        
+
         if not os.path.exists(savePath):
             os.makedirs(savePath)
-        
-        Parallel(n_jobs=self.n_jobs,verbose=self.verbose+1)(delayed(__computeStatsPerCV)(statsidx,trvl,savePath,prefix,header) for statsidx,trvl in enumerate(self.CV))
-    
-    def __getStatsFromCVidx(self,statsidx,trvl,confusionMatrix=True,kappa=False,OA=False,F1=False,nTrain=False):
+
+        Parallel(n_jobs=self.n_jobs,
+                 verbose=self.verbose + 1)(delayed(__computeStatsPerCV)(statsidx,
+                                                                        trvl,
+                                                                        savePath,
+                                                                        prefix,
+                                                                        header) for statsidx,
+                                           trvl in enumerate(self.CV))
+
+    def __getStatsFromCVidx(self, statsidx, trvl, confusionMatrix=True,
+                            kappa=False, OA=False, F1=False, nTrain=False):
         """
         Compute stats per each fold
         """
         X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
         Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
-    
+
         self.model.fit(X_train, Y_train)
         X_pred = self.model.predict(X_test)
-        
+
         accuracies = {}
-        if confusionMatrix : accuracies['confusionMatrix'] = metrics.confusion_matrix(Y_test, X_pred)
-        if kappa : accuracies['kappa'] = metrics.cohen_kappa_score(Y_test,X_pred)
-        if OA : accuracies['OA'] = metrics.accuracy_score(Y_test,X_pred)
-        if F1 : accuracies['F1'] = metrics.f1_score(Y_test,X_pred,average=None)
-        if nTrain : accuracies['nTrain'] = np.unique(Y_train, return_counts=True)[1]
-        
+        if confusionMatrix:
+            accuracies['confusionMatrix'] = metrics.confusion_matrix(
+                Y_test, X_pred)
+        if kappa:
+            accuracies['kappa'] = metrics.cohen_kappa_score(Y_test, X_pred)
+        if OA:
+            accuracies['OA'] = metrics.accuracy_score(Y_test, X_pred)
+        if F1:
+            accuracies['F1'] = metrics.f1_score(Y_test, X_pred, average=None)
+        if nTrain:
+            accuracies['nTrain'] = np.unique(Y_train, return_counts=True)[1]
+
         return accuracies
-    
+
     def getStatsFromCV(
             self,
             confusionMatrix=True,
@@ -539,11 +555,11 @@ class learnAndPredict:
         -------
         Accuracies : dict
             A dictionary of each statistic asked.
-        
+
         Examples
         --------
         After having learned with :mod:`museotoolbox.learnTools.learnAndPredict` :
-            
+
         >>> for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
         >>> stats['kappa']
         0.942560083148
@@ -551,12 +567,24 @@ class learnAndPredict:
         0.942560083148
         ...
         """
-        def __computeStatsPerCV(statsidx,trvl,**kwargs):
-            dictStats = self.__getStatsFromCVidx(statsidx,trvl,**kwargs)
+        def __computeStatsPerCV(statsidx, trvl, **kwargs):
+            dictStats = self.__getStatsFromCVidx(statsidx, trvl, **kwargs)
             return dictStats
         if self.CV is False:
             raise Exception(
                 'You must have learnt with a Cross-Validation')
         else:
-             statsCV = Parallel(n_jobs=-1,verbose=self.verbose)(delayed(__computeStatsPerCV)(statsidx,trvl,confusionMatrix=confusionMatrix,kappa=kappa,OA=OA,F1=F1,nTrain=nTrain) for statsidx,trvl in enumerate(self.CV))
-             return statsCV
+            statsCV = Parallel(
+                n_jobs=-1,
+                verbose=self.verbose)(
+                delayed(__computeStatsPerCV)(
+                    statsidx,
+                    trvl,
+                    confusionMatrix=confusionMatrix,
+                    kappa=kappa,
+                    OA=OA,
+                    F1=F1,
+                    nTrain=nTrain) for statsidx,
+                trvl in enumerate(
+                    self.CV))
+            return statsCV

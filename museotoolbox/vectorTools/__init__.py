@@ -35,10 +35,10 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
         Path of the raster file.
     inVector : str
         Path of the vector file.
-        
+
     Returns
     --------
-    distanceMatrix : array of shape (nSamples,nSamples) 
+    distanceMatrix : array of shape (nSamples,nSamples)
     """
     if inLevel is not False:
         onlyCoords = False
@@ -74,7 +74,7 @@ def getDriverAccordingToFileName(fileName):
     -------
     driverName : str
         'SQLITE', 'GPKG', 'ESRI Shapefile'...
-        
+
     Examples
     --------
     >>> mtb.vectorTools.getDriverAccordingToFileName('goVegan.gpkg')
@@ -109,7 +109,7 @@ def readValuesFromVector(vector, *args, **kwargs):
         Vector path ('myFolder/class.shp',str).
     *args : str
         Field name containing the field to extract values from (i.e. 'class', str).
-    **kwargs : arg  
+    **kwargs : arg
         - bandPrefix = 'band-' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band-').
         - getFeatures = True, will return features in one list AND spatial Reference.
 
@@ -117,11 +117,11 @@ def readValuesFromVector(vector, *args, **kwargs):
     -------
     List values, same length as number of parameters.
     If bandPrefix as parameters, will return one array with n dimension.
-          
+
     See also
     ---------
     museotoolbox.rasterTools.getSamplesFromROI : extract raster values from vector file.
-    
+
     Examples
     ---------
     >>> from museotoolbox.datasets import getHistoricalMap
@@ -237,25 +237,25 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
     """
     Add a field in the vector with an unique value
     for each of the feature.
-    
+
     Parameters
     -----------
     inVector : str
         Path of the vector file.
     uniqueField : str
         Name of the field to create
-        
+
     Returns
     --------
     None
-    
+
     Examples
     ---------
     >>> addUniqueIDForVector('myDB.gpkg',uniqueField='polygonid')
     Adding polygonid [########################################]100%
     """
-    pB = progressBar(100,message='Adding '+uniqueField)
-    
+    pB = progressBar(100, message='Adding ' + uniqueField)
+
     inDriverName = getDriverAccordingToFileName(inVector)
     inDriver = ogr.GetDriverByName(inDriverName)
     inSrc = inDriver.Open(inVector, 1)  # 1 for writable
@@ -281,9 +281,9 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         FIDs = [feat.GetFID() for feat in inLyr]
 
         ThisID = 1
-        
-        for idx,FID in enumerate(FIDs):
-            pB.addPosition(idx/len(FIDs)+1*100)
+
+        for idx, FID in enumerate(FIDs):
+            pB.addPosition(idx / len(FIDs) + 1 * 100)
             feat = inLyr.GetFeature(FID)
             #ThisID = int(feat.GetFGetFeature(feat))
             # Write the FID to the ID field

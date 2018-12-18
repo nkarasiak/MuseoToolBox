@@ -5,14 +5,9 @@
    :alt: MuseoToolBox logo
 
 
-**Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a cross-validation strategy and learning/predicting with Scikit-Learn. 
+**Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a spatial or subgroup cross-validation strategy and learning and prediction steps with Scikit-Learn. 
 
 The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a few lines : mean/modal/prediction/whittaker (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
-
-Who build Museo ToolBox ?
--------------------------
-
-I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who gave me the love of good and open-source coding.
 
 What's the point ?
 ------------------
@@ -20,18 +15,18 @@ What's the point ?
 Today, the main usages of Museo ToolBox are :
 
 
-* **crossValidation**
+* museoToolBox.\ **crossValidation**
 
   * Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
 
-* **rasterTools**
+* museoToolBox.\ **rasterTools**
 
-  * Extract band value from vector ROI (polygons/points)
+  * Extract band value from vector ROI (polygons/points) (function : *getSamplesFromROI*\ )
   * **rasterMath**\ , certainly the most useful for most of the users : allows you to do some math on your raster. Just load it, rasterMath will return you the value for each pixel (in all bands) and do whatever you want : predicting a model, signal treatment (whittaker, double logistic...), modal value, mean...
 
-* **learnTools**
+* museoToolBox.\ **learnTools**
 
-  * Based on Scikit-Learn. Allow to use the cross-Validations from Museo ToolBox or from Scikit-Learn and to extract each kappa/confusion matrix from fold. Ease the way to predict a raster (just give the raster and the classification file to save and Museo will do everything).
+  * Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA,confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model and Museo ToolBox will do everything).
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
@@ -43,6 +38,11 @@ How do I install it ?
 
 A package will be available on pip : 
 ``python3 -m pip install museotoolbox`` 
+
+Who build Museo ToolBox ?
+-------------------------
+
+I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who gave me the love of nice and open-source coding.
 
 Why this name ?
 ---------------

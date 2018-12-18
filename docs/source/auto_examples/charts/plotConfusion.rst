@@ -128,8 +128,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.941732883444
-    0.942036415315
+    0.941728498249
+    0.941712928353
 
 
 Get each confusion matrix from folds
@@ -154,15 +154,15 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3676   81    2   12    0]
+    [[3680   78    2   11    0]
      [  70 1065    1   11    0]
      [   0    0 1140    0    0]
-     [   9   20    3  231    0]
-     [   4    0    0    0    0]]
-    [[3688   71    1   11    0]
-     [  84 1050    0   12    0]
+     [   8   20    3  232    0]
+     [   3    1    0    0    0]]
+    [[3693   66    1   11    0]
+     [  80 1053    0   13    0]
      [   2    0 1137    0    0]
-     [  11   19    1  231    0]
+     [  12   17    1  232    0]
      [   4    0    0    0    0]]
 
 
@@ -197,8 +197,8 @@ Plot confusion matrix and normalize per class
 .. code-block:: python
 
     from matplotlib.pyplot import cm as colorMap
-    meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-    pltCM = plotConfusionMatrix(meanCM.astype(int).T)
+    meanCMnorm = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
+    pltCM = plotConfusionMatrix(meanCMnorm.astype(int).T)
     pltCM.addText(alpha_zero=0.8) # in order to hide a little zero values
     pltCM.addXlabels(['One','Two','3','Four','Five!'],rotation=90,position='bottom')
     pltCM.addYlabels(['','','','','']) # to remove labels
@@ -212,7 +212,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  6.244 seconds)
+**Total running time of the script:** ( 0 minutes  8.729 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:

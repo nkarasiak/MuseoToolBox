@@ -71,8 +71,8 @@ pltCM.colorDiag()
 # Plot confusion matrix and normalize per class
 # -----------------------------------------------
 from matplotlib.pyplot import cm as colorMap
-meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-pltCM = plotConfusionMatrix(meanCM.astype(int).T)
+meanCMnorm = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
+pltCM = plotConfusionMatrix(meanCMnorm.astype(int).T)
 pltCM.addText(alpha_zero=0.8) # in order to hide a little zero values
 pltCM.addXlabels(['One','Two','3','Four','Five!'],rotation=90,position='bottom')
 pltCM.addYlabels(['','','','','']) # to remove labels

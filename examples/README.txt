@@ -3,5 +3,5 @@
 Gallery
 -----------------------
 
-Here you will find all the examples related to  :mod:`museotoolbox` librairy.
+Here you will find all the examples related to  :mod:`museotoolbox` library.
 

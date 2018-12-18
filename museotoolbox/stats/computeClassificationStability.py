@@ -9,10 +9,10 @@ import sys
 class modalClass:
     """
     Compute modal class and number of agreements.
-    
+
     Parameters
     -----------
-    
+
     inRaster : str
         The raster (at least 2 bands)
     outRaster : str
@@ -20,6 +20,7 @@ class modalClass:
     inMaskRaster : str or False,
         The mask raster (0 = to mask, >0 : no mask).
     """
+
     def __init__(
             self,
             inRaster,
@@ -34,12 +35,12 @@ class modalClass:
     def stabCalc(self, arr):
         """
         Compute modal and number of agreements.
-        
+
         Parameters
         -----------
         arr : array.
             The array where to compute stats from.
-            
+
         Returns
         --------
         arr : array of shape (:,2).
