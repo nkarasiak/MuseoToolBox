@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Learn with Random-Forest and Random Sampling 50% (RS50)
-========================================================
+Learn from vector with Random-Forest and Random Sampling 50% (RS50)
+====================================================================
 
 This example shows how to make a Random Sampling with 
 50% for each class.
@@ -21,13 +21,14 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.getHistoricalMap()
-field = 'Class'
+X,y = datasets.getHistoricalMap(return_X_y=True)
+
 ##############################################################################
 # Create CV
 # -------------------------------------------
 RS50 = RandomCV(valid_size=0.5,n_splits=10,
                 random_state=12,verbose=False)
+
 ##############################################################################
 # Initialize Random-Forest
 # ---------------------------
@@ -38,9 +39,8 @@ classifier = RandomForestClassifier(random_state=12)
 # Start learning
 # ---------------------------
 
-
 LAP = learnAndPredict(n_jobs=-1)
-LAP.learnFromRaster(raster,vector,field,cv=RS50,
+LAP.learnFromVector(X,y,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
 
 ##############################################################################
@@ -58,15 +58,23 @@ for stats in LAP.getStatsFromCV(confusionMatrix=True):
     print(stats['confusionMatrix'])
     
 ##############################################################################
+# Only get accuracies score (OA and Kappa)
+# -----------------------------------------------
+
+for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=False):
+    print(stats)
+    
+    
+##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
-
+LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
+    
 ##############################################################################
 # Predict map
 # ---------------------------
-    
+raster,_ = datasets.getHistoricalMap()
 LAP.predictRaster(raster,'/tmp/classification.tif')
 
 ##########################

@@ -16,7 +16,10 @@
 The :mod:`museotoolbox.learnTools` module gathers learn and predict functions.
 """
 from __future__ import absolute_import, print_function
+from joblib import Parallel, delayed
+import os
 import numpy as np
+from sklearn import metrics
 
 
 class learnAndPredict:
@@ -25,11 +28,41 @@ class learnAndPredict:
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
 
-
         Parameters
         ----------
         n_jobs : int, default 1.
-            Number of cores to be used by sklearn in grid-search.
+            Number of cores to be used by ``sklearn`` in grid-search.
+        verbose : boolean, or int.
+        
+        Examples
+        --------
+        >>> import museotoolbox as mtb
+        >>> from sklearn.ensemble import RandomForestClassifier
+        >>> raster,vector = mtb.datasets.getHistoricalMap()
+        >>> RS50 = mtb.crossValidation.RandomCV(valid_size=0.5,n_splits=10,
+                random_state=12,verbose=False)
+        >>> classifier = RandomForestClassifier()
+        >>> LAP = mtb.learnTools.learnAndPredict()
+        >>> LAP.learnFromRaster(raster,vector,field,cv=RS50,
+                    classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+        Fitting 10 folds for each of 2 candidates, totalling 20 fits
+        best n_estimators : 200
+        >>> for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+            print(kappa)
+        [0.94635897652909906]
+        [0.93926877916972007]
+        [0.9424138426326939]
+        [0.9439809301441302]
+        [0.94286057027982639]
+        [0.94247415327533202]
+        [0.94190539222286984]
+        [0.94625949356904848]
+        [0.94642164578108168]
+        [0.9395504758785389]
+        >>> LAP.predictRaster(raster,'/tmp/classification.tif')
+        Prediction...  [##################......................]45%
+        Prediction...  [####################################....]90%
+        Saved /tmp/classification.tif using function predictArray
         """
         self.n_jobs = n_jobs
         self.verbose = verbose
@@ -38,7 +71,7 @@ class learnAndPredict:
 
     def scaleX(self, X=None):
         """
-        Scale X data using StandardScaler from sklear.
+        Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
 
         Parameters
@@ -75,9 +108,9 @@ class learnAndPredict:
         Y : array.
             Array with labels only.
         classifier : class from scikit-learn.
-            E.g. RandomForestClassifier() got from 'from sklearn.ensemble import RandomForestClassifier'
+            E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
         param_grid : None, else dict.
-            param_grid for the grid_search. E.g. for RandomForestClassifier : param_grid=dict(n_estimators=[10,100],max_features=[1,3])
+            param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         outStatsFromCv : bool, default True.
             If True, getStatsFromCV() will be available to keep statistics (confusion matrix, OA, Kappa, F1)
         scale : Bool, default False.
@@ -134,9 +167,9 @@ class learnAndPredict:
         inField : str.
             Field name containing the label to predict.
         classifier : class from scikit-learn.
-            E.g. RandomForestClassifier() got from 'from sklearn.ensemble import RandomForestClassifier'
+            E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
         param_grid : None, else dict.
-            param_grid for the grid_search. E.g. for RandomForestClassifier : param_grid=dict(n_estimators=[10,100],max_features=[1,3])
+            param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         outStatsFromCv : bool, default True.
             If True, getStatsFromCV() will be available to keep statistics (confusion matrix, OA, Kappa, F1)
         scale : Bool, default False.
@@ -362,7 +395,7 @@ class learnAndPredict:
             outNoData=outNoData)
 
         noDataConfidence = -9999
-
+        
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
@@ -379,7 +412,105 @@ class learnAndPredict:
                 outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
                 outNoData=noDataConfidence)
         rM.run()
+    
+    def saveCMFromCV(self,savePath,prefix='',header=True):
+        """
+        Save each confusion matrix (csv format) from cross-validation.
+        
+        For each matrix, will save as header :
+            
+        - The number of training samples per class,
+        - The F1-score per class,
+        - Overall Accuracy,
+        - Kappa.
+        
+        Example of confusion matrix saved as csv : 
+            
+        +-------------------------+------------+
+        | # Training samples : 90,80           |
+        +-------------------------+------------+
+        | # F1 : 91.89,90.32                   |
+        +-------------------------+------------+
+        | # OA : 91.18                         |
+        +-------------------------+------------+
+        | # Kappa : 82.23                      |
+        +-------------------------+------------+
+        |           85            |     5      |
+        +-------------------------+------------+
+        |           10            |     70     |
+        +-------------------------+------------+
+        
+        - **In X (columns)** : prediction (95 predicted labels for class 1).
+        - **In Y (lines)** : reference (90 labels from class 1).
+        
+        Parameters
+        ----------
+        savePath : str.
+            The path where to save the different csv.
+            If not exists, will be created
+        prefix : str, default ''.
+            If prefix, will add this prefix before the csv name (i.e. 0.csv)
+        header : boolean, default True.
+            If header is False, will only save confusion matrix.
+        
+        Returns
+        -------
+        None
+        
+        Examples
+        --------
+        After having learned with :mod:`museotoolbox.learnTools.learnAndPredict` :
 
+        >>> LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+        [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
+        [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    3.4s finished
+        >>> np.loadtxt('/tmp/testMTB/RS50_0.csv')
+        array([[85,  5],
+        [10, 70]])
+        """
+        def __computeStatsPerCV(statsidx,trvl,savePath,prefix,header):
+            outFile = savePath +'/' + prefix +str(statsidx) +'.csv'
+            dictStats = self.__getStatsFromCVidx(statsidx,trvl,True,header,header,header,header)
+         
+            if header:              
+                np_header = 'Training samples : '+','.join(str(tr) for tr in dictStats['nTrain']) +\
+                '\nF1 : '+','.join(str(np.round(f*100,2)) for f in dictStats['F1'])+\
+                '\nOA : {}'.format(np.round(dictStats['OA']*100),2) +\
+                '\nKappa : {}'.format(np.round(dictStats['kappa']*100),2)
+
+            else:
+                np_header=''
+                
+            np.savetxt(
+                outFile,
+                dictStats['confusionMatrix'],
+                header=np_header,
+                fmt='%0.d')
+        
+        if not os.path.exists(savePath):
+            os.makedirs(savePath)
+        
+        Parallel(n_jobs=self.n_jobs,verbose=self.verbose+1)(delayed(__computeStatsPerCV)(statsidx,trvl,savePath,prefix,header) for statsidx,trvl in enumerate(self.CV))
+    
+    def __getStatsFromCVidx(self,statsidx,trvl,confusionMatrix=True,kappa=False,OA=False,F1=False,nTrain=False):
+        """
+        Compute stats per each fold
+        """
+        X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
+        Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
+    
+        self.model.fit(X_train, Y_train)
+        X_pred = self.model.predict(X_test)
+        
+        accuracies = {}
+        if confusionMatrix : accuracies['confusionMatrix'] = metrics.confusion_matrix(Y_test, X_pred)
+        if kappa : accuracies['kappa'] = metrics.cohen_kappa_score(Y_test,X_pred)
+        if OA : accuracies['OA'] = metrics.accuracy_score(Y_test,X_pred)
+        if F1 : accuracies['F1'] = metrics.f1_score(Y_test,X_pred,average=None)
+        if nTrain : accuracies['nTrain'] = np.unique(Y_train, return_counts=True)[1]
+        
+        return accuracies
+    
     def getStatsFromCV(
             self,
             confusionMatrix=True,
@@ -406,33 +537,27 @@ class learnAndPredict:
 
         Returns
         -------
-        Statistics : List of statistics with at least the confusion matrix.
+        Accuracies : dict
+            A dictionary of each statistic asked.
+        
+        Examples
+        --------
+        After having learned with :mod:`museotoolbox.learnTools.learnAndPredict` :
+            
+        >>> for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        >>> stats['kappa']
+        0.942560083148
+        0.94227598585
+        0.942560083148
+        ...
+        
         """
+        def __computeStatsPerCV(statsidx,trvl,**kwargs):
+            dictStats = self.__getStatsFromCVidx(statsidx,trvl,**kwargs)
+            return dictStats
         if self.CV is False:
             raise Exception(
                 'You must have learnt with a Cross-Validation')
         else:
-            # ,statsFromConfusionMatrix,
-            from ..stats import computeConfusionMatrix as computeStats
-
-            for train_index, test_index in self.CV:
-                results = []
-                X_train, X_test = self.X[train_index], self.X[test_index]
-                Y_train, Y_test = self.y[train_index], self.y[test_index]
-
-                self.model.fit(X_train, Y_train)
-                X_pred = self.model.predict(X_test)
-                cmObject = computeStats(
-                    Y_test, X_pred, kappa=kappa, OA=OA, F1=F1)
-                if confusionMatrix:
-                    results.append(cmObject.confusion_matrix)
-                if kappa:
-                    results.append(cmObject.Kappa)
-                if OA:
-                    results.append(cmObject.OA)
-                if F1:
-                    results.append(cmObject.F1)
-                if nTrain:
-                    results.append(np.unique(Y_train, return_counts=True)[1])
-
-                yield results
+             statsCV = Parallel(n_jobs=-1,verbose=self.verbose)(delayed(__computeStatsPerCV)(statsidx,trvl,confusionMatrix=confusionMatrix,kappa=kappa,OA=OA,F1=F1,nTrain=nTrain) for statsidx,trvl in enumerate(self.CV))
+             return statsCV

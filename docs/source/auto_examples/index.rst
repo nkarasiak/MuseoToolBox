@@ -251,6 +251,26 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50vector.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/learnTools/learnWithRFandRS50vector
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
 
 .. only:: html

@@ -29,7 +29,7 @@ group = 'uniquefid'
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier()
+classifier = RandomForestClassifier(random_state=12)
 
 ##############################################################################
 # Create list of different CV
@@ -52,9 +52,9 @@ for cv in CVs :
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []
     
-    for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-        print(kappa)
-        cvKappa.append(kappa)
+    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        print(stats['kappa'])
+        cvKappa.append(stats['kappa'])
     
     kappas.append(cvKappa)
     

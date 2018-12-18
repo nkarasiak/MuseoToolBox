@@ -60,7 +60,7 @@ Initialize Random-Forest
 .. code-block:: python
 
 
-    classifier = RandomForestClassifier()
+    classifier = RandomForestClassifier(random_state=12)
 
 
 
@@ -93,9 +93,9 @@ Create list of different CV
         print('Kappa for '+str(type(cv).__name__))
         cvKappa = []
     
-        for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-            print(kappa)
-            cvKappa.append(kappa)
+        for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+            print(stats['kappa'])
+            cvKappa.append(stats['kappa'])
     
         kappas.append(cvKappa)
     
@@ -115,33 +115,33 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
-    [0.93843898260126135]
-    [0.94339037465279474]
-    [0.94024976146049644]
-    [0.93710135986444798]
-    [0.93522537269928463]
+    0.947801352122
+    0.943808428107
+    0.947801352122
+    0.943808428107
+    0.947801352122
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for LeavePSubGroupOut
-    [0.78341345616606617]
-    [0.79025917043382066]
-    [0.67470876485590259]
-    [0.6921385241270821]
-    [0.80627260898424413]
+    0.70037874392
+    0.693905945056
+    0.70037874392
+    0.693905945056
+    0.70037874392
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for LeaveOneSubGroupOut
-    [0.87147447380292964]
-    [0.70621933864930497]
+    0.727568073177
+    0.865467097886
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
     Kappa for StratifiedKFold
-    [0.91496595789947011]
-    [0.87849823025185492]
-    [0.80183465062844717]
+    0.91924392195
+    0.879234058689
+    0.809667927132
     ====================
 
 
@@ -169,7 +169,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  50.274 seconds)
+**Total running time of the script:** ( 0 minutes  31.088 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

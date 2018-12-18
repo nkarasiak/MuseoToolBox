@@ -135,7 +135,7 @@ class distanceCV:
                     emptyTrain = False
 
                     np.random.seed(self.random_state)
-                    self.random_state += 1
+                    #self.random_state += 1
                     if self.verbose:
                         print(53 * '=')
                     validation, train = np.array([[], []], dtype=np.int64)
@@ -310,6 +310,7 @@ class randomPerClass:
                 if self.train_size < 1:
                     if self.train_size == 0.5 and self.iterPos % 2 == 1:
                         toSplit = int(self.train_size * len(Cpos))
+                        np.random.seed(self.random_state)
                         tmpTrain = np.random.permutation(Cpos)[:toSplit]
                     else:
                         unMask = np.logical_and(self.y == C, self.mask == 0)
@@ -319,6 +320,7 @@ class randomPerClass:
                     tmpValid = Cpos[TF]
 
                 if self.valid_size >= 1:
+                    np.random.seed(self.random_state)
                     tmpValid = np.asarray(
                         [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
                     TF = np.in1d(Cpos, tmpValid, invert=True)
@@ -333,7 +335,7 @@ class randomPerClass:
 
                 self.mask[valid] = 0
 
-            self.random_state += 1
+            #self.random_state += 1
             self.iterPos += 1
 
             return train, valid
@@ -446,7 +448,7 @@ class groupCV:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 
-                self.random_state += 1
+                #self.random_state += 1
             self.iterPos += 1
             return train, validation
         else:

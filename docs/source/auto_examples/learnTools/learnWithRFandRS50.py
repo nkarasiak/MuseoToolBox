@@ -28,19 +28,18 @@ field = 'Class'
 # -------------------------------------------
 RS50 = RandomCV(valid_size=0.5,n_splits=10,
                 random_state=12,verbose=False)
-
 ##############################################################################
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier()
+classifier = RandomForestClassifier(random_state=12)
 
 ##############################################################################
 # Start learning
 # ---------------------------
 
 
-LAP = learnAndPredict()
+LAP = learnAndPredict(n_jobs=-1)
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
 
@@ -48,15 +47,21 @@ LAP.learnFromRaster(raster,vector,field,cv=RS50,
 # Get kappa from each fold
 # ---------------------------
   
-for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-    print(kappa)
+for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+    print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for cm in LAP.getStatsFromCV(confusionMatrix=True):
-    print(cm)
+for stats in LAP.getStatsFromCV(confusionMatrix=True):
+    print(stats['confusionMatrix'])
+    
+##############################################################################
+# Save each confusion matrix from folds
+# -----------------------------------------------
+
+LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
 
 ##############################################################################
 # Predict map
