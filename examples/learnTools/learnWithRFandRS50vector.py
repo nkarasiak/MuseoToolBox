@@ -47,13 +47,19 @@ LAP.learnFromVector(X,y,cv=RS50,
 # Get kappa from each fold
 # ---------------------------
   
+<<<<<<< HEAD
 for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
     print(stats['kappa'])
+=======
+for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+    print(kappa)
+>>>>>>> master
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
+<<<<<<< HEAD
 for stats in LAP.getStatsFromCV(confusionMatrix=True):
     print(stats['confusionMatrix'])
     
@@ -64,13 +70,22 @@ for stats in LAP.getStatsFromCV(confusionMatrix=True):
 for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=False):
     print(stats)
     
+=======
+for cm in LAP.getStatsFromCV(confusionMatrix=True):
+    print(cm)
+>>>>>>> master
     
 ##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
+<<<<<<< HEAD
 LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
     
+=======
+LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=False)
+
+>>>>>>> master
 ##############################################################################
 # Predict map
 # ---------------------------

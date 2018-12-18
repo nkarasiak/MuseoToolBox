@@ -115,33 +115,60 @@ Create list of different CV
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
     best n_estimators : 200
     Kappa for RandomCV
+<<<<<<< HEAD
     0.947801352122
     0.943808428107
     0.947801352122
     0.943808428107
     0.947801352122
+=======
+    [0.94126836977040407]
+    [0.9445235655078964]
+    [0.94126836977040407]
+    [0.9445235655078964]
+    [0.94126836977040407]
+>>>>>>> master
     ====================
     Fitting 5 folds for each of 2 candidates, totalling 10 fits
-    best n_estimators : 200
+    best n_estimators : 100
     Kappa for LeavePSubGroupOut
+<<<<<<< HEAD
     0.70037874392
     0.693905945056
     0.70037874392
     0.693905945056
     0.70037874392
+=======
+    [0.67801520805520388]
+    [0.74558080975258245]
+    [0.67801520805520388]
+    [0.74558080975258245]
+    [0.67801520805520388]
+>>>>>>> master
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
+    best n_estimators : 200
     Kappa for LeaveOneSubGroupOut
+<<<<<<< HEAD
     0.727568073177
     0.865467097886
+=======
+    [0.74342330012819913]
+    [0.65358340001044657]
+>>>>>>> master
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
     Kappa for StratifiedKFold
+<<<<<<< HEAD
     0.91924392195
     0.879234058689
     0.809667927132
+=======
+    [0.9192439219495333]
+    [0.87923405868862392]
+    [0.80966792713243985]
+>>>>>>> master
     ====================
 
 
@@ -169,7 +196,11 @@ Plot example
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 0 minutes  31.088 seconds)
+=======
+**Total running time of the script:** ( 0 minutes  37.014 seconds)
+>>>>>>> master
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

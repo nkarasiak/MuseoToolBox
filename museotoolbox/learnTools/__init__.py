@@ -21,6 +21,7 @@ import os
 import numpy as np
 from sklearn import metrics
 
+from ..stats import computeConfusionMatrix
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
@@ -31,7 +32,11 @@ class learnAndPredict:
         Parameters
         ----------
         n_jobs : int, default 1.
+<<<<<<< HEAD
             Number of cores to be used by ``sklearn`` in grid-search.
+=======
+            Number of cores to be used by sklearn in grid-search.
+>>>>>>> master
         verbose : boolean, or int.
         
         Examples
@@ -459,15 +464,20 @@ class learnAndPredict:
         
         Examples
         --------
+<<<<<<< HEAD
         After having learned with :mod:`museotoolbox.learnTools.learnAndPredict` :
 
         >>> LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+=======
+        >>> learnAndPrefix.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+>>>>>>> master
         [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
         [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    3.4s finished
         >>> np.loadtxt('/tmp/testMTB/RS50_0.csv')
         array([[85,  5],
         [10, 70]])
         """
+<<<<<<< HEAD
         def __computeStatsPerCV(statsidx,trvl,savePath,prefix,header):
             outFile = savePath +'/' + prefix +str(statsidx) +'.csv'
             dictStats = self.__getStatsFromCVidx(statsidx,trvl,True,header,header,header,header)
@@ -477,6 +487,42 @@ class learnAndPredict:
                 '\nF1 : '+','.join(str(np.round(f*100,2)) for f in dictStats['F1'])+\
                 '\nOA : {}'.format(np.round(dictStats['OA']*100),2) +\
                 '\nKappa : {}'.format(np.round(dictStats['kappa']*100),2)
+=======
+        def __computeStatsPerCV(statsidx,trvl,savePath,prefix):
+            outFile = savePath +'/' + prefix +str(statsidx) +'.csv'
+
+            X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
+            Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
+        
+            self.model.fit(X_train, Y_train)
+            X_pred = self.model.predict(X_test)
+            cm = metrics.confusion_matrix(Y_test, X_pred)
+            
+            if header:
+                F1 = metrics.f1_score(Y_test,X_pred,average=None)
+                OA = metrics.accuracy_score(Y_test,X_pred)
+                Kappa = metrics.cohen_kappa_score(Y_test,X_pred)
+            
+                np_header = 'Training samples : '+','.join(str(tr) for tr in np.unique(Y_train, return_counts=True)[1]) +\
+                '\nF1 : '+','.join(str(np.round(f*100,2)) for f in F1)+\
+                '\nOA : {}'.format(np.round(OA*100),2) +\
+                '\nKappa : {}'.format(np.round(Kappa*100),2)
+            else:
+                np_header=''
+                
+            np.savetxt(
+                outFile,
+                cm,
+                header=np_header,
+                fmt='%0.d')
+            return outFile
+        
+        if not os.path.exists(savePath):
+            os.makedirs(savePath)
+        
+        Parallel(n_jobs=self.n_jobs,verbose=self.verbose+1)(delayed(__computeStatsPerCV)(statsidx,trvl,savePath,prefix) for statsidx,trvl in enumerate(self.CV))
+        
+>>>>>>> master
 
             else:
                 np_header=''
@@ -537,6 +583,7 @@ class learnAndPredict:
 
         Returns
         -------
+<<<<<<< HEAD
         Accuracies : dict
             A dictionary of each statistic asked.
         
@@ -551,6 +598,10 @@ class learnAndPredict:
         0.942560083148
         ...
         
+=======
+        Statistics : List
+            List of statistics, order is confusion Matrix, kappa, OA, F1 and nTrain.
+>>>>>>> master
         """
         def __computeStatsPerCV(statsidx,trvl,**kwargs):
             dictStats = self.__getStatsFromCVidx(statsidx,trvl,**kwargs)
@@ -559,5 +610,28 @@ class learnAndPredict:
             raise Exception(
                 'You must have learnt with a Cross-Validation')
         else:
+<<<<<<< HEAD
              statsCV = Parallel(n_jobs=-1,verbose=self.verbose)(delayed(__computeStatsPerCV)(statsidx,trvl,confusionMatrix=confusionMatrix,kappa=kappa,OA=OA,F1=F1,nTrain=nTrain) for statsidx,trvl in enumerate(self.CV))
              return statsCV
+=======
+            for train_index, test_index in self.CV:
+                results = []
+                X_train, X_test = self.X[train_index], self.X[test_index]
+                Y_train, Y_test = self.y[train_index], self.y[test_index]
+
+                self.model.fit(X_train, Y_train)
+                X_pred = self.model.predict(X_test)
+            
+                if confusionMatrix:
+                    results.append(metrics.confusion_matrix(Y_test, X_pred))
+                if kappa:
+                    results.append(metrics.cohen_kappa_score(Y_test,X_pred))
+                if OA:
+                    results.append(metrics.accuracy_score(Y_test,X_pred))
+                if F1:
+                    results.append(metrics.f1_score(Y_test,X_pred,average=None))
+                if nTrain:
+                    results.append(np.unique(Y_train, return_counts=True)[1])
+
+                yield results
+>>>>>>> master

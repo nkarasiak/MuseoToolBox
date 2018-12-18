@@ -54,8 +54,13 @@ for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
+<<<<<<< HEAD
 for stats in LAP.getStatsFromCV(confusionMatrix=True):
     print(stats['confusionMatrix'])
+=======
+for cm in LAP.getStatsFromCV(confusionMatrix=True):
+    print(cm)
+>>>>>>> master
     
 ##############################################################################
 # Save each confusion matrix from folds
