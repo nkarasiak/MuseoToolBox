@@ -373,7 +373,6 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
     return toReturn
 
-
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
     """
     Rasterize vector to the size of data (raster)

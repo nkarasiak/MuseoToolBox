@@ -21,8 +21,6 @@ import os
 import numpy as np
 from sklearn import metrics
 
-from ..stats import computeConfusionMatrix
-
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):

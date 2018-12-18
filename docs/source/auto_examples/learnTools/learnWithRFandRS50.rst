@@ -73,7 +73,7 @@ Initialize Random-Forest
 .. code-block:: python
 
 
-    classifier = RandomForestClassifier(random_state=12)
+    classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
 
 
 
@@ -275,7 +275,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  29.270 seconds)
+**Total running time of the script:** ( 0 minutes  28.267 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

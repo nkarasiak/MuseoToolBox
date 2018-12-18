@@ -44,19 +44,16 @@ uploadpypi :
 doc :
 	m2r README.md
 	mv README.rst docs/source/
-	# rm -rf docs/build/html/ docs/source/auto_examples/
+	rm -rf docs/source/auto_examples/ docs/sources/modules
 	cd docs/ && make html
 
-bench : 
-	@git stash  >/dev/null 2>&1
-	@echo 'Branch master'
-	@git checkout master >/dev/null 2>&1
-	python3 $(script)
-	@echo 'Branch $(branch)'
-	@git checkout $(branch) >/dev/null 2>&1
-	python3 $(script)
-	@git stash apply >/dev/null 2>&1
-	
+git-release:
+	git add --all
+	git commit -m "Version. `cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
+	git tag "v.`cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
+	git push
+	git push --tags
+
 autopep8 :
 	autopep8 -ir museotoolbox --jobs -1
 

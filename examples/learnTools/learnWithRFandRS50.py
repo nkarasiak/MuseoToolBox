@@ -32,7 +32,7 @@ RS50 = RandomCV(valid_size=0.5,n_splits=10,
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier(random_state=12)
+classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
 
 ##############################################################################
 # Start learning

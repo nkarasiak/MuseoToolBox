@@ -308,7 +308,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  34.493 seconds)
+**Total running time of the script:** ( 0 minutes  39.479 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50vector.py:
