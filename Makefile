@@ -50,7 +50,7 @@ doc :
 git-release:
 	git add --all
 	git commit -m "Version. `cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
-	git tag "v.`cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
+	git tag "v. `cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
 	git push
 	git push --tags
 
