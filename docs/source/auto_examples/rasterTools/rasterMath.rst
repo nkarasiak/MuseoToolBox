@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[166 153 136]
-     [193 180 161]
-     [170 153 133]
+    [[213 175 164]
+     [206 170 158]
+     [212 175 166]
      ..., 
-     [170 162 143]
-     [103  90  73]
-     [180 165 146]]
+     [103  76  67]
+     [140 105  99]
+     [151 112 107]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -131,7 +131,8 @@ Run the script
 
  .. code-block:: none
 
-    rasterMath...  [##################......................]45%    rasterMath...  [####################################....]90%    Saved /tmp/sub.tif using function sub
+    rasterMath...  [........................................]0%    rasterMath...  [##......................................]7%    rasterMath...  [#####...................................]14%    rasterMath...  [########................................]21%    rasterMath...  [###########.............................]28%    rasterMath...  [##############..........................]35%    rasterMath...  [#################.......................]42%    rasterMath...  [####################....................]50%    rasterMath...  [######################..................]57%    rasterMath...  [#########################...............]64%    rasterMath...  [############################............]71%    rasterMath...  [###############################.........]78%    rasterMath...  [##################################......]85%    rasterMath...  [#####################################...]92%    rasterMath...  [########################################]100%
+    Saved /tmp/sub.tif using function sub
     Saved /tmp/add.tif using function add
 
 
@@ -156,7 +157,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.448 seconds)
+**Total running time of the script:** ( 0 minutes  0.384 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_rasterMath.py:

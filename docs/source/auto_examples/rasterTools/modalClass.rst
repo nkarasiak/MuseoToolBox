@@ -68,13 +68,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[175 165 153]
-     [ 69  59  47]
-     [174 166 153]
+    [[178 154 120]
+     [196 172 138]
+     [206 182 148]
      ..., 
-     [197 191 179]
-     [127 123 114]
-     [168 165 160]]
+     [ 94  85  68]
+     [174 161 144]
+     [196 183 164]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -127,7 +127,8 @@ Run the script
 
  .. code-block:: none
 
-    rasterMath...  [##################......................]45%    rasterMath...  [####################################....]90%    Saved /tmp/modal.tif using function modalClass
+    rasterMath...  [........................................]0%    rasterMath...  [##......................................]7%    rasterMath...  [#####...................................]14%    rasterMath...  [########................................]21%    rasterMath...  [###########.............................]28%    rasterMath...  [##############..........................]35%    rasterMath...  [#################.......................]42%    rasterMath...  [####################....................]50%    rasterMath...  [######################..................]57%    rasterMath...  [#########################...............]64%    rasterMath...  [############################............]71%    rasterMath...  [###############################.........]78%    rasterMath...  [##################################......]85%    rasterMath...  [#####################################...]92%    rasterMath...  [########################################]100%
+    Saved /tmp/modal.tif using function modalClass
 
 
 Plot result
@@ -151,7 +152,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  4.545 seconds)
+**Total running time of the script:** ( 0 minutes  3.869 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_modalClass.py:

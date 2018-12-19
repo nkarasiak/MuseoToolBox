@@ -129,8 +129,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.942286542263
-    0.940921832904
+    0.942019598059
+    0.940354214594
 
 
 Get each confusion matrix from folds
@@ -155,15 +155,15 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3679   79    2   11    0]
-     [  65 1070    1   11    0]
+    [[3676   81    2   12    0]
+     [  69 1066    1   11    0]
      [   0    0 1140    0    0]
-     [   9   20    3  231    0]
-     [   3    0    1    0    0]]
-    [[3685   74    1   11    0]
-     [  84 1047    0   15    0]
+     [   8   23    3  229    0]
+     [   3    1    0    0    0]]
+    [[3694   66    1   10    0]
+     [  77 1056    0   13    0]
      [   2    0 1137    0    0]
-     [  10   18    1  233    0]
+     [  10   19    1  232    0]
      [   4    0    0    0    0]]
 
 
@@ -215,7 +215,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  4.252 seconds)
+**Total running time of the script:** ( 0 minutes  4.057 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionF1.py:

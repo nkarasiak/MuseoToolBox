@@ -57,7 +57,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=10,
+    RS50 = RandomCV(valid_size=0.5,n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -103,7 +103,7 @@ Start learning
 
  .. code-block:: none
 
-    Fitting 10 folds for each of 2 candidates, totalling 20 fits
+    Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 200
 
 
@@ -130,14 +130,6 @@ Get kappa from each fold
 
     0.942560083148
     0.94227598585
-    0.942560083148
-    0.94227598585
-    0.942560083148
-    0.94227598585
-    0.942560083148
-    0.94227598585
-    0.942560083148
-    0.94227598585
 
 
 Get each confusion matrix from folds
@@ -161,46 +153,6 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3677   80    2   12    0]
-     [  67 1068    1   11    0]
-     [   0    0 1140    0    0]
-     [  10   20    3  230    0]
-     [   3    0    1    0    0]]
-    [[3693   68    1    9    0]
-     [  82 1050    0   14    0]
-     [   2    0 1137    0    0]
-     [  12   17    1  232    0]
-     [   4    0    0    0    0]]
-    [[3677   80    2   12    0]
-     [  67 1068    1   11    0]
-     [   0    0 1140    0    0]
-     [  10   20    3  230    0]
-     [   3    0    1    0    0]]
-    [[3693   68    1    9    0]
-     [  82 1050    0   14    0]
-     [   2    0 1137    0    0]
-     [  12   17    1  232    0]
-     [   4    0    0    0    0]]
-    [[3677   80    2   12    0]
-     [  67 1068    1   11    0]
-     [   0    0 1140    0    0]
-     [  10   20    3  230    0]
-     [   3    0    1    0    0]]
-    [[3693   68    1    9    0]
-     [  82 1050    0   14    0]
-     [   2    0 1137    0    0]
-     [  12   17    1  232    0]
-     [   4    0    0    0    0]]
-    [[3677   80    2   12    0]
-     [  67 1068    1   11    0]
-     [   0    0 1140    0    0]
-     [  10   20    3  230    0]
-     [   3    0    1    0    0]]
-    [[3693   68    1    9    0]
-     [  82 1050    0   14    0]
-     [   2    0 1137    0    0]
-     [  12   17    1  232    0]
-     [   4    0    0    0    0]]
     [[3677   80    2   12    0]
      [  67 1068    1   11    0]
      [   0    0 1140    0    0]
@@ -249,7 +201,8 @@ Predict map
 
  .. code-block:: none
 
-    Prediction...  [##################......................]45%    Prediction...  [####################################....]90%    Saved /tmp/classification.tif using function predictArray
+    Prediction...  [........................................]0%    Prediction...  [##......................................]7%    Prediction...  [#####...................................]14%    Prediction...  [########................................]21%    Prediction...  [###########.............................]28%    Prediction...  [##############..........................]35%    Prediction...  [#################.......................]42%    Prediction...  [####################....................]50%    Prediction...  [######################..................]57%    Prediction...  [#########################...............]64%    Prediction...  [############################............]71%    Prediction...  [###############################.........]78%    Prediction...  [##################################......]85%    Prediction...  [#####################################...]92%    Prediction...  [########################################]100%
+    Saved /tmp/classification.tif using function predictArray
 
 
 Plot example
@@ -274,7 +227,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  42.658 seconds)
+**Total running time of the script:** ( 0 minutes  15.022 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

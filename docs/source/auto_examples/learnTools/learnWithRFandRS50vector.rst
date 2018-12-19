@@ -283,7 +283,8 @@ Predict map
 
  .. code-block:: none
 
-    Prediction...  [##################......................]45%    Prediction...  [####################################....]90%    Saved /tmp/classification.tif using function predictArray
+    Prediction...  [........................................]0%    Prediction...  [##......................................]7%    Prediction...  [#####...................................]14%    Prediction...  [########................................]21%    Prediction...  [###########.............................]28%    Prediction...  [##############..........................]35%    Prediction...  [#################.......................]42%    Prediction...  [####################....................]50%    Prediction...  [######################..................]57%    Prediction...  [#########################...............]64%    Prediction...  [############################............]71%    Prediction...  [###############################.........]78%    Prediction...  [##################################......]85%    Prediction...  [#####################################...]92%    Prediction...  [########################################]100%
+    Saved /tmp/classification.tif using function predictArray
 
 
 Plot example
@@ -308,7 +309,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  33.977 seconds)
+**Total running time of the script:** ( 0 minutes  34.863 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50vector.py:

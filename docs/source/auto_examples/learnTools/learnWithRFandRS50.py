@@ -26,7 +26,7 @@ field = 'Class'
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(valid_size=0.5,n_splits=10,
+RS50 = RandomCV(valid_size=0.5,n_splits=2,
                 random_state=12,verbose=False)
 ##############################################################################
 # Initialize Random-Forest
