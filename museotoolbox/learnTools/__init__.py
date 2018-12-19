@@ -244,7 +244,7 @@ class learnAndPredict:
         else:
             self.model = self.classifier.fit(X=X, y=y)
 
-    def saveModel(self, path, onlySKmodel=False):
+    def saveModel(self, path):
         """
         Save model 'myModel.npz' to be loaded later via learnAndPredict.loadModel(path)
 
@@ -258,8 +258,6 @@ class learnAndPredict:
         path : str.
             Path and filename with mtb extension.
         """
-        if onlySKmodel:
-            print('FutureWarning : From museotoolbox 1.0, saving only SKlearn model will not be available anymore.')
         if not path.endswith('npz'):
             path += '.npz'
 
@@ -277,7 +275,7 @@ class learnAndPredict:
             If path ends with npy, perfects, else will add '.npy' after your fileName.
         """
         if onlySKmodel:
-            print('FutureWarning : From museotoolbox 1.0, saving only SKlearn model will not be available anymore.')
+            print('FutureWarning : From museotoolbox 1.0, loading only SKlearn model will not be available anymore.')
             if not path.endswith('.npy'):
                 path += '.npy'
 

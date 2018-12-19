@@ -25,6 +25,26 @@ import tempfile
 
 from ..internalTools import progressBar, pushFeedback
 
+def rasterMaskFromVector(inVector,inRaster,outRaster):
+    """
+    Create a raster mask where polygons/point are pixels to keep.
+    
+    Parameters
+    ----------
+    inVector : str.
+        Path of the vector file to rasterize.
+    inRaster : str.
+        Path of the raster file where the vector file will be rasterize.
+    outRaster : str.
+        Path of the file (.tif) to create.
+    Returns
+    -------
+    None
+    
+    Examples
+    --------
+    """
+    rasterize(inRaster,inVector,None,outRaster)
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     """
@@ -407,7 +427,8 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
         dataSrc.RasterXSize,
         dataSrc.RasterYSize,
         1,
-        gdt)
+        gdt,
+        options=['COMPRESS=DEFLATE'])
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
     if field is False or field is None:
@@ -448,7 +469,6 @@ class rasterMath:
     """
 
     def __init__(self, inRaster, inMaskRaster=False, message='rasterMath... '):
-
         # Need to work of parallelize
         # Not working for the moment
         parallel = False
@@ -474,8 +494,8 @@ class rasterMath:
         block_sizes = band.GetBlockSize()
         self.x_block_size = block_sizes[0]
         self.y_block_size = block_sizes[1]
-        self.total = self.nl  # /self.y_block_size
-        self.pb = progressBar(self.total - 1, message=message)
+        self.n_block = int(self.nc/self.y_block_size+1)*int(self.nl/self.x_block_size+1)#self.nl  # /self.y_block_size
+        self.pb = progressBar(self.n_block - 1, message=message)
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
         self.ndtype = convertGdalAndNumpyDataType(band.DataType)
@@ -492,12 +512,14 @@ class rasterMath:
             self.openMask = gdal.Open(inMaskRaster)
 
         # Initialize the output
+        self.lastProgress = 0
         self.functions = []
         self.functionsKwargs = []
         self.outputs = []
-        #out = dst_ds.GetRasterBand(1)
-        self.lastProgress = 0
         self.outputNoData = []
+        
+        # Initalize the run
+        self.__position=0
 
     def addFunction(
             self,
@@ -572,7 +594,7 @@ class rasterMath:
                 else:
                     yield col, row, width, height
 
-    def generateBlockArray(self, col, row, width, height, mask=True):
+    def generateBlockArray(self, col, row, width, height, mask=False):
         """
         Add function to rasterMath.
 
@@ -601,7 +623,8 @@ class rasterMath:
             arr[:, ind] = band.ReadAsArray(
                 col, row, width, height).reshape(width * height)
         if mask:
-            arrMask = self.openMask.GetRasterBand(1).ReadAsArray(
+            bandMask = self.openMask.GetRasterBand(1)
+            arrMask = bandMask.ReadAsArray(
                 col, row, width, height).reshape(width * height)
         else:
             arrMask = None
@@ -612,7 +635,7 @@ class rasterMath:
 
     def filterNoData(self, arr, mask=None):
         """
-        Filter no data according to a mask or to nodata value set in the raster.
+        Filter no data according to a mask and to nodata value set in the raster.
         """
         outArr = np.zeros((arr.shape), dtype=self.ndtype)
         outArr[:] = self.nodata
@@ -676,22 +699,18 @@ class rasterMath:
             for X, mask, col, line, cols, lines in self.__iterBlock__(
                     getBlock=True):
                 X_ = np.copy(X)
-                actualProgress = int((line + 1) / self.total * 100)
+                #actualProgress = int((line + col/self.nc*100) / self.total * 100)
 
-                if self.lastProgress != actualProgress:
-                    self.lastProgress = actualProgress
-
-                    if qgsFeedback:
-                        if qgsFeedback == 'gui':
-                            self.pb.addPosition(line)
-                        else:
-                            qgsFeedback.setProgress(actualProgress)
-                            if qgsFeedback.isCanceled():
-                                break
-
-                    if verbose:
-
+                if qgsFeedback:
+                    if qgsFeedback == 'gui':
                         self.pb.addPosition(line)
+                    else:
+                        qgsFeedback.setProgress(self.__position)
+                        if qgsFeedback.isCanceled():
+                            break
+
+                if verbose:
+                    self.pb.addPosition(self.__position)
 
                 for idx, fun in enumerate(self.functions):
                     if self.outputNoData[idx] is False:
@@ -717,6 +736,9 @@ class rasterMath:
                         else:
                             X[:, :] = self.outputNoData[idx]
                             X[mask[:, 0], :maxBands] = resFun
+                    else:
+                        X[:,:] = self.outputNoData[idx]
+                        
                     for ind in range(self.outputs[idx].RasterCount):
                         indGdal = int(ind + 1)
                         curBand = self.outputs[idx].GetRasterBand(indGdal)
@@ -728,10 +750,13 @@ class rasterMath:
                     band.SetNoDataValue(self.outputNoData[idx])
                     band.FlushCache()
 
+                self.__position+=1
             band = None
+            
             for idx, fun in enumerate(self.functions):
                 print(
                     'Saved {} using function {}'.format(
                         self.outputs[idx].GetDescription(), str(
                             fun.__name__)))
                 self.outputs[idx] = None
+            
