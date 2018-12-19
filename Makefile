@@ -44,9 +44,13 @@ uploadpypi :
 doc :
 	m2r README.md
 	mv README.rst docs/source/
-	rm -rf docs/source/auto_examples/ docs/sources/modules
 	cd docs/ && make html
 
+ddoc : 
+	m2r README.md
+	mv README.rst docs/source/
+	rm -rf docs/source/auto_examples/ docs/sources/modules
+	cd docS/ && make html
 
 autopep8 :
 	autopep8 -ir museotoolbox --jobs -1
