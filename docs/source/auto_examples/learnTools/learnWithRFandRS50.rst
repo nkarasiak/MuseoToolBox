@@ -89,8 +89,7 @@ Start learning
 .. code-block:: python
 
 
-
-    LAP = learnAndPredict(n_jobs=-1)
+    LAP = learnAndPredict(n_jobs=1)
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
 
@@ -275,7 +274,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  28.267 seconds)
+**Total running time of the script:** ( 0 minutes  42.658 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

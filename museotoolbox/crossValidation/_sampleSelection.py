@@ -14,9 +14,9 @@
 # =============================================================================
 
 from __future__ import absolute_import, print_function
+import os
 from .. import rasterTools, vectorTools
 from . import crossValidationClass
-import os
 import numpy as np
 
 

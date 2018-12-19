@@ -133,8 +133,6 @@ class distanceCV:
             while completeTrain is False:
                 if self.nTries < 100:
                     emptyTrain = False
-
-                    np.random.seed(self.random_state)
                     #self.random_state += 1
                     if self.verbose:
                         print(53 * '=')
@@ -165,6 +163,7 @@ class distanceCV:
                             currentCT = np.logical_and(
                                 self.y == C, self.mask == 1)
 
+                        np.random.seed(self.random_state)
                         self.ROI = np.random.permutation(
                             np.where(currentCT)[0])[0]
                         # When doing Leave-One-Out per subgroup
@@ -175,6 +174,7 @@ class distanceCV:
                                       ' for label ' +
                                       str(C))
 
+                            np.random.seed(self.random_state)
                             self.ROI = np.random.permutation(CT)[0]
                             # Tstand = self.distanceLabel[np.isin(
                             #   self.distanceLabel, np.unique(self.groups[CT]))]
@@ -302,7 +302,6 @@ class randomPerClass:
         if self.iterPos < self.n_splits + 1:
             if self.iterPos % 2 == 1 and self.train_size == 0.5:
                 self.mask[:] = 1
-            np.random.seed(self.random_state)
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.y):
@@ -402,8 +401,6 @@ class groupCV:
                 Ycurrent = np.where(np.array(self.y) == C)[0]
                 Ystands = np.array(self.groups)[Ycurrent]
 
-                np.random.seed(self.random_state)
-                # Only choose an unselected stand
                 #YTF = np.array(self.y) == i
                 Ystand = np.unique(Ystands)
                 if len(Ystands[self.mask[Ycurrent]]) == 0:
@@ -412,6 +409,7 @@ class groupCV:
                     self.mask[:] = 1
 
                 if self.valid_size == 1:
+                    np.random.seed(self.random_state)
                     selectedStand = np.random.permutation(
                         Ystands[self.mask[Ycurrent]])[0]
 
@@ -419,9 +417,11 @@ class groupCV:
                     if self.valid_size == 0.5 and self.iterPos % 2 == 0:
                         # If 50%, real CV with train/valid reverse at next iter
                         # to valid/train
+                        np.random.seed(self.random_state)
                         selectedStand = np.random.permutation(
                             Ystands[self.mask[Ycurrent]])
                     else:
+                        np.random.seed(self.random_state)
                         selectedStand = np.random.permutation(
                             Ystand)[:int(len(Ystand) * self.valid_size)]
                 if self.verbose:

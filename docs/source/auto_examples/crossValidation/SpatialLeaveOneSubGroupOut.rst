@@ -114,8 +114,8 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    (8105,) (3329,)
-    (8473,) (4174,)
+    (10257,) (2390,)
+    (10257,) (2390,)
 
 
 Draw image
@@ -150,7 +150,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.106 seconds)
+**Total running time of the script:** ( 0 minutes  0.101 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py:
