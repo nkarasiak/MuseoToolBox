@@ -47,12 +47,6 @@ doc :
 	rm -rf docs/source/auto_examples/ docs/sources/modules
 	cd docs/ && make html
 
-git-release:
-	git add --all
-	git commit -m "Version. `cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`"
-	git tag "`cat museotoolbox/__init__.py | awk -F '("|")' '{ print($$2)}'`
-	git push
-	git push --tags
 
 autopep8 :
 	autopep8 -ir museotoolbox --jobs -1
