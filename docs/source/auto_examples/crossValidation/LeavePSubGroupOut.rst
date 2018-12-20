@@ -58,7 +58,7 @@ Create CV
 .. code-block:: python
 
     valid_size = 0.5 # Means 50%
-    LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits = 5,
+    LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits=10,
                               random_state=12,verbose=False)
     
 
@@ -107,12 +107,17 @@ Extract X,y and group.
  .. code-block:: none
 
     (5998,) (6649,)
-    (6649,) (5998,)
-    (5998,) (6649,)
-    (6649,) (5998,)
-    (5998,) (6649,)
+    (7147,) (5500,)
+    (8008,) (4639,)
+    (5575,) (7072,)
+    (5926,) (6721,)
+    (7566,) (5081,)
+    (6857,) (5790,)
+    (6635,) (6012,)
+    (6089,) (6558,)
+    (7056,) (5591,)
     y label with number of samples
-    (array([1, 2, 3, 4, 5]), array([3712,  801, 1343,  140,    2]))
+    (array([1, 2, 3, 4, 5]), array([3830, 1492, 1343,  385,    6]))
 
 
 Differences with scikit-learn
@@ -302,13 +307,13 @@ This generate unbalanced classes
 
  .. code-block:: none
 
-    (6715,) (5932,)
-    (7361,) (5286,)
-    (4232,) (8415,)
-    (4847,) (7800,)
-    (6151,) (6496,)
+    (7312,) (5335,)
+    (4142,) (8505,)
+    (5118,) (7529,)
+    (4705,) (7942,)
+    (3660,) (8987,)
     y label with number of samples
-    (array([1, 2, 4, 5]), array([4673, 1332,  140,    6]))
+    (array([1, 2, 3, 4, 5]), array([1481,  801,  845,  525,    8]))
 
 
 Plot example in image
@@ -334,7 +339,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.135 seconds)
+**Total running time of the script:** ( 0 minutes  0.212 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeavePSubGroupOut.py:

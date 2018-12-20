@@ -49,9 +49,9 @@ for tr,vl in RS50.split(X=None,y=y):
 X,y=rasterTools.getSamplesFromROI(raster,vector,field)
 
 for tr,vl in RS50.split(X,y):
+    print(tr,vl)
     print(tr.shape,vl.shape)
-    
-    
+        
 ##########################
 # Plot example
 import numpy as np

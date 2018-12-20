@@ -25,10 +25,11 @@ import tempfile
 
 from ..internalTools import progressBar, pushFeedback
 
-def rasterMaskFromVector(inVector,inRaster,outRaster):
+
+def rasterMaskFromVector(inVector, inRaster, outRaster):
     """
     Create a raster mask where polygons/point are pixels to keep.
-    
+
     Parameters
     ----------
     inVector : str.
@@ -40,11 +41,12 @@ def rasterMaskFromVector(inVector,inRaster,outRaster):
     Returns
     -------
     None
-    
+
     Examples
     --------
     """
-    rasterize(inRaster,inVector,None,outRaster)
+    rasterize(inRaster, inVector, None, outRaster)
+
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
     """
@@ -393,6 +395,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
     return toReturn
 
+
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
     """
     Rasterize vector to the size of data (raster)
@@ -494,7 +497,8 @@ class rasterMath:
         block_sizes = band.GetBlockSize()
         self.x_block_size = block_sizes[0]
         self.y_block_size = block_sizes[1]
-        self.n_block = int(self.nc/self.y_block_size+1)*int(self.nl/self.x_block_size+1)#self.nl  # /self.y_block_size
+        self.n_block = int(self.nc / self.y_block_size + 1) * int(self.nl /
+                                                                  self.x_block_size + 1)  # self.nl  # /self.y_block_size
         self.pb = progressBar(self.n_block - 1, message=message)
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
@@ -517,9 +521,9 @@ class rasterMath:
         self.functionsKwargs = []
         self.outputs = []
         self.outputNoData = []
-        
+
         # Initalize the run
-        self.__position=0
+        self.__position = 0
 
     def addFunction(
             self,
@@ -737,8 +741,8 @@ class rasterMath:
                             X[:, :] = self.outputNoData[idx]
                             X[mask[:, 0], :maxBands] = resFun
                     else:
-                        X[:,:] = self.outputNoData[idx]
-                        
+                        X[:, :] = self.outputNoData[idx]
+
                     for ind in range(self.outputs[idx].RasterCount):
                         indGdal = int(ind + 1)
                         curBand = self.outputs[idx].GetRasterBand(indGdal)
@@ -750,13 +754,12 @@ class rasterMath:
                     band.SetNoDataValue(self.outputNoData[idx])
                     band.FlushCache()
 
-                self.__position+=1
+                self.__position += 1
             band = None
-            
+
             for idx, fun in enumerate(self.functions):
                 print(
                     'Saved {} using function {}'.format(
                         self.outputs[idx].GetDescription(), str(
                             fun.__name__)))
                 self.outputs[idx] = None
-            

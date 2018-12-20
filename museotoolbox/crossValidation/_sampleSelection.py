@@ -27,7 +27,7 @@ class _sampleSelection:
 
         Functions
         ----------
-        split() : Function.
+        split(X,y,g) : Function.
             Get a memory cross validation to use directly in Scikit-Learn.
 
         saveVectorFiles() : Need default output name (str).
@@ -38,7 +38,6 @@ class _sampleSelection:
 
         reinitialize() : Function.
             If you need to regenerate the cross validation, you need to reinitialize it.
-
         """
         self.__extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
         self.__driversName = [
@@ -65,6 +64,26 @@ class _sampleSelection:
             print(3 * ' ' + '- ' + self.__driversName[idx] + ' : ' + ext)
 
     def get_n_splits(self, X=None, y=None, groups=None):
+        """
+        Returns the number of splitting iterations in the cross-validator.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features), optional
+            Training data, where n_samples is the number of samples
+            and n_features is the number of features.
+        y : array-like, of length n_samples
+            The target variable for supervised learning problems.
+        groups : array-like, with shape (n_samples,), optional
+            Subgroup labels for the samples used while splitting the dataset into
+            train/test set.
+            
+        Returns
+        -------
+        n_splits : int
+            The number of splits.
+        """
+        
         if y is not None:
             self.y = y
         n_splits = self.crossvalidation(

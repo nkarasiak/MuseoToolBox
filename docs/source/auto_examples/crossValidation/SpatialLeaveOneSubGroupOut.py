@@ -36,8 +36,6 @@ distanceMatrix,distanceLabel = vectorTools.getDistanceMatrix(raster,centroid,'un
 SLOSGO = SpatialLeaveOneSubGroupOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                    distanceLabel=distanceLabel,random_state=12)
 
-print(SLOSGO.get_n_splits(X,y,groups))
-
 
 ###############################################################################
 # .. note::

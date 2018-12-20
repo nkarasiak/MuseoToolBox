@@ -27,7 +27,7 @@ group = 'uniquefid'
 # Create CV
 # -------------------------------------------
 valid_size = 0.5 # Means 50%
-LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits = 5,
+LPSGO = LeavePSubGroupOut(valid_size = valid_size,n_splits=10,
                           random_state=12,verbose=False)
     
 ###############################################################################

@@ -24,7 +24,7 @@ from . import crossValidationClass as _cvc
 class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
                  valid_size=0.5,
-                 n_splits=5,
+                 n_splits=False,
                  random_state=None,
                  verbose=False):
         """
@@ -32,23 +32,15 @@ class LeavePSubGroupOut(_sampleSelection):
 
         Parameters
         ----------
-        inVector : str or array.
-            if str, path of vector file, if array same size as inGroup array.
-        inField : str or None.
-            if str, will extract value from inVector file.
-        inGroup : str or array.
-            field name containing label of groups. If array, same size as inVector array.
-        valid_size : float.
-            min 0.01, max 0.99. Will select for each label the amount of subgroups.
-        n_splits : default False.
-            If False : will iterate as many times as the smallest number of groups.
-            If int : will iterate the number of times given in n_splits.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
-
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the groupCV.
+        valid_size : float, default 0.5.
+            From 0 to 1.
+        n_splits : int or False, default False.            
+            If False, is the number of 
+        random_state : int or None, default=None.
+            If int, random_state is the seed used by the random number generator;
+            If None, the random number generator is created with ``time.time()``.
+        verbose : int or False, defaultr False.
+            Controls the verbosity: the higher, the more messages.
         """
         self.verbose = verbose
 
@@ -257,7 +249,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 class RandomCV(_sampleSelection):
     def __init__(self,
                  valid_size=0.5,
-                 n_splits=5,
+                 n_splits=False,
                  random_state=None,
                  verbose=False):
         """

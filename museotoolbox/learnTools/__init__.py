@@ -22,6 +22,7 @@ import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
 
+
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
@@ -199,7 +200,7 @@ class learnAndPredict:
         self.y = y
         self.X = X
         self.group = group
-        
+
         if scale:
             self.scale = True
             self.scaleX()
@@ -505,12 +506,12 @@ class learnAndPredict:
         """
         X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
         Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
-        
+
         if self.cloneModel is False:
             self.cloneModel = clone(self.model)
-            
+
         self.cloneModel.fit(X_train, Y_train)
-        
+
         X_pred = self.cloneModel.predict(X_test)
 
         accuracies = {}

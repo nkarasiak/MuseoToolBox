@@ -133,7 +133,6 @@ class distanceCV:
             while completeTrain is False:
                 if self.nTries < 100:
                     emptyTrain = False
-                    #self.random_state += 1
                     if self.verbose:
                         print(53 * '=')
                     validation, train = np.array([[], []], dtype=np.int64)
@@ -243,6 +242,7 @@ class distanceCV:
                                    header="Label,Ntrain,Mean dist train")
 
                     # Mask selected validation
+                    self.random_state += 1
                     if emptyTrain is True:
                         completeTrain = False
                         self.nTries += 1
@@ -261,28 +261,45 @@ class randomPerClass:
 
     Parameters
     ----------
-    Y : arr.
+    X : None
+    Y : arr, default None.
         Label for each feature.
-    train_size : float (<1.0) or int (>1).
-        Percentage to keep for training or integer.
+    groups : arr, default None.
+        Group for each feature. For sklearn compatibility.
     valid_size : False or int
         1 to do a Leave-One-Out.
+    train_size : float (<1.0) or int (>1).
+        Percentage to keep for training or integer.
+    n_splits : False or int.
+        If False, will be the number of samples of the smallest class.
     random_state : int.
         random_state for numpy.
-
+    verbose : boolean or int.
+    
+    Returns
+    -------
+    train,validation : array of indices
     """
 
     def __init__(self, X=None, y=None, groups=None,
-                 valid_size=0.5, n_splits=5,
+                 valid_size=0.5, train_size=None,n_splits=False,
                  random_state=None, verbose=False):
 
         self.name = 'randomPerClass'
         self.y = y
         self.valid_size = valid_size
         self.train_size = 1 - self.valid_size
-        self.n_splits = n_splits
+        
         if n_splits is False:
-            self.n_splits = min([len(self.y == C) for C in np.unique(y)])
+            self.n_splits = int(1/self.valid_size)
+        else:
+            self.n_splits = n_splits
+            
+        smallestClass = np.min(np.unique(y,return_counts=True)[1])
+        test_n_splits = int(valid_size*smallestClass)
+        
+        if test_n_splits == 0:
+            raise ValueError('Valid size is too small')
 
         if groups is not None:
             print("Received groups value, but randomCV don't use it")
@@ -300,26 +317,21 @@ class randomPerClass:
 
     def next(self):
         if self.iterPos < self.n_splits + 1:
-            if self.iterPos % 2 == 1 and self.train_size == 0.5:
-                self.mask[:] = 1
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.y):
                 Cpos = np.where(self.y == C)[0]
-                if self.train_size < 1:
-                    if self.train_size == 0.5 and self.iterPos % 2 == 1:
-                        toSplit = int(self.train_size * len(Cpos))
-                        np.random.seed(self.random_state)
-                        tmpTrain = np.random.permutation(Cpos)[:toSplit]
-                    else:
-                        unMask = np.logical_and(self.y == C, self.mask == 0)
-                        tmpTrain = np.where(unMask == 1)[0]
+                np.random.seed(self.random_state)
 
-                    TF = np.in1d(Cpos, tmpTrain, invert=True)
-                    tmpValid = Cpos[TF]
+                if self.valid_size < 1: # means in percent
+                    nToKeep = int(self.valid_size * len(Cpos))
+                    unMask = np.logical_and(self.y == C, self.mask == 1)  
+                    tmpValid = np.random.permutation(np.where(unMask == 1)[0])[:nToKeep]
+                    
+                    TF = np.in1d(Cpos, tmpValid, invert=True)
+                    tmpTrain = Cpos[TF]
 
                 if self.valid_size >= 1:
-                    np.random.seed(self.random_state)
                     tmpValid = np.asarray(
                         [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
                     TF = np.in1d(Cpos, tmpValid, invert=True)
@@ -329,12 +341,17 @@ class randomPerClass:
                         self.y[tmpValid]) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
+                    
                 train = np.concatenate((train, tmpTrain))
                 valid = np.concatenate((valid, tmpValid))
+                 
+                self.mask[tmpValid] = 0
+            
+                unMask = np.logical_and(self.y == C, self.mask == 1)
+                if np.where(unMask == 1)[0].shape[0] < int(self.valid_size*len(Cpos)):
+                    self.mask[np.where(self.y==C)[0]] = 1
 
-                self.mask[valid] = 0
-
-            #self.random_state += 1
+            self.random_state += 1
             self.iterPos += 1
 
             return train, valid
@@ -346,10 +363,16 @@ class groupCV:
     def __init__(self, X=None, y=None, groups=None, n_splits=False,
                  valid_size=1, random_state=False, verbose=False):
         """Compute train/validation per group.
+        
+        Parameters
+        ----------
+        
+        X : None
+            For sklearn compatiblity
         Y : array-like
             contains class for each ROI.
         groups : array-like
-            contains goup number for each ROI.
+            contains goup number for each ROI (same size of Y).
         valid_size : int (1) or float (0.01 to 0.99)
             If 1 Leave-One-Group Out.
         n_splits : False or int
@@ -359,7 +382,7 @@ class groupCV:
         """
         self.name = 'standCV'
         self.verbose = verbose
-        self.y = y
+        self.y = y.flatten()
         self.uniqueY = np.unique(self.y)
         self.groups = groups
 
@@ -367,23 +390,22 @@ class groupCV:
         self.iterPos = 1
 
         self.random_state = random_state
+        
+        smallestGroup = np.min(np.unique(groups,return_counts=True)[1])
         if n_splits:
             self.n_splits = n_splits
         else:
-            n_splits = []
-            for i in np.unique(self.y):
-                standNumber = np.unique(
-                    np.array(groups)[
-                        np.where(
-                            np.array(self.y).flatten() == i)])
-
-                n_splits.append(standNumber.shape[0])
-            self.n_splits = np.amin(n_splits)
+            self.n_splits = smallestGroup
             if self.n_splits == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-        self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
+                
+        test_n_splits = np.amax((int(valid_size*smallestGroup),int((1-valid_size)*smallestGroup)))
+        if test_n_splits == 0:
+            raise ValueError('Valid size is too small')
 
+        self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
+        
     def __iter__(self):
         return self
 
@@ -401,29 +423,23 @@ class groupCV:
                 Ycurrent = np.where(np.array(self.y) == C)[0]
                 Ystands = np.array(self.groups)[Ycurrent]
 
-                #YTF = np.array(self.y) == i
-                Ystand = np.unique(Ystands)
-                if len(Ystands[self.mask[Ycurrent]]) == 0:
-                    # Reset mask if not enought subgroup available
-                    # Appear only if n_splits > min len of subgroup
-                    self.mask[:] = 1
-
-                if self.valid_size == 1:
+                
+                nYstand = len(np.unique(self.groups[self.y==C]))
+                Ystand = self.groups[np.logical_and(self.mask==1,self.y==C)]
+                nToKeep = nYstand*self.valid_size
+                nToKeep += (nToKeep<1)
+                nToKeep = int(nToKeep)
+                
+                if np.unique(Ystand).shape[0] < nToKeep:
+                    # reset mask because not enough group
+                    self.mask[Ycurrent] = 1
+                    Ystand = self.groups[self.y==C]
+                
+                if self.valid_size < 1:
                     np.random.seed(self.random_state)
                     selectedStand = np.random.permutation(
-                        Ystands[self.mask[Ycurrent]])[0]
-
-                if self.valid_size < 1:
-                    if self.valid_size == 0.5 and self.iterPos % 2 == 0:
-                        # If 50%, real CV with train/valid reverse at next iter
-                        # to valid/train
-                        np.random.seed(self.random_state)
-                        selectedStand = np.random.permutation(
-                            Ystands[self.mask[Ycurrent]])
-                    else:
-                        np.random.seed(self.random_state)
-                        selectedStand = np.random.permutation(
-                            Ystand)[:int(len(Ystand) * self.valid_size)]
+                        np.unique(Ystand))[:nToKeep]
+                    
                 if self.verbose:
                     print('For class {}, subgroup {}'.format(C, selectedStand))
 
@@ -437,18 +453,12 @@ class groupCV:
                 train = np.concatenate(
                     (train, tmpTrain))
 
-                if self.valid_size == 1 or self.valid_size == 0.5:
-                    del Ystands, Ycurrent
-                    selected = np.in1d(self.groups, selectedStand)
-                    self.mask[selected] = 0
-                    del selected
-
                 if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
                         self.y[tmpValid]) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
-
-                #self.random_state += 1
+                self.mask[tmpValid] = 0
+            self.random_state += 1
             self.iterPos += 1
             return train, validation
         else:
