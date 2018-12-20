@@ -426,20 +426,23 @@ class groupCV:
                 
                 nYstand = len(np.unique(self.groups[self.y==C]))
                 Ystand = self.groups[np.logical_and(self.mask==1,self.y==C)]
-                nToKeep = nYstand*self.valid_size
-                nToKeep += (nToKeep<1)
-                nToKeep = int(nToKeep)
+                if self.valid_size == 1:
+                    nToKeep = 1
+                else:
+                    nToKeep = nYstand*self.valid_size
+                    nToKeep += (nToKeep<1)
+                    nToKeep = int(nToKeep)
                 
                 if np.unique(Ystand).shape[0] < nToKeep:
                     # reset mask because not enough group
                     self.mask[Ycurrent] = 1
                     Ystand = self.groups[self.y==C]
                 
-                if self.valid_size < 1:
-                    np.random.seed(self.random_state)
-                    selectedStand = np.random.permutation(
-                        np.unique(Ystand))[:nToKeep]
-                    
+            
+                np.random.seed(self.random_state)
+                selectedStand = np.random.permutation(
+                    np.unique(Ystand))[:nToKeep]
+                
                 if self.verbose:
                     print('For class {}, subgroup {}'.format(C, selectedStand))
 
