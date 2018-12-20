@@ -103,13 +103,13 @@ n_splits will be the number  of the least populated class
  .. code-block:: none
 
     (10257,) (5,)
-    (9644,) (5,)
-    (9214,) (5,)
-    (9214,) (5,)
-    (8101,) (5,)
     (8010,) (5,)
-    (9935,) (5,)
-    (9935,) (5,)
+    (9927,) (5,)
+    (8797,) (5,)
+    (10945,) (5,)
+    (8448,) (5,)
+    (8780,) (5,)
+    (8101,) (5,)
 
 
 Draw image
@@ -144,7 +144,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.318 seconds)
+**Total running time of the script:** ( 0 minutes  3.189 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

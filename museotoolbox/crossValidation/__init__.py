@@ -34,8 +34,8 @@ class LeavePSubGroupOut(_sampleSelection):
         ----------
         valid_size : float, default 0.5.
             From 0 to 1.
-        n_splits : int or False, default False.            
-            If False, is the number of 
+        n_splits : int or False, default False.
+            If False, is the number of
         random_state : int or None, default=None.
             If int, random_state is the seed used by the random number generator;
             If None, the random number generator is created with ``time.time()``.

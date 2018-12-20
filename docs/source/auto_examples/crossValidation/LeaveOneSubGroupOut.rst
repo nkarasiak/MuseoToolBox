@@ -50,8 +50,11 @@ Load HistoricalMap dataset
 
 
 
+
 Create CV
 -------------------------------------------
+if n_splits is False (default), the number of splits will be the smallest
+number of subgroup of all labels.
 
 
 
@@ -59,7 +62,7 @@ Create CV
 
 
     valid_size = 0.5 # Means 50%
-    LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
+    LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12) # 
 
 
 
@@ -73,6 +76,7 @@ Create CV
 
 
 .. code-block:: python
+
 
     LOSGO.get_n_splits(X,y,s)
     for tr,vl in LOSGO.split(X,y,s):
@@ -88,8 +92,8 @@ Create CV
 
  .. code-block:: none
 
-    (10257,) (2390,)
-    (9150,) (3497,)
+    (9308,) (3339,)
+    (10873,) (1774,)
 
 
 Differences with sklearn
@@ -157,7 +161,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.117 seconds)
+**Total running time of the script:** ( 0 minutes  0.253 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOut.py:

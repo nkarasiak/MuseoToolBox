@@ -23,16 +23,20 @@ raster,vector = datasets.getHistoricalMap()
 field = 'Class'
 group = 'uniquefid'
 X,y,s = getSamplesFromROI(raster,vector,field,group)
+
 ##############################################################################
 # Create CV
 # -------------------------------------------
+# if n_splits is False (default), the number of splits will be the smallest
+# number of subgroup of all labels.
 
 valid_size = 0.5 # Means 50%
-LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12)
+LOSGO = LeaveOneSubGroupOut(verbose=False,random_state=12) # 
 
 ###############################################################################
 # .. note::
 #    Split is made to generate each fold
+
 LOSGO.get_n_splits(X,y,s)
 for tr,vl in LOSGO.split(X,y,s):
     print(tr.shape,vl.shape)

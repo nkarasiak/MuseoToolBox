@@ -50,6 +50,7 @@ Load HistoricalMap dataset
 
 
 
+
 Create CV
 -------------------------------------------
 
@@ -57,8 +58,10 @@ Create CV
 
 .. code-block:: python
 
+
     RS50 = RandomCV(valid_size=0.5,n_splits=2,
                     random_state=12,verbose=False)
+
 
 
 
@@ -128,8 +131,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.942560083148
     0.94227598585
+    0.94193832769
 
 
 Get each confusion matrix from folds
@@ -153,16 +156,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3677   80    2   12    0]
-     [  67 1068    1   11    0]
-     [   0    0 1140    0    0]
-     [  10   20    3  230    0]
-     [   3    0    1    0    0]]
     [[3693   68    1    9    0]
      [  82 1050    0   14    0]
      [   2    0 1137    0    0]
      [  12   17    1  232    0]
      [   4    0    0    0    0]]
+    [[3679   79    2   11    0]
+     [  70 1063    1   12    0]
+     [   0    0 1139    0    0]
+     [   8   22    3  229    0]
+     [   3    1    0    0    0]]
 
 
 Save each confusion matrix from folds
@@ -227,7 +230,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  15.022 seconds)
+**Total running time of the script:** ( 0 minutes  35.439 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

@@ -112,29 +112,23 @@ Create list of different CV
  .. code-block:: none
 
     Received groups value, but randomCV don't use it
-    Fitting 5 folds for each of 2 candidates, totalling 10 fits
+    Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 200
     Kappa for RandomCV
-    0.94195913718
-    0.942900480973
-    0.94195913718
-    0.942900480973
-    0.94195913718
+    0.942065192088
+    0.941954313535
     ====================
-    Fitting 5 folds for each of 2 candidates, totalling 10 fits
+    Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for LeavePSubGroupOut
-    0.798313861749
-    0.778165590532
-    0.798313861749
-    0.778165590532
-    0.798313861749
+    0.712954492432
+    0.73086035986
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for LeaveOneSubGroupOut
-    0.80776800812
-    0.951044890041
+    0.624385715327
+    0.792949046476
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
@@ -169,7 +163,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  27.067 seconds)
+**Total running time of the script:** ( 0 minutes  50.554 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

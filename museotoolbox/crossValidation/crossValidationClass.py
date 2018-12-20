@@ -275,29 +275,29 @@ class randomPerClass:
     random_state : int.
         random_state for numpy.
     verbose : boolean or int.
-    
+
     Returns
     -------
     train,validation : array of indices
     """
 
     def __init__(self, X=None, y=None, groups=None,
-                 valid_size=0.5, train_size=None,n_splits=False,
+                 valid_size=0.5, train_size=None, n_splits=False,
                  random_state=None, verbose=False):
 
         self.name = 'randomPerClass'
         self.y = y
         self.valid_size = valid_size
         self.train_size = 1 - self.valid_size
-        
+
         if n_splits is False:
-            self.n_splits = int(1/self.valid_size)
+            self.n_splits = int(1 / self.valid_size)
         else:
             self.n_splits = n_splits
-            
-        smallestClass = np.min(np.unique(y,return_counts=True)[1])
-        test_n_splits = int(valid_size*smallestClass)
-        
+
+        smallestClass = np.min(np.unique(y, return_counts=True)[1])
+        test_n_splits = int(valid_size * smallestClass)
+
         if test_n_splits == 0:
             raise ValueError('Valid size is too small')
 
@@ -323,11 +323,12 @@ class randomPerClass:
                 Cpos = np.where(self.y == C)[0]
                 np.random.seed(self.random_state)
 
-                if self.valid_size < 1: # means in percent
+                if self.valid_size < 1:  # means in percent
                     nToKeep = int(self.valid_size * len(Cpos))
-                    unMask = np.logical_and(self.y == C, self.mask == 1)  
-                    tmpValid = np.random.permutation(np.where(unMask == 1)[0])[:nToKeep]
-                    
+                    unMask = np.logical_and(self.y == C, self.mask == 1)
+                    tmpValid = np.random.permutation(
+                        np.where(unMask == 1)[0])[:nToKeep]
+
                     TF = np.in1d(Cpos, tmpValid, invert=True)
                     tmpTrain = Cpos[TF]
 
@@ -341,15 +342,16 @@ class randomPerClass:
                         self.y[tmpValid]) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
-                    
+
                 train = np.concatenate((train, tmpTrain))
                 valid = np.concatenate((valid, tmpValid))
-                 
+
                 self.mask[tmpValid] = 0
-            
+
                 unMask = np.logical_and(self.y == C, self.mask == 1)
-                if np.where(unMask == 1)[0].shape[0] < int(self.valid_size*len(Cpos)):
-                    self.mask[np.where(self.y==C)[0]] = 1
+                if np.where(unMask == 1)[0].shape[0] < int(
+                        self.valid_size * len(Cpos)):
+                    self.mask[np.where(self.y == C)[0]] = 1
 
             self.random_state += 1
             self.iterPos += 1
@@ -363,10 +365,10 @@ class groupCV:
     def __init__(self, X=None, y=None, groups=None, n_splits=False,
                  valid_size=1, random_state=False, verbose=False):
         """Compute train/validation per group.
-        
+
         Parameters
         ----------
-        
+
         X : None
             For sklearn compatiblity
         Y : array-like
@@ -390,8 +392,17 @@ class groupCV:
         self.iterPos = 1
 
         self.random_state = random_state
-        
-        smallestGroup = np.min(np.unique(groups,return_counts=True)[1])
+
+        for i in np.unique(self.y):
+            smallestGroup = []
+            standNumber = np.unique(
+                np.array(groups)[
+                    np.where(
+                        np.array(self.y).flatten() == i)])
+
+            smallestGroup.append(standNumber.shape[0])
+            smallestGroup = np.min(smallestGroup)
+
         if n_splits:
             self.n_splits = n_splits
         else:
@@ -399,13 +410,14 @@ class groupCV:
             if self.n_splits == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-                
-        test_n_splits = np.amax((int(valid_size*smallestGroup),int((1-valid_size)*smallestGroup)))
+
+        test_n_splits = np.amax(
+            (int(valid_size * smallestGroup), int((1 - valid_size) * smallestGroup)))
         if test_n_splits == 0:
             raise ValueError('Valid size is too small')
 
         self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
-        
+
     def __iter__(self):
         return self
 
@@ -423,23 +435,25 @@ class groupCV:
                 Ycurrent = np.where(np.array(self.y) == C)[0]
                 Ystands = np.array(self.groups)[Ycurrent]
 
-                
-                nYstand = len(np.unique(self.groups[self.y==C]))
-                Ystand = self.groups[np.logical_and(self.mask==1,self.y==C)]
-                nToKeep = nYstand*self.valid_size
-                nToKeep += (nToKeep<1)
-                nToKeep = int(nToKeep)
-                
+                nYstand = len(np.unique(self.groups[self.y == C]))
+                Ystand = self.groups[np.logical_and(
+                    self.mask == 1, self.y == C)]
+                if self.valid_size >= 1:
+                    nToKeep = self.valid_size
+                else:
+                    nToKeep = nYstand * self.valid_size
+                    nToKeep += (nToKeep < 1)
+                    nToKeep = int(nToKeep)
+
                 if np.unique(Ystand).shape[0] < nToKeep:
                     # reset mask because not enough group
                     self.mask[Ycurrent] = 1
-                    Ystand = self.groups[self.y==C]
-                
-                if self.valid_size < 1:
-                    np.random.seed(self.random_state)
-                    selectedStand = np.random.permutation(
-                        np.unique(Ystand))[:nToKeep]
-                    
+                    Ystand = self.groups[self.y == C]
+
+                np.random.seed(self.random_state)
+                selectedStand = np.random.permutation(
+                    np.unique(Ystand))[:nToKeep]
+
                 if self.verbose:
                     print('For class {}, subgroup {}'.format(C, selectedStand))
 

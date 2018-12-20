@@ -77,13 +77,13 @@ class _sampleSelection:
         groups : array-like, with shape (n_samples,), optional
             Subgroup labels for the samples used while splitting the dataset into
             train/test set.
-            
+
         Returns
         -------
         n_splits : int
             The number of splits.
         """
-        
+
         if y is not None:
             self.y = y
         n_splits = self.crossvalidation(

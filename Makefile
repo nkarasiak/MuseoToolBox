@@ -50,7 +50,7 @@ ddoc :
 	m2r README.md
 	mv README.rst docs/source/
 	rm -rf docs/source/auto_examples/ docs/sources/modules
-	cd docS/ && make html
+	cd docs/ && make html
 
 autopep8 :
 	autopep8 -ir museotoolbox --jobs -1

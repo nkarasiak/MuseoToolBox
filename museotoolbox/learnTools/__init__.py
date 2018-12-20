@@ -23,6 +23,7 @@ from sklearn import metrics
 from sklearn.base import clone
 from sklearn import warnings
 
+
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
