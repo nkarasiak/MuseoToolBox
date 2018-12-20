@@ -21,7 +21,7 @@ import os
 import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
-
+from sklearn import warnings
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
@@ -67,6 +67,8 @@ class learnAndPredict:
         """
         self.n_jobs = n_jobs
         self.verbose = verbose
+        if self.verbose is False:
+            warnings.filterwarnings("ignore")
         self.scale = False
         self.CV = False
         self.cloneModel = False
