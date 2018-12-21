@@ -115,20 +115,20 @@ Create list of different CV
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for RandomCV
-    0.938356909701
-    0.946843625427
+    0.938053571761
+    0.948177037522
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for LeavePSubGroupOut
-    0.711166221624
-    0.69826929146
+    0.68629000671
+    0.806497235446
     ====================
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
     best n_estimators : 100
     Kappa for LeaveOneSubGroupOut
-    0.913834974108
-    0.80776800812
+    0.849561040438
+    0.594218467066
     ====================
     Fitting 3 folds for each of 2 candidates, totalling 6 fits
     best n_estimators : 100
@@ -163,7 +163,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  24.189 seconds)
+**Total running time of the script:** ( 0 minutes  23.319 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandCompareCV.py:

@@ -22,26 +22,26 @@ from . import crossValidationClass as _cvc
 
 
 class LeavePSubGroupOut(_sampleSelection):
+    """
+    Generate a Cross-Validation using subgroup (each group belong to a unique label).
+
+    Parameters
+    ----------
+    valid_size : float, default 0.5.
+        From 0 to 1.
+    n_splits : int or False, default False.
+        If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
+    """
     def __init__(self,
                  valid_size=0.5,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Generate a Cross-Validation using subgroup (each group belong to a unique label).
-
-        Parameters
-        ----------
-        valid_size : float, default 0.5.
-            From 0 to 1.
-        n_splits : int or False, default False.
-            If False, n_splits is 1/valid_size : default 1/0.5 = 2.
-        random_state : int or None, default=None.
-            If int, random_state is the seed used by the random number generator;
-            If None, the random number generator is created with ``time.time()``.
-        verbose : int or False, defaultr False.
-            Controls the verbosity: the higher, the more messages.
-        """
         self.verbose = verbose
 
         self.crossvalidation = _cvc.groupCV
@@ -62,32 +62,24 @@ class LeavePSubGroupOut(_sampleSelection):
 
 
 class LeaveOneSubGroupOut(_sampleSelection):
+    """
+    Generate a Cross-Validation by subgroup.
+
+    Parameters
+    ----------
+    n_splits : default False.
+        If False : will iterate as many times as the smallest number of groups.
+        If int : will iterate the number of times given in n_splits.
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
+    """
     def __init__(self,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Generate a Cross-Validation by subgroup.
-
-        Parameters
-        ----------
-        inVector : str or array.
-            if str, path of vector file, if array same size as inGroup array.
-        inField : str or None.
-            if str, will extract value from inVector file.
-        inGroup : str or array.
-            field name containing label of groups. If array, same size as inVector array.
-        n_splits : default False.
-            If False : will iterate as many times as the smallest number of groups.
-            If int : will iterate the number of times given in n_splits.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
-
-
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the groupCV.
-        """
         self.verbose = verbose
 
         self.crossvalidation = _cvc.groupCV
@@ -100,30 +92,34 @@ class LeaveOneSubGroupOut(_sampleSelection):
 
 
 class SpatialLeaveAsideOut(_sampleSelection):
+    """
+    Generate a Cross-Validation using the farthest distance between the training and validation samples.
+
+    Parameters
+    ----------
+    distanceMatrix : array.
+        Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+    valid_size : float, default 0.5.
+        The percentage of validaton to keep : from 0 to 1.
+    n_splits : int or False, default False.
+        If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.        
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
+    
+    References
+    ----------
+    See "Combining ensemble modeling and remote sensing for mapping 
+    individual tree species at high spatial resolution" : https://doi.org/10.1016/j.foreco.2013.07.059.
+    """
     def __init__(self,
                  distanceMatrix=None,
                  valid_size=0.5,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Generate a Cross-Validation using the farthest distance between the training and validation samples.
-
-        Parameters
-        ----------
-        distanceMatrix : array.
-            Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
-        valid_size : float, default 0.5.
-            The percentage of validaton to keep : from 0 to 1.
-        n_splits : int or False, default False.
-            If False, n_splits is 1/valid_size : default 1/0.5 = 2.
-        random_state : int or None, default=None.
-            If int, random_state is the seed used by the random number generator;
-            If None, the random number generator is created with ``time.time()``.
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the farthestCV.
-        """
         self.samplingType = 'Spatial'
         self.verbose = verbose
 
@@ -138,6 +134,30 @@ class SpatialLeaveAsideOut(_sampleSelection):
 
 
 class SpatialLeaveOneSubGroupOut(_sampleSelection):
+    """
+    Generate a Cross-Validation with Spatial Leave-One-Out method.
+
+    Parameters
+    ----------
+    distanceMatrix : None or array.
+        If array, got from function :mod:`museotoolbox.vectorTools.getDistanceMatrix`
+    distanceThresold : int.
+        In pixels.
+    distanceLabel : None or array.
+        If array, got from function :mod:`museotoolbox.vectorTools.getDistanceMatrix`
+    n_splits : default False.
+        If False : will iterate as many times as the smallest number of groups.
+        If int : will iterate the number of groups given in maxIter.
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
+
+    See also
+    --------
+    museotoolbox.vectorTools.getDistanceMatrix : to extract distanceMatrix and distanceLabel.
+    """
     def __init__(self,
                  distanceThresold=None,
                  distanceMatrix=None,
@@ -145,32 +165,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Generate a Cross-Validation with Spatial Leave-One-Out method.
-
-        Parameters
-        ----------
-        distanceMatrix : None or array.
-            If array got from function vectorTools.getDistanceMatrix(inRaster,inVector)
-        distanceThresold : int.
-            In pixels.
-        SLOO : True or float
-            from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
-        n_splits : default False.
-            If False : will iterate as many times as the smallest number of groups.
-            If int : will iterate the number of groups given in maxIter.
-        random_state : int or None, default=None.
-            If int, random_state is the seed used by the random number generator;
-            If None, the random number generator is created with ``time.time()``.
-        
-        Returns
-        -------
-        List : list with the sampling type and the parameters for the SLOOCV.
-
-        References
-        ----------
-        See : https://doi.org/10.1111/geb.12161.
-        """
         self.samplingType = 'Spatial'
         self.verbose = verbose
 
@@ -196,30 +190,24 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
     distanceThresold : int.
         In pixels.
-    minTrain : int/float, default None.
-        The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
-    SLOO : True or float
-        from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
     n_splits : default False.
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
     
-    Returns
-    --------
-    List : list with the sampling type and the parameters for the SLOOCV.
-
     References
     ----------
-    See : https://doi.org/10.1111/geb.12161.
+    See "Spatial leave‐one‐out cross‐validation for variable selection in the 
+    presence of spatial autocorrelation" : https://doi.org/10.1111/geb.12161.
     """
 
     def __init__(self,
                  distanceThresold=None,
                  distanceMatrix=None,
-                 distanceLabel=False,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
@@ -232,7 +220,7 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         self.params = dict(
             distanceMatrix=distanceMatrix,
             distanceThresold=distanceThresold,
-            distanceLabel=distanceLabel,
+            distanceLabel=False,
             minTrain=False,
             SLOO=True,
             n_splits=n_splits,
@@ -241,33 +229,38 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
 
 
 class RandomCV(_sampleSelection):
+    """
+    Generate a Cross-Validation with random selection with percentage per label.
+
+    Parameters
+    ----------
+
+    valid_size : float or int. Default 0.5.
+        If float from 0.1 to 0.9 (means keep 90% per class for validation). If int, will try to reach this sample for every class.
+    n_splits : int or False, default False.
+        If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.
+    verbose : int or False, default False.
+        Controls the verbosity: the higher, the more messages.
+
+    Example
+    -------
+    >>> from museotoolbox.crossValidation import RandomCV
+    >>> from museotoolbox import datasets
+    >>> X,y = datasets.getHistoricalMap(return_X_y=True)
+    >>> RS50 = RandomCV(valid_size=0.5,random_state=12,verbose=False)
+    >>> for tr,vl in RS50.split(X=None,y=y):
+            print(tr,vl)
+    [ 1600  1601  1605 ...,  9509  9561 10322] [ 3632  1988 11480 ..., 10321  9457  9508]
+    [ 1599  1602  1603 ...,  9508  9560 10321] [ 3948 10928  3490 ..., 10322  9458  9561]
+    """
     def __init__(self,
                  valid_size=0.5,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        """
-        Get parameters to have a randomCV.
-
-        Parameters
-        ----------
-
-        split : float,int. Default 0.5.
-            If float from 0.1 to 0.9 (means keep 90% per class for training). If int, will try to reach this sample for every class.
-        nSamples: int or str. Default None.
-            If int, the max samples per class.
-            If str, only 'smallest' to sample as the smallest class.
-        random_state : int or None, default=None.
-            If int, random_state is the seed used by the random number generator;
-            If None, the random number generator is created with ``time.time()``.
-        n_splits : int, default 5.
-            Number of iteration of the random sampling (will add 1 to the random_state at each iteration if defined).
-
-        Returns
-        --------
-        List : list with the sampling type and the parameters for the randomCV.
-
-        """
         self.samplingType = 'random'
         self.verbose = verbose
 

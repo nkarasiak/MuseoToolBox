@@ -53,7 +53,7 @@ class sampleExtraction:
             uniqueFID = 'uniquefid'
             if verbose:
                 print("Adding 'uniquefid' field to the original vector.")
-            vectorTools.addUniqueIDForVector(inVector, uniqueFID)
+            vectorTools.addUniqueIDForVector(inVector, uniqueFID,verbose=verbose)
 
         if verbose:
             print("Extract values from raster...")

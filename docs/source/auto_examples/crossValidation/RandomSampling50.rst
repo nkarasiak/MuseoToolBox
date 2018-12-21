@@ -188,7 +188,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.193 seconds)
+**Total running time of the script:** ( 0 minutes  0.184 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_RandomSampling50.py:

@@ -143,7 +143,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.731 seconds)
+**Total running time of the script:** ( 0 minutes  1.637 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

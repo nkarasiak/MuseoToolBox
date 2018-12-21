@@ -68,13 +68,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[194 174 149]
-     [199 179 154]
-     [210 190 165]
+    [[213 175 164]
+     [206 170 158]
+     [212 175 166]
      ..., 
-     [ 76  79  52]
-     [147 149 125]
-     [149 153 128]]
+     [103  76  67]
+     [140 105  99]
+     [151 112 107]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -152,7 +152,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  6.209 seconds)
+**Total running time of the script:** ( 0 minutes  5.186 seconds)
 
 
 .. _sphx_glr_download_auto_examples_rasterTools_modalClass.py:

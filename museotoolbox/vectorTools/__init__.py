@@ -233,7 +233,7 @@ def readValuesFromVector(vector, *args, **kwargs):
         return fieldsToReturn
 
 
-def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
+def addUniqueIDForVector(inVector, uniqueField='uniquefid',verbose=True):
     """
     Add a field in the vector with an unique value
     for each of the feature.
@@ -244,7 +244,7 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         Path of the vector file.
     uniqueField : str
         Name of the field to create
-
+    verbose : bool or int, default True.
     Returns
     --------
     None
@@ -271,7 +271,8 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid'):
         if fdefn.name is not listFields:
             listFields.append(fdefn.name)
     if uniqueField in listFields:
-        print('Field \'{}\' is already in {}'.format(uniqueField, inVector))
+        if verbose>0:
+            print('Field \'{}\' is already in {}'.format(uniqueField, inVector))
         inSrc.Destroy()
     else:
         newField = ogr.FieldDefn(uniqueField, ogr.OFTInteger)
