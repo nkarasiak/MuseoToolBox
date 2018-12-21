@@ -35,7 +35,7 @@ class LeavePSubGroupOut(_sampleSelection):
         valid_size : float, default 0.5.
             From 0 to 1.
         n_splits : int or False, default False.
-            If False, is the number of
+            If False, n_splits is 1/valid_size : default 1/0.5 = 2.
         random_state : int or None, default=None.
             If int, random_state is the seed used by the random number generator;
             If None, the random number generator is created with ``time.time()``.
@@ -111,17 +111,12 @@ class SpatialLeaveAsideOut(_sampleSelection):
 
         Parameters
         ----------
-        inRaster : str.
-            Path of the raster.
-        inVector : str.
-            Path of the vector.
         distanceMatrix : array.
             Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
         valid_size : float, default 0.5.
             The percentage of validaton to keep : from 0 to 1.
-        maxIter : default False.
-            If False : will iterate as many times as the smallest number of groups.
-            If int : will iterate the number of groups given in maxIter.
+        n_splits : int or False, default False.
+            If False, n_splits is 1/valid_size : default 1/0.5 = 2.
         random_state : int, default None.
             If random_state, int, to repeat exactly the same random.
 
@@ -159,8 +154,6 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
             If array got from function vectorTools.getDistanceMatrix(inRaster,inVector)
         distanceThresold : int.
             In pixels.
-        minTrain : int/float, default None.
-            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
         SLOO : True or float
             from 0.0 to 1.0 (means keep 90% for training). If True, keep only one sample per class for validation.
         n_splits : default False.
