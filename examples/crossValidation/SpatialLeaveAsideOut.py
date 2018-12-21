@@ -28,7 +28,7 @@ distanceMatrix = vectorTools.getDistanceMatrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveAsideOut(valid_size=0.5,n_splits=10,
+SLOPO = SpatialLeaveAsideOut(valid_size=12,n_splits=10,
                              distanceMatrix=distanceMatrix,random_state=12)
 
 print(SLOPO.get_n_splits(X,y))

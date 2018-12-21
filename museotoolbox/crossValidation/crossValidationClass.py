@@ -210,7 +210,12 @@ class distanceCV:
                                 tmpTrain = CT[distanceROI >
                                               self.distanceThresold]
                             else:
-                                distanceToCut = np.sort(distanceROI)[:int(self.valid_size*len(CT))][-1]
+                                if self.valid_size >= 1:
+                                    nToCut = self.valid_size
+                                else:
+                                    nToCut = int(self.valid_size*len(CT))
+                                    
+                                distanceToCut = np.sort(distanceROI)[:nToCut][-1]
                                 tmpValid = CT[distanceROI <=
                                               distanceToCut]
                                 tmpTrain = CT[distanceROI >
@@ -263,6 +268,9 @@ class distanceCV:
                         self.iterPos += 1
                         self.mask[validation] = 0
                         return train, validation
+                else:
+                    raise AttributeError('Error : Not enough samples using this distance/valid_size.')
+                    raise StopIteration()
         else:
             raise StopIteration()
 

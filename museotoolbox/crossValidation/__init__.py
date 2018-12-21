@@ -117,9 +117,9 @@ class SpatialLeaveAsideOut(_sampleSelection):
             The percentage of validaton to keep : from 0 to 1.
         n_splits : int or False, default False.
             If False, n_splits is 1/valid_size : default 1/0.5 = 2.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
-
+        random_state : int or None, default=None.
+            If int, random_state is the seed used by the random number generator;
+            If None, the random number generator is created with ``time.time()``.
         Returns
         -------
         List : list with the sampling type and the parameters for the farthestCV.
@@ -159,9 +159,10 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
         n_splits : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of groups given in maxIter.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
-
+        random_state : int or None, default=None.
+            If int, random_state is the seed used by the random number generator;
+            If None, the random number generator is created with ``time.time()``.
+        
         Returns
         -------
         List : list with the sampling type and the parameters for the SLOOCV.
@@ -202,9 +203,10 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
     n_splits : default False.
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
-    random_state : int, default None.
-        If random_state, int, to repeat exactly the same random.
-
+    random_state : int or None, default=None.
+        If int, random_state is the seed used by the random number generator;
+        If None, the random number generator is created with ``time.time()``.
+    
     Returns
     --------
     List : list with the sampling type and the parameters for the SLOOCV.
@@ -255,8 +257,9 @@ class RandomCV(_sampleSelection):
         nSamples: int or str. Default None.
             If int, the max samples per class.
             If str, only 'smallest' to sample as the smallest class.
-        random_state : int, default None.
-            If random_state, int, to repeat exactly the same random.
+        random_state : int or None, default=None.
+            If int, random_state is the seed used by the random number generator;
+            If None, the random number generator is created with ``time.time()``.
         n_splits : int, default 5.
             Number of iteration of the random sampling (will add 1 to the random_state at each iteration if defined).
 
