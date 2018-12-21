@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Spatial Leave-One-Pixel-Out (SLOPO)
+Spatial Leave-Aside-Out (SLAO)
 ======================================================
 
-This example shows how to make a Spatial Leave-One-Out called here
-a Spatial Leave-One-Pixel-Out.
-
-For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161.
+This example shows how to make a Spatial Leave-Aside-Out.
 
 """
 
@@ -14,8 +11,9 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.crossValidation import SpatialLeaveOnePixelOut
+from museotoolbox.crossValidation import SpatialLeaveAsideOut
 from museotoolbox import datasets,rasterTools,vectorTools
+
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
@@ -30,35 +28,24 @@ distanceMatrix = vectorTools.getDistanceMatrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
-                                random_state=12)
+SLOPO = SpatialLeaveAsideOut(valid_size=0.5,n_splits=10,
+                             distanceMatrix=distanceMatrix,random_state=12)
 
 print(SLOPO.get_n_splits(X,y))
-
 
 ###############################################################################
 # .. note::
 #    Split is made to generate each fold
 
-
 for tr,vl in SLOPO.split(X,y):
-    print(tr.shape,vl.shape)
-    
-#############################################
-# Draw image
-import numpy as np
-from matplotlib import pyplot as plt
-fig, ax = plt.subplots()
-plt.ylim(40,150)
-plt.xlim(40,150)
+    print(tr.shape,vl.shape)  
 
+###############################################################################
+#    Save each train/valid fold in a file
+# -------------------------------------------
+# In order to translate polygons into points (each points is a pixel in the raster)
+# we use sampleExtraction from vectorTools to generate a temporary vector.
 
-plt.scatter(np.random.randint(50,150,50),np.random.randint(50,150,50),alpha=.8)
-plt.scatter(80,80, s=80*100,alpha=.8)
-plt.scatter(80,80,color='green',s=60)
-plt.text(82,82,'Validation pixel',size=12)
-plt.text(110,110,'Training pixels',size=12)
-plt.text(46,52,'Buffer of spatial auto-correlated pixels')
-plt.axis('off')
+vectorTools.sampleExtraction(raster,vector,outVector='/tmp/pixels.gpkg')
 
-plt.show()
+SLOPO.saveVectorFiles('/tmp/pixels.gpkg',field,outVector='/tmp/SLOPO.gpkg')

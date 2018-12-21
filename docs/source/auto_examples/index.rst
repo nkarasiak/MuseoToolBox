@@ -98,6 +98,26 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/crossValidation/SpatialLeaveAsideOut
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
 
 .. only:: html

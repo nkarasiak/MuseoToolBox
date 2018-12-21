@@ -18,9 +18,9 @@ crossValidation
       LeaveOneSubGroupOut
       LeavePSubGroupOut
       RandomCV
+      SpatialLeaveAsideOut
       SpatialLeaveOnePixelOut
       SpatialLeaveOneSubGroupOut
-      SpatialLeavePSideOut
    
    
 

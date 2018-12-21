@@ -15,6 +15,7 @@ rasterTools
       convertGdalDataTypeToOTB
       getGdalDTFromMinMaxValues
       getSamplesFromROI
+      rasterMaskFromVector
       rasterize
    
    

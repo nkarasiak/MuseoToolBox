@@ -1,6 +1,6 @@
-museotoolbox\.crossValidation\.SpatialLeavePSideOut\.\_\_init\_\_
+museotoolbox\.crossValidation\.SpatialLeaveAsideOut\.\_\_init\_\_
 =================================================================
 
 .. currentmodule:: museotoolbox.crossValidation
 
-.. automethod:: SpatialLeavePSideOut.__init__
+.. automethod:: SpatialLeaveAsideOut.__init__

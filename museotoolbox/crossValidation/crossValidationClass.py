@@ -26,6 +26,7 @@ class distanceCV:
             minTrain=False,
             SLOO=True,
             n_splits=False,
+            valid_size=False,
             useMaxDistance=False,
             stats=False,
             verbose=False,
@@ -52,6 +53,8 @@ class distanceCV:
             SLOO=True: Skcv (if n_splits=False, skcv is SLOO from Kevin Le Rest, or SKCV from Pohjankukka)
         n_splits :
             False : as loop as min effective class
+        valid_size : False or float value.
+            If float, value from 0 to 1 (percent).
         groups : array
             contain class (like Y), e.g. able to do a SLOO per Stand if you put your stand number here.
         stat : str.
@@ -75,6 +78,7 @@ class distanceCV:
         self.distanceLabel = distanceLabel
         if self.minTrain is None:
             self.minTrain = -1
+        self.valid_size = valid_size
 
         self.groups = groups
         if self.groups is not None and self.distanceLabel is False:
@@ -146,8 +150,9 @@ class distanceCV:
                                 0].shape[0] == 0:  # means no more ROI
                             if self.minEffectiveClass == self.n_splits:
                                 raise StopIteration()
-                            print(
-                                str(C) + ' has no more valid pixel.')
+                            if self.verbose >1:
+                                print(
+                                str(C) + ' has no more valid pixel.\nResetting label mask.')
                             self.mask[self.y == C] = 1
                             currentCT = np.logical_and(
                                 self.y == C, self.mask == 1)
@@ -164,7 +169,7 @@ class distanceCV:
 
                         np.random.seed(self.random_state)
                         self.ROI = np.random.permutation(
-                            np.where(currentCT)[0])[0]
+                        np.where(currentCT)[0])[0]
                         # When doing Leave-One-Out per subgroup
                         if self.groups is not None:
                             if self.verbose > 1:
@@ -197,12 +202,19 @@ class distanceCV:
                         # When doing Leave-One-Out per pixel
                         else:
 
-                            distanceROI = (self.distanceArray[int(self.ROI), :])[
+                            distanceROI = (self.distanceArray[self.ROI, :])[
                                 CT]  # get line of distance for specific ROI
-                            tmpValid = np.array(
-                                [self.ROI], dtype=np.int64)
-                            tmpTrain = CT[distanceROI >
-                                          self.distanceThresold]
+                            if self.valid_size is False:
+                                tmpValid = np.array(
+                                    [self.ROI], dtype=np.int64)
+                                tmpTrain = CT[distanceROI >
+                                              self.distanceThresold]
+                            else:
+                                distanceToCut = np.sort(distanceROI)[:int(self.valid_size*len(CT))][-1]
+                                tmpValid = CT[distanceROI <=
+                                              distanceToCut]
+                                tmpTrain = CT[distanceROI >
+                                              distanceToCut]
 
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True

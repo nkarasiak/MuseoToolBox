@@ -62,4 +62,3 @@ plt.text(46,52,'Buffer of spatial auto-correlated pixels')
 plt.axis('off')
 
 plt.show()
-

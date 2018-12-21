@@ -137,14 +137,13 @@ Draw image
 
 
 
-
 .. image:: /auto_examples/crossValidation/images/sphx_glr_SpatialLeaveOnePixelOut_001.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  1.807 seconds)
+**Total running time of the script:** ( 0 minutes  1.731 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py:

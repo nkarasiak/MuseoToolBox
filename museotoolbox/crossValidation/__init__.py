@@ -99,10 +99,10 @@ class LeaveOneSubGroupOut(_sampleSelection):
         _sampleSelection.__init__(self)
 
 
-class SpatialLeavePSideOut(_sampleSelection):
+class SpatialLeaveAsideOut(_sampleSelection):
     def __init__(self,
                  distanceMatrix=None,
-                 minTrain=None,
+                 valid_size=0.5,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
@@ -117,8 +117,8 @@ class SpatialLeavePSideOut(_sampleSelection):
             Path of the vector.
         distanceMatrix : array.
             Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
-        minTrain : int/float, default None.
-            The minimum of training pixel to achieve. if float (0.01 to 0.99) will a percentange of the training pixels.
+        valid_size : float, default 0.5.
+            The percentage of validaton to keep : from 0 to 1.
         maxIter : default False.
             If False : will iterate as many times as the smallest number of groups.
             If int : will iterate the number of groups given in maxIter.
@@ -136,10 +136,9 @@ class SpatialLeavePSideOut(_sampleSelection):
 
         self.params = dict(
             distanceMatrix=distanceMatrix,
-            minTrain=minTrain,
+            valid_size=valid_size,
             n_splits=n_splits,
-            random_state=random_state,
-            furtherSplit=True)
+            random_state=random_state)
         _sampleSelection.__init__(self)
 
 

@@ -1,6 +1,6 @@
-museotoolbox\.crossValidation\.SpatialLeavePSideOut\.get\_n\_splits
+museotoolbox\.crossValidation\.SpatialLeaveAsideOut\.get\_n\_splits
 ===================================================================
 
 .. currentmodule:: museotoolbox.crossValidation
 
-.. automethod:: SpatialLeavePSideOut.get_n_splits
+.. automethod:: SpatialLeaveAsideOut.get_n_splits
