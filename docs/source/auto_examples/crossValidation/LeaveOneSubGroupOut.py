@@ -43,7 +43,7 @@ for tr,vl in LOSGO.split(X,y,s):
 
 ###############################################################################
 # Differences with sklearn
-# -------------------------------------------
+# ------------------------------------------- 
 # Sklearn do not use subgroups (only groups), so no hierarchical dependances.
     
 from sklearn.model_selection import LeaveOneGroupOut

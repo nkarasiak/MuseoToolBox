@@ -240,6 +240,7 @@ class learnAndPredict:
                 verbose=self.verbose + 1)
             grid.fit(X, y, groups)
             self.model = grid.best_estimator_
+            self.cloneModel = clone(self.model)
             self.model.fit(X, y, groups)
             for key in self.param_grid.keys():
                 message = 'best ' + key + ' : ' + str(grid.best_params_[key])
@@ -509,9 +510,6 @@ class learnAndPredict:
         """
         X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
         Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
-
-        if self.cloneModel is False:
-            self.cloneModel = clone(self.model)
 
         self.cloneModel.fit(X_train, Y_train)
 

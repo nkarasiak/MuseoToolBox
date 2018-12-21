@@ -161,7 +161,7 @@ So you can generate each centroid of a pixel that contains the polygon.
     (10873,) (1774,)
 
 
-**Total running time of the script:** ( 0 minutes  4.771 seconds)
+**Total running time of the script:** ( 0 minutes  2.782 seconds)
 
 
 .. _sphx_glr_download_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py:

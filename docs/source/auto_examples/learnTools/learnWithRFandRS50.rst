@@ -95,7 +95,7 @@ Start learning
     LAP = learnAndPredict(n_jobs=1)
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-
+    modelInit = LAP.model
 
 
 
@@ -230,7 +230,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  35.439 seconds)
+**Total running time of the script:** ( 0 minutes  21.661 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learnTools_learnWithRFandRS50.py:

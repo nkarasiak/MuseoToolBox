@@ -44,7 +44,7 @@ classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
 LAP = learnAndPredict(n_jobs=1)
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-
+modelInit = LAP.model
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------
