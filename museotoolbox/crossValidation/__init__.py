@@ -37,6 +37,7 @@ class LeavePSubGroupOut(_sampleSelection):
     verbose : int or False, default False.
         Controls the verbosity: the higher, the more messages.
     """
+
     def __init__(self,
                  valid_size=0.5,
                  n_splits=False,
@@ -76,6 +77,7 @@ class LeaveOneSubGroupOut(_sampleSelection):
     verbose : int or False, default False.
         Controls the verbosity: the higher, the more messages.
     """
+
     def __init__(self,
                  n_splits=False,
                  random_state=None,
@@ -105,15 +107,16 @@ class SpatialLeaveAsideOut(_sampleSelection):
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
-        If None, the random number generator is created with ``time.time()``.        
+        If None, the random number generator is created with ``time.time()``.
     verbose : int or False, default False.
         Controls the verbosity: the higher, the more messages.
-    
+
     References
     ----------
-    See "Combining ensemble modeling and remote sensing for mapping 
+    See "Combining ensemble modeling and remote sensing for mapping
     individual tree species at high spatial resolution" : https://doi.org/10.1016/j.foreco.2013.07.059.
     """
+
     def __init__(self,
                  distanceMatrix=None,
                  valid_size=0.5,
@@ -158,6 +161,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
     --------
     museotoolbox.vectorTools.getDistanceMatrix : to extract distanceMatrix and distanceLabel.
     """
+
     def __init__(self,
                  distanceThresold=None,
                  distanceMatrix=None,
@@ -198,10 +202,10 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         If None, the random number generator is created with ``time.time()``.
     verbose : int or False, default False.
         Controls the verbosity: the higher, the more messages.
-    
+
     References
     ----------
-    See "Spatial leave‐one‐out cross‐validation for variable selection in the 
+    See "Spatial leave‐one‐out cross‐validation for variable selection in the
     presence of spatial autocorrelation" : https://doi.org/10.1111/geb.12161.
     """
 
@@ -256,6 +260,7 @@ class RandomCV(_sampleSelection):
     [ 1600  1601  1605 ...,  9509  9561 10322] [ 3632  1988 11480 ..., 10321  9457  9508]
     [ 1599  1602  1603 ...,  9508  9560 10321] [ 3948 10928  3490 ..., 10322  9458  9561]
     """
+
     def __init__(self,
                  valid_size=0.5,
                  n_splits=False,

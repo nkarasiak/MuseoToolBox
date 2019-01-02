@@ -150,9 +150,9 @@ class distanceCV:
                                 0].shape[0] == 0:  # means no more ROI
                             if self.minEffectiveClass == self.n_splits:
                                 raise StopIteration()
-                            if self.verbose >1:
+                            if self.verbose > 1:
                                 print(
-                                str(C) + ' has no more valid pixel.\nResetting label mask.')
+                                    str(C) + ' has no more valid pixel.\nResetting label mask.')
                             self.mask[self.y == C] = 1
                             currentCT = np.logical_and(
                                 self.y == C, self.mask == 1)
@@ -169,7 +169,7 @@ class distanceCV:
 
                         np.random.seed(self.random_state)
                         self.ROI = np.random.permutation(
-                        np.where(currentCT)[0])[0]
+                            np.where(currentCT)[0])[0]
                         # When doing Leave-One-Out per subgroup
                         if self.groups is not None:
                             if self.verbose > 1:
@@ -213,9 +213,10 @@ class distanceCV:
                                 if self.valid_size >= 1:
                                     nToCut = self.valid_size
                                 else:
-                                    nToCut = int(self.valid_size*len(CT))
-                                    
-                                distanceToCut = np.sort(distanceROI)[:nToCut][-1]
+                                    nToCut = int(self.valid_size * len(CT))
+
+                                distanceToCut = np.sort(distanceROI)[
+                                    :nToCut][-1]
                                 tmpValid = CT[distanceROI <=
                                               distanceToCut]
                                 tmpTrain = CT[distanceROI >
@@ -269,7 +270,8 @@ class distanceCV:
                         self.mask[validation] = 0
                         return train, validation
                 else:
-                    raise AttributeError('Error : Not enough samples using this distance/valid_size.')
+                    raise AttributeError(
+                        'Error : Not enough samples using this distance/valid_size.')
                     raise StopIteration()
         else:
             raise StopIteration()

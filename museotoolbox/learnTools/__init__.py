@@ -223,7 +223,7 @@ class learnAndPredict:
                   param_grid, outStatsFromCV, cv):
         self.outStatsFromCV = outStatsFromCV
         from sklearn.model_selection import GridSearchCV
-        if outStatsFromCV is True and cv is not None:
+        if outStatsFromCV is True and cv is not False:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
@@ -232,6 +232,8 @@ class learnAndPredict:
             self.CV = cv
 
         if isinstance(param_grid, dict):
+            if cv is False:
+                print('Warning : No CV defined, will use the default 3-fold cross validation.')
             grid = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
@@ -417,7 +419,7 @@ class learnAndPredict:
                 outNoData=noDataConfidence)
         rM.run()
 
-    def saveCMFromCV(self, savePath, prefix='', header=True):
+    def saveCMFromCV(self, savePath, prefix='', header=True, n_jobs=1):
         """
         Save each confusion matrix (csv format) from cross-validation.
 
@@ -495,7 +497,7 @@ class learnAndPredict:
         if not os.path.exists(savePath):
             os.makedirs(savePath)
 
-        Parallel(n_jobs=self.n_jobs,
+        Parallel(n_jobs=n_jobs,
                  verbose=self.verbose + 1)(delayed(__computeStatsPerCV)(statsidx,
                                                                         trvl,
                                                                         savePath,
