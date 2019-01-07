@@ -274,9 +274,6 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     rois = []
     temps = []
     for field in fields:
-        if verbose:
-            pushFeedback(
-                "Values from '{}' field will be extracted".format(field))
         rstField = tempfile.mktemp('_roi.tif')
         rstField = rasterize(inRaster, inVector, field,
                              rstField, gdal.GDT_Float64)
@@ -309,10 +306,10 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
     if getCoords is True or onlyCoords is True:
         coords = np.array([], dtype=np.int64).reshape(0, 2)
-
+        
+    xDataType = convertGdalAndNumpyDataType(gdalDT)
     # Read block data
-    X = np.array([], dtype=convertGdalAndNumpyDataType(gdalDT)).reshape(0, d)
-    #Y = np.array([],dtype=np.int16).reshape(0,1)
+    X = np.array([], dtype=xDataType).reshape(0, d)
     F = np.array([], dtype=np.int64).reshape(
         0, nFields)  # now support multiple fields
 
@@ -362,7 +359,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                     F = np.concatenate((F, Ftemp))
 
                     # extract raster values (X)
-                    Xtp = np.empty((t[0].shape[0], d))
+                    Xtp = np.empty((t[0].shape[0], d),dtype=xDataType)
                     for k in range(d):
                         band = raster.GetRasterBand(
                             k + 1).ReadAsArray(j, i, cols, lines)
@@ -389,12 +386,11 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         toReturn = coords
     else:
         toReturn = [X] + [F[:, f] for f in range(nFields)]
-
+    
         if getCoords:
             toReturn = toReturn + [coords]
-
+    
     return toReturn
-
 
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
     """

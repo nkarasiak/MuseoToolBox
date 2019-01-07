@@ -339,6 +339,7 @@ class randomPerClass:
 
     def next(self):
         if self.iterPos < self.n_splits + 1:
+            
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.y):
@@ -347,18 +348,15 @@ class randomPerClass:
 
                 if self.valid_size < 1:  # means in percent
                     nToKeep = int(self.valid_size * len(Cpos))
-                    unMask = np.logical_and(self.y == C, self.mask == 1)
-                    tmpValid = np.random.permutation(
-                        np.where(unMask == 1)[0])[:nToKeep]
+                else:
+                    nToKeep = self.valid_size
+                
+                unMask = np.logical_and(self.y == C, self.mask == 1)
+                tmpValid = np.random.permutation(
+                    np.where(unMask == 1)[0])[:nToKeep]
 
-                    TF = np.in1d(Cpos, tmpValid, invert=True)
-                    tmpTrain = Cpos[TF]
-
-                if self.valid_size >= 1:
-                    tmpValid = np.asarray(
-                        [np.random.permutation(Cpos)[:self.valid_size]]).flatten()
-                    TF = np.in1d(Cpos, tmpValid, invert=True)
-                    tmpTrain = Cpos[TF]
+                TF = np.in1d(Cpos, tmpValid, invert=True)
+                tmpTrain = Cpos[TF]
 
                 if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
                         self.y[tmpValid]) or self.y[tmpValid][0] != C:
@@ -371,10 +369,15 @@ class randomPerClass:
                 self.mask[tmpValid] = 0
 
                 unMask = np.logical_and(self.y == C, self.mask == 1)
-                if np.where(unMask == 1)[0].shape[0] < int(
-                        self.valid_size * len(Cpos)):
-                    self.mask[np.where(self.y == C)[0]] = 1
-
+                if self.valid_size < 1:
+                    if np.where(unMask == 1)[0].shape[0] < int(
+                            self.valid_size * len(Cpos)):
+                        self.mask[np.where(self.y == C)[0]] = 1
+                else:
+                    if np.where(unMask==1)[0].shape[0] < self.valid_size:
+                        self.mask[np.where(self.y == C)[0]] = 1
+                        
+                    
             self.random_state += 1
             self.iterPos += 1
 
