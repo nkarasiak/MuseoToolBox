@@ -6,13 +6,13 @@ The other meaningful contribution is the **rasterMath** function which allow you
 
 ## What's the point ?
 Today, the main usages of Museo ToolBox are :
-- museoToolBox.**crossValidation**
+- museotoolbox.**crossValidation**
   - Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
-- museoToolBox.**rasterTools**
+- museotoolbox.**rasterTools**
   - Extract band value from vector ROI (polygons/points) (function : *getSamplesFromROI*)
   - **rasterMath**, certainly the most useful for most of the users : allows you to do some math on your raster. Just load it, rasterMath will return you the value for each pixel (in all bands) and do whatever you want : predicting a model, signal treatment (whittaker, double logistic...), modal value, mean...
-- museoToolBox.**learnTools**
-  - Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA,confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model and Museo ToolBox will do everything).
+- museotoolbox.**learnTools**
+  - Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model and Museo ToolBox will do everything).
 
 ## That seems cool, but is there some help to use this ?
 I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of course I help you : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).

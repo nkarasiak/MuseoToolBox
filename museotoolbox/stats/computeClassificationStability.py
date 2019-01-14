@@ -1,5 +1,5 @@
 # coding: utf-8
-from .. import rasterTools
+from .. import raster_tools
 import os
 from scipy import stats
 import numpy as np
@@ -26,9 +26,9 @@ class modalClass:
             inRaster,
             outRaster,
             inMaskRaster):
-        #process = rasterTools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
+        #process = raster_tools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
 
-        process = rasterTools.rasterMath(inRaster, inMaskRaster)
+        process = raster_tools.rasterMath(inRaster, inMaskRaster)
         process.addFunction(self.stabCalc, outRaster, 2, 3, 0)
         process.run()
 

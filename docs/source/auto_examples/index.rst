@@ -91,10 +91,30 @@ Examples related to the :mod:`museotoolbox.charts` module.
 Cross-Validation
 ------------------------
 
-Examples related to the :mod:`museotoolbox.crossValidation` module.
+Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 
 
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave One Out for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneOutPerClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneOutPerClass.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/cross_validation/LeaveOneOutPerClass
 
 .. raw:: html
 
@@ -102,9 +122,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveAsideOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
 
 .. raw:: html
 
@@ -114,7 +134,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/SpatialLeaveAsideOut
+   /auto_examples/cross_validation/SpatialLeaveAsideOut
 
 .. raw:: html
 
@@ -122,9 +142,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_RandomSampling50_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_RandomSampling50.py`
 
 .. raw:: html
 
@@ -134,7 +154,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/RandomSampling50
+   /auto_examples/cross_validation/RandomSampling50
 
 .. raw:: html
 
@@ -142,9 +162,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
 
 .. raw:: html
 
@@ -154,7 +174,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/LeaveOneSubGroupOutAndSaveVector
+   /auto_examples/cross_validation/LeaveOneSubGroupOutAndSaveVector
 
 .. raw:: html
 
@@ -162,9 +182,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -174,7 +194,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/LeaveOneSubGroupOut
+   /auto_examples/cross_validation/LeaveOneSubGroupOut
 
 .. raw:: html
 
@@ -182,9 +202,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
 
 .. raw:: html
 
@@ -194,7 +214,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/SpatialLeaveOnePixelOut
+   /auto_examples/cross_validation/SpatialLeaveOnePixelOut
 
 .. raw:: html
 
@@ -202,9 +222,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -214,7 +234,7 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/SpatialLeaveOneSubGroupOut
+   /auto_examples/cross_validation/SpatialLeaveOneSubGroupOut
 
 .. raw:: html
 
@@ -222,9 +242,9 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
 
 .. raw:: html
 
@@ -234,17 +254,17 @@ Examples related to the :mod:`museotoolbox.crossValidation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/crossValidation/LeavePSubGroupOut
+   /auto_examples/cross_validation/LeavePSubGroupOut
 .. raw:: html
 
     <div style='clear:both'></div>
 
-.. _learnTools:
+.. _learn_tools:
 
 Learn tools
 ------------------------
 
-Examples related to the :mod:`museotoolbox.learnTools` module.
+Examples related to the :mod:`museotoolbox.learn_tools` module.
 
 
 
@@ -255,9 +275,9 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
 
 .. raw:: html
 
@@ -267,7 +287,7 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/learnTools/learnWithRFandRS50
+   /auto_examples/learn_tools/learnWithRFandRS50
 
 .. raw:: html
 
@@ -275,9 +295,9 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50vector.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
 
 .. raw:: html
 
@@ -287,7 +307,7 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/learnTools/learnWithRFandRS50vector
+   /auto_examples/learn_tools/learnWithRFandRS50vector
 
 .. raw:: html
 
@@ -295,9 +315,9 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandCompareCV.py`
 
 .. raw:: html
 
@@ -307,17 +327,17 @@ Examples related to the :mod:`museotoolbox.learnTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/learnTools/learnWithRFandCompareCV
+   /auto_examples/learn_tools/learnWithRFandCompareCV
 .. raw:: html
 
     <div style='clear:both'></div>
 
-.. _rasterTools:
+.. _raster_tools:
 
 Raster tools
 ------------------------
 
-Examples related to the :mod:`museotoolbox.rasterTools` module.
+Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 
 
@@ -328,9 +348,9 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_modalClass_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
 
-        :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
 
 .. raw:: html
 
@@ -340,7 +360,7 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/rasterTools/modalClass
+   /auto_examples/raster_tools/modalClass
 
 .. raw:: html
 
@@ -348,9 +368,9 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_rasterMath_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_thumb.png
 
-        :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
 
 .. raw:: html
 
@@ -360,17 +380,17 @@ Examples related to the :mod:`museotoolbox.rasterTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/rasterTools/rasterMath
+   /auto_examples/raster_tools/rasterMath
 .. raw:: html
 
     <div style='clear:both'></div>
 
-.. _vectorTools:
+.. _vector_tools:
 
 Vector tools
 ------------------------
 
-Examples related to the :mod:`museotoolbox.vectorTools` module.
+Examples related to the :mod:`museotoolbox.vector_tools` module.
 
 
 .. raw:: html
@@ -379,9 +399,9 @@ Examples related to the :mod:`museotoolbox.vectorTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_readVectorFields_thumb.png
+    .. figure:: /auto_examples/vector_tools/images/thumb/sphx_glr_readVectorFields_thumb.png
 
-        :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+        :ref:`sphx_glr_auto_examples_vector_tools_readVectorFields.py`
 
 .. raw:: html
 
@@ -391,7 +411,7 @@ Examples related to the :mod:`museotoolbox.vectorTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/vectorTools/readVectorFields
+   /auto_examples/vector_tools/readVectorFields
 
 .. raw:: html
 
@@ -399,9 +419,9 @@ Examples related to the :mod:`museotoolbox.vectorTools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
+    .. figure:: /auto_examples/vector_tools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
 
-        :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+        :ref:`sphx_glr_auto_examples_vector_tools_copyRasterInVectorFields.py`
 
 .. raw:: html
 
@@ -411,7 +431,7 @@ Examples related to the :mod:`museotoolbox.vectorTools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/vectorTools/copyRasterInVectorFields
+   /auto_examples/vector_tools/copyRasterInVectorFields
 .. raw:: html
 
     <div style='clear:both'></div>

@@ -1,0 +1,261 @@
+.. note::
+    :class: sphx-glr-download-link-note
+
+    Click :ref:`here <sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py>` to download the full example code
+.. rst-class:: sphx-glr-example-title
+
+.. _sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py:
+
+
+Learn with Random-Forest and Random Sampling 50% (RS50)
+========================================================
+
+This example shows how to make a Random Sampling with 
+50% for each class.
+
+
+
+Import librairies
+-------------------------------------------
+
+
+
+.. code-block:: python
+
+
+    from museotoolbox.learn_tools import learnAndPredict
+    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox import datasets
+    from sklearn.ensemble import RandomForestClassifier
+
+
+
+
+
+
+
+Load HistoricalMap dataset
+-------------------------------------------
+
+
+
+.. code-block:: python
+
+
+    raster,vector = datasets.getHistoricalMap()
+    field = 'Class'
+
+
+
+
+
+
+
+Create CV
+-------------------------------------------
+
+
+
+.. code-block:: python
+
+
+    RS50 = RandomCV(valid_size=0.5,n_splits=2,
+                    random_state=12,verbose=False)
+
+
+
+
+
+
+
+Initialize Random-Forest
+---------------------------
+
+
+
+.. code-block:: python
+
+
+    classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
+
+
+
+
+
+
+
+Start learning
+---------------------------
+
+
+
+.. code-block:: python
+
+
+    LAP = learnAndPredict(n_jobs=1)
+    LAP.learnFromRaster(raster,vector,field,cv=RS50,
+                        classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+    modelInit = LAP.model
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Fitting 2 folds for each of 2 candidates, totalling 4 fits
+    best n_estimators : 200
+
+
+Get kappa from each fold
+---------------------------
+
+
+
+.. code-block:: python
+
+  
+    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        print(stats['kappa'])
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    0.94227598585
+    0.94193832769
+
+
+Get each confusion matrix from folds
+-----------------------------------------------
+
+
+
+.. code-block:: python
+
+
+    for stats in LAP.getStatsFromCV(confusionMatrix=True):
+        print(stats['confusionMatrix'])
+    
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    [[3693   68    1    9    0]
+     [  82 1050    0   14    0]
+     [   2    0 1137    0    0]
+     [  12   17    1  232    0]
+     [   4    0    0    0    0]]
+    [[3679   79    2   11    0]
+     [  70 1063    1   12    0]
+     [   0    0 1139    0    0]
+     [   8   22    3  229    0]
+     [   3    1    0    0    0]]
+
+
+Save each confusion matrix from folds
+-----------------------------------------------
+
+
+
+.. code-block:: python
+
+
+    LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+
+
+
+
+
+
+
+Predict map
+---------------------------
+
+
+
+.. code-block:: python
+
+    
+    LAP.predictRaster(raster,'/tmp/classification.tif')
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Prediction...  [........................................]0%    Prediction...  [##......................................]7%    Prediction...  [#####...................................]14%    Prediction...  [########................................]21%    Prediction...  [###########.............................]28%    Prediction...  [##############..........................]35%    Prediction...  [#################.......................]42%    Prediction...  [####################....................]50%    Prediction...  [######################..................]57%    Prediction...  [#########################...............]64%    Prediction...  [############################............]71%    Prediction...  [###############################.........]78%    Prediction...  [##################################......]85%    Prediction...  [#####################################...]92%    Prediction...  [########################################]100%
+    Saved /tmp/classification.tif using function predictArray
+
+
+Plot example
+
+
+
+.. code-block:: python
+
+
+    from matplotlib import pyplot as plt
+    import gdal
+    src=gdal.Open('/tmp/classification.tif')
+    plt.imshow(src.GetRasterBand(1).ReadAsArray(),cmap=plt.get_cmap('tab20'))
+    plt.axis('off')
+    plt.show()
+
+
+
+.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandRS50_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  18.424 seconds)
+
+
+.. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:
+
+
+.. only :: html
+
+ .. container:: sphx-glr-footer
+    :class: sphx-glr-footer-example
+
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Python source code: learnWithRFandRS50.py <learnWithRFandRS50.py>`
+
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Jupyter notebook: learnWithRFandRS50.ipynb <learnWithRFandRS50.ipynb>`
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.readthedocs.io>`_

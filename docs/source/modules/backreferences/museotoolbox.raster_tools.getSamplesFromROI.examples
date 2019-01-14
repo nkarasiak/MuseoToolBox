@@ -1,0 +1,130 @@
+
+
+Examples using ``museotoolbox.raster_tools.getSamplesFromROI``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_RandomSampling50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_RandomSampling50.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`

@@ -10,8 +10,8 @@ Plot confusion matrix from Cross-Validation, with F1 as subplot.
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.learnTools import learnAndPredict
-from museotoolbox.crossValidation import RandomCV
+from museotoolbox.learn_tools import learnAndPredict
+from museotoolbox.cross_validation import RandomCV
 from museotoolbox.charts import plotConfusionMatrix
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier

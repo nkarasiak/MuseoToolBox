@@ -70,7 +70,7 @@ def getHistoricalMap(return_X_y=False, centroid=False):
     vector = os.path.join(__pathFile, 'historicalmap/train.gpkg')
 
     if return_X_y:
-        from ..rasterTools import getSamplesFromROI
+        from ..raster_tools import getSamplesFromROI
         if centroid:
             vector = os.path.join(
                 __pathFile, 'historicalmap/train_centroid.gpkg')

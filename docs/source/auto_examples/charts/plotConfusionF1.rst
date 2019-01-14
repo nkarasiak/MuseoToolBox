@@ -21,8 +21,8 @@ Import librairies
 
 .. code-block:: python
 
-    from museotoolbox.learnTools import learnAndPredict
-    from museotoolbox.crossValidation import RandomCV
+    from museotoolbox.learn_tools import learnAndPredict
+    from museotoolbox.cross_validation import RandomCV
     from museotoolbox.charts import plotConfusionMatrix
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
@@ -129,8 +129,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.940865567675
-    0.942205648781
+    0.940637997034
+    0.94223633399
 
 
 Get each confusion matrix from folds
@@ -155,13 +155,13 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3688   72    1   10    0]
-     [  85 1047    0   14    0]
+    [[3687   73    1   10    0]
+     [  81 1052    0   13    0]
      [   2    0 1137    0    0]
-     [  10   17    1  234    0]
+     [  11   20    1  230    0]
      [   4    0    0    0    0]]
-    [[3676   81    2   12    0]
-     [  70 1066    1    9    0]
+    [[3679   79    2   11    0]
+     [  72 1062    1   11    0]
      [   0    0 1139    0    0]
      [   8   21    3  230    0]
      [   3    0    1    0    0]]
@@ -215,7 +215,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  5.745 seconds)
+**Total running time of the script:** ( 0 minutes  5.014 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionF1.py:

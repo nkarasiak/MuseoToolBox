@@ -59,13 +59,13 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave One Out for each class.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneOutPerClass_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveAsideOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneOutPerClass.py`
 
 .. raw:: html
 
@@ -73,7 +73,25 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveAsideOut.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneOutPerClass.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
 
 .. raw:: html
 
@@ -81,9 +99,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_RandomSampling50_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_RandomSampling50_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_RandomSampling50.py`
 
 .. raw:: html
 
@@ -91,7 +109,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_RandomSampling50.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_RandomSampling50.py`
 
 .. raw:: html
 
@@ -99,9 +117,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
 
 .. raw:: html
 
@@ -109,7 +127,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOutAndSaveVector.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
 
 .. raw:: html
 
@@ -117,9 +135,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -127,7 +145,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_LeaveOneSubGroupOut.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -135,9 +153,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
 
 .. raw:: html
 
@@ -145,7 +163,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOnePixelOut.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
 
 .. raw:: html
 
@@ -153,9 +171,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOneSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -163,7 +181,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_SpatialLeaveOneSubGroupOut.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py`
 
 .. raw:: html
 
@@ -171,9 +189,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/crossValidation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
 
-        :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
 
 .. raw:: html
 
@@ -181,7 +199,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_crossValidation_LeavePSubGroupOut.py`
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
 
 .. raw:: html
 
@@ -189,9 +207,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
 
 .. raw:: html
 
@@ -199,7 +217,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50.py`
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
 
 .. raw:: html
 
@@ -207,9 +225,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50vector.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
 
 .. raw:: html
 
@@ -217,7 +235,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandRS50vector.py`
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
 
 .. raw:: html
 
@@ -225,9 +243,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learnTools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandCompareCV.py`
 
 .. raw:: html
 
@@ -235,7 +253,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_learnTools_learnWithRFandCompareCV.py`
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandCompareCV.py`
 
 .. raw:: html
 
@@ -243,9 +261,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_modalClass_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
 
-        :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
 
 .. raw:: html
 
@@ -253,7 +271,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_rasterTools_modalClass.py`
+    * :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
 
 .. raw:: html
 
@@ -261,9 +279,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/rasterTools/images/thumb/sphx_glr_rasterMath_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_thumb.png
 
-        :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
 
 .. raw:: html
 
@@ -271,7 +289,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_rasterTools_rasterMath.py`
+    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
 
 .. raw:: html
 
@@ -279,9 +297,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_readVectorFields_thumb.png
+    .. figure:: /auto_examples/vector_tools/images/thumb/sphx_glr_readVectorFields_thumb.png
 
-        :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+        :ref:`sphx_glr_auto_examples_vector_tools_readVectorFields.py`
 
 .. raw:: html
 
@@ -289,7 +307,7 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_vectorTools_readVectorFields.py`
+    * :ref:`sphx_glr_auto_examples_vector_tools_readVectorFields.py`
 
 .. raw:: html
 
@@ -297,9 +315,9 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/vectorTools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
+    .. figure:: /auto_examples/vector_tools/images/thumb/sphx_glr_copyRasterInVectorFields_thumb.png
 
-        :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+        :ref:`sphx_glr_auto_examples_vector_tools_copyRasterInVectorFields.py`
 
 .. raw:: html
 
@@ -307,4 +325,4 @@ Examples using ``museotoolbox.datasets.getHistoricalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_vectorTools_copyRasterInVectorFields.py`
+    * :ref:`sphx_glr_auto_examples_vector_tools_copyRasterInVectorFields.py`
