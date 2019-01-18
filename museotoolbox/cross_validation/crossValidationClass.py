@@ -107,7 +107,8 @@ class distanceCV:
         if n_splits:
             self.n_splits = n_splits
             if self.n_splits > self.minEffectiveClass:
-                print(
+                if self.verbose:
+                    print(
                     'Warning : n_splits is superior to the number of unique samples/groups')
         else:
             self.n_splits = self.minEffectiveClass
