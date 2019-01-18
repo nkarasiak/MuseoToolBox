@@ -21,7 +21,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y = datasets.getHistoricalMap(return_X_y=True)
+X,y = datasets.historicalMap(return_X_y=True)
 
 ##############################################################################
 # Create CV
@@ -73,7 +73,7 @@ LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
 ##############################################################################
 # Predict map
 # ---------------------------
-raster,_ = datasets.getHistoricalMap()
+raster,_ = datasets.historicalMap()
 LAP.predictRaster(raster,'/tmp/classification.tif')
 
 ##########################

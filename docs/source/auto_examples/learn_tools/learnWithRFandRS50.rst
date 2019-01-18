@@ -42,7 +42,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
 
 
@@ -92,7 +92,7 @@ Start learning
 .. code-block:: python
 
 
-    LAP = learnAndPredict(n_jobs=1)
+    LAP = learnAndPredict(n_jobs=-1)
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
     modelInit = LAP.model
@@ -100,14 +100,6 @@ Start learning
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 200
 
 
 Get kappa from each fold
@@ -230,7 +222,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  18.424 seconds)
+**Total running time of the script:** ( 0 minutes  17.428 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

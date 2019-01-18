@@ -11,7 +11,7 @@ datasets
       :toctree: datasets
       :template: function.rst
    
-      getHistoricalMap
+      historicalMap
    
    
 

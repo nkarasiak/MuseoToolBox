@@ -42,7 +42,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
     group = 'uniquefid'
 
@@ -112,26 +112,20 @@ Create list of different CV
  .. code-block:: none
 
     Received groups value, but randomCV don't use it
-    Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 200
+    Received groups value, but randomCV don't use it
+    Received groups value, but randomCV don't use it
     Kappa for RandomCV
-    0.933189763614
-    0.942280287328
+    0.947957720273
+    0.943089880619
     ====================
-    Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
     Kappa for LeavePSubGroupOut
-    0.7429563848
-    0.743591301828
+    0.735830819676
+    0.719496326076
     ====================
-    Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
     Kappa for LeaveOneSubGroupOut
-    0.864724447282
-    0.749342642376
+    0.767377813199
+    0.611327237812
     ====================
-    Fitting 3 folds for each of 2 candidates, totalling 6 fits
-    best n_estimators : 100
     Kappa for StratifiedKFold
     0.91924392195
     0.879234058689
@@ -163,7 +157,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  32.136 seconds)
+**Total running time of the script:** ( 0 minutes  33.483 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:

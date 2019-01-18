@@ -41,7 +41,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
 
 
@@ -99,14 +99,6 @@ Start learning
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best n_estimators : 100
 
 
 Get kappa from each fold
@@ -130,8 +122,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.942563955348
-    0.943893805647
+    0.939792966162
+    0.943018689214
 
 
 Get each confusion matrix from folds
@@ -156,16 +148,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3688   71    1   11    0]
-     [  81 1051    0   14    0]
-     [   1    0 1138    0    0]
-     [  12   18    1  231    0]
+    [[3695   66    1    9    0]
+     [  88 1046    0   12    0]
+     [   3    0 1136    0    0]
+     [  11   19    1  231    0]
      [   4    0    0    0    0]]
-    [[3676   81    2   12    0]
-     [  68 1065    1   12    0]
+    [[3681   76    2   12    0]
+     [  67 1066    1   12    0]
      [   0    0 1139    0    0]
-     [   8   20    3  231    0]
-     [   3    1    0    0    0]]
+     [   9   21    3  229    0]
+     [   4    0    0    0    0]]
 
 
 Plot confusion matrix
@@ -225,7 +217,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  3.563 seconds)
+**Total running time of the script:** ( 0 minutes  4.014 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionAcc.py:

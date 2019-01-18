@@ -86,6 +86,7 @@ class _sampleSelection:
 
         if y is not None:
             self.y = y
+
         n_splits = self.crossvalidation(
             y=y,
             groups=groups,

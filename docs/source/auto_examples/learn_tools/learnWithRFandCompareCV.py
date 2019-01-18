@@ -21,7 +21,7 @@ from sklearn.model_selection import StratifiedKFold
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.getHistoricalMap()
+raster,vector = datasets.historicalMap()
 field = 'Class'
 group = 'uniquefid'
 

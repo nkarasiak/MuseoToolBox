@@ -47,17 +47,32 @@ class progressBar:
         self.lastPosition = None
         self.feedback = feedback
 
-    def addPosition(self, value):
-        inPercent = int(value / self.total * 100)
+    def addPosition(self, value=False):
+        """
+        Add progress to the bar.
+
+        Parameters
+        ----------
+
+        value : int or False.
+            If false, will add one.
+        """
+
+        if value is False:
+            self.start += 1
+            value = self.start
+            inPercent = int(self.start / self.total * 100)
+        else:
+            inPercent = int(value / self.total * 100)
         if inPercent != self.lastPosition:
             self.lastPosition = inPercent
             self.nHash = int(self.length * (value / self.total))
             self.nPoints = int(self.length - int(self.nHash))
 
-            if self.feedback:
-                self.feedback.setProgress(self.lastPosition)
-            else:
-                self.printBar(inPercent)
+        if self.feedback:
+            self.feedback.setProgress(self.lastPosition)
+        else:
+            self.printBar(inPercent)
 
     def printBar(self, value):
         if value == 100:

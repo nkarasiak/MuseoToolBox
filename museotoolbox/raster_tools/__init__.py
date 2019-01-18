@@ -26,6 +26,7 @@ import tempfile
 from ..internal_tools import progressBar, pushFeedback
 from ..vector_tools import sampleExtraction
 
+
 def rasterMaskFromVector(inVector, inRaster, outRaster):
     """
     Create a raster mask where polygons/point are pixels to keep.
@@ -306,7 +307,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
     if getCoords is True or onlyCoords is True:
         coords = np.array([], dtype=np.int64).reshape(0, 2)
-        
+
     xDataType = convertGdalAndNumpyDataType(gdalDT)
     # Read block data
     X = np.array([], dtype=xDataType).reshape(0, d)
@@ -359,7 +360,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                     F = np.concatenate((F, Ftemp))
 
                     # extract raster values (X)
-                    Xtp = np.empty((t[0].shape[0], d),dtype=xDataType)
+                    Xtp = np.empty((t[0].shape[0], d), dtype=xDataType)
                     for k in range(d):
                         band = raster.GetRasterBand(
                             k + 1).ReadAsArray(j, i, cols, lines)
@@ -386,11 +387,12 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         toReturn = coords
     else:
         toReturn = [X] + [F[:, f] for f in range(nFields)]
-    
+
         if getCoords:
             toReturn = toReturn + [coords]
-    
+
     return toReturn
+
 
 def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
     """
@@ -528,7 +530,7 @@ class rasterMath:
             outNBand=False,
             outGdalDT=False,
             outNoData=False,
-            functionKwargs=False):
+            **kwargs):
         """
         Add function to rasterMath.
 
@@ -550,12 +552,7 @@ class rasterMath:
         """
 
         if outGdalDT is False:
-            if functionKwargs is False:
-                dtypeName = function(self.getRandomBlock()).dtype.name
-            else:
-                dtypeName = function(
-                    self.getRandomBlock(),
-                    **functionKwargs).dtype.name
+            dtypeName = function(self.getRandomBlock(), **kwargs).dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
             pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
 
@@ -568,7 +565,7 @@ class rasterMath:
 
         self.__addOutput__(outRaster, outNBand, outGdalDT)
         self.functions.append(function)
-        self.functionsKwargs.append(functionKwargs)
+        self.functionsKwargs.append(kwargs)
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self, outRaster, outNBand, outGdalDT):

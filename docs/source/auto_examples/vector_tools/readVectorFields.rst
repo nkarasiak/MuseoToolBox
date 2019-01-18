@@ -37,7 +37,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = mtb.datasets.getHistoricalMap()
+    raster,vector = mtb.datasets.historicalMap()
 
 
 
@@ -136,7 +136,7 @@ As multiple fields can begin with C, function returns a column per field
     (17, 1)
 
 
-**Total running time of the script:** ( 0 minutes  0.013 seconds)
+**Total running time of the script:** ( 0 minutes  0.007 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_readVectorFields.py:

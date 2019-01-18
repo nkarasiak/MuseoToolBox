@@ -40,7 +40,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
     group = 'uniquefid'
 
@@ -339,7 +339,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.165 seconds)
+**Total running time of the script:** ( 0 minutes  0.188 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

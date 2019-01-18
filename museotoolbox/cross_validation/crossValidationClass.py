@@ -91,6 +91,12 @@ class distanceCV:
 
         self.nTries = 0
 
+        self.random_state = random_state
+        self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
+        self.Stats = stats
+        if self.stats:
+            self.Cstats = []
+        
         if self.groups is None:
             self.minEffectiveClass = min(
                 [len(self.y[self.y == i]) for i in np.unique(self.y)])
@@ -103,22 +109,19 @@ class distanceCV:
             if self.n_splits > self.minEffectiveClass:
                 print(
                     'Warning : n_splits is superior to the number of unique samples/groups')
-                """
-                print(
-                    'Warning : n_splits will be {} instead of {}'.format(
-                        self.minEffectiveClass, n_splits))
-                self.n_splits = self.minEffectiveClass
-                """
         else:
             self.n_splits = self.minEffectiveClass
-
+            splits = []
+            try: # TODO : Improve method to run next 
+            # Compute split in order to have real min Effective class (if samples are to close).
+                while self.next():
+                    splits.append(1)
+            except StopIteration:
+                pass
+            self.n_splits = len(splits)
+        
         if self.verbose:
             print('n_splits:' + str(self.n_splits))
-        self.random_state = random_state
-        self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        self.Stats = stats
-        if self.stats:
-            self.Cstats = []
 
     def __iter__(self):
         return self
@@ -313,17 +316,17 @@ class randomPerClass:
         self.train_size = 1 - self.valid_size
 
         smallestClass = np.min(np.unique(y, return_counts=True)[1])
-        
+
         if n_splits is False:
-            if self.valid_size>=1:
+            if self.valid_size >= 1:
                 self.n_splits = smallestClass
             else:
                 self.n_splits = int(1 / self.valid_size)
         else:
             self.n_splits = n_splits
 
-        if self.valid_size<1:
-            test_n_splits = int(valid_size * smallestClass)    
+        if self.valid_size < 1:
+            test_n_splits = int(valid_size * smallestClass)
             if test_n_splits == 0:
                 raise ValueError('Valid size is too small')
 
@@ -343,7 +346,7 @@ class randomPerClass:
 
     def next(self):
         if self.iterPos < self.n_splits + 1:
-            
+
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
             for C in np.unique(self.y):
@@ -354,7 +357,7 @@ class randomPerClass:
                     nToKeep = int(self.valid_size * len(Cpos))
                 else:
                     nToKeep = self.valid_size
-                
+
                 unMask = np.logical_and(self.y == C, self.mask == 1)
                 tmpValid = np.random.permutation(
                     np.where(unMask == 1)[0])[:nToKeep]
@@ -378,10 +381,9 @@ class randomPerClass:
                             self.valid_size * len(Cpos)):
                         self.mask[np.where(self.y == C)[0]] = 1
                 else:
-                    if np.where(unMask==1)[0].shape[0] < self.valid_size:
+                    if np.where(unMask == 1)[0].shape[0] < self.valid_size:
                         self.mask[np.where(self.y == C)[0]] = 1
-                        
-                    
+
             self.random_state += 1
             self.iterPos += 1
 

@@ -42,7 +42,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = mtb.datasets.getHistoricalMap()
+    raster,vector = mtb.datasets.historicalMap()
     outVector='/tmp/vector_withROI.gpkg'
 
 
@@ -82,7 +82,7 @@ Read values from both vectors
 
 
     originalY = mtb.vector_tools.readValuesFromVector(vector,'Class')
-    extractedY,X = mtb.vector_tools.readValuesFromVector(outVector,'Class',bandPrefix='band_')
+    X,y = mtb.vector_tools.readValuesFromVector(outVector,'Class',bandPrefix='band_')
 
 
 
@@ -119,7 +119,7 @@ Number of Y in the new vector is the total number of pixel in the polygons
 .. code-block:: python
 
 
-    print(extractedY.shape)
+    print(y.shape)
 
 
 
@@ -143,7 +143,7 @@ X has the same size of Y, but in 3 dimensions because our raster has 3 bands
 
     print(X.shape)
     print(X[410:420,:])
-    print(extractedY[410:420])
+    print(y[410:420])
 
 
 
@@ -177,7 +177,7 @@ Plot blue and red band
 
 
     plt.figure(1)
-    colors =  [int(i % 23) for i in extractedY]
+    colors =  [int(i % 23) for i in y]
     plt.scatter(X[:,0],X[:,2],c=colors,alpha=.8)
     plt.show()
 
@@ -190,7 +190,7 @@ Plot blue and red band
 
 
 
-**Total running time of the script:** ( 0 minutes  2.446 seconds)
+**Total running time of the script:** ( 0 minutes  1.891 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_copyRasterInVectorFields.py:

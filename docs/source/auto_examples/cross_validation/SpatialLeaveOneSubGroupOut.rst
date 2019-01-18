@@ -38,7 +38,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector,centroid = datasets.getHistoricalMap(centroid=True)
+    raster,vector,centroid = datasets.historicalMap(centroid=True)
 
     field = 'Class'
 
@@ -99,14 +99,6 @@ n_splits will be the number  of the least populated class
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    (10257,) (2390,)
-    (8680,) (2831,)
 
 
 Draw image
@@ -141,7 +133,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.203 seconds)
+**Total running time of the script:** ( 0 minutes  0.257 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py:

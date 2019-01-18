@@ -19,7 +19,7 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.getHistoricalMap()
+raster,vector = datasets.historicalMap()
 field = 'Class'
 y = vector_tools.readValuesFromVector(vector,field)
 

@@ -41,7 +41,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
     X,y = raster_tools.getSamplesFromROI(raster,vector,field)
     distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
@@ -131,7 +131,7 @@ we use sampleExtraction from vector_tools to generate a temporary vector.
     /tmp/SLOPO_train_1.gpkg /tmp/SLOPO_valid_1.gpkg
 
 
-**Total running time of the script:** ( 0 minutes  3.689 seconds)
+**Total running time of the script:** ( 0 minutes  3.932 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveAsideOut.py:

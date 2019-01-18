@@ -21,7 +21,7 @@ from matplotlib import pyplot as plt
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = mtb.datasets.getHistoricalMap()
+raster,vector = mtb.datasets.historicalMap()
 outVector='/tmp/vector_withROI.gpkg'
 
 
@@ -41,7 +41,7 @@ mtb.vector_tools.sampleExtraction(raster,vector,
 # Read values from both vectors
 
 originalY = mtb.vector_tools.readValuesFromVector(vector,'Class')
-extractedY,X = mtb.vector_tools.readValuesFromVector(outVector,'Class',bandPrefix='band_')
+X,y = mtb.vector_tools.readValuesFromVector(outVector,'Class',bandPrefix='band_')
 
 #############################################
 # Original vector is polygon type, each polygons contains multiple pixel
@@ -51,20 +51,20 @@ print(originalY.shape)
 #############################################
 # Number of Y in the new vector is the total number of pixel in the polygons
 
-print(extractedY.shape)
+print(y.shape)
 
 #############################################
 # X has the same size of Y, but in 3 dimensions because our raster has 3 bands
 
 print(X.shape)
 print(X[410:420,:])
-print(extractedY[410:420])
+print(y[410:420])
 
 #############################################
 # Plot blue and red band
 
 plt.figure(1)
-colors =  [int(i % 23) for i in extractedY]
+colors =  [int(i % 23) for i in y]
 plt.scatter(X[:,0],X[:,2],c=colors,alpha=.8)
 plt.show()
 

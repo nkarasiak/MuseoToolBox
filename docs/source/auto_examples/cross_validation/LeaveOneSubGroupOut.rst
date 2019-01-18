@@ -40,7 +40,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
     field = 'Class'
     group = 'uniquefid'
     X,y,s = getSamplesFromROI(raster,vector,field,group)
@@ -161,7 +161,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.152 seconds)
+**Total running time of the script:** ( 0 minutes  0.194 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneSubGroupOut.py:

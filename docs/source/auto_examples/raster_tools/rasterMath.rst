@@ -39,7 +39,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = datasets.getHistoricalMap()
+    raster,vector = datasets.historicalMap()
 
 
 
@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[ 69  69  41]
-     [119 119  91]
-     [141 141 113]
+    [[198 179 162]
+     [108  89  72]
+     [176 157 140]
      ..., 
-     [ 72  59  42]
-     [ 54  41  24]
-     [ 63  50  33]]
+     [141 134 128]
+     [134 127 121]
+     [129 122 116]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -91,12 +91,12 @@ I suggest you to define type in numpy array to save space while creating the ras
     def sub(x):
         return np.array((x[:,0]-x[:,1])).astype(np.int16) 
 
-    def add(x):
+    def add(x,constant=0):
     
-        return np.array((x[:,0]+x[:,1])).astype(np.int16) 
+        return np.array((x[:,0]+x[:,1]+constant)).astype(np.int16) 
 
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
-    rM.addFunction(add,outRaster='/tmp/add.tif')
+    rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
 
 
 
@@ -157,7 +157,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.524 seconds)
+**Total running time of the script:** ( 0 minutes  0.418 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

@@ -144,22 +144,16 @@ def readValuesFromVector(vector, *args, **kwargs):
     listFields = []
 
     # add kwargs
+    extractBands = False
+    getFeatures = False
     if kwargs:
         # check if need to extract bands from vector
         if 'bandPrefix' in kwargs.keys():
             extractBands = True
             bandPrefix = kwargs['bandPrefix']
-        else:
-            extractBands = False
-
         # check if need to extract features from vector
         if 'getFeatures' in kwargs.keys():
             getFeatures = kwargs['getFeatures']
-        else:
-            getFeatures = False
-    else:
-        extractBands = False
-        getFeatures = False
 
     if extractBands:
         bandsFields = []
@@ -188,7 +182,7 @@ def readValuesFromVector(vector, *args, **kwargs):
                     bandPrefix, listFields))
 
         # Initialize empty arrays
-        if len(args) > 0:  # for single fields
+        if len(args) > 0:  # for single fields            
             ROIlevels = np.zeros(
                 [lyr.GetFeatureCount(), len(args)], dtype=np.int32)
 
@@ -215,13 +209,15 @@ def readValuesFromVector(vector, *args, **kwargs):
         # Initialize return
         fieldsToReturn = []
 
+        # if bandPrefix
+        if extractBands:
+            fieldsToReturn.append(ROIvalues)
+
         # if single fields
         if len(args) > 0:
             for i in range(len(args)):
                 fieldsToReturn.append(np.asarray(ROIlevels)[:, i])
-        # if bandPrefix
-        if extractBands:
-            fieldsToReturn.append(ROIvalues)
+
         # if features
         if getFeatures:
             fieldsToReturn.append(features)

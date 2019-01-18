@@ -16,7 +16,7 @@ import museotoolbox as mtb
 # Load HistoricalMap dataset
 # ----------------------------
 
-raster,vector = mtb.datasets.getHistoricalMap()
+raster,vector = mtb.datasets.historicalMap()
 
 ###############################################################################
 # .. note::

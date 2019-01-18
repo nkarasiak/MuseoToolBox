@@ -20,7 +20,7 @@ import os
 __pathFile = os.path.dirname(os.path.realpath(__file__))
 
 
-def getHistoricalMap(return_X_y=False, centroid=False):
+def historicalMap(return_X_y=False, centroid=False):
     """
     Get a sample of a french Historical map made by the army (carte d'état-major).
     These maps are used to identify forest in the 1800's.

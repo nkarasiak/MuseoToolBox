@@ -39,7 +39,7 @@ Load HistoricalMap dataset
 .. code-block:: python
 
 
-    raster,vector = mtb.datasets.getHistoricalMap()
+    raster,vector = mtb.datasets.historicalMap()
 
 
 
@@ -68,13 +68,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[ 69  69  41]
-     [119 119  91]
-     [141 141 113]
+    [[175 165 153]
+     [ 69  59  47]
+     [174 166 153]
      ..., 
-     [ 72  59  42]
-     [ 54  41  24]
-     [ 63  50  33]]
+     [197 191 179]
+     [127 123 114]
+     [168 165 160]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -152,7 +152,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  5.456 seconds)
+**Total running time of the script:** ( 0 minutes  4.258 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

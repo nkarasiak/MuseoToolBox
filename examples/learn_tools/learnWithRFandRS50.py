@@ -21,7 +21,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.getHistoricalMap()
+raster,vector = datasets.historicalMap()
 field = 'Class'
 
 ##############################################################################

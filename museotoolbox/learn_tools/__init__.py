@@ -24,7 +24,6 @@ from sklearn.base import clone
 from sklearn import warnings
 
 
-
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
@@ -102,7 +101,8 @@ class learnAndPredict:
             classifier=None,
             param_grid=None,
             scale=False,
-            cv=False):
+            cv=False,
+            scoring='accuracy'):
         """
         learn Model from vector/array.
 
@@ -132,7 +132,7 @@ class learnAndPredict:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
         self.X = X
-        
+
         if scale:
             self.scale = True
             self.scaleX()
@@ -155,7 +155,8 @@ class learnAndPredict:
             inGroup=False,
             param_grid=None,
             scale=False,
-            cv=False):
+            cv=False,
+            scoring='accuracy'):
         """
         learn Model from raster.
 
@@ -212,32 +213,35 @@ class learnAndPredict:
             cv)
 
     def __learn__(self, X, y, groups, classifier,
-                  param_grid, cv):
-        
-        if cv is not False:
+                  param_grid, cv, scoring='accuracy'):
+
+        if cv is not False and not isinstance(cv, int):
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
         else:
-            self.CV = cv  
-            
+            self.CV = cv
+
         from sklearn.model_selection import GridSearchCV
 
         if isinstance(param_grid, dict):
-            grid = GridSearchCV(
+            self.gS = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
                 cv=cv,
+                scoring=scoring,
                 n_jobs=self.n_jobs,
-                verbose=self.verbose + 1)
-            grid.fit(X, y, groups)
-            self.model = grid.best_estimator_
+                verbose=self.verbose)
+            self.gS.fit(X, y, groups)
+            self.model = self.gS.best_estimator_
             self.cloneModel = clone(self.model)
             self.model.fit(X, y, groups)
-            for key in self.param_grid.keys():
-                message = 'best ' + key + ' : ' + str(grid.best_params_[key])
-                print(message)
+            if self.verbose:
+                for key in self.param_grid.keys():
+                    message = 'best ' + key + ' : ' + \
+                        str(self.gS.best_params_[key])
+                    print(message)
 
         else:
             self.model = self.classifier.fit(X=X, y=y)
@@ -291,7 +295,16 @@ class learnAndPredict:
             model = np.load(path)
             self.__dict__.update(model['LAP'].tolist())
 
-    def predictArray(self, X):
+    def __convertX(self, X, **kwargs):
+        if 'Xfunction' in kwargs :
+            Xfunction = kwargs['Xfunction']
+            kwargs.pop('Xfunction',None)
+            X = Xfunction(X,**kwargs)
+        if self.scale:
+            X = self.scaler.transform(X)
+        return X
+        
+    def predictArray(self, X, **kwargs):
         """
         Predict label from array.
 
@@ -300,12 +313,12 @@ class learnAndPredict:
         X : array.
             The array to predict. Must have the same number of bands of the initial array/raster.
         """
-        if self.scale:
-            X = self.scaler.transform(X)
+        X = self.__convertX(X,**kwargs)
+        
         Xpredict = self.model.predict(X)
         return Xpredict
 
-    def predictConfidencePerClass(self, X):
+    def predictConfidencePerClass(self, X, **kwargs):
         """
         Predict label from array.
 
@@ -314,19 +327,18 @@ class learnAndPredict:
         X : array.
             The array to predict proba. Must have the same number of bands of the initial array/raster.
 
-
         Returns
         ----------
         Xpredict : array.
             The probability from 0 to 100.
         """
-        if self.scale:
-            X = self.scaler.transform(X)
+        self.__convertX(X, **kwargs)
+        
         Xpredict = self.model.predict_proba(X) * 100
-        self.Xpredict = Xpredict
+        self.Xpredict = Xpredict        
         return Xpredict
 
-    def predictConfidenceOfPredictedClass(self, X):
+    def predictConfidenceOfPredictedClass(self, X, **kwargs):
         """
         Predict label from array.
 
@@ -343,8 +355,7 @@ class learnAndPredict:
         if hasattr(self, 'Xpredict'):
             Xpredict = np.amax(self.Xpredict, axis=1)
         else:
-            if self.scale:
-                X = self.scaler.transform(X)
+            self.__convertX(X, **kwargs)
             Xpredict = np.amax(self.model.predict_proba(X) * 100, axis=1)
         return Xpredict
 
@@ -355,7 +366,8 @@ class learnAndPredict:
             confidencePerClass=False,
             confidence=False,
             inMaskRaster=False,
-            outNoData=0):
+            outNoData=0,
+            **kwargs):
         """
         Predict label from raster using previous learned model.
         This function will call self.predictArray(X).
@@ -388,7 +400,8 @@ class learnAndPredict:
             outRaster,
             outNBand=1,
             outGdalDT=gdalDT,
-            outNoData=outNoData)
+            outNoData=outNoData,
+            **kwargs)
 
         noDataConfidence = -9999
 
@@ -398,7 +411,8 @@ class learnAndPredict:
                 confidencePerClass,
                 outNBand=False,
                 outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
-                outNoData=noDataConfidence)
+                outNoData=noDataConfidence,
+                **kwargs)
 
         if confidence:
             rM.addFunction(
@@ -406,7 +420,8 @@ class learnAndPredict:
                 confidence,
                 outNBand=1,
                 outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
-                outNoData=noDataConfidence)
+                outNoData=noDataConfidence,
+                **kwargs)
         rM.run()
 
     def saveCMFromCV(self, savePath, prefix='', header=True, n_jobs=1):

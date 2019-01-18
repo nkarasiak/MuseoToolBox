@@ -13,6 +13,6 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 from __future__ import absolute_import
-from . import learn_tools, vector_tools, raster_tools, cross_validation, datasets, stats #, charts
+from . import learn_tools, vector_tools, raster_tools, cross_validation, datasets, stats  # , charts
 
 __version__ = "0.9.91"

@@ -45,14 +45,14 @@ class LeaveOneOutPerClass(_sampleSelection):
 
         self.crossvalidation = _cvc.randomPerClass
 
-        
         self.params = dict(
             valid_size=1,
             n_splits=n_splits,
             random_state=random_state)
 
         _sampleSelection.__init__(self)
-        
+
+
 class LeavePSubGroupOut(_sampleSelection):
     """
     Generate a Cross-Validation using subgroup (each group belong to a unique label).

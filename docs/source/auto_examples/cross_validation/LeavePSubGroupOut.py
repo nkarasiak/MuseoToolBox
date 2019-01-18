@@ -19,7 +19,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.getHistoricalMap()
+raster,vector = datasets.historicalMap()
 field = 'Class'
 group = 'uniquefid'
 

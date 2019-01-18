@@ -18,7 +18,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = mtb.datasets.getHistoricalMap()
+raster,vector = mtb.datasets.historicalMap()
 
 ##############################################################################
 # Initialize rasterMath with raster
