@@ -226,17 +226,17 @@ class learnAndPredict:
         from sklearn.model_selection import GridSearchCV
 
         if isinstance(param_grid, dict):
-            self.gS = GridSearchCV(
+            self.model = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
                 cv=cv,
                 scoring=scoring,
                 n_jobs=self.n_jobs,
                 verbose=self.verbose)
-            self.gS.fit(X, y, groups)
-            self.model = self.gS.best_estimator_
-            self.cloneModel = clone(self.model)
             self.model.fit(X, y, groups)
+            # self.model = self.gS.best_estimator_
+            self.cloneModel = clone(self.model.best_estimator_)
+            #self.model.fit(X, y, groups)
             if self.verbose:
                 for key in self.param_grid.keys():
                     message = 'best ' + key + ' : ' + \
