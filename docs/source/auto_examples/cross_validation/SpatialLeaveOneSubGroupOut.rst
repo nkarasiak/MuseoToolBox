@@ -91,7 +91,7 @@ n_splits will be the number  of the least populated class
 
 .. code-block:: python
 
-
+    SLOSGO.get_n_splits(X,y,groups)
     for tr,vl in SLOSGO.split(X,y,groups):
         print(tr.shape,vl.shape)
     
@@ -141,7 +141,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.176 seconds)
+**Total running time of the script:** ( 0 minutes  0.184 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py:

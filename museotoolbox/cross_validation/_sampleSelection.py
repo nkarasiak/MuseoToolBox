@@ -18,7 +18,7 @@ import os
 from .. import raster_tools, vector_tools
 from . import crossValidationClass
 import numpy as np
-
+from itertools import tee
 
 class _sampleSelection:
     def __init__(self):
@@ -86,12 +86,18 @@ class _sampleSelection:
 
         if y is not None:
             self.y = y
-
-        n_splits = self.crossvalidation(
-            y=y,
-            groups=groups,
-            verbose=self.verbose,
-            **self.params).n_splits
+        
+        if self.crossvalidation.__name__ == 'distanceCV':
+            ### TODO : Find a better way to get n_splits for distanceCV
+            ### As distance may differ from real n_splits, hard to not run the whole thing
+            n_splits = 0
+            for tr,vl in self.crossvalidation(
+            X=X, y=y, groups=groups, verbose=self.verbose, **self.params):
+                n_splits += 1       
+        else:
+            n_splits = self.crossvalidation(
+            X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits
+        
         return n_splits
 
     def split(self, X=None, y=None, groups=None):
@@ -123,7 +129,7 @@ class _sampleSelection:
         if self.__alreadyRead:
             self.reinitialize()
         self.__alreadyRead = True
-
+        
         return self.crossvalidation(
             X=X, y=y, groups=groups, verbose=self.verbose, **self.params)
 

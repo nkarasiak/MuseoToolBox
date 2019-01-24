@@ -40,7 +40,6 @@ print(SLOPO.get_n_splits(X,y))
 # .. note::
 #    Split is made to generate each fold
 
-
 for tr,vl in SLOPO.split(X,y):
     print(tr.shape,vl.shape)
     

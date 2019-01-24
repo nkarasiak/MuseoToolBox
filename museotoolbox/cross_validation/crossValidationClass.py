@@ -118,7 +118,6 @@ class distanceCV:
             # but if running self.__next__() here, iterator will be empty
             # after.
             self.n_splits = self.minEffectiveClass
-
         if self.verbose:
             print('n_splits:' + str(self.n_splits))
 

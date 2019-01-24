@@ -134,7 +134,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7fd9f4a4dc88>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7f3ea1cadcf8>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -146,7 +146,7 @@ Read the model
            param_grid={'n_estimators': [100, 200]}, pre_dispatch='2*n_jobs',
            refit=True, return_train_score='warn', scoring='accuracy',
            verbose=1)
-    {'mean_fit_time': array([ 0.63643289,  1.06290293]), 'std_fit_time': array([ 0.00264573,  0.02864861]), 'mean_score_time': array([ 0.10340083,  0.20547557]), 'std_score_time': array([ 0.00057447,  0.00018334]), 'param_n_estimators': masked_array(data = [100 200],
+    {'mean_fit_time': array([ 0.59196961,  0.96169055]), 'std_fit_time': array([ 0.04691994,  0.01150239]), 'mean_score_time': array([ 0.16589677,  0.20359278]), 'std_score_time': array([ 0.05117166,  0.00047588]), 'param_n_estimators': masked_array(data = [100 200],
                  mask = [False False],
            fill_value = ?)
     , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_score': array([ 0.96630813,  0.96678266]), 'split1_test_score': array([ 0.96646631,  0.96646631]), 'mean_test_score': array([ 0.96638722,  0.96662449]), 'std_test_score': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_score': array([2, 1], dtype=int32), 'split0_train_score': array([ 0.99794466,  0.99794466]), 'split1_train_score': array([ 0.99794466,  0.99794466]), 'mean_train_score': array([ 0.99794466,  0.99794466]), 'std_train_score': array([ 0.,  0.])}
@@ -273,7 +273,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  13.689 seconds)
+**Total running time of the script:** ( 0 minutes  12.998 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

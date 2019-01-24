@@ -88,7 +88,6 @@ n_splits will be the number  of the least populated class
 .. code-block:: python
 
 
-
     for tr,vl in SLOPO.split(X,y):
         print(tr.shape,vl.shape)
     
@@ -143,7 +142,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.382 seconds)
+**Total running time of the script:** ( 0 minutes  1.421 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:
