@@ -15,6 +15,7 @@ This example shows how to make a Random Sampling with
 from museotoolbox.learn_tools import learnAndPredict
 from museotoolbox.cross_validation import RandomCV
 from museotoolbox import datasets
+from museotoolbox import raster_tools
 from sklearn.ensemble import RandomForestClassifier
 
 ##############################################################################
@@ -41,10 +42,17 @@ classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
 # Start learning
 # ---------------------------
 
-LAP = learnAndPredict(n_jobs=-1)
+LAP = learnAndPredict(n_jobs=-1,verbose=1)
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-modelInit = LAP.model
+
+##############################################################################
+# Read the model
+# -------------------
+print(LAP.model)
+print(LAP.model.cv_results_)
+print(LAP.model.best_score_)
+
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------

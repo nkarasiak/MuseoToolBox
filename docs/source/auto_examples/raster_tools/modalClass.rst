@@ -55,7 +55,12 @@ Initialize rasterMath with raster
 .. code-block:: python
 
 
-    rM = mtb.raster_tools.rasterMath(raster)
+    ########
+    # In case you want to add a mask
+    mask = '/tmp/maskFromPolygons.tif'
+    mtb.raster_tools.rasterMaskFromVector(vector,raster,mask,invert=False)
+
+    rM = mtb.raster_tools.rasterMath(raster,inMaskRaster=mask)
 
     print(rM.getRandomBlock())
 
@@ -68,13 +73,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[175 165 153]
-     [ 69  59  47]
-     [174 166 153]
+    [[143 153 128]
+     [141 151 126]
+     [149 159 134]
      ..., 
-     [197 191 179]
-     [127 123 114]
-     [168 165 160]]
+     [200 176 142]
+     [196 173 141]
+     [194 169 138]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -93,7 +98,8 @@ The first band will be the most predicted class, and the second the number of ti
         tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
         return tmpStack
 
-    rM.addFunction(modalClass,outRaster='/tmp/modal.tif')
+
+    rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
 
 
@@ -152,7 +158,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  4.258 seconds)
+**Total running time of the script:** ( 0 minutes  0.399 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

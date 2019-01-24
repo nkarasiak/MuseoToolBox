@@ -275,26 +275,6 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
-
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/learn_tools/learnWithRFandRS50
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
-
-.. only:: html
-
     .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
         :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
@@ -308,6 +288,26 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
    :hidden:
 
    /auto_examples/learn_tools/learnWithRFandRS50vector
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/learn_tools/learnWithRFandRS50
 
 .. raw:: html
 
@@ -344,13 +344,13 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster mask from vector.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMask_thumb.png
 
-        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMask.py`
 
 .. raw:: html
 
@@ -360,7 +360,7 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/raster_tools/modalClass
+   /auto_examples/raster_tools/rasterMask
 
 .. raw:: html
 
@@ -381,6 +381,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
    :hidden:
 
    /auto_examples/raster_tools/rasterMath
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/modalClass
 .. raw:: html
 
     <div style='clear:both'></div>

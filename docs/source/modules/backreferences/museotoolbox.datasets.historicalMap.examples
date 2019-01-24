@@ -207,24 +207,6 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
-
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
-
-.. only:: html
-
     .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
         :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
@@ -236,6 +218,24 @@ Examples using ``museotoolbox.datasets.historicalMap``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
 
 .. raw:: html
 
@@ -257,13 +257,13 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster mask from vector.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMask_thumb.png
 
-        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMask.py`
 
 .. raw:: html
 
@@ -271,7 +271,7 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
+    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMask.py`
 
 .. raw:: html
 
@@ -290,6 +290,24 @@ Examples using ``museotoolbox.datasets.historicalMap``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_modalClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_modalClass.py`
 
 .. raw:: html
 

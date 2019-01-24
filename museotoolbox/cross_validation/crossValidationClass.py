@@ -15,6 +15,8 @@
 from __future__ import absolute_import, print_function
 import numpy as np
 
+from itertools import tee
+
 
 class distanceCV:
     def __init__(
@@ -96,7 +98,7 @@ class distanceCV:
         self.Stats = stats
         if self.stats:
             self.Cstats = []
-        
+
         if self.groups is None:
             self.minEffectiveClass = min(
                 [len(self.y[self.y == i]) for i in np.unique(self.y)])
@@ -106,21 +108,17 @@ class distanceCV:
 
         if n_splits:
             self.n_splits = n_splits
+            tee
             if self.n_splits > self.minEffectiveClass:
                 if self.verbose:
                     print(
-                    'Warning : n_splits is superior to the number of unique samples/groups')
+                        'Warning : n_splits is superior to the number of unique samples/groups')
         else:
+            # TODO : run self.__next__() to get real n_splits as it depends on distance
+            # but if running self.__next__() here, iterator will be empty
+            # after.
             self.n_splits = self.minEffectiveClass
-            splits = []
-            try: # TODO : Improve method to run next 
-            # Compute split in order to have real min Effective class (if samples are to close).
-                while self.next():
-                    splits.append(1)
-            except StopIteration:
-                pass
-            self.n_splits = len(splits)
-        
+
         if self.verbose:
             print('n_splits:' + str(self.n_splits))
 
@@ -128,11 +126,11 @@ class distanceCV:
         return self
 
     # python 3 compatibility
+
     def __next__(self):
         return self.next()
 
     def next(self):
-        #global CTtoRemove,trained,validate,validation,train,CT,distanceROI
         emptyTrain = False
 
         if self.iterPos < self.n_splits:

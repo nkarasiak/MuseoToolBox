@@ -96,6 +96,20 @@ n_splits will be the number  of the least populated class
 
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    (10257,) (5,)
+    (8010,) (5,)
+    (9927,) (5,)
+    (8797,) (5,)
+    (10945,) (5,)
+    (8448,) (5,)
+    (8780,) (5,)
+    (8101,) (5,)
 
 
 Draw image
@@ -129,7 +143,7 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.689 seconds)
+**Total running time of the script:** ( 0 minutes  1.382 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:

@@ -182,9 +182,8 @@ def readValuesFromVector(vector, *args, **kwargs):
                     bandPrefix, listFields))
 
         # Initialize empty arrays
-        if len(args) > 0:  # for single fields            
-            ROIlevels = np.zeros(
-                [lyr.GetFeatureCount(), len(args)], dtype=np.int32)
+        if len(args) > 0:  # for single fields
+            ROIlevels = [np.zeros(lyr.GetFeatureCount()) for i in args]
 
         if extractBands:  # for bandPrefix
             ROIvalues = np.zeros(
@@ -194,14 +193,21 @@ def readValuesFromVector(vector, *args, **kwargs):
         for i, feature in enumerate(lyr):
             if extractBands:
                 for j, band in enumerate(bandsFields):
-                    ROIvalues[i, j] = feature.GetField(band)
+                    feat = feature.GetField(band)
+                    if i == 0:
+                        ROIvalues.astype(type(feat))
+
+                    ROIvalues[i, j] = feat
             if len(args) > 0:
                 try:
                     for a in range(len(args)):
-                        ROIlevels[i, a] = feature.GetField(args[a])
+                        feat = feature.GetField(args[a])
+                        if i == 0:
+                            ROIlevels[a] = ROIlevels[a].astype(type(feat))
+                        ROIlevels[a][i] = feature.GetField(args[a])
                 except BaseException:
                     raise ValueError(
-                        "Field \"{}\" do not exists or is not an integer/float field. These fields are available : {}".format(
+                        "Field \"{}\" do not exists. These fields are available : {}".format(
                             args[a], listFields))
             if getFeatures:
                 features.append(feature)
@@ -216,7 +222,7 @@ def readValuesFromVector(vector, *args, **kwargs):
         # if single fields
         if len(args) > 0:
             for i in range(len(args)):
-                fieldsToReturn.append(np.asarray(ROIlevels)[:, i])
+                fieldsToReturn.append(ROIlevels[i])
 
         # if features
         if getFeatures:

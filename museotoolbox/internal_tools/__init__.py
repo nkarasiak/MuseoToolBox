@@ -62,7 +62,7 @@ class progressBar:
             self.start += 1
             value = self.start
             inPercent = int(self.start / self.total * 100)
-    
+
         else:
             inPercent = int(value / self.total * 100)
         if inPercent != self.lastPosition:
@@ -80,18 +80,16 @@ class progressBar:
             end = "\n"
         else:
             end = "\r"
-        
+
         # print(self.nHash)
         # print(self.nPoints)
         print('\r' + self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end, flush=True)
-        
-        
 
 
 if __name__ == '__main__':
     pb = progressBar(200, length=50)
     import time
-    for i in range(200):
+    for i in range(100):
         pb.addPosition()
         time.sleep(0.01)
-        
+    pb.addPosition(200)

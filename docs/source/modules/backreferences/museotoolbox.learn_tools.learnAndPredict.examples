@@ -63,24 +63,6 @@ Examples using ``museotoolbox.learn_tools.learnAndPredict``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
-
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
-
-.. only:: html
-
     .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
         :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
@@ -92,6 +74,24 @@ Examples using ``museotoolbox.learn_tools.learnAndPredict``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
 
 .. raw:: html
 

@@ -144,7 +144,8 @@ class learnAndPredict:
             self.group,
             classifier,
             param_grid,
-            cv)
+            cv,
+            scoring)
 
     def learnFromRaster(
             self,
@@ -210,7 +211,8 @@ class learnAndPredict:
             self.group,
             classifier,
             param_grid,
-            cv)
+            cv,
+            scoring)
 
     def __learn__(self, X, y, groups, classifier,
                   param_grid, cv, scoring='accuracy'):
@@ -238,9 +240,10 @@ class learnAndPredict:
             self.cloneModel = clone(self.model.best_estimator_)
             #self.model.fit(X, y, groups)
             if self.verbose:
+                print('best score : ' + str(self.model.best_score_))
                 for key in self.param_grid.keys():
                     message = 'best ' + key + ' : ' + \
-                        str(self.gS.best_params_[key])
+                        str(self.model.best_params_[key])
                     print(message)
 
         else:
@@ -296,14 +299,14 @@ class learnAndPredict:
             self.__dict__.update(model['LAP'].tolist())
 
     def __convertX(self, X, **kwargs):
-        if 'Xfunction' in kwargs :
+        if 'Xfunction' in kwargs:
             Xfunction = kwargs['Xfunction']
-            kwargs.pop('Xfunction',None)
-            X = Xfunction(X,**kwargs)
+            kwargs.pop('Xfunction', None)
+            X = Xfunction(X, **kwargs)
         if self.scale:
             X = self.scaler.transform(X)
         return X
-        
+
     def predictArray(self, X, **kwargs):
         """
         Predict label from array.
@@ -313,8 +316,8 @@ class learnAndPredict:
         X : array.
             The array to predict. Must have the same number of bands of the initial array/raster.
         """
-        X = self.__convertX(X,**kwargs)
-        
+        X = self.__convertX(X, **kwargs)
+
         Xpredict = self.model.predict(X)
         return Xpredict
 
@@ -333,9 +336,9 @@ class learnAndPredict:
             The probability from 0 to 100.
         """
         self.__convertX(X, **kwargs)
-        
+
         Xpredict = self.model.predict_proba(X) * 100
-        self.Xpredict = Xpredict        
+        self.Xpredict = Xpredict
         return Xpredict
 
     def predictConfidenceOfPredictedClass(self, X, **kwargs):

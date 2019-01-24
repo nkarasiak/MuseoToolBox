@@ -24,7 +24,12 @@ raster,vector = mtb.datasets.historicalMap()
 # Initialize rasterMath with raster
 # -----------------------------------------
 
-rM = mtb.raster_tools.rasterMath(raster)
+########
+# In case you want to add a mask
+mask = '/tmp/maskFromPolygons.tif'
+mtb.raster_tools.rasterMaskFromVector(vector,raster,mask,invert=False)
+
+rM = mtb.raster_tools.rasterMath(raster,inMaskRaster=mask)
 
 print(rM.getRandomBlock())
 ##########################
@@ -39,7 +44,8 @@ def modalClass(x):
     tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
     return tmpStack
 
-rM.addFunction(modalClass,outRaster='/tmp/modal.tif')
+
+rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
 #####################
 # Run the script

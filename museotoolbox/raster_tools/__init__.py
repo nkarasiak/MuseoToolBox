@@ -27,7 +27,7 @@ from ..internal_tools import progressBar, pushFeedback
 from ..vector_tools import sampleExtraction
 
 
-def rasterMaskFromVector(inVector, inRaster, outRaster):
+def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
     """
     Create a raster mask where polygons/point are pixels to keep.
 
@@ -46,7 +46,13 @@ def rasterMaskFromVector(inVector, inRaster, outRaster):
     Examples
     --------
     """
-    rasterize(inRaster, inVector, None, outRaster)
+    rasterize(
+        inRaster,
+        inVector,
+        None,
+        outRaster,
+        invert=invert,
+        gdt=gdal.GDT_Byte)
 
 
 def getGdalDTFromMinMaxValues(maxValue, minValue=0):
@@ -145,6 +151,10 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
         code = NP2GDAL_CONVERSION[numpyDT]
+        if code is None:
+            code = 'int32'
+            raise Warning(
+                'Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
 
 
@@ -394,7 +404,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     return toReturn
 
 
-def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
+def rasterize(data, vectorSrc, field, outFile,
+              gdt=gdal.GDT_Int16, invert=False):
     """
     Rasterize vector to the size of data (raster)
 
@@ -410,7 +421,8 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
         raster file where to save the rasterization
     gdt : int
         gdal GDT datatype (default gdal.GDT_Int16 = 3)
-
+    invert : boolean.
+        if invert, polygons will be masked.
     Returns
     --------
     outFile : str
@@ -432,8 +444,11 @@ def rasterize(data, vectorSrc, field, outFile, gdt=gdal.GDT_Int16):
         options=['COMPRESS=DEFLATE'])
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
+
     if field is False or field is None:
-        gdal.RasterizeLayer(dst_ds, [1], lyr, None)
+        options = gdal.RasterizeOptions(inverse=invert)
+        gdal.Rasterize(dst_ds, vectorSrc, options=options)
+        dst_ds.GetRasterBand(1).SetNoDataValue(0)
     else:
         OPTIONS = ['ATTRIBUTE=' + field]
         gdal.RasterizeLayer(dst_ds, [1], lyr, None, options=OPTIONS)

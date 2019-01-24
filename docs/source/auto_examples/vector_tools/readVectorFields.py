@@ -28,8 +28,8 @@ mtb.vector_tools.readValuesFromVector(vector)
 # Read values from field 'Class'
 # --------------------------------
 
-Y = mtb.vector_tools.readValuesFromVector(vector,'Class')
-print(Y)
+Y,Name = mtb.vector_tools.readValuesFromVector(vector,'Class','Type')
+print(Y,Name)
 print(Y.shape)
 
 #############################################

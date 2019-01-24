@@ -76,8 +76,8 @@ Read values from field 'Class'
 .. code-block:: python
 
 
-    Y = mtb.vector_tools.readValuesFromVector(vector,'Class')
-    print(Y)
+    Y,Name = mtb.vector_tools.readValuesFromVector(vector,'Class','Type')
+    print(Y,Name)
     print(Y.shape)
 
 
@@ -90,7 +90,9 @@ Read values from field 'Class'
 
  .. code-block:: none
 
-    [1 1 1 1 2 2 2 1 1 2 4 5 4 5 3 3 3]
+    [1 1 1 1 2 2 2 1 1 2 4 5 4 5 3 3 3] ['Forest' 'Forest' 'Forest' 'Forest' 'Agriculture' 'Agriculture'
+     'Agriculture' 'Forest' 'Forest' 'Agriculture' 'Water' 'Buildings' 'Water'
+     'Buildings' 'Soil' 'Soil' 'Soil']
     (17,)
 
 
@@ -136,7 +138,7 @@ As multiple fields can begin with C, function returns a column per field
     (17, 1)
 
 
-**Total running time of the script:** ( 0 minutes  0.007 seconds)
+**Total running time of the script:** ( 0 minutes  0.008 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_readVectorFields.py:
