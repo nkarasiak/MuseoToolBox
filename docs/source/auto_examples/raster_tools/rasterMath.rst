@@ -69,13 +69,13 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[104 100  71]
-     [107 103  76]
-     [130 124 102]
+    [[213 175 164]
+     [206 170 158]
+     [212 175 166]
      ..., 
-     [182 173 158]
-     [164 158 146]
-     [116 109 101]]
+     [103  76  67]
+     [140 105  99]
+     [151 112 107]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -89,7 +89,7 @@ I suggest you to define type in numpy array to save space while creating the ras
     x = rM.getRandomBlock()
 
     def sub(x):
-        return np.array((x[:,0]-x[:,1])).astype(np.int16) 
+        return np.array((x[:,0]-x[:,1])).astype(np.int64) 
 
     def add(x,constant=0):
     
@@ -108,7 +108,8 @@ I suggest you to define type in numpy array to save space while creating the ras
 
  .. code-block:: none
 
-    Using datatype from numpy table : int16
+    Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
+    Using datatype from numpy table : int64
     Using datatype from numpy table : int16
 
 
@@ -157,7 +158,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.422 seconds)
+**Total running time of the script:** ( 0 minutes  0.839 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

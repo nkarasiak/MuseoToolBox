@@ -35,7 +35,7 @@ print(rM.getRandomBlock())
 x = rM.getRandomBlock()
 
 def sub(x):
-    return np.array((x[:,0]-x[:,1])).astype(np.int16) 
+    return np.array((x[:,0]-x[:,1])).astype(np.int64) 
 
 def add(x,constant=0):
     

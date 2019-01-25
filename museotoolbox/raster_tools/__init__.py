@@ -145,16 +145,16 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "float64": 7,
         "complex64": 10,
         "complex128": 11,
+        "int64":5
     }
 
     if numpyDT is None:
         code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
+        
         code = NP2GDAL_CONVERSION[numpyDT]
-        if code is None:
-            code = 'int32'
-            raise Warning(
-                'Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+        if numpyDT == 'int64':
+            print('Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
 
 
@@ -593,11 +593,16 @@ class rasterMath:
 
         self.outputs.append(dst_ds)
 
-    def __iterBlock__(self, getBlock=False):
-        for row in range(0, self.nl, self.y_block_size):
-            for col in range(0, self.nc, self.x_block_size):
-                width = min(self.nc - col, self.x_block_size)
-                height = min(self.nl - row, self.y_block_size)
+    def __iterBlock__(self, getBlock=False,y_block_size=False,x_block_size=False):
+        if not y_block_size:
+            y_block_size = self.y_block_size
+        if not x_block_size:
+            x_block_size = self.x_block_size
+            
+        for row in range(0, self.nl, y_block_size):
+            for col in range(0, self.nc, x_block_size):
+                width = min(self.nc - col, x_block_size)
+                height = min(self.nl - row, y_block_size)
 
                 if getBlock:
                     X, mask = self.generateBlockArray(
@@ -608,7 +613,7 @@ class rasterMath:
 
     def generateBlockArray(self, col, row, width, height, mask=False):
         """
-        Add function to rasterMath.
+        Return block according to position and width/height of the raster.
 
         Parameters
         ----------
@@ -688,10 +693,36 @@ class rasterMath:
 
         arr = tmp[mask[:, 0], :]
         return arr
-
+    
+    def readBlockPerBlock(self,y_block_size=False,x_block_size=False):
+        """
+        Yield each block.
+        """
+        for X, mask, col, line, cols, lines in self.__iterBlock__(
+                getBlock=True,y_block_size=y_block_size,x_block_size=x_block_size):
+            X_ = np.copy(X)
+            if X_[mask].size > 0:
+                yield X_[mask[:,0],:]
+    def customBlockSize(self,y_block_size=False,x_block_size=False):
+        """
+        Define custom block size for reading/writing the raster.
+        
+        Parameters
+        ----------
+        y_block_size : int, default False.
+            Integer, number of rows.
+        x_block_size : int, default False.
+            Integer, number of columns.
+        """
+        if y_block_size :
+            self.y_block_size = y_block_size
+        if x_block_size :
+            self.x_block_size = x_block_size
+            
     def run(self, verbose=1, qgsFeedback=False):
         """
         Process with outside function.
+        
         Parameters
         ----------
         verbose : bool or int.
