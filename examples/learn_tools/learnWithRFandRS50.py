@@ -17,6 +17,7 @@ from museotoolbox.cross_validation import RandomCV
 from museotoolbox import datasets
 from museotoolbox import raster_tools
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -33,18 +34,24 @@ RS50 = RandomCV(valid_size=0.5,n_splits=2,
                 random_state=12,verbose=False)
 
 ##############################################################################
-# Initialize Random-Forest
-# ---------------------------
+# Initialize Random-Forest and metrics
+# --------------------------------------
 
 classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
+
+# 
+kappa = metrics.make_scorer(metrics.cohen_kappa_score)
+f1_mean = metrics.make_scorer(metrics.f1_score,average='micro')
+scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 
 ##############################################################################
 # Start learning
 # ---------------------------
-
+# sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 LAP = learnAndPredict(n_jobs=-1,verbose=1)
 LAP.learnFromRaster(raster,vector,field,cv=RS50,
-                    classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+                    classifier=classifier,param_grid=dict(n_estimators=[100,200]),
+                    scoring=scoring,refit='kappa')
 
 ##############################################################################
 # Read the model
@@ -53,13 +60,14 @@ print(LAP.model)
 print(LAP.model.cv_results_)
 print(LAP.model.best_score_)
 
-##############################################################################
-# Get kappa from each fold
-# ---------------------------
-  
-for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-    print(stats['kappa'])
 
+##############################################################################
+# Get F1 for every class from best params
+# -----------------------------------------------
+
+for stats in LAP.getStatsFromCV(confusionMatrix=False,F1=True):
+    print(stats['F1'])
+    
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------

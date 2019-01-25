@@ -220,7 +220,7 @@ class _sampleSelection:
         # create the spatial reference, WGS84
 
         lyrout = ds.CreateLayer(
-            'crossValidation',
+            'cross_validation',
             srs=srs,
             geom_type=self.wkbType)
         fields = [

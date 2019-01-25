@@ -291,26 +291,6 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
-
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/learn_tools/learnWithRFandRS50
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
 
 .. only:: html
@@ -328,6 +308,26 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
    :hidden:
 
    /auto_examples/learn_tools/learnWithRFandCompareCV
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/learn_tools/learnWithRFandRS50
 .. raw:: html
 
     <div style='clear:both'></div>

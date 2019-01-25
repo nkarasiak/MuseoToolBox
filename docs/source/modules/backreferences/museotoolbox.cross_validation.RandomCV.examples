@@ -95,24 +95,6 @@ Examples using ``museotoolbox.cross_validation.RandomCV``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
-
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
 
 .. only:: html
@@ -128,3 +110,21 @@ Examples using ``museotoolbox.cross_validation.RandomCV``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py`

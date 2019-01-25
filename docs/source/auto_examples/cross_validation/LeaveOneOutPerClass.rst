@@ -111,7 +111,7 @@ Create CV
     [1 2 3 4 5]
 
 
-**Total running time of the script:** ( 0 minutes  0.099 seconds)
+**Total running time of the script:** ( 0 minutes  0.137 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneOutPerClass.py:

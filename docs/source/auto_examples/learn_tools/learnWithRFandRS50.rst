@@ -28,6 +28,7 @@ Import librairies
     from museotoolbox import datasets
     from museotoolbox import raster_tools
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn import metrics
 
 
 
@@ -69,8 +70,8 @@ Create CV
 
 
 
-Initialize Random-Forest
----------------------------
+Initialize Random-Forest and metrics
+--------------------------------------
 
 
 
@@ -78,6 +79,11 @@ Initialize Random-Forest
 
 
     classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
+
+    # 
+    kappa = metrics.make_scorer(metrics.cohen_kappa_score)
+    f1_mean = metrics.make_scorer(metrics.f1_score,average='micro')
+    scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 
 
 
@@ -87,15 +93,16 @@ Initialize Random-Forest
 
 Start learning
 ---------------------------
+sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 
 
 
 .. code-block:: python
 
-
     LAP = learnAndPredict(n_jobs=-1,verbose=1)
     LAP.learnFromRaster(raster,vector,field,cv=RS50,
-                        classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+                        classifier=classifier,param_grid=dict(n_estimators=[100,200]),
+                        scoring=scoring,refit='kappa')
 
 
 
@@ -109,7 +116,7 @@ Start learning
 
     Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best score : 0.966624485922
+    best score : 0.94210715677
     best n_estimators : 200
 
 
@@ -128,13 +135,14 @@ Read the model
 
 
 
+
 .. rst-class:: sphx-glr-script-out
 
  Out:
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7f3ea1cadcf8>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7ffb5583e1d0>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -144,26 +152,27 @@ Read the model
                 oob_score=False, random_state=12, verbose=0, warm_start=False),
            fit_params=None, iid=True, n_jobs=-1,
            param_grid={'n_estimators': [100, 200]}, pre_dispatch='2*n_jobs',
-           refit=True, return_train_score='warn', scoring='accuracy',
+           refit='kappa', return_train_score='warn',
+           scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([ 0.59196961,  0.96169055]), 'std_fit_time': array([ 0.04691994,  0.01150239]), 'mean_score_time': array([ 0.16589677,  0.20359278]), 'std_score_time': array([ 0.05117166,  0.00047588]), 'param_n_estimators': masked_array(data = [100 200],
+    {'mean_fit_time': array([ 0.52375305,  0.93070483]), 'std_fit_time': array([ 0.00871861,  0.00954127]), 'mean_score_time': array([ 0.41836357,  0.62248349]), 'std_score_time': array([ 0.00194144,  0.00899696]), 'param_n_estimators': masked_array(data = [100 200],
                  mask = [False False],
            fill_value = ?)
-    , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_score': array([ 0.96630813,  0.96678266]), 'split1_test_score': array([ 0.96646631,  0.96646631]), 'mean_test_score': array([ 0.96638722,  0.96662449]), 'std_test_score': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_score': array([2, 1], dtype=int32), 'split0_train_score': array([ 0.99794466,  0.99794466]), 'split1_train_score': array([ 0.99794466,  0.99794466]), 'mean_train_score': array([ 0.99794466,  0.99794466]), 'std_train_score': array([ 0.,  0.])}
-    0.966624485922
+    , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([ 0.94143572,  0.94227599]), 'split1_test_kappa': array([ 0.94193179,  0.94193833]), 'mean_test_kappa': array([ 0.94168376,  0.94210716]), 'std_test_kappa': array([ 0.00024804,  0.00016883]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([ 0.99644289,  0.99644289]), 'split1_train_kappa': array([ 0.99644167,  0.9964414 ]), 'mean_train_kappa': array([ 0.99644228,  0.99644214]), 'std_train_kappa': array([  6.08047080e-07,   7.44183416e-07]), 'split0_test_f1_mean': array([ 0.96630813,  0.96678266]), 'split1_test_f1_mean': array([ 0.96646631,  0.96646631]), 'mean_test_f1_mean': array([ 0.96638722,  0.96662449]), 'std_test_f1_mean': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([ 0.99794466,  0.99794466]), 'split1_train_f1_mean': array([ 0.99794466,  0.99794466]), 'mean_train_f1_mean': array([ 0.99794466,  0.99794466]), 'std_train_f1_mean': array([ 0.,  0.]), 'split0_test_accuracy': array([ 0.96630813,  0.96678266]), 'split1_test_accuracy': array([ 0.96646631,  0.96646631]), 'mean_test_accuracy': array([ 0.96638722,  0.96662449]), 'std_test_accuracy': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([ 0.99794466,  0.99794466]), 'split1_train_accuracy': array([ 0.99794466,  0.99794466]), 'mean_train_accuracy': array([ 0.99794466,  0.99794466]), 'std_train_accuracy': array([ 0.,  0.])}
+    0.94210715677
 
 
-Get kappa from each fold
----------------------------
+Get F1 for every class from best params
+-----------------------------------------------
 
 
 
 .. code-block:: python
 
-  
-    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
-        print(stats['kappa'])
 
+    for stats in LAP.getStatsFromCV(confusionMatrix=False,F1=True):
+        print(stats['F1'])
+    
 
 
 
@@ -174,8 +183,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.94227598585
-    0.94193832769
+    [ 0.97646748  0.92064884  0.99824407  0.89748549  0.        ]
+    [ 0.97702828  0.91994807  0.99737303  0.89105058  0.        ]
 
 
 Get each confusion matrix from folds
@@ -273,7 +282,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  12.998 seconds)
+**Total running time of the script:** ( 0 minutes  13.523 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

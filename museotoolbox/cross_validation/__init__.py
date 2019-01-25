@@ -13,7 +13,7 @@
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
 """
-The :mod:`museotoolbox.crossValidation` module gathers cross-validation function.
+The :mod:`museotoolbox.cross_validation` module gathers cross-validation functions.
 """
 from __future__ import absolute_import, print_function
 
@@ -283,7 +283,7 @@ class RandomCV(_sampleSelection):
 
     Example
     -------
-    >>> from museotoolbox.crossValidation import RandomCV
+    >>> from museotoolbox.cross_validation import RandomCV
     >>> from museotoolbox import datasets
     >>> X,y = datasets.getHistoricalMap(return_X_y=True)
     >>> RS50 = RandomCV(valid_size=0.5,random_state=12,verbose=False)

@@ -41,7 +41,7 @@ class learnAndPredict:
         >>> import museotoolbox as mtb
         >>> from sklearn.ensemble import RandomForestClassifier
         >>> raster,vector = mtb.datasets.getHistoricalMap()
-        >>> RS50 = mtb.crossValidation.RandomCV(valid_size=0.5,n_splits=10,
+        >>> RS50 = mtb.cross_validation.RandomCV(valid_size=0.5,n_splits=10,
                 random_state=12,verbose=False)
         >>> classifier = RandomForestClassifier()
         >>> LAP = mtb.learn_tools.learnAndPredict()
@@ -102,7 +102,7 @@ class learnAndPredict:
             param_grid=None,
             scale=False,
             cv=False,
-            scoring='accuracy'):
+            scoring='accuracy',**gridSearchCVParams):
         """
         learn Model from vector/array.
 
@@ -145,7 +145,8 @@ class learnAndPredict:
             classifier,
             param_grid,
             cv,
-            scoring)
+            scoring,
+            **gridSearchCVParams)
 
     def learnFromRaster(
             self,
@@ -157,7 +158,8 @@ class learnAndPredict:
             param_grid=None,
             scale=False,
             cv=False,
-            scoring='accuracy'):
+            scoring='accuracy',
+            **gridSearchCVParams):
         """
         learn Model from raster.
 
@@ -212,10 +214,11 @@ class learnAndPredict:
             classifier,
             param_grid,
             cv,
-            scoring)
+            scoring,
+            **gridSearchCVParams)
 
     def __learn__(self, X, y, groups, classifier,
-                  param_grid, cv, scoring='accuracy'):
+                  param_grid, cv, scoring='accuracy',**gridSearchCVParams):
 
         if cv is not False and not isinstance(cv, int):
             self.CV = []
@@ -234,7 +237,8 @@ class learnAndPredict:
                 cv=cv,
                 scoring=scoring,
                 n_jobs=self.n_jobs,
-                verbose=self.verbose)
+                verbose=self.verbose,
+                **gridSearchCVParams)
             self.model.fit(X, y, groups)
             # self.model = self.gS.best_estimator_
             self.cloneModel = clone(self.model.best_estimator_)
