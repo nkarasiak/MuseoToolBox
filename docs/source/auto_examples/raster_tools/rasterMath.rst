@@ -69,13 +69,14 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    [[213 175 164]
-     [206 170 158]
-     [212 175 166]
+    Total number of blocks : 15
+    [[104 100  71]
+     [107 103  76]
+     [130 124 102]
      ..., 
-     [103  76  67]
-     [140 105  99]
-     [151 112 107]]
+     [182 173 158]
+     [164 158 146]
+     [116 109 101]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -95,6 +96,7 @@ I suggest you to define type in numpy array to save space while creating the ras
     
         return np.array((x[:,0]+x[:,1]+constant)).astype(np.int16) 
 
+
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
     rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
 
@@ -110,7 +112,9 @@ I suggest you to define type in numpy array to save space while creating the ras
 
     Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
     Using datatype from numpy table : int64
+    Detected 1 band(s) for output.
     Using datatype from numpy table : int16
+    Detected 1 band(s) for output.
 
 
 Run the script
@@ -132,7 +136,7 @@ Run the script
 
  .. code-block:: none
 
-    rasterMath...  [........................................]0%    rasterMath...  [##......................................]7%    rasterMath...  [#####...................................]14%    rasterMath...  [########................................]21%    rasterMath...  [###########.............................]28%    rasterMath...  [##############..........................]35%    rasterMath...  [#################.......................]42%    rasterMath...  [####################....................]50%    rasterMath...  [######################..................]57%    rasterMath...  [#########################...............]64%    rasterMath...  [############################............]71%    rasterMath...  [###############################.........]78%    rasterMath...  [##################################......]85%    rasterMath...  [#####################################...]92%    rasterMath...  [########################################]100%
+    rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
     Saved /tmp/sub.tif using function sub
     Saved /tmp/add.tif using function add
 
@@ -158,7 +162,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.839 seconds)
+**Total running time of the script:** ( 0 minutes  0.298 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

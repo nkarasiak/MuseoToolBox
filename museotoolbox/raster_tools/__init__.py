@@ -25,6 +25,7 @@ import tempfile
 
 from ..internal_tools import progressBar, pushFeedback
 from ..vector_tools import sampleExtraction
+from matplotlib import pyplot as plt
 
 
 def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
@@ -145,16 +146,17 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "float64": 7,
         "complex64": 10,
         "complex128": 11,
-        "int64":5
+        "int64": 5
     }
 
     if numpyDT is None:
         code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
-        
+
         code = NP2GDAL_CONVERSION[numpyDT]
         if numpyDT == 'int64':
-            print('Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+            print(
+                'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
 
 
@@ -467,7 +469,12 @@ class rasterMath:
     inRaster : str
         Gdal supported raster
     inMaskRaster : str or False.
-        If str, path of the raster mask.
+        If str, path of the raster mask. Value masked are 0, other are considered not masked.
+        
+        Use `invert=True` in :mod:`museotoolbox.raster_tools.rasterMaskFromVector` to mask only what is not in polygons.
+    return_3d : boolean, default False.
+        Default will return a row per pixel (2 dimensions), and dimension 2 (bands) are columns.
+        If return_3d is True, will return the block without reshape (not suitable to learn with `sklearn`).
     message : str or None.
         If str, the message will be displayed before the progress bar.
 
@@ -484,12 +491,10 @@ class rasterMath:
     Saved /tmp/mean.tif using function mean
     """
 
-    def __init__(self, inRaster, inMaskRaster=False, message='rasterMath... '):
-        # Need to work of parallelize
-        # Not working for the moment
-        parallel = False
-        self.parallel = parallel
+    def __init__(self, inRaster, inMaskRaster=False, return_3d=False,
+                 message='rasterMath... ', verbose=True):
 
+        self.verbose = verbose
         self.driver = gdal.GetDriverByName('GTiff')
 
         # Load raster
@@ -507,18 +512,15 @@ class rasterMath:
 
         # Get block size
         band = self.openRaster.GetRasterBand(1)
-        block_sizes = band.GetBlockSize()
-        self.x_block_size = block_sizes[0]
-        self.y_block_size = block_sizes[1]
-        self.n_block = int(self.nc / self.y_block_size + 1) * int(self.nl /
-                                                                  self.x_block_size + 1)  # self.nl  # /self.y_block_size
-        self.pb = progressBar(self.n_block - 1, message=message)
+        self.block_sizes = band.GetBlockSize()
+        self.x_block_size = self.block_sizes[0]
+        self.y_block_size = self.block_sizes[1]
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
         self.ndtype = convertGdalAndNumpyDataType(band.DataType)
-
-        if self.nodata is None:
-            self.nodata = -9999
+        self.return_3d = return_3d
+        
+        self.customBlockSize()  # get
 
         del band
 
@@ -543,7 +545,7 @@ class rasterMath:
             function,
             outRaster,
             outNBand=False,
-            outGdalDT=False,
+            outNumpyDT=False,
             outNoData=False,
             **kwargs):
         """
@@ -558,29 +560,42 @@ class rasterMath:
         outNBand : int, default False.
             Number of bands of the outRaster.
             If False will take the number of dimensions from the first result of the function.
-        outGdalDT : int, default False.
+        outNumpyDT : int, default False.
             If False, will use the datatype of the function result.
         outNoData : int, default False.
-            If False will use 0 for byte, or -9999 for int16/32.
+            If False will use the minimum value available for the given or found datatype.
         functionKwargs : False, or dict type.
             If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
         """
 
-        if outGdalDT is False:
-            dtypeName = function(self.getRandomBlock(), **kwargs).dtype.name
+        if outNumpyDT is False:
+            dtypeName = function(self.getRandomBlock().data, **kwargs).dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
             pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
-
+        else:
+            dtypeName = np.dtype(outNumpyDT).name
+            outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
+            
         if outNBand is False:
             randomBlock = function(self.getRandomBlock())
             if randomBlock.ndim > 1:
-                outNBand = randomBlock.shape[1]
+                    outNBand = randomBlock.shape[randomBlock.ndim - 1]
+
             else:
                 outNBand = 1
+            if self.verbose:
+                print('Detected {} band(s) for output.'.format(outNBand))
 
         self.__addOutput__(outRaster, outNBand, outGdalDT)
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
+        
+        if outNoData is False:
+            if np.issubdtype(dtypeName,np.floating):
+                outNoData = np.finfo(dtypeName).min
+            else:
+                outNoData = np.iinfo(dtypeName).min
+            
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self, outRaster, outNBand, outGdalDT):
@@ -593,12 +608,13 @@ class rasterMath:
 
         self.outputs.append(dst_ds)
 
-    def __iterBlock__(self, getBlock=False,y_block_size=False,x_block_size=False):
+    def __iterBlock__(self, getBlock=False,
+                      y_block_size=False, x_block_size=False):
         if not y_block_size:
             y_block_size = self.y_block_size
         if not x_block_size:
             x_block_size = self.x_block_size
-            
+
         for row in range(0, self.nl, y_block_size):
             for col in range(0, self.nc, x_block_size):
                 width = min(self.nc - col, x_block_size)
@@ -633,16 +649,25 @@ class rasterMath:
         arr : arr with values.
         arrMask : the masked array.
         """
-        arr = np.empty((height * width, self.nb), dtype=self.ndtype)
+        if self.return_3d:
+            arr = np.empty((height, width, self.nb), dtype=self.ndtype)
+        else:
+            arr = np.empty((height * width, self.nb), dtype=self.ndtype)
 
         for ind in range(self.nb):
             band = self.openRaster.GetRasterBand(int(ind + 1))
-            arr[:, ind] = band.ReadAsArray(
-                col, row, width, height).reshape(width * height)
+            if self.return_3d:
+                arr[:, :, ind] = band.ReadAsArray(
+                    col, row, width, height)
+            else:
+                arr[:, ind] = band.ReadAsArray(
+                    col, row, width, height).reshape(width * height)
         if mask:
             bandMask = self.openMask.GetRasterBand(1)
             arrMask = bandMask.ReadAsArray(
-                col, row, width, height).reshape(width * height)
+                col, row, width, height).astype(np.bool)
+            if self.return_3d is False:
+                arrMask = arrMask.reshape(width * height)
         else:
             arrMask = None
 
@@ -654,18 +679,32 @@ class rasterMath:
         """
         Filter no data according to a mask and to nodata value set in the raster.
         """
-        outArr = np.zeros((arr.shape), dtype=self.ndtype)
-        outArr[:] = self.nodata
+        arrShape = arr.shape
+        if self.return_3d:
+            arrToCheck = np.copy(arr)[:, :, 0]
+        else:
+            arrToCheck = np.copy(arr)[:, 0]
+
+        outArr = np.zeros((arrShape), dtype=self.ndtype)
+        if self.nodata:
+            outArr[:] = self.nodata
 
         if self.mask:
-            t = np.logical_or((mask == self.maskNoData),
-                              arr[:, 0] == self.nodata)
+            t = np.logical_or((mask == False),
+                              arrToCheck == self.nodata)
         else:
-            t = np.where(arr[:, 0] == self.nodata)
+            t = np.where(arrToCheck == self.nodata)
 
-        tmpMask = np.ones(arr.shape, dtype=bool)
-        tmpMask[t, :] = False
-        outArr[tmpMask] = arr[tmpMask]
+        
+        if self.return_3d:
+            tmpMask = np.zeros(arrShape[:2], dtype=bool)
+            tmpMask[t] = True
+            tmpMask = np.repeat(tmpMask.reshape(*tmpMask.shape,1),3,axis=2)
+            outArr = np.ma.masked_array(arr, tmpMask)
+        else:
+            tmpMask = np.zeros(arrShape, dtype=bool)
+            tmpMask[t, :] = True
+            outArr  = np.ma.masked_array(arr,tmpMask)
 
         return outArr, tmpMask
 
@@ -673,40 +712,45 @@ class rasterMath:
         """
         Get Random Block from the raster.
         """
-        cols = int(
-            np.random.permutation(
-                range(
-                    0,
-                    self.nl,
-                    self.y_block_size))[0])
-        lines = int(
-            np.random.permutation(
-                range(
-                    0,
-                    self.nc,
-                    self.x_block_size))[0])
-        width = min(self.nc - lines, self.x_block_size)
-        height = min(self.nl - cols, self.y_block_size)
+        mask = np.array([True])
+        while np.all(mask==True):
+            cols = int(
+                np.random.permutation(
+                    range(
+                        0,
+                        self.nl,
+                        self.y_block_size))[0])
+            lines = int(
+                np.random.permutation(
+                    range(
+                        0,
+                        self.nc,
+                        self.x_block_size))[0])
+            width = min(self.nc - lines, self.x_block_size)
+            height = min(self.nl - cols, self.y_block_size)
 
-        tmp, mask = self.generateBlockArray(
-            lines, cols, width, height, self.mask)
+        
+            tmp, _ = self.generateBlockArray(lines, cols, width, height, self.mask)
+            mask = tmp.mask
 
-        arr = tmp[mask[:, 0], :]
-        return arr
-    
-    def readBlockPerBlock(self,y_block_size=False,x_block_size=False):
+        #arr = tmp[mask[:, 0], :]
+        
+        return tmp
+
+    def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
         """
         Yield each block.
         """
         for X, mask, col, line, cols, lines in self.__iterBlock__(
-                getBlock=True,y_block_size=y_block_size,x_block_size=x_block_size):
-            X_ = np.copy(X)
-            if X_[mask].size > 0:
-                yield X_[mask[:,0],:]
-    def customBlockSize(self,y_block_size=False,x_block_size=False):
+                getBlock=True, y_block_size=y_block_size, x_block_size=x_block_size):
+            
+            if not np.all(X.mask==1):
+                yield X
+
+    def customBlockSize(self, x_block_size=False, y_block_size=False):
         """
         Define custom block size for reading/writing the raster.
-        
+
         Parameters
         ----------
         y_block_size : int, default False.
@@ -714,15 +758,35 @@ class rasterMath:
         x_block_size : int, default False.
             Integer, number of columns.
         """
-        if y_block_size :
-            self.y_block_size = y_block_size
-        if x_block_size :
-            self.x_block_size = x_block_size
-            
-    def run(self, verbose=1, qgsFeedback=False):
+        if y_block_size:
+            if y_block_size == -1:
+                self.y_block_size = self.nl
+            elif isinstance(y_block_size, float):
+                self.y_block_size = int(np.ceil(self.nl * y_block_size))
+            else:
+                self.y_block_size = y_block_size
+        else:
+            self.y_block_size = self.block_sizes[1]
+        if x_block_size:
+            if x_block_size == -1:
+                self.x_block_size = self.nc
+            elif isinstance(x_block_size, float):
+                self.x_block_size = int(np.ceil(self.nc * x_block_size))
+            else:
+                self.x_block_size = x_block_size
+        else:
+            self.x_block_size = self.block_sizes[0]
+
+        self.n_block = np.ceil(self.nl / self.y_block_size).astype(int) * np.ceil(self.nc /
+                                                                                  self.x_block_size).astype(int)
+        if self.verbose:
+            print('Total number of blocks : %s' % self.n_block)
+        self.pb = progressBar(self.n_block, message='rasterMath... ')
+
+    def run(self, qgsFeedback=False):
         """
         Process with outside function.
-        
+
         Parameters
         ----------
         verbose : bool or int.
@@ -730,75 +794,101 @@ class rasterMath:
         Returns
         -------
         None
-
         """
 
         # TODO : Parallel/ Not working for now.
-        if self.parallel:
-            raise Exception(
-                'Sorry, parallel is not supported for the moment...')
-        else:
 
-            for X, mask, col, line, cols, lines in self.__iterBlock__(
-                    getBlock=True):
-                X_ = np.copy(X)
-                #actualProgress = int((line + col/self.nc*100) / self.total * 100)
+        for X, mask, col, line, cols, lines in self.__iterBlock__(
+                getBlock=True):
+            X_ = np.ma.copy(X)
+            if qgsFeedback:
+                if qgsFeedback == 'gui':
+                    self.pb.addPosition(line)
+                else:
+                    qgsFeedback.setProgress(self.__position)
+                    if qgsFeedback.isCanceled():
+                        break
 
-                if qgsFeedback:
-                    if qgsFeedback == 'gui':
-                        self.pb.addPosition(line)
-                    else:
-                        qgsFeedback.setProgress(self.__position)
-                        if qgsFeedback.isCanceled():
-                            break
-
-                if verbose:
-                    self.pb.addPosition(self.__position)
-
-                for idx, fun in enumerate(self.functions):
-                    if self.outputNoData[idx] is False:
-                        self.outputNoData[idx] = self.nodata
-
-                    maxBands = self.outputs[idx].RasterCount
-                    if X_[mask].size > 0:
-                        if self.functionsKwargs[idx] is not False:
-                            resFun = fun(X_[mask[:, 0], :], **
-                                         self.functionsKwargs[idx])
-                        else:
-                            resFun = fun(X_[mask[:, 0], :])
-                        if maxBands > self.nb:
-                            X = np.zeros((X_.shape[0], maxBands))
-                            X[:, :] = self.outputNoData[idx]
-                            X[mask[:, 0], :] = resFun
-                        if resFun.ndim == 1:
-                            resFun = resFun.reshape(-1, 1)
-                        if resFun.shape[1] > maxBands:
-                            raise ValueError(
-                                "Your function output {} bands, but has been defined to have a maximum of {} bands.".format(
-                                    resFun.shape[1], maxBands))
-                        else:
-                            X[:, :] = self.outputNoData[idx]
-                            X[mask[:, 0], :maxBands] = resFun
-                    else:
-                        X[:, :] = self.outputNoData[idx]
-
-                    for ind in range(self.outputs[idx].RasterCount):
-                        indGdal = int(ind + 1)
-                        curBand = self.outputs[idx].GetRasterBand(indGdal)
-                        curBand.WriteArray(
-                            X[:, ind].reshape(lines, cols), col, line)
-                        curBand.FlushCache()
-
-                    band = self.outputs[idx].GetRasterBand(1)
-                    band.SetNoDataValue(self.outputNoData[idx])
-                    band.FlushCache()
-
-                self.__position += 1
-            band = None
+            if self.verbose:
+                self.pb.addPosition(self.__position)
 
             for idx, fun in enumerate(self.functions):
-                print(
-                    'Saved {} using function {}'.format(
-                        self.outputs[idx].GetDescription(), str(
-                            fun.__name__)))
-                self.outputs[idx] = None
+                maxBands = self.outputs[idx].RasterCount
+                if not np.all(X.mask==1):
+                    """
+                    if self.return_3d:
+                        mask = np.repeat(mask.reshape(*mask.shape,1),3,axis=2)
+                        X_ = np.ma.masked_array(X,mask)
+                    else:
+                        X_ = X[~mask[:, 0], :]
+                    """
+                    if self.functionsKwargs[idx] is not False:
+                        resFun = fun(X_, **
+                                     self.functionsKwargs[idx])
+                    else:
+                        resFun = fun(X_)
+                    if maxBands > self.nb:
+                        if self.return_3d:
+                            X = np.zeros((X_.shape[0], X_.shape[1], maxBands))
+                            if self.outputNoData[idx] is not False:
+                                X[:, :, :] = self.outputNoData[idx]
+                            X[mask[:, :], :] = resFun
+                        else:
+                            """
+                            X = np.zeros((X_.shape[0], maxBands))
+                            if self.outputNoData[idx] is not False:
+                                X[mask[:,0], :] = self.outputNoData[idx]
+                            X[~mask[:, 0], :] = resFun
+                            """
+                    if resFun.ndim == 1:
+                        resFun = resFun.reshape(-1, 1)
+                    if resFun.ndim == 2 and self.return_3d is True:
+                        nBands = 1
+                    elif self.return_3d is True:
+                        nBands = resFun.shape[2]
+                    else:
+                        nBands = resFun.shape[1]
+
+                    if nBands > maxBands:
+                        raise ValueError(
+                            "Your function output {} bands, but has been defined to have a maximum of {} bands.".format(
+                                resFun.shape[1], maxBands))
+                    if not np.all(X.mask==0):
+                        if self.return_3d:
+                            curX = np.where(X_.mask[:,:,0], self.outputNoData[idx], resFun)
+                        else:
+                            curX = np.where(X_.mask[:,0].reshape(-1,1), self.outputNoData[idx], resFun)
+                    else:
+                        curX = resFun
+                else:
+                    if self.outputNoData[idx] is not False:
+                        curX = np.full(X.shape,self.outputNoData[idx])
+
+                for ind in range(self.outputs[idx].RasterCount):
+                    indGdal = int(ind + 1)
+                    curBand = self.outputs[idx].GetRasterBand(indGdal)
+                    if self.return_3d:
+                        if curX.ndim == 2:
+                            curX = curX.reshape(*curX.shape,1)
+                        curX = curX[:, :, ind]
+                    else:
+                        curX = curX[:, ind].reshape(lines, cols)
+
+                    curBand.WriteArray(curX, col, line)
+                    #curBand.FlushCache()
+
+                band = self.outputs[idx].GetRasterBand(1)
+                if self.outputNoData[idx] is not False:
+                    band.SetNoDataValue(self.outputNoData[idx])
+                band.FlushCache()
+
+            self.__position += 1
+        band = None
+        self.pb.addPosition(self.n_block)
+
+        for idx, fun in enumerate(self.functions):
+            print(
+                'Saved {} using function {}'.format(
+                    self.outputs[idx].GetDescription(), str(
+                        fun.__name__)))
+            self.outputs[idx] = None

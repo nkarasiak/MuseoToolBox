@@ -102,7 +102,7 @@ class learnAndPredict:
             param_grid=None,
             scale=False,
             cv=False,
-            scoring='accuracy',**gridSearchCVParams):
+            scoring='accuracy', **gridSearchCVParams):
         """
         learn Model from vector/array.
 
@@ -218,7 +218,7 @@ class learnAndPredict:
             **gridSearchCVParams)
 
     def __learn__(self, X, y, groups, classifier,
-                  param_grid, cv, scoring='accuracy',**gridSearchCVParams):
+                  param_grid, cv, scoring='accuracy', **gridSearchCVParams):
 
         if cv is not False and not isinstance(cv, int):
             self.CV = []
