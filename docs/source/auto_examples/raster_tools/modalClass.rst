@@ -73,7 +73,107 @@ Initialize rasterMath with raster
 
  .. code-block:: none
 
-    []
+    Total number of blocks : 15
+    [[-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]
+     [-- -- --]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -106,6 +206,7 @@ The first band will be the most predicted class, and the second the number of ti
  .. code-block:: none
 
     Using datatype from numpy table : int16
+    Detected 2 band(s) for output.
 
 
 Run the script
@@ -120,15 +221,16 @@ Run the script
 
 
 
+.. code-block:: pytb
 
-.. rst-class:: sphx-glr-script-out
+    Traceback (most recent call last):
+      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/modalClass.py", line 53, in <module>
+        rM.run()
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 876, in run
+        curX = curX[:, ind].reshape(lines, cols)
+    ValueError: cannot reshape array of size 256 into shape (256,256)
 
- Out:
 
- .. code-block:: none
-
-    rasterMath...  [........................................]0%    rasterMath...  [##......................................]7%    rasterMath...  [#####...................................]14%    rasterMath...  [########................................]21%    rasterMath...  [###########.............................]28%    rasterMath...  [##############..........................]35%    rasterMath...  [#################.......................]42%    rasterMath...  [####################....................]50%    rasterMath...  [######################..................]57%    rasterMath...  [#########################...............]64%    rasterMath...  [############################............]71%    rasterMath...  [###############################.........]78%    rasterMath...  [##################################......]85%    rasterMath...  [#####################################...]92%    rasterMath...  [########################################]100%
-    Saved /tmp/modal.tif using function modalClass
 
 
 Plot result
@@ -144,15 +246,7 @@ Plot result
     src = gdal.Open('/tmp/modal.tif')
     plt.imshow(src.ReadAsArray()[0,:,:])
 
-
-
-.. image:: /auto_examples/raster_tools/images/sphx_glr_modalClass_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-**Total running time of the script:** ( 0 minutes  0.380 seconds)
+**Total running time of the script:** ( 0 minutes  0.963 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

@@ -85,7 +85,7 @@ LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
 # Predict map
 # ---------------------------
     
-LAP.predictRaster(raster,'/tmp/classification.tif')
+LAP.predictRaster(raster,'/tmp/classification.tif',confidence='/tmp/confidence.tif')
 
 ##########################
 # Plot example

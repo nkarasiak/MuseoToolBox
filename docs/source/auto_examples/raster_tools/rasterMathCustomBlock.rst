@@ -74,7 +74,7 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    (256, 256, 3)
+    (256, 29, 3)
 
 
 Comparing different block size (%, fixed, full block)
@@ -102,7 +102,7 @@ You can define block by percentage of the whole width/height
  .. code-block:: none
 
     Total number of blocks : 4
-    (283, 526, 3)
+    (283, 527, 3)
 
 
 Or by fixed window 
@@ -199,7 +199,7 @@ Plot blocks
 
 
 
-**Total running time of the script:** ( 0 minutes  0.238 seconds)
+**Total running time of the script:** ( 0 minutes  0.319 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:

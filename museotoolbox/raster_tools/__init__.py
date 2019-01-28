@@ -713,6 +713,7 @@ class rasterMath:
         Get Random Block from the raster.
         """
         mask = np.array([True])
+        
         while np.all(mask==True):
             cols = int(
                 np.random.permutation(

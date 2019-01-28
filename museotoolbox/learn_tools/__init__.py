@@ -307,6 +307,7 @@ class learnAndPredict:
             Xfunction = kwargs['Xfunction']
             kwargs.pop('Xfunction', None)
             X = Xfunction(X, **kwargs)
+            
         if self.scale:
             X = self.scaler.transform(X)
         return X
@@ -319,11 +320,14 @@ class learnAndPredict:
         ----------
         X : array.
             The array to predict. Must have the same number of bands of the initial array/raster.
+        **kwargs : 
+            Xfunction : a custom function to modify directly the array from the raster.
         """
+        
         X = self.__convertX(X, **kwargs)
 
-        Xpredict = self.model.predict(X)
-        return Xpredict
+        self.Xpredict = self.model.predict(X)
+        return self.Xpredict
 
     def predictConfidencePerClass(self, X, **kwargs):
         """
@@ -342,6 +346,9 @@ class learnAndPredict:
         self.__convertX(X, **kwargs)
 
         Xpredict = self.model.predict_proba(X) * 100
+        if self.Xpredict.ndim == 1:
+                Xpredict = Xpredict.reshape(-1,1)
+        # share prediction in class in order to predict confidence if asked
         self.Xpredict = Xpredict
         return Xpredict
 
@@ -398,7 +405,7 @@ class learnAndPredict:
         """
 
         from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues
-        rM = rasterMath(inRaster, inMaskRaster, 'Prediction... ')
+        rM = rasterMath(inRaster, inMaskRaster, message = 'Prediction... ')
 
         gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
 
