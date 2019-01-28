@@ -441,6 +441,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
    :hidden:
 
    /auto_examples/raster_tools/rasterMathCustomBlockAndMask
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Test notebook in order to validate code.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_testBlockSize_3d_andNBands_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/rasterMath_testBlockSize_3d_andNBands
 .. raw:: html
 
     <div style='clear:both'></div>

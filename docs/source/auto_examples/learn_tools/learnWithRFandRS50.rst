@@ -142,7 +142,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7f50152e59e8>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7fe040e0f1d0>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -155,7 +155,7 @@ Read the model
            refit='kappa', return_train_score='warn',
            scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([ 0.97261071,  1.68400979]), 'std_fit_time': array([ 0.03269029,  0.07722425]), 'mean_score_time': array([ 0.63957858,  0.84564245]), 'std_score_time': array([ 0.01092625,  0.00461113]), 'param_n_estimators': masked_array(data = [100 200],
+    {'mean_fit_time': array([ 1.39432883,  2.6644038 ]), 'std_fit_time': array([ 0.01974678,  0.17069876]), 'mean_score_time': array([ 1.05886257,  1.50927019]), 'std_score_time': array([ 0.03390825,  0.06430268]), 'param_n_estimators': masked_array(data = [100 200],
                  mask = [False False],
            fill_value = ?)
     , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([ 0.94143572,  0.94227599]), 'split1_test_kappa': array([ 0.94193179,  0.94193833]), 'mean_test_kappa': array([ 0.94168376,  0.94210716]), 'std_test_kappa': array([ 0.00024804,  0.00016883]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([ 0.99644289,  0.99644289]), 'split1_train_kappa': array([ 0.99644167,  0.9964414 ]), 'mean_train_kappa': array([ 0.99644228,  0.99644214]), 'std_train_kappa': array([  6.08047080e-07,   7.44183416e-07]), 'split0_test_f1_mean': array([ 0.96630813,  0.96678266]), 'split1_test_f1_mean': array([ 0.96646631,  0.96646631]), 'mean_test_f1_mean': array([ 0.96638722,  0.96662449]), 'std_test_f1_mean': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([ 0.99794466,  0.99794466]), 'split1_train_f1_mean': array([ 0.99794466,  0.99794466]), 'mean_train_f1_mean': array([ 0.99794466,  0.99794466]), 'std_train_f1_mean': array([ 0.,  0.]), 'split0_test_accuracy': array([ 0.96630813,  0.96678266]), 'split1_test_accuracy': array([ 0.96646631,  0.96646631]), 'mean_test_accuracy': array([ 0.96638722,  0.96662449]), 'std_test_accuracy': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([ 0.99794466,  0.99794466]), 'split1_train_accuracy': array([ 0.99794466,  0.99794466]), 'mean_train_accuracy': array([ 0.99794466,  0.99794466]), 'std_train_accuracy': array([ 0.,  0.])}
@@ -244,7 +244,9 @@ Predict map
 .. code-block:: python
 
     
-    LAP.predictRaster(raster,'/tmp/classification.tif',confidence='/tmp/confidence.tif')
+    LAP.predictRaster(raster,'/tmp/classification.tif',
+                      confidence='/tmp/confidence.tif',
+                      confidencePerClass='/tmp/confidencePerClass.tif')
 
 
 
@@ -257,8 +259,10 @@ Predict map
  .. code-block:: none
 
     Total number of blocks : 15
+    Detected 5 band(s) for function predictConfidencePerClass.
     rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
     Saved /tmp/classification.tif using function predictArray
+    Saved /tmp/confidencePerClass.tif using function predictConfidencePerClass
     Saved /tmp/confidence.tif using function predictConfidenceOfPredictedClass
 
 
@@ -284,7 +288,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  33.269 seconds)
+**Total running time of the script:** ( 0 minutes  59.661 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

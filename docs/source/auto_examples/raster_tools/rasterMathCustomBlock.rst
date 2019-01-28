@@ -199,7 +199,7 @@ Plot blocks
 
 
 
-**Total running time of the script:** ( 0 minutes  0.960 seconds)
+**Total running time of the script:** ( 0 minutes  0.653 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:
