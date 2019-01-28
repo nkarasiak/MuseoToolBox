@@ -89,6 +89,7 @@ Plot blocks
     x = rM.getRandomBlock()
 
     rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,dtype=np.int16)
+
     for tile in rM.readBlockPerBlock():
         print(tile)
     #rM.addFunction(returnX,'/tmp/mean.tif')
@@ -111,7 +112,7 @@ Plot blocks
  .. code-block:: none
 
     Using datatype from numpy table : int16
-    Detected 1 band(s) for output.
+    Detected 1 band(s) for function mean.
     [[[-- -- --]
       [-- -- --]
       [-- -- --]
@@ -452,7 +453,7 @@ Plot blocks
     Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.778 seconds)
+**Total running time of the script:** ( 0 minutes  0.535 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:

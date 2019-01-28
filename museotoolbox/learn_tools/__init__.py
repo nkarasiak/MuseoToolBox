@@ -346,7 +346,7 @@ class learnAndPredict:
         self.__convertX(X, **kwargs)
 
         Xpredict_proba = self.model.predict_proba(X) * 100
-        if self.Xpredict.ndim == 1:
+        if Xpredict_proba.ndim == 1:
             Xpredict_proba = Xpredict_proba.reshape(-1, 1)
         # share prediction in class in case of confidence for only predicted
         # class

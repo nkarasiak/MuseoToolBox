@@ -40,6 +40,7 @@ print(rM.getRandomBlock().shape)
 x = rM.getRandomBlock()
 
 rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,dtype=np.int16)
+
 for tile in rM.readBlockPerBlock():
     print(tile)
 #rM.addFunction(returnX,'/tmp/mean.tif')

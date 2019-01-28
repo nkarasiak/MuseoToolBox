@@ -74,3 +74,21 @@ Examples using ``museotoolbox.raster_tools.rasterMath``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Test notebook in order to validate code.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_testBlockSize_3d_andNBands_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`

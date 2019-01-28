@@ -347,6 +347,24 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Test notebook in order to validate code.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_testBlockSize_3d_andNBands_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to read fields values from a vector file.">
 
 .. only:: html
