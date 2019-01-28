@@ -276,8 +276,6 @@ Predict map
  .. code-block:: none
 
     Total number of blocks : 15
-    Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
-    Using datatype from numpy table : int64
     rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
     Saved /tmp/classification.tif using function predictArray
 
@@ -304,7 +302,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  39.856 seconds)
+**Total running time of the script:** ( 0 minutes  34.756 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

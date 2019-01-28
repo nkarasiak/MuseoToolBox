@@ -470,7 +470,7 @@ class rasterMath:
         Gdal supported raster
     inMaskRaster : str or False.
         If str, path of the raster mask. Value masked are 0, other are considered not masked.
-        
+
         Use `invert=True` in :mod:`museotoolbox.raster_tools.rasterMaskFromVector` to mask only what is not in polygons.
     return_3d : boolean, default False.
         Default will return a row per pixel (2 dimensions), and dimension 2 (bands) are columns.
@@ -519,7 +519,7 @@ class rasterMath:
         self.dtype = band.DataType
         self.ndtype = convertGdalAndNumpyDataType(band.DataType)
         self.return_3d = return_3d
-        
+
         self.customBlockSize()  # get
 
         del band
@@ -569,17 +569,19 @@ class rasterMath:
         """
 
         if outNumpyDT is False:
-            dtypeName = function(self.getRandomBlock().data, **kwargs).dtype.name
+            dtypeName = function(
+                self.getRandomBlock().data,
+                **kwargs).dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
             pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
         else:
             dtypeName = np.dtype(outNumpyDT).name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
-            
+
         if outNBand is False:
             randomBlock = function(self.getRandomBlock())
             if randomBlock.ndim > 1:
-                    outNBand = randomBlock.shape[randomBlock.ndim - 1]
+                outNBand = randomBlock.shape[randomBlock.ndim - 1]
 
             else:
                 outNBand = 1
@@ -589,13 +591,13 @@ class rasterMath:
         self.__addOutput__(outRaster, outNBand, outGdalDT)
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
-        
+
         if outNoData is False:
-            if np.issubdtype(dtypeName,np.floating):
+            if np.issubdtype(dtypeName, np.floating):
                 outNoData = np.finfo(dtypeName).min
             else:
                 outNoData = np.iinfo(dtypeName).min
-            
+
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self, outRaster, outNBand, outGdalDT):
@@ -695,16 +697,15 @@ class rasterMath:
         else:
             t = np.where(arrToCheck == self.nodata)
 
-        
         if self.return_3d:
             tmpMask = np.zeros(arrShape[:2], dtype=bool)
             tmpMask[t] = True
-            tmpMask = np.repeat(tmpMask.reshape(*tmpMask.shape,1),3,axis=2)
+            tmpMask = np.repeat(tmpMask.reshape(*tmpMask.shape, 1), 3, axis=2)
             outArr = np.ma.masked_array(arr, tmpMask)
         else:
             tmpMask = np.zeros(arrShape, dtype=bool)
             tmpMask[t, :] = True
-            outArr  = np.ma.masked_array(arr,tmpMask)
+            outArr = np.ma.masked_array(arr, tmpMask)
 
         return outArr, tmpMask
 
@@ -713,8 +714,8 @@ class rasterMath:
         Get Random Block from the raster.
         """
         mask = np.array([True])
-        
-        while np.all(mask==True):
+
+        while np.all(mask == True):
             cols = int(
                 np.random.permutation(
                     range(
@@ -730,12 +731,12 @@ class rasterMath:
             width = min(self.nc - lines, self.x_block_size)
             height = min(self.nl - cols, self.y_block_size)
 
-        
-            tmp, _ = self.generateBlockArray(lines, cols, width, height, self.mask)
+            tmp, _ = self.generateBlockArray(
+                lines, cols, width, height, self.mask)
             mask = tmp.mask
 
         #arr = tmp[mask[:, 0], :]
-        
+
         return tmp
 
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
@@ -744,8 +745,8 @@ class rasterMath:
         """
         for X, mask, col, line, cols, lines in self.__iterBlock__(
                 getBlock=True, y_block_size=y_block_size, x_block_size=x_block_size):
-            
-            if not np.all(X.mask==1):
+
+            if not np.all(X.mask == 1):
                 yield X
 
     def customBlockSize(self, x_block_size=False, y_block_size=False):
@@ -815,7 +816,7 @@ class rasterMath:
 
             for idx, fun in enumerate(self.functions):
                 maxBands = self.outputs[idx].RasterCount
-                if not np.all(X.mask==1):
+                if not np.all(X.mask == 1):
                     """
                     if self.return_3d:
                         mask = np.repeat(mask.reshape(*mask.shape,1),3,axis=2)
@@ -854,29 +855,40 @@ class rasterMath:
                         raise ValueError(
                             "Your function output {} bands, but has been defined to have a maximum of {} bands.".format(
                                 resFun.shape[1], maxBands))
-                    if not np.all(X.mask==0):
+                    if not np.all(X.mask == 0):
                         if self.return_3d:
-                            curX = np.where(X_.mask[:,:,0], self.outputNoData[idx], resFun)
+                            curX = np.where(
+                                X_.mask[:, :, 0], self.outputNoData[idx], resFun)
                         else:
-                            curX = np.where(X_.mask[:,0].reshape(-1,1), self.outputNoData[idx], resFun)
+                            curX = np.where(np.repeat(
+                                X_.mask[:, 0].reshape(-1, 1), nBands, axis=1), self.outputNoData[idx], resFun)
                     else:
                         curX = resFun
                 else:
                     if self.outputNoData[idx] is not False:
-                        curX = np.full(X.shape,self.outputNoData[idx])
-
+                        if self.return_3d:
+                            curX = np.full(
+                                (X.shape[0], X.shape[1], maxBands), self.outputNoData[idx])
+                        else:
+                            curX = np.full(
+                                (X.shape[0], maxBands), self.outputNoData[idx])
+                    else:
+                        raise ValueError(
+                            'Some blocks are masked and no nodata value was given.\
+                            \n Please give a nodata value when adding the function.')
                 for ind in range(self.outputs[idx].RasterCount):
                     indGdal = int(ind + 1)
                     curBand = self.outputs[idx].GetRasterBand(indGdal)
                     if self.return_3d:
+                        tmpX = np.copy(curX)
                         if curX.ndim == 2:
-                            curX = curX.reshape(*curX.shape,1)
-                        curX = curX[:, :, ind]
+                            tmpX = curX.reshape(*curX.shape, 1)
+                        tmpX = tmpX[:, :, ind]
                     else:
-                        curX = curX[:, ind].reshape(lines, cols)
+                        tmpX = curX[:, ind].reshape(lines, cols)
 
-                    curBand.WriteArray(curX, col, line)
-                    #curBand.FlushCache()
+                    curBand.WriteArray(tmpX, col, line)
+                    # curBand.FlushCache()
 
                 band = self.outputs[idx].GetRasterBand(1)
                 if self.outputNoData[idx] is not False:

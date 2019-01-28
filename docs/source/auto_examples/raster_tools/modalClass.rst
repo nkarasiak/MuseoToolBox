@@ -221,16 +221,15 @@ Run the script
 
 
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/modalClass.py", line 53, in <module>
-        rM.run()
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 876, in run
-        curX = curX[:, ind].reshape(lines, cols)
-    ValueError: cannot reshape array of size 256 into shape (256,256)
+.. rst-class:: sphx-glr-script-out
 
+ Out:
 
+ .. code-block:: none
+
+    rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
+    Saved /tmp/modal.tif using function modalClass
 
 
 Plot result
@@ -246,7 +245,15 @@ Plot result
     src = gdal.Open('/tmp/modal.tif')
     plt.imshow(src.ReadAsArray()[0,:,:])
 
-**Total running time of the script:** ( 0 minutes  0.963 seconds)
+
+
+.. image:: /auto_examples/raster_tools/images/sphx_glr_modalClass_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  7.739 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

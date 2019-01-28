@@ -307,7 +307,7 @@ class learnAndPredict:
             Xfunction = kwargs['Xfunction']
             kwargs.pop('Xfunction', None)
             X = Xfunction(X, **kwargs)
-            
+
         if self.scale:
             X = self.scaler.transform(X)
         return X
@@ -320,10 +320,10 @@ class learnAndPredict:
         ----------
         X : array.
             The array to predict. Must have the same number of bands of the initial array/raster.
-        **kwargs : 
+        **kwargs :
             Xfunction : a custom function to modify directly the array from the raster.
         """
-        
+
         X = self.__convertX(X, **kwargs)
 
         self.Xpredict = self.model.predict(X)
@@ -345,12 +345,13 @@ class learnAndPredict:
         """
         self.__convertX(X, **kwargs)
 
-        Xpredict = self.model.predict_proba(X) * 100
+        Xpredict_proba = self.model.predict_proba(X) * 100
         if self.Xpredict.ndim == 1:
-                Xpredict = Xpredict.reshape(-1,1)
-        # share prediction in class in order to predict confidence if asked
-        self.Xpredict = Xpredict
-        return Xpredict
+            Xpredict_proba = Xpredict_proba.reshape(-1, 1)
+        # share prediction in class in case of confidence for only predicted
+        # class
+        self.Xpredict_proba = Xpredict_proba
+        return Xpredict_proba
 
     def predictConfidenceOfPredictedClass(self, X, **kwargs):
         """
@@ -366,12 +367,12 @@ class learnAndPredict:
         Xpredict : array.
             The probability from 0 to 100.
         """
-        if hasattr(self, 'Xpredict'):
-            Xpredict = np.amax(self.Xpredict, axis=1)
+        if hasattr(self, 'Xpredict_proba'):
+            Xpredict_proba = np.amax(self.Xpredict_proba, axis=1)
         else:
             self.__convertX(X, **kwargs)
-            Xpredict = np.amax(self.model.predict_proba(X) * 100, axis=1)
-        return Xpredict
+            Xpredict_proba = np.amax(self.model.predict_proba(X) * 100, axis=1)
+        return Xpredict_proba
 
     def predictRaster(
             self,
@@ -394,38 +395,37 @@ class learnAndPredict:
             Path of the prediction raster to save.
         outConfidence : str
             Path of the max confidence from all classes raster to save.
-        outCOnfidencePerClass : str
+        outConfidencePerClass : str
             Path of the confidence raster per class to be saved.
         inMaskRaster : str, default False.
             Path of the raster where 0 is mask and value above are no mask.
-        outGdalDT : int, defaut 1.
-            1 is for gdal.GDT_Byte, 2 for gdal.GDT_UInt16, 3 is for gdal.GDT_Int16...
+        outNumpyDT : numpy datatype, default will get the datatype according to your maximum class value.
+            Get numpy datatype throught : convertGdalAndNumpyDataType(getGdalDTFromMinMaxValues(maximumClassValue)))
         outNoData : int, default 0.
             Value of no data for the outRaster.
         """
 
-        from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues
-        rM = rasterMath(inRaster, inMaskRaster, message = 'Prediction... ')
+        from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues, convertGdalAndNumpyDataType
+        rM = rasterMath(inRaster, inMaskRaster, message='Prediction... ')
 
-        gdalDT = getGdalDTFromMinMaxValues(np.amax(self.model.classes_))
+        numpyDT = convertGdalAndNumpyDataType(
+            getGdalDTFromMinMaxValues(np.amax(self.model.classes_)))
 
         rM.addFunction(
             self.predictArray,
             outRaster,
             outNBand=1,
-            outGdalDT=gdalDT,
+            outNumpyDT=numpyDT,
             outNoData=outNoData,
             **kwargs)
-
-        noDataConfidence = -9999
 
         if confidencePerClass:
             rM.addFunction(
                 self.predictConfidencePerClass,
                 confidencePerClass,
                 outNBand=False,
-                outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
-                outNoData=noDataConfidence,
+                outNumpyDT=np.int16,
+                outNoData=np.iinfo(np.int16).min,
                 **kwargs)
 
         if confidence:
@@ -433,8 +433,8 @@ class learnAndPredict:
                 self.predictConfidenceOfPredictedClass,
                 confidence,
                 outNBand=1,
-                outGdalDT=getGdalDTFromMinMaxValues(100, noDataConfidence),
-                outNoData=noDataConfidence,
+                outNumpyDT=np.int16,
+                outNoData=np.iinfo(np.int16).min,
                 **kwargs)
         rM.run()
 
