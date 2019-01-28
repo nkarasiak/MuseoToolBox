@@ -50,6 +50,7 @@ print(np.unique(y[tr],return_counts=True))
 # -------------------------------------------
 from sklearn.model_selection import LeavePGroupsOut
 # You need to specify the number of groups
+
 LPGO = LeavePGroupsOut(n_groups=2)
 for tr,vl in LPGO.split(X,y,g):
     print(tr.shape,vl.shape)

@@ -129,6 +129,7 @@ Differences with scikit-learn
 
     from sklearn.model_selection import LeavePGroupsOut
     # You need to specify the number of groups
+
     LPGO = LeavePGroupsOut(n_groups=2)
     for tr,vl in LPGO.split(X,y,g):
         print(tr.shape,vl.shape)
@@ -339,7 +340,7 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.236 seconds)
+**Total running time of the script:** ( 0 minutes  0.173 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

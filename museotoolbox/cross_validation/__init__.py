@@ -15,7 +15,7 @@
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation functions.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 
 from ._sampleSelection import _sampleSelection
 from . import crossValidationClass as _cvc

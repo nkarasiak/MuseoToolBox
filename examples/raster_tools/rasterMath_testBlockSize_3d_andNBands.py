@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-rasterMath tests with full block or stacken and custom block size
+Tests rasterMath with full block or stacken and custom block size
 ==================================================================
 
 Test notebook in order to validate code.
@@ -33,7 +33,7 @@ rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 for return_3d in [False,True]:
     rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=return_3d)
     
-    rM.customBlockSize(100,100) # block of 100x100pixels
+    rM.customBlockSize(200,200) # block of 200x200pixels
     
     print(rM.getRandomBlock().shape)
     
@@ -61,6 +61,6 @@ for return_3d in [False,True]:
     rM.run()
     
 import gdal
-dst = gdal.Open('/tmp/x_flatten_True.tif')
+dst = gdal.Open('/tmp/x_flatten_False.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()
 plt.imshow(np.ma.masked_where(arr == np.min(arr), arr))

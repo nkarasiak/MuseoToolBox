@@ -12,7 +12,8 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function
+
+from __future__ import absolute_import, print_function, division
 import sys
 
 

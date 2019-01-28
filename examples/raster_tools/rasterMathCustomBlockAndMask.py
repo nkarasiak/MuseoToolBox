@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-rasterMath with custom block size (and with 3 dimensions)
-===============================================================
+rasterMath with custom block size, mask, and in 3 dimensions
+===================================================================
 
 Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)
+
+Tips : A function readBlockPerBlock() yields each block, without saving results
+to a new raster.
 
 """
 

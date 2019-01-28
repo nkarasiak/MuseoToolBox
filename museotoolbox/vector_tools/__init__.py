@@ -15,7 +15,7 @@
 """
 The :mod:`museotoolbox.vector_tools` module gathers vector functions.
 """
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 import os
 from osgeo import ogr
 import numpy as np

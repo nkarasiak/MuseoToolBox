@@ -36,7 +36,7 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=["numpy","scipy","matplotlib"],
+    install_requires=["numpy","scipy","matplotlib","scikit-learn"],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",

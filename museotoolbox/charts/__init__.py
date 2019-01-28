@@ -43,13 +43,12 @@ class plotConfusionMatrix:
         self.axes = []
         self.gs = gridspec.GridSpec(
             2, 2, width_ratios=[
-                self.cm.shape[0], 1], height_ratios=[
-                self.cm.shape[1], 1])
+                self.cm.shape[1], 1], height_ratios=[
+                self.cm.shape[0], 1])
         self.gs.update(
             bottom=0,
             top=1,
-            wspace=0.05 /
-            self.cm.shape[0],
+            wspace=0,
             hspace=0.7 /
             self.cm.shape[1])
 
@@ -73,7 +72,8 @@ class plotConfusionMatrix:
             aspect='equal',
             cmap=self.cmap,
             vmin=self.vmin,
-            vmax=self.vmax)
+            vmax=self.vmax,
+            **kwargs)
 
         self.kwargs = kwargs
         self.subplot = False

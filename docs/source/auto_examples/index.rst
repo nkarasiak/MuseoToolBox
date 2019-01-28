@@ -275,6 +275,26 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 
 .. only:: html
 
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_SFFS_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_SFFS.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/learn_tools/SFFS
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
     .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithRFandRS50vector_thumb.png
 
         :ref:`sphx_glr_auto_examples_learn_tools_learnWithRFandRS50vector.py`

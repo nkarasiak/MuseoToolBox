@@ -7,11 +7,14 @@
 .. _sphx_glr_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:
 
 
-rasterMath with custom block size (and with 3 dimensions)
-===============================================================
+rasterMath with custom block size, mask, and in 3 dimensions
+===================================================================
 
 Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)
+
+Tips : A function readBlockPerBlock() yields each block, without saving results
+to a new raster.
 
 
 
@@ -453,7 +456,7 @@ Plot blocks
     Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.535 seconds)
+**Total running time of the script:** ( 0 minutes  0.231 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:
