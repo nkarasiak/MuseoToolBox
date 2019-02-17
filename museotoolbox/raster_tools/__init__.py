@@ -145,7 +145,8 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "float64": 7,
         "complex64": 10,
         "complex128": 11,
-        "int64": 5
+        "int64": 5,
+        "uint64":5
     }
 
     if numpyDT is None:
@@ -153,7 +154,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
     else:
 
         code = NP2GDAL_CONVERSION[numpyDT]
-        if numpyDT == 'int64':
+        if numpyDT.endswith('int64'):
             print(
                 'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
@@ -545,7 +546,7 @@ class rasterMath:
             outRaster,
             outNBand=False,
             outNumpyDT=False,
-            outNoData=False,
+            outNoData=True,
             **kwargs):
         """
         Add function to rasterMath.
@@ -561,8 +562,9 @@ class rasterMath:
             If False will take the number of dimensions from the first result of the function.
         outNumpyDT : int, default False.
             If False, will use the datatype of the function result.
-        outNoData : int, default False.
-            If False will use the minimum value available for the given or found datatype.
+        outNoData : int, default True.
+            If True or if False (but if nodata is present in the init raster),
+            will use the minimum value available for the given or found datatype.
         functionKwargs : False, or dict type.
             If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
         """
@@ -591,7 +593,7 @@ class rasterMath:
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
 
-        if outNoData is False:
+        if (outNoData is True) or (self.nodata is not False) :
             if np.issubdtype(dtypeName, np.floating):
                 outNoData = np.finfo(dtypeName).min
             else:
