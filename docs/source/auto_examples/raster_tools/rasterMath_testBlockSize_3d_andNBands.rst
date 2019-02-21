@@ -130,7 +130,7 @@ Initialize rasterMath with raster
     Saved /tmp/x_flatten_True.tif using function returnFlatten
 
 
-**Total running time of the script:** ( 0 minutes  4.779 seconds)
+**Total running time of the script:** ( 0 minutes  4.727 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:

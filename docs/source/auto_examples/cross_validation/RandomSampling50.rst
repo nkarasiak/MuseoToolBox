@@ -23,7 +23,7 @@ Import librairies
 .. code-block:: python
 
 
-    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox import datasets,raster_tools,vector_tools
 
 
@@ -57,9 +57,10 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=10,
+
+    SKF = RandomStratifiedKFold(n_splits=2,n_repeats=2,
                     random_state=12,verbose=False)
-    for tr,vl in RS50.split(X=None,y=y):
+    for tr,vl in SKF.split(X=None,y=y):
         print(tr,vl)
 
 
@@ -76,12 +77,6 @@ Create CV
     [ 0  1  7  4  5 14 15 10 11] [ 3  2  8  9  6 16 12 13]
     [ 0  3  7  4  9 14 16 12 13] [ 8  1  2  5  6 15 10 11]
     [ 1  2  8  5  6 14 15 10 11] [ 7  3  0  9  4 16 12 13]
-    [ 1  7  8  5  6 15 16 12 13] [ 0  2  3  4  9 14 10 11]
-    [ 0  2  3  4  9 14 16 10 11] [ 1  8  7  5  6 15 12 13]
-    [ 0  2  3  4  6 15 16 10 11] [ 8  7  1  9  5 14 12 13]
-    [ 1  7  8  5  9 14 16 12 13] [ 3  0  2  4  6 15 10 11]
-    [ 2  3  8  6  9 14 15 12 13] [ 1  7  0  4  5 16 10 11]
-    [ 0  1  7  4  5 15 16 10 11] [ 2  8  3  6  9 14 12 13]
 
 
 .. note::
@@ -94,9 +89,9 @@ Create CV
 
     # Show label
 
-    for tr,vl in RS50.split(X=None,y=y):
+    for tr,vl in SKF.split(X=None,y=y):
         print(y[tr],y[vl])
-    
+
 
 
 
@@ -107,12 +102,6 @@ Create CV
 
  .. code-block:: none
 
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
-    [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
     [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
     [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
     [1 1 1 2 2 3 3 4 5] [1 1 1 2 2 3 4 5]
@@ -131,7 +120,7 @@ Create CV
 
     X,y=raster_tools.getSamplesFromROI(raster,vector,field)
 
-    for tr,vl in RS50.split(X,y):
+    for tr,vl in SKF.split(X,y):
         print(tr,vl)
         print(tr.shape,vl.shape)
         
@@ -152,18 +141,6 @@ Create CV
     [1601 1603 1604 ..., 9458 9509 9560] [ 1649  7237  7414 ..., 10321 10322  9508]
     (6325,) (6322,)
     [ 1599  1600  1602 ...,  9561 10321 10322] [11779  3484 10912 ...,  9560  9458  9457]
-    (6325,) (6322,)
-    [ 1599  1601  1602 ...,  9561 10321 10322] [11466 11817  4653 ...,  9560  9457  9509]
-    (6325,) (6322,)
-    [1600 1603 1604 ..., 9508 9509 9560] [ 4314 10407 10887 ..., 10321  9561 10322]
-    (6325,) (6322,)
-    [1599 1600 1601 ..., 9458 9508 9509] [ 5649 12306 12461 ...,  9561 10321 10322]
-    (6325,) (6322,)
-    [ 1602  1603  1609 ...,  9561 10321 10322] [7352 4557 3755 ..., 9509 9508 9458]
-    (6325,) (6322,)
-    [ 1601  1602  1603 ...,  9509  9560 10321] [10573 12421  2139 ..., 10322  9457  9458]
-    (6325,) (6322,)
-    [ 1599  1600  1604 ...,  9458  9561 10322] [ 2053  3067 12461 ...,  9560  9508  9509]
     (6325,) (6322,)
 
 
@@ -188,7 +165,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.224 seconds)
+**Total running time of the script:** ( 0 minutes  0.086 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_RandomSampling50.py:

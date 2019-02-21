@@ -24,7 +24,7 @@ Import librairies
 
 
     from museotoolbox.learn_tools import learnAndPredict
-    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
 
@@ -57,7 +57,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=10,
+    SKF = RandomStratifiedKFold(n_splits=2,n_repeats=5,
                     random_state=12,verbose=False)
 
 
@@ -91,7 +91,7 @@ Start learning
 
 
     LAP = learnAndPredict(n_jobs=-1)
-    LAP.learnFromVector(X,y,cv=RS50,
+    LAP.learnFromVector(X,y,cv=SKF,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]))
 
 
@@ -247,7 +247,7 @@ Save each confusion matrix from folds
 .. code-block:: python
 
 
-    LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
+    LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
   
 
 
@@ -276,7 +276,7 @@ Predict map
  .. code-block:: none
 
     Total number of blocks : 15
-    rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
+    Prediction...  [........................................]0%    Prediction...  [##......................................]6%    Prediction...  [#####...................................]13%    Prediction...  [########................................]20%    Prediction...  [##########..............................]26%    Prediction...  [#############...........................]33%    Prediction...  [################........................]40%    Prediction...  [##################......................]46%    Prediction...  [#####################...................]53%    Prediction...  [########################................]60%    Prediction...  [##########################..............]66%    Prediction...  [#############################...........]73%    Prediction...  [################################........]80%    Prediction...  [##################################......]86%    Prediction...  [#####################################...]93%    Prediction...  [########################################]100%
     Saved /tmp/classification.tif using function predictArray
 
 
@@ -302,7 +302,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  37.294 seconds)
+**Total running time of the script:** ( 0 minutes  23.487 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

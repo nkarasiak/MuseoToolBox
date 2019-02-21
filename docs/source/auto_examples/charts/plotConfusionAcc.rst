@@ -22,7 +22,7 @@ Import librairies
 .. code-block:: python
 
     from museotoolbox.learn_tools import learnAndPredict
-    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox.charts import plotConfusionMatrix
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
@@ -57,7 +57,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=2,
+    RSKF = RandomStratifiedKFold(n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -92,7 +92,7 @@ Start learning
 
 
     LAP = learnAndPredict()
-    LAP.learnFromRaster(raster,vector,field,cv=RS50,
+    LAP.learnFromRaster(raster,vector,field,cv=RSKF,
                         classifier=classifier,param_grid=dict(n_estimators=[10,100]))
 
 
@@ -122,8 +122,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.940906129206
-    0.941697670138
+    0.93984336537
+    0.942433708814
 
 
 Get each confusion matrix from folds
@@ -148,16 +148,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3690   70    1   10    0]
-     [  84 1048    0   14    0]
-     [   2    0 1137    0    0]
-     [  12   17    1  232    0]
+    [[3689   70    1   11    0]
+     [  80 1051    0   15    0]
+     [   3    0 1136    0    0]
+     [  12   18    1  231    0]
      [   4    0    0    0    0]]
-    [[3678   78    2   13    0]
-     [  72 1062    1   11    0]
+    [[3679   79    2   11    0]
+     [  66 1068    1   11    0]
      [   0    0 1139    0    0]
-     [   9   19    3  231    0]
-     [   3    0    1    0    0]]
+     [   9   20    3  230    0]
+     [   3    1    0    0    0]]
 
 
 Plot confusion matrix
@@ -210,14 +210,13 @@ Plot confusion matrix and normalize per class
     pltCM.addMean('Mean per Y','Mean per X')
 
 
-
 .. image:: /auto_examples/charts/images/sphx_glr_plotConfusionAcc_002.png
     :class: sphx-glr-single-img
 
 
 
 
-**Total running time of the script:** ( 0 minutes  4.595 seconds)
+**Total running time of the script:** ( 0 minutes  3.950 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionAcc.py:

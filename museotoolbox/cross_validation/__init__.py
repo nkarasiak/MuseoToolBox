@@ -51,8 +51,7 @@ class LeaveOneOutPerClass(_sampleSelection):
             random_state=random_state)
 
         _sampleSelection.__init__(self)
-
-
+        
 class LeavePSubGroupOut(_sampleSelection):
     """
     Generate a Cross-Validation using subgroup (each group belong to a unique label).
@@ -264,15 +263,15 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
         _sampleSelection.__init__(self)
 
 
-class RandomCV(_sampleSelection):
+class RandomStratifiedKFold(_sampleSelection):
     """
-    Generate a Cross-Validation with random selection with percentage per label.
+    Generate a Cross-Validation with full random selection and Stratified K-Fold (same percentange per class).
 
     Parameters
     ----------
 
-    valid_size : float or int. Default 0.5.
-        If float from 0.1 to 0.9 (means keep 90% per class for validation). If int, will try to reach this sample for every class.
+    n_splits : int. Default 2.
+        Number of splits. 2 means 50% for each class at training and validation.
     n_splits : int or False, default False.
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
     random_state : int or None, default=None.
@@ -283,29 +282,37 @@ class RandomCV(_sampleSelection):
 
     Example
     -------
-    >>> from museotoolbox.cross_validation import RandomCV
+    >>> from museotoolbox.cross_validation import StratifiedKFold
     >>> from museotoolbox import datasets
-    >>> X,y = datasets.getHistoricalMap(return_X_y=True)
-    >>> RS50 = RandomCV(valid_size=0.5,random_state=12,verbose=False)
-    >>> for tr,vl in RS50.split(X=None,y=y):
+    >>> X,y = datasets.historicalMap(return_X_y=True)
+    >>> SKF = StratifiedKFold(n_splits=2,random_state=12,verbose=False)
+    >>> for tr,vl in SKF.split(X=X,y=y):
             print(tr,vl)
     [ 1600  1601  1605 ...,  9509  9561 10322] [ 3632  1988 11480 ..., 10321  9457  9508]
     [ 1599  1602  1603 ...,  9508  9560 10321] [ 3948 10928  3490 ..., 10322  9458  9561]
     """
 
     def __init__(self,
-                 valid_size=0.5,
-                 n_splits=False,
+                 n_splits=2,
+                 n_repeats=False,
                  random_state=None,
                  verbose=False):
         self.samplingType = 'random'
         self.verbose = verbose
-
+        
+        valid_size = 1/n_splits
+        
+        if n_repeats == False or n_repeats == 0:
+            n_repeats=n_splits
+        else:
+            n_repeats=n_splits*n_repeats
+        
         self.crossvalidation = _cvc.randomPerClass
-
+        
+        
         self.params = dict(
             valid_size=valid_size,
             random_state=random_state,
-            n_splits=n_splits)
+            n_splits=n_repeats)
 
-        _sampleSelection.__init__(self)
+        _sampleSelection.__init__(self)  

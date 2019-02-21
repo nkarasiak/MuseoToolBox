@@ -18,7 +18,7 @@ cross_validation
       LeaveOneOutPerClass
       LeaveOneSubGroupOut
       LeavePSubGroupOut
-      RandomCV
+      RandomStratifiedKFold
       SpatialLeaveAsideOut
       SpatialLeaveOnePixelOut
       SpatialLeaveOneSubGroupOut

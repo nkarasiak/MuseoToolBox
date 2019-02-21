@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.cross_validation import RandomCV
+from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets,raster_tools,vector_tools
 
 ##############################################################################
@@ -26,9 +26,10 @@ y = vector_tools.readValuesFromVector(vector,field)
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(valid_size=0.5,n_splits=10,
+
+SKF = RandomStratifiedKFold(n_splits=2,n_repeats=2,
                 random_state=12,verbose=False)
-for tr,vl in RS50.split(X=None,y=y):
+for tr,vl in SKF.split(X=None,y=y):
     print(tr,vl)
 
 ###############################################################################
@@ -37,9 +38,9 @@ for tr,vl in RS50.split(X=None,y=y):
 
 # Show label
 
-for tr,vl in RS50.split(X=None,y=y):
+for tr,vl in SKF.split(X=None,y=y):
     print(y[tr],y[vl])
-    
+
 ##############################################################################
 # .. note::
 #    The first one is made with polygon only.
@@ -48,7 +49,7 @@ for tr,vl in RS50.split(X=None,y=y):
 
 X,y=raster_tools.getSamplesFromROI(raster,vector,field)
 
-for tr,vl in RS50.split(X,y):
+for tr,vl in SKF.split(X,y):
     print(tr,vl)
     print(tr.shape,vl.shape)
         

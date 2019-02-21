@@ -13,7 +13,7 @@ This example shows how to make a Random Sampling with
 # -------------------------------------------
 
 from museotoolbox.learn_tools import learnAndPredict
-from museotoolbox.cross_validation import RandomCV
+from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
 from museotoolbox import raster_tools
 from sklearn.ensemble import RandomForestClassifier
@@ -30,7 +30,7 @@ field = 'Class'
 # Create CV
 # -------------------------------------------
 
-RS50 = RandomCV(valid_size=0.5,n_splits=2,
+SKF = RandomStratifiedKFold(n_splits=2,
                 random_state=12,verbose=False)
 
 ##############################################################################
@@ -49,7 +49,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 LAP = learnAndPredict(n_jobs=-1,verbose=1)
-LAP.learnFromRaster(raster,vector,field,cv=RS50,
+LAP.learnFromRaster(raster,vector,field,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]),
                     scoring=scoring,refit='kappa')
 
