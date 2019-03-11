@@ -363,8 +363,8 @@ class randomPerClass:
                 TF = np.in1d(Cpos, tmpValid, invert=True)
                 tmpTrain = Cpos[TF]
 
-                if not np.all(self.y[tmpTrain]+1) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid]+1) or self.y[tmpValid][0] != C:
+                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
+                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 
@@ -496,8 +496,8 @@ class groupCV:
                 train = np.concatenate(
                     (train, tmpTrain))
 
-                if not np.all(self.y[tmpTrain]+1) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid]+1) or self.y[tmpValid][0] != C:
+                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
+                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
                 self.mask[tmpValid] = 0

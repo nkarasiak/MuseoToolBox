@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Random Sampling 50% (RS50)
+Stratified-K-Fold
 ======================================================
 
 This example shows how to make a Random Sampling with 

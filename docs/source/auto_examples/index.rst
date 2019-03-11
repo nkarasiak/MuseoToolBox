@@ -98,46 +98,6 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave One Out for each class.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneOutPerClass_thumb.png
-
-        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneOutPerClass.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/cross_validation/LeaveOneOutPerClass
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/cross_validation/SpatialLeaveAsideOut
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
 
 .. only:: html
@@ -238,6 +198,26 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/cross_validation/SpatialLeaveAsideOut
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
 
 .. only:: html
@@ -255,6 +235,26 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
    :hidden:
 
    /auto_examples/cross_validation/LeavePSubGroupOut
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave One Out for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneOutPerClass_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneOutPerClass.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/cross_validation/LeaveOneOutPerClass
 .. raw:: html
 
     <div style='clear:both'></div>

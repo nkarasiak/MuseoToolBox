@@ -7,7 +7,7 @@
 .. _sphx_glr_auto_examples_cross_validation_RandomSampling50.py:
 
 
-Random Sampling 50% (RS50)
+Stratified-K-Fold
 ======================================================
 
 This example shows how to make a Random Sampling with 
@@ -165,7 +165,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.086 seconds)
+**Total running time of the script:** ( 0 minutes  0.101 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_RandomSampling50.py:
