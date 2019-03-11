@@ -116,6 +116,7 @@ Plot blocks
 
     Using datatype from numpy table : int16
     Detected 1 band(s) for function mean.
+    No data is set to : -32768
     [[[-- -- --]
       [-- -- --]
       [-- -- --]
@@ -456,7 +457,7 @@ Plot blocks
     Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.203 seconds)
+**Total running time of the script:** ( 0 minutes  0.192 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:

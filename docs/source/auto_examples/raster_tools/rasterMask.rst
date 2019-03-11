@@ -135,7 +135,7 @@ white is nodata, black is 255
 
 
 
-**Total running time of the script:** ( 0 minutes  0.093 seconds)
+**Total running time of the script:** ( 0 minutes  0.115 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMask.py:

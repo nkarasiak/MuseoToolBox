@@ -30,7 +30,7 @@ class learnAndPredict:
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
-
+        
         Parameters
         ----------
         n_jobs : int, default 1.
@@ -41,30 +41,34 @@ class learnAndPredict:
         --------
         >>> import museotoolbox as mtb
         >>> from sklearn.ensemble import RandomForestClassifier
-        >>> raster,vector = mtb.datasets.getHistoricalMap()
-        >>> RS50 = mtb.cross_validation.RandomCV(valid_size=0.5,n_splits=10,
+        >>> raster,vector = mtb.datasets.historicalMap()
+        >>> RS50 = mtb.cross_validation.RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
         >>> classifier = RandomForestClassifier()
-        >>> LAP = mtb.learn_tools.learnAndPredict()
+        >>> LAP = mtb.learn_tools.learnAndPredict(verbose=True)
         >>> LAP.learnFromRaster(raster,vector,inField='class',cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+        Reading raster values...  [########################################]100%
         Fitting 10 folds for each of 2 candidates, totalling 20 fits
+        best score : 0.966244859222
         best n_estimators : 200
         >>> for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
             print(kappa)
-        [0.94635897652909906]
-        [0.93926877916972007]
-        [0.9424138426326939]
-        [0.9439809301441302]
-        [0.94286057027982639]
-        [0.94247415327533202]
-        [0.94190539222286984]
-        [0.94625949356904848]
-        [0.94642164578108168]
-        [0.9395504758785389]
+        [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
+        {'kappa': 0.94145803865870303}
+        {'kappa': 0.94275572196698443}
+        {'kappa': 0.94566553229314054}
+        {'kappa': 0.94210064101370472}
+        {'kappa': 0.94566137634353153}
+        {'kappa': 0.94085890364956737}
+        {'kappa': 0.94136385707385184}
+        {'kappa': 0.9383201352573155}
+        {'kappa': 0.93887726891376944}
+        {'kappa': 0.94450020549861891}
+        [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    8.7s finished
         >>> LAP.predictRaster(raster,'/tmp/classification.tif')
-        Prediction...  [##################......................]45%
-        Prediction...  [####################################....]90%
+        Total number of blocks : 15
+        Prediction...  [########################################]100%
         Saved /tmp/classification.tif using function predictArray
         """
         self.n_jobs = n_jobs
@@ -92,6 +96,7 @@ class learnAndPredict:
         else:
             self.StandardScaler.fit(X)
             Xt = self.StandardScaler.transform(X)
+            
             return Xt
 
     def learnFromVector(
@@ -300,7 +305,12 @@ class learnAndPredict:
                 path += '.npz'
             model = np.load(path)
             self.__dict__.update(model['LAP'].tolist())
-
+            if hasattr(self,'scale'):
+                if self.scale is True:
+                    # for retro-compatibility with museotoolbox < 1.0
+                    self.standardize,self.StandardScaler = self.scale,self.scaler
+                    del self.scaler,self.scale
+                    
     def __convertX(self, X, **kwargs):
         if 'Xfunction' in kwargs:
             Xfunction = kwargs['Xfunction']
@@ -308,7 +318,15 @@ class learnAndPredict:
             X = Xfunction(X, **kwargs)
 
         if self.standardize:
+            if np.ma.is_masked(X):
+                tmpMask = X.mask[:,0]
+            
             X = self.StandardScaler.transform(X)
+            
+            if np.ma.is_masked(X):
+                tmpMask = np.repeat(tmpMask.reshape(-1,1), X.shape[-1], axis=1)
+                X = np.ma.masked_array(X, tmpMask)
+        
         return X
 
     def predictArray(self, X, **kwargs):
@@ -324,8 +342,8 @@ class learnAndPredict:
         """
 
         X = self.__convertX(X, **kwargs)
-
         self.Xpredict = self.model.predict(X)
+        
         return self.Xpredict
 
     def predictConfidencePerClass(self, X, **kwargs):
@@ -381,6 +399,7 @@ class learnAndPredict:
             confidence=False,
             inMaskRaster=False,
             outNoData=0,
+            compress=False,
             **kwargs):
         """
         Predict label from raster using previous learned model.
@@ -405,7 +424,7 @@ class learnAndPredict:
         """
 
         from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues, convertGdalAndNumpyDataType
-        rM = rasterMath(inRaster, inMaskRaster, message='Prediction... ')
+        rM = rasterMath(inRaster, inMaskRaster, message='Prediction...')
 
         numpyDT = convertGdalAndNumpyDataType(
             getGdalDTFromMinMaxValues(np.amax(self.model.classes_)))
@@ -416,6 +435,7 @@ class learnAndPredict:
             outNBand=1,
             outNumpyDT=numpyDT,
             outNoData=outNoData,
+            compress=compress,
             **kwargs)
 
         if confidencePerClass:
@@ -425,6 +445,7 @@ class learnAndPredict:
                 outNBand=False,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
+                compress=compress,
                 **kwargs)
 
         if confidence:
@@ -434,6 +455,7 @@ class learnAndPredict:
                 outNBand=1,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
+                compress=compress,
                 **kwargs)
         rM.run()
 
@@ -700,10 +722,12 @@ class sequentialFeatureSelection(BaseEstimator):
                     pB.addPosition()
                 LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
                 curX = self.__getX(self.X, idx)
+                
                 if self.xFunction:
                     standardize = False
                 else:
                     standardize = True
+                
                 LAP.learnFromVector(
                     curX,
                     y,

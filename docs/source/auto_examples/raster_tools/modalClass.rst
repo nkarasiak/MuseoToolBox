@@ -207,6 +207,7 @@ The first band will be the most predicted class, and the second the number of ti
 
     Using datatype from numpy table : int16
     Detected 2 band(s) for function modalClass.
+    No data is set to : 0
 
 
 Run the script
@@ -253,7 +254,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  2.792 seconds)
+**Total running time of the script:** ( 0 minutes  0.753 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

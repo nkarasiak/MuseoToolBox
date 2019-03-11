@@ -547,7 +547,7 @@ class rasterMath:
             outNBand=False,
             outNumpyDT=False,
             outNoData=True,
-            compression=False,
+            compress=False,
             **kwargs):
         """
         Add function to rasterMath.
@@ -566,7 +566,7 @@ class rasterMath:
         outNoData : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compression: boolean, default False.
+        compress: boolean, default False.
             If True, will use DEFLATE compression using all cpu-cores minus 1.
         **kwargs
             
@@ -592,23 +592,29 @@ class rasterMath:
                     'Detected {} band(s) for function {}.'.format(
                         outNBand, function.__name__))
 
-        self.__addOutput__(outRaster, outNBand, outGdalDT,compression=compression)
+        self.__addOutput__(outRaster, outNBand, outGdalDT,compress=compress)
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
 
         if (outNoData is True) or (self.nodata is not False):
             if np.issubdtype(dtypeName, np.floating):
-                outNoData = np.finfo(dtypeName).min
+                minValue = np.finfo(dtypeName).min
             else:
-                outNoData = np.iinfo(dtypeName).min
-
+                minValue = np.iinfo(dtypeName).min
+                
+            if (outNoData is True) or (outNoData < minValue):
+                outNoData = minValue
+                
+            if self.verbose:
+                print('No data is set to : '+str(outNoData))
+            
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self, outRaster, outNBand, outGdalDT,compression=False):
+    def __addOutput__(self, outRaster, outNBand, outGdalDT,compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
-        if compression is True:
-            options = ['BIGTIFF=IF_SAVER','COMPRESS=DEFLATE','NUM_THREADS={}'.format(os.cpu_count()-1)]
+        if compress is True:
+            options = ['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE','NUM_THREADS={}'.format(os.cpu_count()-1)]
         else:
             options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
@@ -858,6 +864,9 @@ class rasterMath:
 
                 if not np.all(X.mask == 1):
                     # if all the block is not masked
+                    if not self.return_3d:
+                        X_ = X_[~X_.mask[:,0],...]
+                        
                     if self.functionsKwargs[idx] is not False:
                         resFun = fun(X_, **
                                      self.functionsKwargs[idx])
@@ -874,16 +883,24 @@ class rasterMath:
 
                     if not np.all(X.mask == 0):
                         # if all the block is not unmasked add the nodata value
+                                
                         resFun = self.reshape_ndim(resFun)
-                        mask = self.reshape_ndim(X_.mask[..., 0])
-                        resFun = np.where(
-                            np.repeat(
+                        mask = self.reshape_ndim(X.mask[..., 0])
+                        tmp = np.repeat(
                                 mask,
                                 maxBands,
-                                axis=mask.ndim - 1),
-                            self.outputNoData[idx],
-                            resFun)
-
+                                axis=mask.ndim - 1)
+                        if self.return_3d:
+                            resFun = np.where(
+                                    tmp,
+                                    self.outputNoData[idx],
+                                    resFun)                            
+                        else:
+                            tmp = tmp.astype(resFun.dtype)
+                            tmp[mask.flatten(),...] = self.outputNoData[idx]
+                            tmp[~mask.flatten(),...] = resFun
+                            resFun = tmp
+                            
                 else:
                     # if all the block is masked
                     if self.outputNoData[idx] is not False:

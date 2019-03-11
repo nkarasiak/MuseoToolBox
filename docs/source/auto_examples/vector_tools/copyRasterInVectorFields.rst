@@ -190,7 +190,7 @@ Plot blue and red band
 
 
 
-**Total running time of the script:** ( 0 minutes  2.036 seconds)
+**Total running time of the script:** ( 0 minutes  2.022 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_copyRasterInVectorFields.py:

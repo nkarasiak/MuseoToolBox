@@ -302,7 +302,7 @@ class RandomStratifiedKFold(_sampleSelection):
         self.verbose = verbose
 
         valid_size = 1 / n_splits
-
+        
         if n_repeats == False or n_repeats == 0:
             n_repeats = n_splits
         else:
