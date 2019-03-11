@@ -51,7 +51,8 @@ class LeaveOneOutPerClass(_sampleSelection):
             random_state=random_state)
 
         _sampleSelection.__init__(self)
-        
+
+
 class LeavePSubGroupOut(_sampleSelection):
     """
     Generate a Cross-Validation using subgroup (each group belong to a unique label).
@@ -272,8 +273,8 @@ class RandomStratifiedKFold(_sampleSelection):
 
     n_splits : int. Default 2.
         Number of splits. 2 means 50% for each class at training and validation.
-    n_splits : int or False, default False.
-        If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
+    n_repeats : int or False, default False.
+        If False, will repeat n_splits once.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -299,20 +300,19 @@ class RandomStratifiedKFold(_sampleSelection):
                  verbose=False):
         self.samplingType = 'random'
         self.verbose = verbose
-        
-        valid_size = 1/n_splits
-        
+
+        valid_size = 1 / n_splits
+
         if n_repeats == False or n_repeats == 0:
-            n_repeats=n_splits
+            n_repeats = n_splits
         else:
-            n_repeats=n_splits*n_repeats
-        
+            n_repeats = n_splits * n_repeats
+
         self.crossvalidation = _cvc.randomPerClass
-        
-        
+
         self.params = dict(
             valid_size=valid_size,
             random_state=random_state,
             n_splits=n_repeats)
 
-        _sampleSelection.__init__(self)  
+        _sampleSelection.__init__(self)

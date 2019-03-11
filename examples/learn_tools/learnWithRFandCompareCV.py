@@ -36,7 +36,7 @@ classifier = RandomForestClassifier(random_state=12)
 # ---------------------------
 
 CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
-       cross_validation.LeavePSubGroupOut(0.3),
+       cross_validation.LeavePSubGroupOut(valid_size=0.5),
        cross_validation.LeaveOneSubGroupOut(),
        StratifiedKFold(n_splits=5) #from sklearn
        ]

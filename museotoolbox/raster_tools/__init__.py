@@ -146,7 +146,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "complex64": 10,
         "complex128": 11,
         "int64": 5,
-        "uint64":5
+        "uint64": 5
     }
 
     if numpyDT is None:
@@ -444,7 +444,7 @@ def rasterize(data, vectorSrc, field, outFile,
         dataSrc.RasterYSize,
         1,
         gdt,
-        options=['COMPRESS=DEFLATE'])
+        options=['COMPRESS=DEFLATE', 'BIGTIFF=IF_SAFER'])
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
 
@@ -491,7 +491,7 @@ class rasterMath:
     """
 
     def __init__(self, inRaster, inMaskRaster=False, return_3d=False,
-                 message='rasterMath... ', verbose=True):
+                 message='rasterMath...', verbose=True):
 
         self.verbose = verbose
         self.message = message
@@ -547,6 +547,7 @@ class rasterMath:
             outNBand=False,
             outNumpyDT=False,
             outNoData=True,
+            compression=False,
             **kwargs):
         """
         Add function to rasterMath.
@@ -565,8 +566,10 @@ class rasterMath:
         outNoData : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        functionKwargs : False, or dict type.
-            If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
+        compression: boolean, default False.
+            If True, will use DEFLATE compression using all cpu-cores minus 1.
+        **kwargs
+            
         """
 
         if outNumpyDT is False:
@@ -589,11 +592,11 @@ class rasterMath:
                     'Detected {} band(s) for function {}.'.format(
                         outNBand, function.__name__))
 
-        self.__addOutput__(outRaster, outNBand, outGdalDT)
+        self.__addOutput__(outRaster, outNBand, outGdalDT,compression=compression)
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
 
-        if (outNoData is True) or (self.nodata is not False) :
+        if (outNoData is True) or (self.nodata is not False):
             if np.issubdtype(dtypeName, np.floating):
                 outNoData = np.finfo(dtypeName).min
             else:
@@ -601,11 +604,21 @@ class rasterMath:
 
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self, outRaster, outNBand, outGdalDT):
+    def __addOutput__(self, outRaster, outNBand, outGdalDT,compression=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
+        if compression is True:
+            options = ['BIGTIFF=IF_SAVER','COMPRESS=DEFLATE','NUM_THREADS={}'.format(os.cpu_count()-1)]
+        else:
+            options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
-            outRaster, self.nc, self.nl, outNBand, outGdalDT, ['COMPRESS=DEFLATE'])
+            outRaster,
+            self.nc,
+            self.nl,
+            outNBand,
+            outGdalDT,
+            options=options
+            )
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
 
@@ -762,15 +775,17 @@ class rasterMath:
         """
         Yields each whole band as np masked array (so with masked data)
         """
-        for nb in range(1,self.nb+1):
+        for nb in range(1, self.nb + 1):
             band = self.openRaster.GetRasterBand(nb)
             band = band.ReadAsArray()
             if self.mask:
-                mask = np.asarray(self.openMask.GetRasterBand(1).ReadAsArray(),dtype=bool)
-                band = np.ma.MaskedArray(band,mask=~mask)
+                mask = np.asarray(
+                    self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
+                band = np.ma.MaskedArray(band, mask=~mask)
             else:
                 band = np.ma.MaskedArray(band)
             yield band
+
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
         """
         Yield each block.
