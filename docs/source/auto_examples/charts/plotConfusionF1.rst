@@ -22,7 +22,7 @@ Import librairies
 .. code-block:: python
 
     from museotoolbox.learn_tools import learnAndPredict
-    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox.charts import plotConfusionMatrix
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
@@ -56,7 +56,7 @@ Create CV
 
 .. code-block:: python
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=2,
+    RSKF = RandomStratifiedKFold(n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -91,7 +91,7 @@ Start learning
 
 
     LAP = learnAndPredict()
-    LAP.learnFromRaster(raster,vector,field,cv=RS50,
+    LAP.learnFromRaster(raster,vector,field,cv=RSKF,
                         classifier=classifier,param_grid=dict(n_estimators=[10,100]))
 
 
@@ -121,8 +121,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.943409959976
-    0.942462043116
+    0.943893159261
+    0.941931724292
 
 
 Get each confusion matrix from folds
@@ -147,16 +147,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3695   65    1   10    0]
-     [  82 1050    0   14    0]
+    [[3689   70    1   11    0]
+     [  84 1047    0   15    0]
      [   2    0 1137    0    0]
-     [  10   18    1  233    0]
+     [  12   16    1  233    0]
      [   4    0    0    0    0]]
-    [[3678   81    2   10    0]
-     [  71 1063    1   11    0]
+    [[3679   79    2   11    0]
+     [  73 1060    1   12    0]
      [   0    0 1139    0    0]
-     [  10   20    3  229    0]
-     [   4    0    0    0    0]]
+     [   9   20    3  230    0]
+     [   3    0    1    0    0]]
 
 
 Plot confusion matrix
@@ -207,7 +207,7 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  7.203 seconds)
+**Total running time of the script:** ( 0 minutes  3.859 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionF1.py:

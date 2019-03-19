@@ -17,16 +17,18 @@ Today, the main usages of Museo ToolBox are :
 
 * museotoolbox.\ **cross_validation**
 
-  * Create validation/training sets from vector, and Cross-Validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to lower spatial auto-correlation.
+  * Create validation/training sets from vector, and a cross-validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to better estimate a model (a lower spatial auto-correlation overestimation).
 
 * museotoolbox.\ **raster_tools**
 
   * Extract band value from vector ROI (polygons/points) (function : *getSamplesFromROI*\ )
-  * **rasterMath**\ , certainly the most useful for most of the users : allows you to do some math on your raster. Just load it, rasterMath will return you the value for each pixel (in all bands) and do whatever you want : predicting a model, signal treatment (whittaker, double logistic...), modal value, mean...
+  * **rasterMath**\ , allows you to do some math on your raster and save it. Just load it, rasterMath will return you the value for each pixel (in all bands) and do whatever you want : predicting a model, signal treatment (whittaker, double logistic...), modal value, mean...
+    Compatible with every python function (including numpy) as the first argument an array.
 
 * museotoolbox.\ **learn_tools**
 
-  * Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model and Museo ToolBox will do everything).
+  * Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model).
+    Also simplify the prediction of a model to a raster.
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
@@ -37,7 +39,12 @@ How do I install it ?
 ---------------------
 
 A package will be available on pip : 
-``python3 -m pip install museotoolbox`` 
+``python3 -m pip install museotoolbox --user`` 
+
+Alternatively, you can install **museotoolbox** directly from the git :
+``python3 -m pip install git+https://github.com/lennepkade/MuseoToolBox.git --user``
+
+Feel free to remove the ``--user`` if you like to install the library for every user on the machine.
 
 Who build Museo ToolBox ?
 -------------------------

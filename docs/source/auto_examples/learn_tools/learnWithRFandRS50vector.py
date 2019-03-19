@@ -13,7 +13,7 @@ This example shows how to make a Random Sampling with
 # -------------------------------------------
 
 from museotoolbox.learn_tools import learnAndPredict
-from museotoolbox.cross_validation import RandomCV
+from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 
@@ -26,7 +26,7 @@ X,y = datasets.historicalMap(return_X_y=True)
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(valid_size=0.5,n_splits=10,
+SKF = RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
 
 ##############################################################################
@@ -40,7 +40,7 @@ classifier = RandomForestClassifier(random_state=12)
 # ---------------------------
 
 LAP = learnAndPredict(n_jobs=-1)
-LAP.learnFromVector(X,y,cv=RS50,
+LAP.learnFromVector(X,y,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
 
 ##############################################################################
@@ -68,7 +68,7 @@ for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=Fals
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_',header=True)
+LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
   
 ##############################################################################
 # Predict map

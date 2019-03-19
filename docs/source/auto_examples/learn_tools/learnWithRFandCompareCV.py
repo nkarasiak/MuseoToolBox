@@ -35,10 +35,10 @@ classifier = RandomForestClassifier(random_state=12)
 # Create list of different CV
 # ---------------------------
 
-CVs = [cross_validation.RandomCV(),
-       cross_validation.LeavePSubGroupOut(),
+CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
+       cross_validation.LeavePSubGroupOut(valid_size=0.5),
        cross_validation.LeaveOneSubGroupOut(),
-       StratifiedKFold() #from sklearn
+       StratifiedKFold(n_splits=5) #from sklearn
        ]
 
 kappas=[]

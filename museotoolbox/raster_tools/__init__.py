@@ -145,7 +145,8 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "float64": 7,
         "complex64": 10,
         "complex128": 11,
-        "int64": 5
+        "int64": 5,
+        "uint64": 5
     }
 
     if numpyDT is None:
@@ -153,7 +154,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
     else:
 
         code = NP2GDAL_CONVERSION[numpyDT]
-        if numpyDT == 'int64':
+        if numpyDT.endswith('int64'):
             print(
                 'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
@@ -443,7 +444,7 @@ def rasterize(data, vectorSrc, field, outFile,
         dataSrc.RasterYSize,
         1,
         gdt,
-        options=['COMPRESS=DEFLATE'])
+        options=['COMPRESS=DEFLATE', 'BIGTIFF=IF_SAFER'])
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
 
@@ -490,7 +491,7 @@ class rasterMath:
     """
 
     def __init__(self, inRaster, inMaskRaster=False, return_3d=False,
-                 message='rasterMath... ', verbose=True):
+                 message='rasterMath...', verbose=True):
 
         self.verbose = verbose
         self.message = message
@@ -545,7 +546,8 @@ class rasterMath:
             outRaster,
             outNBand=False,
             outNumpyDT=False,
-            outNoData=False,
+            outNoData=True,
+            compress=False,
             **kwargs):
         """
         Add function to rasterMath.
@@ -561,10 +563,13 @@ class rasterMath:
             If False will take the number of dimensions from the first result of the function.
         outNumpyDT : int, default False.
             If False, will use the datatype of the function result.
-        outNoData : int, default False.
-            If False will use the minimum value available for the given or found datatype.
-        functionKwargs : False, or dict type.
-            If dict type, will be the other params of your function. E.g functionsKwargs = dict(axis=1).
+        outNoData : int, default True.
+            If True or if False (but if nodata is present in the init raster),
+            will use the minimum value available for the given or found datatype.
+        compress: boolean, default False.
+            If True, will use DEFLATE compression using all cpu-cores minus 1.
+        **kwargs
+            
         """
 
         if outNumpyDT is False:
@@ -587,23 +592,39 @@ class rasterMath:
                     'Detected {} band(s) for function {}.'.format(
                         outNBand, function.__name__))
 
-        self.__addOutput__(outRaster, outNBand, outGdalDT)
+        self.__addOutput__(outRaster, outNBand, outGdalDT,compress=compress)
         self.functions.append(function)
         self.functionsKwargs.append(kwargs)
 
-        if outNoData is False:
+        if (outNoData is True) or (self.nodata is not False):
             if np.issubdtype(dtypeName, np.floating):
-                outNoData = np.finfo(dtypeName).min
+                minValue = np.finfo(dtypeName).min
             else:
-                outNoData = np.iinfo(dtypeName).min
-
+                minValue = np.iinfo(dtypeName).min
+                
+            if (outNoData is True) or (outNoData < minValue):
+                outNoData = minValue
+                
+            if self.verbose:
+                print('No data is set to : '+str(outNoData))
+            
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self, outRaster, outNBand, outGdalDT):
+    def __addOutput__(self, outRaster, outNBand, outGdalDT,compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
+        if compress is True:
+            options = ['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE','NUM_THREADS={}'.format(os.cpu_count()-1)]
+        else:
+            options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
-            outRaster, self.nc, self.nl, outNBand, outGdalDT, ['COMPRESS=DEFLATE'])
+            outRaster,
+            self.nc,
+            self.nl,
+            outNBand,
+            outGdalDT,
+            options=options
+            )
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
 
@@ -760,15 +781,17 @@ class rasterMath:
         """
         Yields each whole band as np masked array (so with masked data)
         """
-        for nb in range(1,self.nb+1):
+        for nb in range(1, self.nb + 1):
             band = self.openRaster.GetRasterBand(nb)
             band = band.ReadAsArray()
             if self.mask:
-                mask = np.asarray(self.openMask.GetRasterBand(1).ReadAsArray(),dtype=bool)
-                band = np.ma.MaskedArray(band,mask=~mask)
+                mask = np.asarray(
+                    self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
+                band = np.ma.MaskedArray(band, mask=~mask)
             else:
                 band = np.ma.MaskedArray(band)
             yield band
+
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
         """
         Yield each block.
@@ -841,6 +864,9 @@ class rasterMath:
 
                 if not np.all(X.mask == 1):
                     # if all the block is not masked
+                    if not self.return_3d:
+                        X_ = X_[~X_.mask[:,0],...]
+                        
                     if self.functionsKwargs[idx] is not False:
                         resFun = fun(X_, **
                                      self.functionsKwargs[idx])
@@ -857,16 +883,24 @@ class rasterMath:
 
                     if not np.all(X.mask == 0):
                         # if all the block is not unmasked add the nodata value
+                                
                         resFun = self.reshape_ndim(resFun)
-                        mask = self.reshape_ndim(X_.mask[..., 0])
-                        resFun = np.where(
-                            np.repeat(
+                        mask = self.reshape_ndim(X.mask[..., 0])
+                        tmp = np.repeat(
                                 mask,
                                 maxBands,
-                                axis=mask.ndim - 1),
-                            self.outputNoData[idx],
-                            resFun)
-
+                                axis=mask.ndim - 1)
+                        if self.return_3d:
+                            resFun = np.where(
+                                    tmp,
+                                    self.outputNoData[idx],
+                                    resFun)                            
+                        else:
+                            tmp = tmp.astype(resFun.dtype)
+                            tmp[mask.flatten(),...] = self.outputNoData[idx]
+                            tmp[~mask.flatten(),...] = resFun
+                            resFun = tmp
+                            
                 else:
                     # if all the block is masked
                     if self.outputNoData[idx] is not False:

@@ -33,7 +33,7 @@ import sys
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-from recommonmark.parser import CommonMarkParser
+#from recommonmark.parser import CommonMarkParser
 
 autoclass_content = 'both'
 

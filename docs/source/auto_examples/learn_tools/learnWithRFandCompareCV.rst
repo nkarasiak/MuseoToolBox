@@ -76,10 +76,10 @@ Create list of different CV
 .. code-block:: python
 
 
-    CVs = [cross_validation.RandomCV(),
-           cross_validation.LeavePSubGroupOut(),
+    CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
+           cross_validation.LeavePSubGroupOut(valid_size=0.5),
            cross_validation.LeaveOneSubGroupOut(),
-           StratifiedKFold() #from sklearn
+           StratifiedKFold(n_splits=5) #from sklearn
            ]
 
     kappas=[]
@@ -114,22 +114,27 @@ Create list of different CV
     Received groups value, but randomCV don't use it
     Received groups value, but randomCV don't use it
     Received groups value, but randomCV don't use it
-    Kappa for RandomCV
-    0.946989136897
-    0.941107883064
+    Kappa for RandomStratifiedKFold
+    0.948570600537
+    0.939414199586
+    0.946339752947
+    0.952649013457
+    0.947844865278
     ====================
     Kappa for LeavePSubGroupOut
-    0.695056516994
-    0.737221801692
+    0.758469823474
+    0.793418266425
     ====================
     Kappa for LeaveOneSubGroupOut
-    0.529742679508
-    0.816964261941
+    0.953225138931
+    0.827679710891
     ====================
     Kappa for StratifiedKFold
-    0.91924392195
-    0.879234058689
-    0.809667927132
+    0.932861343347
+    0.900561334848
+    0.903732605696
+    0.955294896702
+    0.955478269449
     ====================
 
 
@@ -157,7 +162,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  37.495 seconds)
+**Total running time of the script:** ( 0 minutes  26.747 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:

@@ -24,7 +24,7 @@ learnAndPredict
       ~learnAndPredict.predictRaster
       ~learnAndPredict.saveCMFromCV
       ~learnAndPredict.saveModel
-      ~learnAndPredict.scaleX
+      ~learnAndPredict.standardizeX
    
    
 

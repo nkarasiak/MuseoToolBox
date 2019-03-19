@@ -24,7 +24,7 @@ Import librairies
 
 
     from museotoolbox.learn_tools import learnAndPredict
-    from museotoolbox.cross_validation import RandomCV
+    from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox import datasets
     from museotoolbox import raster_tools
     from sklearn.ensemble import RandomForestClassifier
@@ -61,7 +61,7 @@ Create CV
 .. code-block:: python
 
 
-    RS50 = RandomCV(valid_size=0.5,n_splits=2,
+    SKF = RandomStratifiedKFold(n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -100,7 +100,7 @@ sklearn will compute different metrics, but will keep best results from kappa (r
 .. code-block:: python
 
     LAP = learnAndPredict(n_jobs=-1,verbose=1)
-    LAP.learnFromRaster(raster,vector,field,cv=RS50,
+    LAP.learnFromRaster(raster,vector,field,cv=SKF,
                         classifier=classifier,param_grid=dict(n_estimators=[100,200]),
                         scoring=scoring,refit='kappa')
 
@@ -116,7 +116,7 @@ sklearn will compute different metrics, but will keep best results from kappa (r
 
     Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best score : 0.94210715677
+    best score : 0.942522831509
     best n_estimators : 200
 
 
@@ -142,7 +142,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomCV object at 0x7fe040e0f1d0>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7f90b4670630>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -155,11 +155,11 @@ Read the model
            refit='kappa', return_train_score='warn',
            scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([ 1.39432883,  2.6644038 ]), 'std_fit_time': array([ 0.01974678,  0.17069876]), 'mean_score_time': array([ 1.05886257,  1.50927019]), 'std_score_time': array([ 0.03390825,  0.06430268]), 'param_n_estimators': masked_array(data = [100 200],
+    {'mean_fit_time': array([ 0.5679965 ,  1.06733596]), 'std_fit_time': array([ 0.05208278,  0.00282443]), 'mean_score_time': array([ 0.33186162,  0.6765852 ]), 'std_score_time': array([ 0.0032407,  0.0464375]), 'param_n_estimators': masked_array(data = [100 200],
                  mask = [False False],
            fill_value = ?)
-    , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([ 0.94143572,  0.94227599]), 'split1_test_kappa': array([ 0.94193179,  0.94193833]), 'mean_test_kappa': array([ 0.94168376,  0.94210716]), 'std_test_kappa': array([ 0.00024804,  0.00016883]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([ 0.99644289,  0.99644289]), 'split1_train_kappa': array([ 0.99644167,  0.9964414 ]), 'mean_train_kappa': array([ 0.99644228,  0.99644214]), 'std_train_kappa': array([  6.08047080e-07,   7.44183416e-07]), 'split0_test_f1_mean': array([ 0.96630813,  0.96678266]), 'split1_test_f1_mean': array([ 0.96646631,  0.96646631]), 'mean_test_f1_mean': array([ 0.96638722,  0.96662449]), 'std_test_f1_mean': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([ 0.99794466,  0.99794466]), 'split1_train_f1_mean': array([ 0.99794466,  0.99794466]), 'mean_train_f1_mean': array([ 0.99794466,  0.99794466]), 'std_train_f1_mean': array([ 0.,  0.]), 'split0_test_accuracy': array([ 0.96630813,  0.96678266]), 'split1_test_accuracy': array([ 0.96646631,  0.96646631]), 'mean_test_accuracy': array([ 0.96638722,  0.96662449]), 'std_test_accuracy': array([  7.90888959e-05,   1.58177792e-04]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([ 0.99794466,  0.99794466]), 'split1_train_accuracy': array([ 0.99794466,  0.99794466]), 'mean_train_accuracy': array([ 0.99794466,  0.99794466]), 'std_train_accuracy': array([ 0.,  0.])}
-    0.94210715677
+    , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([ 0.94197678,  0.9425443 ]), 'split1_test_kappa': array([ 0.94276653,  0.94250136]), 'mean_test_kappa': array([ 0.94237166,  0.94252283]), 'std_test_kappa': array([  3.94874201e-04,   2.14729960e-05]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([ 0.99644289,  0.99644289]), 'split1_train_kappa': array([ 0.99644167,  0.9964414 ]), 'mean_train_kappa': array([ 0.99644228,  0.99644214]), 'std_train_kappa': array([  6.08047080e-07,   7.44183416e-07]), 'split0_test_f1_mean': array([ 0.96662449,  0.96694084]), 'split1_test_f1_mean': array([ 0.96694084,  0.96678266]), 'mean_test_f1_mean': array([ 0.96678266,  0.96686175]), 'std_test_f1_mean': array([  1.58177792e-04,   7.90888959e-05]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([ 0.99794466,  0.99794466]), 'split1_train_f1_mean': array([ 0.99794466,  0.99794466]), 'mean_train_f1_mean': array([ 0.99794466,  0.99794466]), 'std_train_f1_mean': array([ 0.,  0.]), 'split0_test_accuracy': array([ 0.96662449,  0.96694084]), 'split1_test_accuracy': array([ 0.96694084,  0.96678266]), 'mean_test_accuracy': array([ 0.96678266,  0.96686175]), 'std_test_accuracy': array([  1.58177792e-04,   7.90888959e-05]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([ 0.99794466,  0.99794466]), 'split1_train_accuracy': array([ 0.99794466,  0.99794466]), 'mean_train_accuracy': array([ 0.99794466,  0.99794466]), 'std_train_accuracy': array([ 0.,  0.])}
+    0.942522831509
 
 
 Get F1 for every class from best params
@@ -183,8 +183,8 @@ Get F1 for every class from best params
 
  .. code-block:: none
 
-    [ 0.97646748  0.92064884  0.99824407  0.89748549  0.        ]
-    [ 0.97702828  0.91994807  0.99737303  0.89105058  0.        ]
+    [ 0.97660278  0.92105263  0.99824407  0.89748549  0.        ]
+    [ 0.97702218  0.92128028  0.99737303  0.89320388  0.        ]
 
 
 Get each confusion matrix from folds
@@ -208,15 +208,15 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3693   68    1    9    0]
+    [[3694   67    1    9    0]
      [  82 1050    0   14    0]
      [   2    0 1137    0    0]
      [  12   17    1  232    0]
      [   4    0    0    0    0]]
-    [[3679   79    2   11    0]
-     [  70 1063    1   12    0]
+    [[3678   79    2   12    0]
+     [  69 1065    1   11    0]
      [   0    0 1139    0    0]
-     [   8   22    3  229    0]
+     [   8   21    3  230    0]
      [   3    1    0    0    0]]
 
 
@@ -259,8 +259,11 @@ Predict map
  .. code-block:: none
 
     Total number of blocks : 15
+    No data is set to : 0
     Detected 5 band(s) for function predictConfidencePerClass.
-    rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
+    No data is set to : -32768
+    No data is set to : -32768
+    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
     Saved /tmp/classification.tif using function predictArray
     Saved /tmp/confidencePerClass.tif using function predictConfidencePerClass
     Saved /tmp/confidence.tif using function predictConfidenceOfPredictedClass
@@ -288,7 +291,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  59.661 seconds)
+**Total running time of the script:** ( 0 minutes  20.178 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

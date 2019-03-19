@@ -363,8 +363,8 @@ class randomPerClass:
                 TF = np.in1d(Cpos, tmpValid, invert=True)
                 tmpTrain = Cpos[TF]
 
-                if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid]) or self.y[tmpValid][0] != C:
+                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
+                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
 
@@ -422,15 +422,15 @@ class groupCV:
 
         self.random_state = random_state
 
+        smallestGroup = []
         for i in np.unique(self.y):
-            smallestGroup = []
             standNumber = np.unique(
                 np.array(groups)[
                     np.where(
                         np.array(self.y).flatten() == i)])
 
             smallestGroup.append(standNumber.shape[0])
-            smallestGroup = np.min(smallestGroup)
+        smallestGroup = np.min(smallestGroup)
 
         if n_splits:
             self.n_splits = n_splits
@@ -496,8 +496,8 @@ class groupCV:
                 train = np.concatenate(
                     (train, tmpTrain))
 
-                if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid]) or self.y[tmpValid][0] != C:
+                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
+                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
                     raise IndexError(
                         'Selected labels do not correspond to selected class, please leave feedback')
                 self.mask[tmpValid] = 0

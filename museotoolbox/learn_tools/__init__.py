@@ -20,16 +20,17 @@ from joblib import Parallel, delayed
 import os
 import numpy as np
 from sklearn import metrics
-from sklearn.base import clone,BaseEstimator
+from sklearn.base import clone, BaseEstimator
 from sklearn import warnings
 from ..internal_tools import progressBar
+
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
-
+        
         Parameters
         ----------
         n_jobs : int, default 1.
@@ -40,41 +41,45 @@ class learnAndPredict:
         --------
         >>> import museotoolbox as mtb
         >>> from sklearn.ensemble import RandomForestClassifier
-        >>> raster,vector = mtb.datasets.getHistoricalMap()
-        >>> RS50 = mtb.cross_validation.RandomCV(valid_size=0.5,n_splits=10,
+        >>> raster,vector = mtb.datasets.historicalMap()
+        >>> RS50 = mtb.cross_validation.RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
         >>> classifier = RandomForestClassifier()
-        >>> LAP = mtb.learn_tools.learnAndPredict()
+        >>> LAP = mtb.learn_tools.learnAndPredict(verbose=True)
         >>> LAP.learnFromRaster(raster,vector,inField='class',cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+        Reading raster values...  [########################################]100%
         Fitting 10 folds for each of 2 candidates, totalling 20 fits
+        best score : 0.966244859222
         best n_estimators : 200
         >>> for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
             print(kappa)
-        [0.94635897652909906]
-        [0.93926877916972007]
-        [0.9424138426326939]
-        [0.9439809301441302]
-        [0.94286057027982639]
-        [0.94247415327533202]
-        [0.94190539222286984]
-        [0.94625949356904848]
-        [0.94642164578108168]
-        [0.9395504758785389]
+        [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
+        {'kappa': 0.94145803865870303}
+        {'kappa': 0.94275572196698443}
+        {'kappa': 0.94566553229314054}
+        {'kappa': 0.94210064101370472}
+        {'kappa': 0.94566137634353153}
+        {'kappa': 0.94085890364956737}
+        {'kappa': 0.94136385707385184}
+        {'kappa': 0.9383201352573155}
+        {'kappa': 0.93887726891376944}
+        {'kappa': 0.94450020549861891}
+        [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    8.7s finished
         >>> LAP.predictRaster(raster,'/tmp/classification.tif')
-        Prediction...  [##################......................]45%
-        Prediction...  [####################################....]90%
+        Total number of blocks : 15
+        Prediction...  [########################################]100%
         Saved /tmp/classification.tif using function predictArray
         """
         self.n_jobs = n_jobs
         self.verbose = verbose
         if self.verbose is False:
             warnings.filterwarnings("ignore")
-        self.scale = False
+        self.standardize = False
         self.CV = False
         self.cloneModel = False
 
-    def scaleX(self, X=None):
+    def standardizeX(self, X=None):
         """
         Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
@@ -87,10 +92,11 @@ class learnAndPredict:
         """
         from sklearn.preprocessing import StandardScaler
         if X is None:
-            self.scaler = StandardScaler()
+            self.StandardScaler = StandardScaler()
         else:
-            self.scaler.fit(X)
-            Xt = self.scaler.transform(X)
+            self.StandardScaler.fit(X)
+            Xt = self.StandardScaler.transform(X)
+            
             return Xt
 
     def learnFromVector(
@@ -100,7 +106,7 @@ class learnAndPredict:
             group=None,
             classifier=None,
             param_grid=None,
-            scale=False,
+            standardize=True,
             cv=False,
             scoring='accuracy', **gridSearchCVParams):
         """
@@ -116,10 +122,8 @@ class learnAndPredict:
             E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
         param_grid : None, else dict.
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
-        scale : Bool, default False.
-            If True, will standardize features.
-        scale : Bool, default False.
-            If True, will standardize features.
+        strandardize : Bool, default True.
+            If True, will standardize features by removing the mean and scaling to unit variance.
         cv : Cross-Validation or None.
             if cv, choose one from vector_tools.samplingMethods and generate it via vector_tools.sampleSelection().
         """
@@ -133,10 +137,10 @@ class learnAndPredict:
                 'Please specify a param_grid if you use a cross-validation method')
         self.X = X
 
-        if scale:
-            self.scale = True
-            self.scaleX()
-            self.X = self.scaleX(X)
+        if standardize:
+            self.standardize = True
+            self.standardizeX()
+            self.X = self.standardizeX(X)
 
         self.__learn__(
             self.X,
@@ -156,7 +160,7 @@ class learnAndPredict:
             classifier,
             inGroup=False,
             param_grid=None,
-            scale=False,
+            standardize=True,
             cv=False,
             scoring='accuracy',
             **gridSearchCVParams):
@@ -175,8 +179,8 @@ class learnAndPredict:
             E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
         param_grid : None, else dict.
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
-        scale : Bool, default False.
-            If True, will standardize features.
+        standardize : Bool, default True.
+            If True, will standardize features by removing the mean and scaling to unit variance.
         cv : Cross-Validation or None.
             if cv, choose one from vector_tools.samplingMethods and generate it via vector_tools.sampleSelection().
         """
@@ -201,10 +205,10 @@ class learnAndPredict:
         self.X = X
         self.group = group
 
-        if scale:
-            self.scale = True
-            self.scaleX()
-            self.X = self.scaleX(X)
+        if standardize:
+            self.standardize = True
+            self.standardizeX()
+            self.X = self.standardizeX(X)
         self.Xpredict = False
 
         self.__learn__(
@@ -291,25 +295,38 @@ class learnAndPredict:
             self.model = np.load(path)
 
             if type(self.model[1]).__name__ == 'StandardScaler':
-                self.scale = True
-                self.model, self.scaler = np.load(path)
+                self.standardize = True
+                self.model, self.StandardScaler = np.load(path)
             else:
-                self.scale = False
+                self.standardize = False
 
         else:
             if not path.endswith('npz'):
                 path += '.npz'
             model = np.load(path)
             self.__dict__.update(model['LAP'].tolist())
-
+            if hasattr(self,'scale'):
+                if self.scale is True:
+                    # for retro-compatibility with museotoolbox < 1.0
+                    self.standardize,self.StandardScaler = self.scale,self.scaler
+                    del self.scaler,self.scale
+                    
     def __convertX(self, X, **kwargs):
         if 'Xfunction' in kwargs:
             Xfunction = kwargs['Xfunction']
             kwargs.pop('Xfunction', None)
             X = Xfunction(X, **kwargs)
 
-        if self.scale:
-            X = self.scaler.transform(X)
+        if self.standardize:
+            if np.ma.is_masked(X):
+                tmpMask = X.mask[:,0]
+            
+            X = self.StandardScaler.transform(X)
+            
+            if np.ma.is_masked(X):
+                tmpMask = np.repeat(tmpMask.reshape(-1,1), X.shape[-1], axis=1)
+                X = np.ma.masked_array(X, tmpMask)
+        
         return X
 
     def predictArray(self, X, **kwargs):
@@ -325,8 +342,8 @@ class learnAndPredict:
         """
 
         X = self.__convertX(X, **kwargs)
-
         self.Xpredict = self.model.predict(X)
+        
         return self.Xpredict
 
     def predictConfidencePerClass(self, X, **kwargs):
@@ -382,6 +399,7 @@ class learnAndPredict:
             confidence=False,
             inMaskRaster=False,
             outNoData=0,
+            compress=False,
             **kwargs):
         """
         Predict label from raster using previous learned model.
@@ -406,7 +424,7 @@ class learnAndPredict:
         """
 
         from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues, convertGdalAndNumpyDataType
-        rM = rasterMath(inRaster, inMaskRaster, message='Prediction... ')
+        rM = rasterMath(inRaster, inMaskRaster, message='Prediction...')
 
         numpyDT = convertGdalAndNumpyDataType(
             getGdalDTFromMinMaxValues(np.amax(self.model.classes_)))
@@ -417,6 +435,7 @@ class learnAndPredict:
             outNBand=1,
             outNumpyDT=numpyDT,
             outNoData=outNoData,
+            compress=compress,
             **kwargs)
 
         if confidencePerClass:
@@ -426,6 +445,7 @@ class learnAndPredict:
                 outNBand=False,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
+                compress=compress,
                 **kwargs)
 
         if confidence:
@@ -435,6 +455,7 @@ class learnAndPredict:
                 outNBand=1,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
+                compress=compress,
                 **kwargs)
         rM.run()
 
@@ -614,10 +635,11 @@ class learnAndPredict:
                     self.CV))
             return statsCV
 
+
 class sequentialFeatureSelection(BaseEstimator):
     """
-    Sequential Feature Selection 
-    
+    Sequential Feature Selection
+
     Parameters
     ----------
     classifier : array.
@@ -626,145 +648,173 @@ class sequentialFeatureSelection(BaseEstimator):
     cv : int, default 1.
         The number of component per feature. If 4, each feature has 4 columns.
     """
-    def __init__(self,classifier,param_grid,cv=5,scoring='accuracy',n_comp=1,verbose=1):
+
+    def __init__(self, classifier, param_grid, cv=5,
+                 scoring='accuracy', n_comp=1, verbose=1):
         # share args
         self.n_comp = n_comp
         self.classifier = classifier
         self.param_grid = param_grid
-        self.scoring=scoring
+        self.scoring = scoring
         self.cv = cv
         self.verbose = verbose
-        
-        self.xFunction = False 
+
+        self.xFunction = False
         self.xKwargs = False
-        
-    def fit(self,X,y,group=False,pathToSaveModels=False,n_jobs=1):
+
+    def fit(self, X, y, group=False, pathToSaveModels=False, n_jobs=1):
         """
         Parameters
         ----------
-        X : 
-        y : 
+        X :
+        y :
         g: group
-            
+
         """
         self.X = X
         self.X_ = np.copy(X)
         self.y = y
         self.group = group
-        
+
         self.models_path_ = []
-        
+
         if self.xFunction:
-            self.X = self.xFunction(X,**self.xKwargs)            
+            self.X = self.xFunction(X, **self.xKwargs)
 
         xSize = self.X.shape[1]
-        self.n_features = int(xSize/self.n_comp)
-        totalIter = np.sum([self.n_features-i for i in range(self.n_features)])
+        self.n_features = int(xSize / self.n_comp)
+        totalIter = np.sum(
+            [self.n_features - i for i in range(self.n_features)])
         if self.verbose:
-            pB = progressBar(totalIter,message='SFFS:')
-        self.mask = np.ones(xSize,dtype=bool)
+            pB = progressBar(totalIter, message='SFFS:')
+        self.mask = np.ones(xSize, dtype=bool)
 
-        self.models_,self.best_scores_,self.best_features_ = [[],[],[]]
+        self.models_, self.best_scores_, self.best_features_ = [[], [], []]
         self.subsets_ = dict()
-        
-        for j in range(self.n_features):    
+
+        for j in range(self.n_features):
             resPerFeatures = list()
-            #bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
-            n_features_to_test = int(self.X[:,self.mask].shape[1]/self.n_comp)
+            # bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
+            n_features_to_test = int(
+                self.X[:, self.mask].shape[1] / self.n_comp)
             if pathToSaveModels:
-                all_scores_file = pathToSaveModels+'all_scores_{}.csv'.format(j)
+                all_scores_file = pathToSaveModels + \
+                    'all_scores_{}.csv'.format(j)
                 if os.path.exists(all_scores_file):
                     print('Feature {} already computed'.format(j))
-                    scores = np.loadtxt(all_scores_file,delimiter=',')
-                    
-                    if scores.ndim==1:
+                    scores = np.loadtxt(all_scores_file, delimiter=',')
+
+                    if scores.ndim == 1:
                         all_scores = [scores[1]]
                         best_candidate = 0
                     else:
-                        all_scores = scores[:,1]
-                        best_candidate = np.argmax(scores[:,1])
-                    LAP = learnAndPredict(n_jobs=n_jobs,verbose=self.verbose-1)
-                    LAP.loadModel(pathToSaveModels+'model_{}.npz'.format(j))
-                    self.models_path_.append(pathToSaveModels+'model_{}.npz'.format(j))
+                        all_scores = scores[:, 1]
+                        best_candidate = np.argmax(scores[:, 1])
+                    LAP = learnAndPredict(
+                        n_jobs=n_jobs, verbose=self.verbose - 1)
+                    LAP.loadModel(pathToSaveModels + 'model_{}.npz'.format(j))
+                    self.models_path_.append(
+                        pathToSaveModels + 'model_{}.npz'.format(j))
 
-            for idx in range(n_features_to_test): # at each loop, remove best candidate                    
+            for idx in range(
+                    n_features_to_test):  # at each loop, remove best candidate
                 if self.verbose:
                     pB.addPosition()
-                LAP = learnAndPredict(n_jobs=n_jobs,verbose=self.verbose-1)        
-                curX = self.__getX(self.X,idx)
+                LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
+                curX = self.__getX(self.X, idx)
+                
                 if self.xFunction:
-                    scale=False
+                    standardize = False
                 else:
-                    scale=True
-                LAP.learnFromVector(curX,y,group=group,classifier=self.classifier,param_grid=self.param_grid,scale=scale,scoring=self.scoring,cv=self.cv)
+                    standardize = True
                 
+                LAP.learnFromVector(
+                    curX,
+                    y,
+                    group=group,
+                    classifier=self.classifier,
+                    param_grid=self.param_grid,
+                    standardize=standardize,
+                    scoring=self.scoring,
+                    cv=self.cv)
+
                 resPerFeatures.append(LAP)
-                
-            all_scores = [np.amax(LAP.model.best_score_) for LAP in resPerFeatures]
+
+            all_scores = [np.amax(LAP.model.best_score_)
+                          for LAP in resPerFeatures]
             best_candidate = np.argmax(all_scores)
             # self.__bestLAPs.append(resPerFeatures[best_candidate])
             LAP = resPerFeatures[best_candidate]
 
             if pathToSaveModels:
-                if not os.path.exists(os.path.join(pathToSaveModels,str(j))):
-                    os.makedirs(os.path.join(pathToSaveModels,str(j)))
-                LAP.saveModel(pathToSaveModels+'model_{}.npz'.format(j))
-                LAP.saveCMFromCV(os.path.join(pathToSaveModels,str(j)),n_jobs=-1)
-                scoreWithIdx = np.hstack((np.where(self.mask==1)[0].reshape(-1,1),np.asarray(all_scores,dtype=np.float32).reshape(-1,1)))
-                np.savetxt(all_scores_file,scoreWithIdx,fmt='%0.d,%.4f')
-            
+                if not os.path.exists(os.path.join(pathToSaveModels, str(j))):
+                    os.makedirs(os.path.join(pathToSaveModels, str(j)))
+                LAP.saveModel(pathToSaveModels + 'model_{}.npz'.format(j))
+                LAP.saveCMFromCV(
+                    os.path.join(
+                        pathToSaveModels,
+                        str(j)),
+                    n_jobs=-1)
+                scoreWithIdx = np.hstack((np.where(self.mask == 1)[
+                                         0].reshape(-1, 1), np.asarray(all_scores, dtype=np.float32).reshape(-1, 1)))
+                np.savetxt(all_scores_file, scoreWithIdx, fmt='%0.d,%.4f')
+
             self.models_.append(resPerFeatures[best_candidate].model)
-                
-                # store results
-            best_feature_id = int(self.__getFeatureId(best_candidate)/self.n_comp)
+
+            # store results
+            best_feature_id = int(
+                self.__getFeatureId(best_candidate) / self.n_comp)
             self.best_scores_.append(all_scores[best_candidate])
             self.best_features_.append(best_feature_id)
-                
+
             if self.verbose:
-                print('\nBest feature with %s feature(s) : %s' %(j+1,best_feature_id))
-                print('Best mean score : %s' %np.amax(all_scores))
-    
+                print(
+                    '\nBest feature with %s feature(s) : %s' %
+                    (j + 1, best_feature_id))
+                print('Best mean score : %s' % np.amax(all_scores))
+
             self.subsets_[str(j)] = dict(avg_score=np.amax(all_scores),
-                         feature_idx=self.best_features_.copy(),
-                         cv_score=LAP.model.cv_results_,
-                         best_score_=np.amax(all_scores),
-                         best_feature_=best_feature_id)
-                
+                                         feature_idx=self.best_features_.copy(),
+                                         cv_score=LAP.model.cv_results_,
+                                         best_score_=np.amax(all_scores),
+                                         best_feature_=best_feature_id)
+
             self.__maskIdx(best_candidate)
-    
-    def predictRasters(self,inRaster,outRasterPrefix,inMaskRaster=False,confidence=False,modelPath=False):
+
+    def predictRasters(self, inRaster, outRasterPrefix,
+                       inMaskRaster=False, confidence=False, modelPath=False):
         """
         Predict each best found features with SFFS.fit(X,y).
-        
+
         Parameters
         ----------
         inRaster : str.
             Path of the raster to predict.
         outRasterPrefix : str.
             Prefix of each raster to save. Will add in suffix the iteration number then .tif.
-            E.g. outRasterPrefix = 'classification_', will give 'classification_0.tif' for the first prediction.
+            E.g. outRasterPrefix = `classification_`, will give `classification_0.tif` for the first prediction.
         confidence : False or str. Default False.
             If str, same as outRasterPrefix.
-        """        
+        """
         self.__resetMask()
-        
+
         if len(self.models_path_) == 0:
             print('Warning : You have to define a path to save model in the `fit` function in order to predict rasters.')
-        
-        for idx,model in enumerate(self.models_path_):
+
+        for idx, model in enumerate(self.models_path_):
             print(self.mask)
-            LAP = learnAndPredict(n_jobs=1,verbose=self.verbose)
+            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
             LAP.loadModel(model)
-            
-            outRaster = outRasterPrefix+str(idx)+'.tif'
-            LAP.predictRaster(inRaster,outRaster,confidence=confidence,inMaskRaster=inMaskRaster,
-                              Xfunction=self.__getX,idx=idx,customizeX=True)
-                
-    def customizeX(self,xFunction,**kwargs):
+
+            outRaster = outRasterPrefix + str(idx) + '.tif'
+            LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
+                              Xfunction=self.__getX, idx=idx, customizeX=True)
+
+    def customizeX(self, xFunction, **kwargs):
         self.xFunction = xFunction
         self.xKwargs = kwargs
-        
-    def __getX(self,X,idx=0,customizeX=False):
+
+    def __getX(self, X, idx=0, customizeX=False):
         """
         Parameters
         ----------
@@ -773,41 +823,41 @@ class sequentialFeatureSelection(BaseEstimator):
         """
         if customizeX is False:
             fieldsToKeep = self.__convertIdxToNComp(idx)
-            xToStack = X[:,fieldsToKeep]
-            if xToStack.ndim == 1: 
-                xToStack = xToStack.reshape(-1,1)        
-            X = np.hstack((X[:,~self.mask],xToStack))
-        
+            xToStack = X[:, fieldsToKeep]
+            if xToStack.ndim == 1:
+                xToStack = xToStack.reshape(-1, 1)
+            X = np.hstack((X[:, ~self.mask], xToStack))
+
         if customizeX is True:
             self.mask[self.best_features_[idx]] = 0
             if self.xFunction:
-                X = self.xFunction(X,**self.xKwargs)
-            X = X[:,~self.mask]
+                X = self.xFunction(X, **self.xKwargs)
+            X = X[:, ~self.mask]
 
-        if X.ndim==1:
-            X = X.reshape(-1,1)
-        
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+
         return X
-        
-    def __getFeatureId(self,best_candidate):
+
+    def __getFeatureId(self, best_candidate):
         """
-        
+
         """
-        return np.where(self.mask==1)[0][best_candidate*self.n_comp]
-     
-    def __convertIdxToNComp(self,idx):
+        return np.where(self.mask == 1)[0][best_candidate * self.n_comp]
+
+    def __convertIdxToNComp(self, idx):
         """
         """
         idxUnmask = self.__getFeatureId(idx)
-        n_features_to_get = [idxUnmask+j for j in range(self.n_comp)]
+        n_features_to_get = [idxUnmask + j for j in range(self.n_comp)]
         return n_features_to_get
-    
-    def __maskIdx(self,idx):
+
+    def __maskIdx(self, idx):
         """
         Add the idx to the mask
         """
         self.mask[self.__convertIdxToNComp(idx)] = 0
-    
+
     def __resetMask(self):
         """
         """

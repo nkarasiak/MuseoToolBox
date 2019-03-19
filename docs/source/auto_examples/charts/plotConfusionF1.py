@@ -11,7 +11,7 @@ Plot confusion matrix from Cross-Validation, with F1 as subplot.
 # Import librairies
 # -------------------------------------------
 from museotoolbox.learn_tools import learnAndPredict
-from museotoolbox.cross_validation import RandomCV
+from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox.charts import plotConfusionMatrix
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -25,7 +25,7 @@ field = 'Class'
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RS50 = RandomCV(valid_size=0.5,n_splits=2,
+RSKF = RandomStratifiedKFold(n_splits=2,
                 random_state=12,verbose=False)
 
 ##############################################################################
@@ -40,7 +40,7 @@ classifier = RandomForestClassifier()
 
 
 LAP = learnAndPredict()
-LAP.learnFromRaster(raster,vector,field,cv=RS50,
+LAP.learnFromRaster(raster,vector,field,cv=RSKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10,100]))
 
 ##############################################################################

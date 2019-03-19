@@ -16,6 +16,7 @@ learn_tools
       :template: class.rst
    
       learnAndPredict
+      sequentialFeatureSelection
    
    
 

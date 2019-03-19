@@ -36,7 +36,7 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=["numpy","scipy","matplotlib","scikit-learn"],
+    install_requires=["numpy","scipy","matplotlib","scikit-learn","GDAL"],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -47,7 +47,7 @@ setuptools.setup(
     zip_safe=False,
     entry_points = {
         'console_scripts': [
-            'mtb_sampleExtraction=museotoolbox.vectorTools.sampleExtraction:main',
+            'mtb_sampleExtraction=museotoolbox.vector_tools.sampleExtraction:main',
             'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
     }

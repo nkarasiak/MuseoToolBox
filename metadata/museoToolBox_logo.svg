@@ -14,11 +14,11 @@
    viewBox="0 0 103.53323 23.691271"
    version="1.1"
    id="svg8192"
-   inkscape:version="0.92.2 2405546, 2018-03-11"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="museoToolBox_logo.svg"
-   inkscape:export-filename="/home/nicolas/Images/museoToolBox_logo_469.png"
-   inkscape:export-xdpi="502.44"
-   inkscape:export-ydpi="502.44">
+   inkscape:export-filename="/mnt/DATA/lib/MuseoToolBox/metadata/museoToolBox_logo_1024.png"
+   inkscape:export-xdpi="1097.8558"
+   inkscape:export-ydpi="1097.8558">
   <defs
      id="defs8186">
     <clipPath
@@ -63,9 +63,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="130.056"
-     inkscape:cy="-81.508479"
+     inkscape:zoom="5.6"
+     inkscape:cx="324.29638"
+     inkscape:cy="30.488486"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -74,7 +74,7 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1016"
+     inkscape:window-height="1136"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1" />
@@ -138,30 +138,22 @@
        id="g7337"
        inkscape:export-xdpi="274.52634"
        inkscape:export-ydpi="274.52634"
-       inkscape:export-filename="/mnt/DATA/lib/MuseoToolBox/metadata/museoToolBox_logo_256.png">
+       inkscape:export-filename="/mnt/DATA/lib/MuseoToolBox/metadata/museoToolBox_logo_256.png"
+       style="fill:#39a235;fill-opacity:1">
       <g
          id="g7335"
-         clip-path="none">
+         clip-path="none"
+         style="fill:#39a235;fill-opacity:1">
         <circle
            clip-path="none"
            transform="rotate(15)"
-           style="fill:#ffffff;fill-opacity:1;stroke-width:0.11470374"
+           style="fill:#39a235;fill-opacity:1;stroke-width:0.11470374"
            r="3.5435264"
            cy="157.74487"
            cx="212.87865"
            id="circle7333" />
       </g>
     </g>
-    <circle
-       id="path1809-7-3-1"
-       cx="25.139997"
-       cy="23.49457"
-       r="3.5907736"
-       style="opacity:1;vector-effect:none;fill:#39a235;fill-opacity:1;stroke-width:0.11623313;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       transform="rotate(15)"
-       inkscape:export-xdpi="274.52634"
-       inkscape:export-ydpi="274.52634"
-       inkscape:export-filename="/mnt/DATA/lib/MuseoToolBox/metadata/museoToolBox_logo_256.png" />
     <path
        style="opacity:1;vector-effect:none;fill:none;fill-opacity:0.99607843;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 11.592943,20.645922 h 19.14744 c 1.09082,0 1.96898,0.87816 1.96898,1.96898 v 18.91358 c 0,1.09081 -0.87816,1.96898 -1.96898,1.96898 h -19.14744 c -1.09081,0 -1.9689701,-0.87817 -1.9689701,-1.96898 v -18.91358 c 0,-1.09082 0.8781601,-1.96898 1.9689701,-1.96898 z"

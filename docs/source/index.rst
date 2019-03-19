@@ -8,7 +8,7 @@ MuseoToolBox documentation
    :alt: MuseoToolBox logo
 
 :Author: `Nicolas Karasiak <http://www.karasiak.net>`_
-:Source code: `github.com project <https://github.com/lennepkde/MuseoToolBox>`_
+:Source code: `github.com project <https://github.com/lennepkade/MuseoToolBox>`_
 :Bug tracker: `github.com issues <https://github.com/lennepkade/MuseoToolBox/issues>`_
 :Generated: |today|
 :License: GPL v3

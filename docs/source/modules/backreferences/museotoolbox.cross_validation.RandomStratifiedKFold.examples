@@ -1,7 +1,7 @@
 
 
-Examples using ``museotoolbox.cross_validation.RandomCV``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``museotoolbox.cross_validation.RandomStratifiedKFold``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

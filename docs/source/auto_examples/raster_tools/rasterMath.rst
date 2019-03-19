@@ -206,8 +206,10 @@ I suggest you to define type in numpy array to save space while creating the ras
     Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
     Using datatype from numpy table : int64
     Detected 1 band(s) for function sub.
+    No data is set to : -9223372036854775808
     Using datatype from numpy table : int16
     Detected 1 band(s) for function add.
+    No data is set to : -32768
 
 
 Run the script
@@ -229,7 +231,7 @@ Run the script
 
  .. code-block:: none
 
-    rasterMath...  [........................................]0%    rasterMath...  [##......................................]6%    rasterMath...  [#####...................................]13%    rasterMath...  [########................................]20%    rasterMath...  [##########..............................]26%    rasterMath...  [#############...........................]33%    rasterMath...  [################........................]40%    rasterMath...  [##################......................]46%    rasterMath...  [#####################...................]53%    rasterMath...  [########################................]60%    rasterMath...  [##########################..............]66%    rasterMath...  [#############################...........]73%    rasterMath...  [################################........]80%    rasterMath...  [##################################......]86%    rasterMath...  [#####################################...]93%    rasterMath...  [########################################]100%
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
     Saved /tmp/sub.tif using function sub
     Saved /tmp/add.tif using function add
 
@@ -255,7 +257,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  1.347 seconds)
+**Total running time of the script:** ( 0 minutes  0.157 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:
