@@ -188,8 +188,6 @@ I suggest you to define type in numpy array to save space while creating the ras
 
 
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
-    #rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
-
 
 
 
@@ -203,7 +201,6 @@ I suggest you to define type in numpy array to save space while creating the ras
     Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
     Using datatype from numpy table : int64
     Detected 1 band(s) for function sub.
-    No data is set to : -9223372036854775808
 
 
 Run the script
@@ -239,7 +236,7 @@ Plot result
     import gdal
     from matplotlib import pyplot as plt 
 
-    src = gdal.Open('/tmp/add.tif')
+    src = gdal.Open('/tmp/sub.tif')
     plt.imshow(src.ReadAsArray())
 
 
@@ -250,7 +247,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.140 seconds)
+**Total running time of the script:** ( 0 minutes  0.330 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

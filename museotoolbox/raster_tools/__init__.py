@@ -563,7 +563,7 @@ class rasterMath:
             outRaster,
             outNBand=False,
             outNumpyDT=False,
-            outNoData=True,
+            outNoData=False,
             compress=False,
             **kwargs):
         """
@@ -615,21 +615,21 @@ class rasterMath:
             kwargs = False
         self.functionsKwargs.append(kwargs)
 
-        if (outNoData is True) or (self.nodata is not False) or (self.nodata is not None):
+        if (outNoData is True) or (self.nodata is not None) or (self.mask is not False):
             if np.issubdtype(dtypeName, np.floating):
                 minValue = np.finfo(dtypeName).min
             else:
-                if dtypeName == np.byte:
-                    minValue=0
-                else:
-                    minValue = np.iinfo(dtypeName).min
+                minValue = np.iinfo(dtypeName).min
 
-            if (outNoData is True) or (outNoData < minValue):
+            if type(outNoData) != bool:
+                if outNoData < minValue:
+                    outNoData = minValue
+            else:
                 outNoData = minValue
 
             if self.verbose:
                 print('No data is set to : ' + str(outNoData))
-
+                
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
@@ -707,12 +707,12 @@ class rasterMath:
             arrMask = None
                 
         for nRaster in range(len(self.openRasters)):
+            nb = self.openRasters[nRaster].RasterCount
                 
             if self.return_3d:
-                arr = np.empty((height, width, self.nb), dtype=self.ndtype)
+                arr = np.empty((height, width, nb), dtype=self.ndtype)
             else:
-                arr = np.empty((height * width, self.nb), dtype=self.ndtype)
-            nb = self.openRasters[nRaster].RasterCount
+                arr = np.empty((height * width, nb), dtype=self.ndtype)
             for ind in range(nb):
                 band = self.openRasters[nRaster].GetRasterBand(int(ind + 1))
                 
@@ -820,7 +820,7 @@ class rasterMath:
         Yields each whole band as np masked array (so with masked data)
         """
         for nb in range(1, self.nb + 1):
-            band = self.openRaster.GetRasterBand(nb)
+            band = self.openRaster[0].GetRasterBand(nb)
             band = band.ReadAsArray()
             if self.mask:
                 mask = np.asarray(

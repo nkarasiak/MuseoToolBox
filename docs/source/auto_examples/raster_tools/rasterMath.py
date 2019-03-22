@@ -40,8 +40,6 @@ def sub(x):
 
 
 rM.addFunction(sub,outRaster='/tmp/sub.tif')
-#rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
-
 #####################
 # Run the script
 
@@ -53,5 +51,5 @@ rM.run()
 import gdal
 from matplotlib import pyplot as plt 
 
-src = gdal.Open('/tmp/add.tif')
+src = gdal.Open('/tmp/sub.tif')
 plt.imshow(src.ReadAsArray())

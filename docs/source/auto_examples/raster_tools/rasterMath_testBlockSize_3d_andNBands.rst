@@ -111,7 +111,7 @@ Initialize rasterMath with raster
 
     Total number of blocks : 15
     Total number of blocks : 18
-    (33200, 3)
+    (40000, 3)
     Using datatype from numpy table : uint8
     Detected 9 band(s) for function returnWithOneBandMore.
     No data is set to : 0
@@ -123,7 +123,7 @@ Initialize rasterMath with raster
     Saved /tmp/x_flatten_False.tif using function returnFlatten
     Total number of blocks : 15
     Total number of blocks : 18
-    (200, 200, 3)
+    (166, 200, 3)
     Using datatype from numpy table : uint8
     Detected 9 band(s) for function returnWithOneBandMore.
     No data is set to : 0
@@ -135,7 +135,7 @@ Initialize rasterMath with raster
     Saved /tmp/x_flatten_True.tif using function returnFlatten
 
 
-**Total running time of the script:** ( 0 minutes  0.917 seconds)
+**Total running time of the script:** ( 0 minutes  1.401 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:

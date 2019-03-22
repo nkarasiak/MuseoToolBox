@@ -13,7 +13,6 @@ rasterMath with several rasters as inputs
 Compute substract and addition between two raster bands.
 
 
-
 Import librairies
 -------------------------------------------
 
@@ -298,7 +297,7 @@ If invert is set to True, it means polygons will be set to nodata
     ]
 
 
-Let's suppose you want compute the add of the blue and green band of two inputs
+Let's suppose you want compute the substractino between the blue and green band of two inputs
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
@@ -308,10 +307,10 @@ I suggest you to define type in numpy array to save space while creating the ras
 
     x = rM.getRandomBlock()
 
-    def add(x):
+    def sub(x):
         return np.array((x[0][...,0]-x[1][...,1])).astype(np.uint8)
 
-    rM.addFunction(add,outRaster='/tmp/add.tif',outNumpyDT=np.uint8)
+    rM.addFunction(sub,outRaster='/tmp/sub.tif')
 
 
 
@@ -323,7 +322,8 @@ I suggest you to define type in numpy array to save space while creating the ras
 
  .. code-block:: none
 
-    Detected 1 band(s) for function add.
+    Using datatype from numpy table : uint8
+    Detected 1 band(s) for function sub.
     No data is set to : 0
 
 
@@ -347,7 +347,7 @@ Run the script
  .. code-block:: none
 
     rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
-    Saved /tmp/add.tif using function add
+    Saved /tmp/sub.tif using function sub
 
 
 Plot result
@@ -360,7 +360,7 @@ Plot result
     import gdal
     from matplotlib import pyplot as plt 
 
-    src = gdal.Open('/tmp/add.tif')
+    src = gdal.Open('/tmp/sub.tif')
     arr = src.ReadAsArray()
     arr = np.where(arr==0,np.nan,arr)
     plt.imshow(arr)
@@ -373,7 +373,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.199 seconds)
+**Total running time of the script:** ( 0 minutes  0.307 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_twoRasters.py:

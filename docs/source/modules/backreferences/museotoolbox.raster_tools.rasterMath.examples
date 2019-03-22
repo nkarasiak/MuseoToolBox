@@ -23,7 +23,7 @@ Examples using ``museotoolbox.raster_tools.rasterMath``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
 
 .. only:: html
 
