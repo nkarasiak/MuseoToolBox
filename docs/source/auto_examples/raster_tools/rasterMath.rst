@@ -185,13 +185,10 @@ I suggest you to define type in numpy array to save space while creating the ras
     def sub(x):
         return np.array((x[:,0]-x[:,1])).astype(np.int64) 
 
-    def add(x,constant=0):
-    
-        return np.array((x[:,0]+x[:,1]+constant)).astype(np.int16) 
 
 
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
-    rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
+    #rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
 
 
 
@@ -207,9 +204,6 @@ I suggest you to define type in numpy array to save space while creating the ras
     Using datatype from numpy table : int64
     Detected 1 band(s) for function sub.
     No data is set to : -9223372036854775808
-    Using datatype from numpy table : int16
-    Detected 1 band(s) for function add.
-    No data is set to : -32768
 
 
 Run the script
@@ -233,7 +227,6 @@ Run the script
 
     rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
     Saved /tmp/sub.tif using function sub
-    Saved /tmp/add.tif using function add
 
 
 Plot result
@@ -257,7 +250,7 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.157 seconds)
+**Total running time of the script:** ( 0 minutes  0.140 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

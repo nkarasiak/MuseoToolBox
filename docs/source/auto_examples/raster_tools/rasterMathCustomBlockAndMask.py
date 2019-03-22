@@ -35,8 +35,8 @@ raster,vector = datasets.historicalMap()
 rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 
 rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=True)
-
-print(rM.getRandomBlock().shape)
+#rM.addInputRaster('/tmp/mask.tif')
+print(rM.getRandomBlock()[0].shape)
 
 #######################
 # Plot blocks

@@ -404,6 +404,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_twoRasters_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_twoRasters.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/rasterMath_twoRasters
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
 
 .. only:: html

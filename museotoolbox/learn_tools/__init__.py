@@ -30,7 +30,7 @@ class learnAndPredict:
         """
         learnAndPredict class ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
-        
+
         Parameters
         ----------
         n_jobs : int, default 1.
@@ -96,7 +96,7 @@ class learnAndPredict:
         else:
             self.StandardScaler.fit(X)
             Xt = self.StandardScaler.transform(X)
-            
+
             return Xt
 
     def learnFromVector(
@@ -305,12 +305,12 @@ class learnAndPredict:
                 path += '.npz'
             model = np.load(path)
             self.__dict__.update(model['LAP'].tolist())
-            if hasattr(self,'scale'):
+            if hasattr(self, 'scale'):
                 if self.scale is True:
                     # for retro-compatibility with museotoolbox < 1.0
-                    self.standardize,self.StandardScaler = self.scale,self.scaler
-                    del self.scaler,self.scale
-                    
+                    self.standardize, self.StandardScaler = self.scale, self.scaler
+                    del self.scaler, self.scale
+
     def __convertX(self, X, **kwargs):
         if 'Xfunction' in kwargs:
             Xfunction = kwargs['Xfunction']
@@ -319,14 +319,15 @@ class learnAndPredict:
 
         if self.standardize:
             if np.ma.is_masked(X):
-                tmpMask = X.mask[:,0]
-            
+                tmpMask = X.mask[:, 0]
+
             X = self.StandardScaler.transform(X)
-            
+
             if np.ma.is_masked(X):
-                tmpMask = np.repeat(tmpMask.reshape(-1,1), X.shape[-1], axis=1)
+                tmpMask = np.repeat(tmpMask.reshape(-1, 1),
+                                    X.shape[-1], axis=1)
                 X = np.ma.masked_array(X, tmpMask)
-        
+
         return X
 
     def predictArray(self, X, **kwargs):
@@ -343,7 +344,7 @@ class learnAndPredict:
 
         X = self.__convertX(X, **kwargs)
         self.Xpredict = self.model.predict(X)
-        
+
         return self.Xpredict
 
     def predictConfidencePerClass(self, X, **kwargs):
@@ -722,12 +723,12 @@ class sequentialFeatureSelection(BaseEstimator):
                     pB.addPosition()
                 LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
                 curX = self.__getX(self.X, idx)
-                
+
                 if self.xFunction:
                     standardize = False
                 else:
                     standardize = True
-                
+
                 LAP.learnFromVector(
                     curX,
                     y,

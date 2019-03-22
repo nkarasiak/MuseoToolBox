@@ -39,6 +39,7 @@ for return_3d in [False,True]:
     
     #######################
     # Plot blocks
+    
     x = rM.getRandomBlock()
     def returnFlatten(x):
         try:

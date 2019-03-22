@@ -236,7 +236,7 @@ Plot example on how a polygon was splitted
     [6262895.191637615, 6262817.727491866, 6262671.406327676, 6262779.610213798, 6262895.191637615]
 
 
-**Total running time of the script:** ( 0 minutes  0.149 seconds)
+**Total running time of the script:** ( 0 minutes  0.176 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneOutPerClass.py:

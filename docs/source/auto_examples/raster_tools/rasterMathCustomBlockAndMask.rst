@@ -66,8 +66,8 @@ Initialize rasterMath with raster
     rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 
     rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=True)
-
-    print(rM.getRandomBlock().shape)
+    #rM.addInputRaster('/tmp/mask.tif')
+    print(rM.getRandomBlock()[0].shape)
 
 
 
@@ -80,7 +80,7 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    (256, 256, 3)
+    (256, 3)
 
 
 Plot blocks
@@ -114,9 +114,9 @@ Plot blocks
 
  .. code-block:: none
 
-    Using datatype from numpy table : int16
+    Using datatype from numpy table : float64
     Detected 1 band(s) for function mean.
-    No data is set to : -32768
+    No data is set to : -1.79769313486e+308
     [[[-- -- --]
       [-- -- --]
       [-- -- --]
@@ -457,7 +457,7 @@ Plot blocks
     Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.192 seconds)
+**Total running time of the script:** ( 0 minutes  0.332 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:

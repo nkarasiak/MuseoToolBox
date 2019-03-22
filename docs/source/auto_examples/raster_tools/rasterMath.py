@@ -37,13 +37,10 @@ x = rM.getRandomBlock()
 def sub(x):
     return np.array((x[:,0]-x[:,1])).astype(np.int64) 
 
-def add(x,constant=0):
-    
-    return np.array((x[:,0]+x[:,1]+constant)).astype(np.int16) 
 
 
 rM.addFunction(sub,outRaster='/tmp/sub.tif')
-rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
+#rM.addFunction(add,outRaster='/tmp/add.tif',constant=10)
 
 #####################
 # Run the script
