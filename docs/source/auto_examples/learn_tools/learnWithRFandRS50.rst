@@ -116,7 +116,7 @@ sklearn will compute different metrics, but will keep best results from kappa (r
 
     Reading raster values...  [........................................]0%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################################....]90%    Reading raster values...  [########################################]100%
     Fitting 2 folds for each of 2 candidates, totalling 4 fits
-    best score : 0.942522831509
+    best score : 0.9425228315087403
     best n_estimators : 200
 
 
@@ -142,7 +142,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7fb1c77702b0>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7fa9ce78c978>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -155,11 +155,11 @@ Read the model
            refit='kappa', return_train_score='warn',
            scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([ 0.63942051,  0.94149327]), 'std_fit_time': array([ 0.00619221,  0.00457811]), 'mean_score_time': array([ 0.42825377,  0.61336863]), 'std_score_time': array([ 0.10067403,  0.00036752]), 'param_n_estimators': masked_array(data = [100 200],
-                 mask = [False False],
-           fill_value = ?)
-    , 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([ 0.94197678,  0.9425443 ]), 'split1_test_kappa': array([ 0.94276653,  0.94250136]), 'mean_test_kappa': array([ 0.94237166,  0.94252283]), 'std_test_kappa': array([  3.94874201e-04,   2.14729960e-05]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([ 0.99644289,  0.99644289]), 'split1_train_kappa': array([ 0.99644167,  0.9964414 ]), 'mean_train_kappa': array([ 0.99644228,  0.99644214]), 'std_train_kappa': array([  6.08047080e-07,   7.44183416e-07]), 'split0_test_f1_mean': array([ 0.96662449,  0.96694084]), 'split1_test_f1_mean': array([ 0.96694084,  0.96678266]), 'mean_test_f1_mean': array([ 0.96678266,  0.96686175]), 'std_test_f1_mean': array([  1.58177792e-04,   7.90888959e-05]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([ 0.99794466,  0.99794466]), 'split1_train_f1_mean': array([ 0.99794466,  0.99794466]), 'mean_train_f1_mean': array([ 0.99794466,  0.99794466]), 'std_train_f1_mean': array([ 0.,  0.]), 'split0_test_accuracy': array([ 0.96662449,  0.96694084]), 'split1_test_accuracy': array([ 0.96694084,  0.96678266]), 'mean_test_accuracy': array([ 0.96678266,  0.96686175]), 'std_test_accuracy': array([  1.58177792e-04,   7.90888959e-05]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([ 0.99794466,  0.99794466]), 'split1_train_accuracy': array([ 0.99794466,  0.99794466]), 'mean_train_accuracy': array([ 0.99794466,  0.99794466]), 'std_train_accuracy': array([ 0.,  0.])}
-    0.942522831509
+    {'mean_fit_time': array([0.48529088, 0.94905066]), 'std_fit_time': array([0.07464015, 0.01605463]), 'mean_score_time': array([0.42938495, 0.5662868 ]), 'std_score_time': array([0.10917425, 0.05203843]), 'param_n_estimators': masked_array(data=[100, 200],
+                 mask=[False, False],
+           fill_value='?',
+                dtype=object), 'params': [{'n_estimators': 100}, {'n_estimators': 200}], 'split0_test_kappa': array([0.94197678, 0.9425443 ]), 'split1_test_kappa': array([0.94276653, 0.94250136]), 'mean_test_kappa': array([0.94237166, 0.94252283]), 'std_test_kappa': array([3.94874201e-04, 2.14729960e-05]), 'rank_test_kappa': array([2, 1], dtype=int32), 'split0_train_kappa': array([0.99644289, 0.99644289]), 'split1_train_kappa': array([0.99644167, 0.9964414 ]), 'mean_train_kappa': array([0.99644228, 0.99644214]), 'std_train_kappa': array([6.08047080e-07, 7.44183416e-07]), 'split0_test_f1_mean': array([0.96662449, 0.96694084]), 'split1_test_f1_mean': array([0.96694084, 0.96678266]), 'mean_test_f1_mean': array([0.96678266, 0.96686175]), 'std_test_f1_mean': array([1.58177792e-04, 7.90888959e-05]), 'rank_test_f1_mean': array([2, 1], dtype=int32), 'split0_train_f1_mean': array([0.99794466, 0.99794466]), 'split1_train_f1_mean': array([0.99794466, 0.99794466]), 'mean_train_f1_mean': array([0.99794466, 0.99794466]), 'std_train_f1_mean': array([0., 0.]), 'split0_test_accuracy': array([0.96662449, 0.96694084]), 'split1_test_accuracy': array([0.96694084, 0.96678266]), 'mean_test_accuracy': array([0.96678266, 0.96686175]), 'std_test_accuracy': array([1.58177792e-04, 7.90888959e-05]), 'rank_test_accuracy': array([2, 1], dtype=int32), 'split0_train_accuracy': array([0.99794466, 0.99794466]), 'split1_train_accuracy': array([0.99794466, 0.99794466]), 'mean_train_accuracy': array([0.99794466, 0.99794466]), 'std_train_accuracy': array([0., 0.])}
+    0.9425228315087403
 
 
 Get F1 for every class from best params
@@ -183,8 +183,8 @@ Get F1 for every class from best params
 
  .. code-block:: none
 
-    [ 0.97660278  0.92105263  0.99824407  0.89748549  0.        ]
-    [ 0.97702218  0.92128028  0.99737303  0.89320388  0.        ]
+    [0.97660278 0.92105263 0.99824407 0.89748549 0.        ]
+    [0.97702218 0.92128028 0.99737303 0.89320388 0.        ]
 
 
 Get each confusion matrix from folds
@@ -288,7 +288,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  21.976 seconds)
+**Total running time of the script:** ( 0 minutes  21.129 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

@@ -28,7 +28,7 @@ raster,vector = datasets.historicalMap()
 
 # Set return2d to False to have full block size (not one pixel per row)
 
-rM = rasterMath(raster,return_3d=True)
+rM = rasterMath(raster,return_3d=False)
 
 print(rM.getRandomBlock().shape)
 

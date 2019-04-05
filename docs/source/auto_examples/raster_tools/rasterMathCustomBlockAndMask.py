@@ -42,14 +42,16 @@ print(rM.getRandomBlock()[0].shape)
 # Plot blocks
 x = rM.getRandomBlock()
 
-rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,dtype=np.int16)
+rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,outNumpyDT=np.int16)
 
 for tile in rM.readBlockPerBlock():
-    print(tile)
-#rM.addFunction(returnX,'/tmp/mean.tif')
+    pass
+# print last column 83 from last block
+print(tile[:,83,0])
+
 rM.run()
 
 import gdal
 dst = gdal.Open('/tmp/mean.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()
-plt.imshow(np.ma.masked_where(arr == np.min(arr), arr))
+plt.imshow(np.ma.masked_where(arr == rM.outputNoData[0], arr))

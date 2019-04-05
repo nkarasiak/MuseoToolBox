@@ -59,7 +59,7 @@ Initialize rasterMath with raster
 
     # Set return2d to False to have full block size (not one pixel per row)
 
-    rM = rasterMath(raster,return_3d=True)
+    rM = rasterMath(raster,return_3d=False)
 
     print(rM.getRandomBlock().shape)
 
@@ -74,7 +74,7 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    (54, 29, 3)
+    (1566, 3)
 
 
 Comparing different block size (%, fixed, full block)
@@ -102,7 +102,7 @@ You can define block by percentage of the whole width/height
  .. code-block:: none
 
     Total number of blocks : 4
-    (283, 526, 3)
+    (148858, 3)
 
 
 Or by fixed window 
@@ -126,7 +126,7 @@ Or by fixed window
  .. code-block:: none
 
     Total number of blocks : 132
-    (100, 50, 3)
+    (5000, 3)
 
 
 To have the full image (one block)
@@ -199,7 +199,7 @@ Plot blocks
 
 
 
-**Total running time of the script:** ( 0 minutes  0.531 seconds)
+**Total running time of the script:** ( 0 minutes  0.227 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:

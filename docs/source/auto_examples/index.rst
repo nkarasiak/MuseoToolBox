@@ -404,13 +404,13 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute Moran&#x27;s I with different lags, support mask.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_twoRasters_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_MoransI_thumb.png
 
-        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_twoRasters.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_MoransI.py`
 
 .. raw:: html
 
@@ -420,7 +420,7 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/raster_tools/rasterMath_twoRasters
+   /auto_examples/raster_tools/MoransI
 
 .. raw:: html
 
@@ -441,6 +441,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
    :hidden:
 
    /auto_examples/raster_tools/modalClass
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_twoRasters_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_twoRasters.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/rasterMath_twoRasters
 
 .. raw:: html
 
