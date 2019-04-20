@@ -62,21 +62,18 @@ Initialize rasterMath with raster
 
 
 
+.. code-block:: pytb
 
-.. rst-class:: sphx-glr-script-out
+    Traceback (most recent call last):
+      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/rasterMath.py", line 29, in <module>
+        print(rM.getRandomBlock())
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
+        tmp = self._manageMaskFor2D(tmp)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 865, in _manageMaskFor2D
+        X = self._returnUnmaskXed(X)
+    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
 
- Out:
 
- .. code-block:: none
-
-    Total number of blocks : 15
-    [[178 154 120]
-     [196 172 138]
-     [206 182 148]
-     ...
-     [ 94  85  68]
-     [174 161 144]
-     [196 183 164]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -96,20 +93,6 @@ I suggest you to define type in numpy array to save space while creating the ras
 
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
-    Using datatype from numpy table : int64
-    Detected 1 band(s) for function sub.
-
-
 Run the script
 
 
@@ -118,19 +101,6 @@ Run the script
 
 
     rM.run()
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
-    Saved /tmp/sub.tif using function sub
 
 
 Plot result
@@ -146,15 +116,7 @@ Plot result
     src = gdal.Open('/tmp/sub.tif')
     plt.imshow(src.ReadAsArray())
 
-
-
-.. image:: /auto_examples/raster_tools/images/sphx_glr_rasterMath_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-**Total running time of the script:** ( 0 minutes  0.100 seconds)
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

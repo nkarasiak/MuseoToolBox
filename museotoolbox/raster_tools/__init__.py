@@ -26,7 +26,8 @@ import tempfile
 from ..internal_tools import progressBar, pushFeedback
 from ..vector_tools import sampleExtraction
 
-from scipy.ndimage.filters import generic_filter # to compute moran
+from scipy.ndimage.filters import generic_filter  # to compute moran
+
 
 def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
     """
@@ -589,8 +590,8 @@ class rasterMath:
         **kwargs
 
         """
-        if len(kwargs)>0:
-            randomBlock = function(self.getRandomBlock(),**kwargs)
+        if len(kwargs) > 0:
+            randomBlock = function(self.getRandomBlock(), **kwargs)
         else:
             randomBlock = function(self.getRandomBlock())
         if outNumpyDT is False:
@@ -603,7 +604,7 @@ class rasterMath:
 
         if outNBand is False:
             randomBlock = self.reshape_ndim(randomBlock)
-            
+
             outNBand = randomBlock.shape[-1]
             if self.verbose:
                 print(
@@ -794,7 +795,7 @@ class rasterMath:
             if self.return_3d is False:
                 tmp = self._manageMaskFor2D(tmp)
         return tmp
-        
+
     def reshape_ndim(self, x):
         """
         Reshape array with at least one band.
@@ -845,27 +846,27 @@ class rasterMath:
                 mask = X.mask
             if not np.all(mask == 1):
                 yield X
-    
-    def _returnUnmaskX(self,X):
-        if type(X.mask) == np.bool_:
+
+    def _returnUnmaskedX(self, X):
+        if isinstance(X.mask, np.bool_):
             if X.mask == False:
                 X = X.data
             else:
                 pass
                 # no return
-        else :
-            mask = np.in1d(X.mask[:,0],True)
-            X = X[~mask,:].data
-        return X
-    
-    def _manageMaskFor2D(self,X):
-        if len(self.openRasters)>1:
-            X = [self._returnUnmaskX(x) for x in X]
         else:
-            X = self._returnUnmaskX(X)
+            mask = np.in1d(X.mask[:, 0], True)
+            X = X[~mask, :].data
+        return X
+
+    def _manageMaskFor2D(self, X):
+        if len(self.openRasters) > 1:
+            X = [self._returnUnmaskXed(x) for x in X]
+        else:
+            X = self._returnUnmaskXed(X)
 
         return X
-        
+
     def customBlockSize(self, x_block_size=False, y_block_size=False):
         """
         Define custom block size for reading/writing the raster.
@@ -918,13 +919,12 @@ class rasterMath:
 
         for X, col, line, cols, lines in self.__iterBlock__(
                 getBlock=True):
+
             if isinstance(X, list):
                 X_ = [np.ma.copy(arr) for arr in X]
-                X__ = [arr for arr in X_]
-                X = X_[0]
+                X = X_[0]  # X_[0] is used to get mask
             else:
                 X_ = np.ma.copy(X)
-                X__ = np.ma.copy(X_)
 
             if self.verbose:
                 self.pb.addPosition(self.__position)
@@ -936,15 +936,15 @@ class rasterMath:
                     # if all the block is not masked
                     if not self.return_3d:
                         if isinstance(X_, list):
-                            X_ = [arr[~X.mask[:, 0], ...].data for arr in X__]
+                            X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
                         else:
-                            X_ = X[~X.mask[:, 0], ...].data
+                            X__ = X[~X.mask[:, 0], ...].data
 
                     if self.functionsKwargs[idx] is not False:
-                        resFun = fun(X_, **
+                        resFun = fun(X__, **
                                      self.functionsKwargs[idx])
                     else:
-                        resFun = fun(X_)
+                        resFun = fun(X__)
 
                     resFun = self.reshape_ndim(resFun)
 
@@ -1023,7 +1023,7 @@ class rasterMath:
 class Moran:
     """
     Compute Moran's I for raster.
-    
+
     Parameters
     ----------
     inRaster : str.
@@ -1031,80 +1031,103 @@ class Moran:
     inMaskRaster : str, default False.
         lag : int or
     transform : str.
-        'r' or 'b'. 
+        'r' or 'b'.
     weights : False or array.
         Weights (same shape as the square size).
     intermediate_lag : boolean, default True.
-        Use all pixel values inside the specified lag. 
-        
-        If `intermediate_lag` is set to False, only the pixels at the specified 
+        Use all pixel values inside the specified lag.
+
+        If `intermediate_lag` is set to False, only the pixels at the specified
         range will be kept for computing the statistics.
 
-        
+
     """
-    def __init__(self,inRaster,inMaskRaster=False,transform='r',lag=1,weights=False,intermediate_lag=True):
-    
-        self.scores = dict(I=[],band=[],EI=[])
+
+    def __init__(self, inRaster, inMaskRaster=False, transform='r',
+                 lag=1, weights=False, intermediate_lag=True):
+
+        self.scores = dict(I=[], band=[], EI=[])
         self.lags = []
-        if isinstance(inRaster,(np.ma.core.MaskedArray,np.ndarray)):
+        if isinstance(inRaster, (np.ma.core.MaskedArray, np.ndarray)):
             arr = inRaster
         else:
-            rM=rasterMath(inRaster,inMaskRaster=inMaskRaster,return_3d=True,verbose=False)
-        
-        for band,arr in enumerate(rM.readBandPerBand()):
-            if isinstance(lag,int):
-                lag=[lag]
+            rM = rasterMath(
+                inRaster,
+                inMaskRaster=inMaskRaster,
+                return_3d=True,
+                verbose=False)
+
+        for band, arr in enumerate(rM.readBandPerBand()):
+            if isinstance(lag, int):
+                lag = [lag]
             for l in lag:
-                squareSize = l*2+1
-                footprint = np.ones((squareSize,squareSize))
-                weights = np.zeros((footprint.shape[0],footprint.shape[1]))
-                
-                
-                if not intermediate_lag :
-                    weights[:,0]  = 1
-                    weights[0,:]  = 1
-                    weights[-1,:]  = 1
-                    weights[:,-1]  = 1
+                squareSize = l * 2 + 1
+                footprint = np.ones((squareSize, squareSize))
+                weights = np.zeros((footprint.shape[0], footprint.shape[1]))
+
+                if not intermediate_lag:
+                    weights[:, 0] = 1
+                    weights[0, :] = 1
+                    weights[-1, :] = 1
+                    weights[:, -1] = 1
                 else:
-                    weights[:,:] = 1
+                    weights[:, :] = 1
 
                 if transform == 'b' and band == 0:
-                    neighbors = generic_filter(arr,self.getNNeighbors,footprint=footprint,mode='constant',cval=np.nan,extra_keywords=dict(footprint=footprint,weights=weights))
-                    if not np.all(arr.mask==False):
+                    neighbors = generic_filter(
+                        arr,
+                        self.getNNeighbors,
+                        footprint=footprint,
+                        mode='constant',
+                        cval=np.nan,
+                        extra_keywords=dict(
+                            footprint=footprint,
+                            weights=weights))
+                    if not np.all(arr.mask == False):
                         neighbors[arr.mask] = np.nan
-    
-                n=arr.count()
+
+                n = arr.count()
                 arr = arr.astype(np.float64)
-                arr.data[arr.mask] = np.nan # convert masked to nan for generic_filter
-    
+                # convert masked to nan for generic_filter
+                arr.data[arr.mask] = np.nan
+
                 x_ = np.nanmean(arr)
-    
-                num = generic_filter(arr,self.__computeViewForGlobanMoran,footprint=footprint,mode='constant',cval=np.nan,extra_keywords=dict(x_=x_,footprint=footprint,weights=weights,transform=transform))
-        
-                den = (arr-x_)**2
-                self.z = arr-x_
-                
-                
+
+                num = generic_filter(
+                    arr,
+                    self.__computeViewForGlobanMoran,
+                    footprint=footprint,
+                    mode='constant',
+                    cval=np.nan,
+                    extra_keywords=dict(
+                        x_=x_,
+                        footprint=footprint,
+                        weights=weights,
+                        transform=transform))
+
+                den = (arr - x_)**2
+                self.z = arr - x_
+
                 # need to mask z/den/num/neighbors
                 den[arr.mask] = np.nan
-                local = np.nansum(num)/np.nansum(den)
+                local = np.nansum(num) / np.nansum(den)
                 if transform == 'b':
-                    self.I=(n/np.nansum(neighbors))*local
+                    self.I = (n / np.nansum(neighbors)) * local
                 else:
-                    self.I=local
-                self.EI=-1/(n-1)
+                    self.I = local
+                self.EI = -1 / (n - 1)
                 self.lags.append(l)
-                self.scores['band'].append(band+1)
+                self.scores['band'].append(band + 1)
                 self.scores['I'].append(self.I)
                 self.scores['EI'].append(self.EI)
-                    
-    def getNNeighbors(self,array,footprint,weights):
-        
-        b = np.reshape(array, (footprint.shape[0],footprint.shape[1]))
-        xCenter = int((footprint.shape[0]-1)/2)
-        yCenter = int((footprint.shape[1]-1)/2)
-        b[xCenter,yCenter] = np.nan
-        w=np.count_nonzero(~np.isnan(b))
+
+    def getNNeighbors(self, array, footprint, weights):
+
+        b = np.reshape(array, (footprint.shape[0], footprint.shape[1]))
+        xCenter = int((footprint.shape[0] - 1) / 2)
+        yCenter = int((footprint.shape[1] - 1) / 2)
+        b[xCenter, yCenter] = np.nan
+        w = np.count_nonzero(~np.isnan(b))
         if w == 0:
             w = np.nan
         if weights is not False:
@@ -1112,19 +1135,20 @@ class Moran:
             weightsNAN = weightsWindow[~np.isnan(b)]
             w = np.nansum(weightsNAN)
         return w
-    
-    def __computeViewForGlobanMoran(self,a,x_,footprint,weights,transform='r'):
-        xSize,ySize = footprint.shape
-        a = np.reshape(a, (xSize,ySize))
-        
-        xCenter = int((xSize-1)/2)
-        yCenter = int((ySize-1)/2)
-        
-        xi = a[xCenter,yCenter]
+
+    def __computeViewForGlobanMoran(
+            self, a, x_, footprint, weights, transform='r'):
+        xSize, ySize = footprint.shape
+        a = np.reshape(a, (xSize, ySize))
+
+        xCenter = int((xSize - 1) / 2)
+        yCenter = int((ySize - 1) / 2)
+
+        xi = a[xCenter, yCenter]
         if np.isnan(xi):
             return np.nan
         else:
-            a[xCenter,yCenter] = np.nan
+            a[xCenter, yCenter] = np.nan
             w = np.count_nonzero(~np.isnan(a))
             if w == 0:
                 num = np.nan
@@ -1135,7 +1159,7 @@ class Moran:
                     w = np.copy(weights)
                 if transform == 'r':
                     w /= np.count_nonzero(~np.isnan(a))
-                    
-                num = np.nansum(w*(a-x_)*(xi-x_))
+
+                num = np.nansum(w * (a - x_) * (xi - x_))
 
         return num

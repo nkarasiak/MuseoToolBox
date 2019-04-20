@@ -115,19 +115,19 @@ Create list of different CV
     Received groups value, but randomCV don't use it
     Received groups value, but randomCV don't use it
     Kappa for RandomStratifiedKFold
-    0.9407059991923954
-    0.9520765647926794
-    0.9511373115703454
-    0.937414370932194
-    0.9498085350331642
+    0.9449216394803083
+    0.9402962903419407
+    0.956770458550679
+    0.9527118613729597
+    0.9498465389079399
     ====================
     Kappa for LeavePSubGroupOut
-    0.6882235245166974
-    0.6585529199635756
+    0.7729732773963548
+    0.7528741974239855
     ====================
     Kappa for LeaveOneSubGroupOut
-    0.8444617192497962
-    0.7925882271372114
+    0.8455136259149088
+    0.9639252475817985
     ====================
     Kappa for StratifiedKFold
     0.9328613433474189
@@ -162,7 +162,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  25.693 seconds)
+**Total running time of the script:** ( 0 minutes  45.022 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:

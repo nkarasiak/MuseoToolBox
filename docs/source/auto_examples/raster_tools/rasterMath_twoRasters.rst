@@ -66,15 +66,20 @@ If invert is set to True, it means polygons will be set to nodata
 
 
 
+.. code-block:: pytb
 
-.. rst-class:: sphx-glr-script-out
+    Traceback (most recent call last):
+      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/rasterMath_twoRasters.py", line 33, in <module>
+        print('Number of rasters : '+str(len(rM.getRandomBlock())))
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
+        tmp = self._manageMaskFor2D(tmp)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 863, in _manageMaskFor2D
+        X = [self._returnUnmaskXed(x) for x in X]
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 863, in <listcomp>
+        X = [self._returnUnmaskXed(x) for x in X]
+    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
 
- Out:
 
- .. code-block:: none
-
-    Total number of blocks : 15
-    Number of rasters : 2
 
 
 Let's suppose you want compute the substractino between the blue and green band of two inputs
@@ -93,20 +98,6 @@ I suggest you to define type in numpy array to save space while creating the ras
     rM.addFunction(sub,outRaster='/tmp/sub_2inputs.tif')
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function sub.
-    No data is set to : 0
-
-
 Run the script
 
 
@@ -115,19 +106,6 @@ Run the script
 
 
     rM.run()
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
-    Saved /tmp/sub_2inputs.tif using function sub
 
 
 Plot result
@@ -145,15 +123,7 @@ Plot result
     arr = np.where(arr==0,np.nan,arr)
     plt.imshow(arr)
 
-
-
-.. image:: /auto_examples/raster_tools/images/sphx_glr_rasterMath_twoRasters_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-**Total running time of the script:** ( 0 minutes  0.150 seconds)
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_twoRasters.py:

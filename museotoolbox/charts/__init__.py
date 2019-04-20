@@ -37,7 +37,7 @@ class plotConfusionMatrix:
     >>> plot.addF1()
     """
 
-    def __init__(self, cm, cmap=plt.cm.Greens,**kwargs):
+    def __init__(self, cm, cmap=plt.cm.Greens, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []

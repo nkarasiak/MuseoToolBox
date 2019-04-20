@@ -24,6 +24,7 @@ from sklearn.base import clone, BaseEstimator
 from sklearn import warnings
 from ..internal_tools import progressBar
 
+
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
         """

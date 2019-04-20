@@ -99,43 +99,19 @@ Initialize rasterMath with raster
 
 
 
-.. image:: /auto_examples/raster_tools/images/sphx_glr_rasterMath_testBlockSize_3d_andNBands_001.png
-    :class: sphx-glr-single-img
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/rasterMath_testBlockSize_3d_andNBands.py", line 62, in <module>
+        rM.run()
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 946, in run
+        resFun = fun(X__)
+    UnboundLocalError: local variable 'X__' referenced before assignment
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 15
-    Total number of blocks : 18
-    (166, 200, 3)
-    Using datatype from numpy table : uint8
-    Detected 9 band(s) for function returnWithOneBandMore.
-    No data is set to : 0
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function returnFlatten.
-    No data is set to : 0
-    rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
-    Saved /tmp/x_repeat_True.tif using function returnWithOneBandMore
-    Saved /tmp/x_flatten_True.tif using function returnFlatten
-    Total number of blocks : 15
-    Total number of blocks : 18
-    (2, 3)
-    Using datatype from numpy table : uint8
-    Detected 9 band(s) for function returnWithOneBandMore.
-    No data is set to : 0
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function returnFlatten.
-    No data is set to : 0
-    rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
-    Saved /tmp/x_repeat_False.tif using function returnWithOneBandMore
-    Saved /tmp/x_flatten_False.tif using function returnFlatten
 
 
-**Total running time of the script:** ( 0 minutes  0.659 seconds)
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:
