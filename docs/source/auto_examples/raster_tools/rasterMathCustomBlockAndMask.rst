@@ -106,19 +106,35 @@ Plot blocks
     plt.imshow(np.ma.masked_where(arr == rM.outputNoData[0], arr))
 
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/rasterMathCustomBlockAndMask.py", line 52, in <module>
-        rM.run()
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 943, in run
-        resFun = fun(X__, **
-    UnboundLocalError: local variable 'X__' referenced before assignment
+.. image:: /auto_examples/raster_tools/images/sphx_glr_rasterMathCustomBlockAndMask_001.png
+    :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Detected 1 band(s) for function mean.
+    No data is set to : -32768
+    [-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 131 50 124 108 77
+     57 51 123 67 107 170 104 102 150 153 118 111 158 134 154 144 133 135 149
+     147 136 139 142 143 151 143 139 138 142 143 147 -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+     -- --]
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
+    Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.020 seconds)
+**Total running time of the script:** ( 0 minutes  0.248 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:

@@ -153,4 +153,3 @@ class Moran:
                 num = np.nansum(w * (a - x_) * (xi - x_))
 
         return num
-

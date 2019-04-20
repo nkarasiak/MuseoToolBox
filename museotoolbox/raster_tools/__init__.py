@@ -861,9 +861,9 @@ class rasterMath:
 
     def _manageMaskFor2D(self, X):
         if len(self.openRasters) > 1:
-            X = [self._returnUnmaskXed(x) for x in X]
+            X = [self._returnUnmaskedX(x) for x in X]
         else:
-            X = self._returnUnmaskXed(X)
+            X = self._returnUnmaskedX(X)
 
         return X
 
@@ -939,6 +939,8 @@ class rasterMath:
                             X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
                         else:
                             X__ = X[~X.mask[:, 0], ...].data
+                    else:
+                        X__ = np.ma.copy(X_)
 
                     if self.functionsKwargs[idx] is not False:
                         resFun = fun(X__, **
