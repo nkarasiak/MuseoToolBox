@@ -66,7 +66,12 @@ class sampleExtraction:
         centroid = [self.__pixelLocationToCentroidGeom(
             coord, geoTransform) for coord in coords]
         # init outLayer
-        outLayer = createPointLayer(inVector, outVector, uniqueFID)
+        if np.issubdtype(X.dtype, np.integer):
+            dtype = ogr.OFTInteger64
+        else:
+            dtype = ogr.OFTReal
+        outLayer = createPointLayer(
+            inVector, outVector, uniqueFID, dtype=dtype)
         if self.__verbose:
             outLayer.addTotalNumberOfPoints(len(centroid))
 
@@ -104,7 +109,8 @@ class sampleExtraction:
 
 
 class createPointLayer:
-    def __init__(self, inVector, outVector, uniqueIDField, verbose=1):
+    def __init__(self, inVector, outVector, uniqueIDField,
+                 dtype=ogr.OFTInteger64, verbose=1):
         """
         Create a vector layer as point type.
 
@@ -129,6 +135,7 @@ class createPointLayer:
             Close the layer.
         """
         self.__verbose = verbose
+        self.__dtype = dtype
         # load inVector
         self.inData = ogr.Open(inVector, 0)
         self.inLyr = self.inData.GetLayerByIndex(0)
@@ -169,7 +176,7 @@ class createPointLayer:
         for b in range(nBands):
             field = bandPrefix + str(b)
             self.nBandsFields.append(field)
-            self.outLyr.CreateField(ogr.FieldDefn(field, ogr.OFTInteger))
+            self.outLyr.CreateField(ogr.FieldDefn(field, self.__dtype))
         self.addBand = True
 
     def addTotalNumberOfPoints(self, nSamples):

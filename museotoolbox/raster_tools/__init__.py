@@ -19,6 +19,7 @@ The :mod:`museotoolbox.raster_tools` module gathers raster functions.
 from __future__ import absolute_import, print_function
 
 import gdal
+import ogr
 import numpy as np
 import os
 import tempfile
@@ -285,8 +286,33 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     # Convert vector to raster
 
     nFields = len(fields)
-    if nFields == 0:
-        fields = None
+
+    if nFields == 0 or fields[0] == False:
+        fields = [False]
+    else:
+        source = ogr.Open(inVector)
+        layer = source.GetLayer()
+        np_dtypes = []
+        ldefn = layer.GetLayerDefn()
+        for f in fields:
+            idx = ldefn.GetFieldIndex(f)
+            if idx == -1:
+                raise ValueError('Field "{}" was not found.'.format(f))
+            fdefn = ldefn.GetFieldDefn(idx)
+            fdefn_type = fdefn.type
+            if fdefn_type < 4:
+                if fdefn_type > 1:
+                    np_dtype = np.float64
+                else:
+
+                    np_dtype = np.int64
+            else:
+                raise ValueError(
+                    'Wrong type for field "{}" : {}. \nPlease use int or float.'.format(
+                        f, fdefn.GetFieldTypeName(
+                            fdefn.type)))
+            np_dtypes.append(np_dtype)
+
     rois = []
     temps = []
     for field in fields:
@@ -324,6 +350,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         coords = np.array([], dtype=np.int64).reshape(0, 2)
 
     xDataType = convertGdalAndNumpyDataType(gdalDT)
+
     # Read block data
     X = np.array([], dtype=xDataType).reshape(0, d)
     F = np.array([], dtype=np.int64).reshape(
@@ -384,7 +411,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                         X = np.concatenate((X, Xtp))
                     except MemoryError:
                         raise MemoryError(
-                            'Impossible to allocate memory: ROI too big')
+                            'Impossible to allocate memory: ROI file is too big.')
 
     if verbose:
         pb.addPosition(100)
@@ -861,9 +888,9 @@ class rasterMath:
 
     def _manageMaskFor2D(self, X):
         if len(self.openRasters) > 1:
-            X = [self._returnUnmaskXed(x) for x in X]
+            X = [self._returnUnmaskedX(x) for x in X]
         else:
-            X = self._returnUnmaskXed(X)
+            X = self._returnUnmaskedX(X)
 
         return X
 
@@ -904,10 +931,7 @@ class rasterMath:
 
     def run(self):
         """
-        Process with outside function.
-
-        Parameters
-        ----------
+        Process writing with outside function.
 
         Returns
         -------
@@ -939,6 +963,8 @@ class rasterMath:
                             X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
                         else:
                             X__ = X[~X.mask[:, 0], ...].data
+                    else:
+                        X__ = np.ma.copy(X_)
 
                     if self.functionsKwargs[idx] is not False:
                         resFun = fun(X__, **

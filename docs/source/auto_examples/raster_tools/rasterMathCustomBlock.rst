@@ -59,25 +59,22 @@ Initialize rasterMath with raster
 
     # Set return2d to False to have full block size (not one pixel per row)
 
-    rM = rasterMath(raster,return_3d=False)
+    rM = rasterMath(raster,return_3d=True)
 
     print(rM.getRandomBlock().shape)
 
 
 
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/rasterMathCustomBlock.py", line 33, in <module>
-        print(rM.getRandomBlock().shape)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
-        tmp = self._manageMaskFor2D(tmp)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 865, in _manageMaskFor2D
-        X = self._returnUnmaskXed(X)
-    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
+.. rst-class:: sphx-glr-script-out
 
+ Out:
 
+ .. code-block:: none
+
+    Total number of blocks : 15
+    (54, 256, 3)
 
 
 Comparing different block size (%, fixed, full block)
@@ -95,6 +92,19 @@ You can define block by percentage of the whole width/height
     print(rM.getRandomBlock().shape)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 4
+    (283, 526, 3)
+
+
 Or by fixed window 
 
 
@@ -104,6 +114,19 @@ Or by fixed window
 
     rM.customBlockSize(50,100) # width divided every 50 pixel and height every 100
     print(rM.getRandomBlock().shape)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 132
+    (100, 50, 3)
 
 
 To have the full image (one block)
@@ -116,6 +139,18 @@ To have the full image (one block)
     rM.customBlockSize(-1,-1) # to have the full image
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 1
+
+
 To have block width divided by 4 and height by 2
 
 
@@ -124,6 +159,18 @@ To have block width divided by 4 and height by 2
 
 
     rM.customBlockSize(1/4,1/2)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 8
 
 
 Plot blocks
@@ -144,7 +191,15 @@ Plot blocks
         plt.imshow(tile)
     plt.show()
 
-**Total running time of the script:** ( 0 minutes  0.000 seconds)
+
+
+.. image:: /auto_examples/raster_tools/images/sphx_glr_rasterMathCustomBlock_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  0.438 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:

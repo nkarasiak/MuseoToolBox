@@ -108,12 +108,15 @@ Set and fit the Sequentia Feature Selection
 
  .. code-block:: none
 
-    SFFS: [######..................................]16%    SFFS: [#############...........................]33%    SFFS: [####################....................]50%
+    Feature 0 already computed
+    SFFS: [######..................................]16%    SFFS: [#############...........................]33%    SFFS: [####################....................]50%
     Best feature with 1 feature(s) : 2
     Best mean score : 0.7150495257108578
+    Feature 1 already computed
     SFFS: [##########################..............]66%    SFFS: [#################################.......]83%
     Best feature with 2 feature(s) : 1
     Best mean score : 0.7636826872209893
+    Feature 2 already computed
     SFFS: [########################################]100%
 
     Best feature with 3 feature(s) : 0
@@ -162,7 +165,18 @@ In order to predict every classification from the best featuree
 
  .. code-block:: none
 
-    Warning : You have to define a path to save model in the `fit` function in order to predict rasters.
+    [ True  True  True]
+    Total number of blocks : 15
+    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
+    Saved /tmp/SFFS/classification_0.tif using function predictArray
+    [ True  True False]
+    Total number of blocks : 15
+    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
+    Saved /tmp/SFFS/classification_1.tif using function predictArray
+    [ True False False]
+    Total number of blocks : 15
+    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
+    Saved /tmp/SFFS/classification_2.tif using function predictArray
 
 
 Plot example
@@ -187,7 +201,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  21.803 seconds)
+**Total running time of the script:** ( 0 minutes  32.979 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

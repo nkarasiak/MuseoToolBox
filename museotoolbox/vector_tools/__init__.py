@@ -61,6 +61,28 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
         return distanceMatrix
 
 
+def getOgrDataTypeToNumpy(ogrType):
+    FIELD_TYPES = [
+        np.int32,          # OFTInteger, Simple 32bit integer
+        None,           # OFTIntegerList, List of 32bit integers
+        np.float64,       # OFTReal, Double Precision floating point
+        None,           # OFTRealList, List of doubles
+        np.str,          # OFTString, String of ASCII chars
+        None,           # OFTStringList, Array of strings
+        None,           # OFTWideString, deprecated
+        None,           # OFTWideStringList, deprecated
+        None,           # OFTBinary, Raw Binary data
+        None,           # OFTDate, Date
+        None,           # OFTTime, Time
+        None,           # OFTDateTime, Date and Time
+    ]
+    numpyDT = FIELD_TYPES(ogrType)
+    if numpyDT is None and ogrType > 4:
+        numpyDT = np.str
+
+    return numpyDT
+
+
 def getDriverAccordingToFileName(fileName):
     """
     Return driver name used in OGR accoriding to the extension of the vector.

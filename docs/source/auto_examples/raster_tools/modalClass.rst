@@ -66,18 +66,21 @@ Initialize rasterMath with raster
 
 
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/mnt/DATA/lib/MuseoToolBox/examples/raster_tools/modalClass.py", line 34, in <module>
-        print(rM.getRandomBlock())
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
-        tmp = self._manageMaskFor2D(tmp)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 865, in _manageMaskFor2D
-        X = self._returnUnmaskXed(X)
-    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
+.. rst-class:: sphx-glr-script-out
 
+ Out:
 
+ .. code-block:: none
+
+    Total number of blocks : 15
+    [[143 153 128]
+     [141 151 126]
+     [149 159 134]
+     ...
+     [200 176 142]
+     [196 173 141]
+     [194 169 138]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -100,6 +103,20 @@ The first band will be the most predicted class, and the second the number of ti
     rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Using datatype from numpy table : int16
+    Detected 2 band(s) for function modalClass.
+    No data is set to : 0
+
+
 Run the script
 
 
@@ -108,6 +125,19 @@ Run the script
 
 
     rM.run()
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
+    Saved /tmp/modal.tif using function modalClass
 
 
 Plot result
@@ -123,7 +153,15 @@ Plot result
     src = gdal.Open('/tmp/modal.tif')
     plt.imshow(src.ReadAsArray()[0,:,:])
 
-**Total running time of the script:** ( 0 minutes  0.000 seconds)
+
+
+.. image:: /auto_examples/raster_tools/images/sphx_glr_modalClass_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 0 minutes  0.323 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:
