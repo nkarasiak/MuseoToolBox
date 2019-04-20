@@ -110,14 +110,14 @@ Set and fit the Sequentia Feature Selection
 
     SFFS: [######..................................]16%    SFFS: [#############...........................]33%    SFFS: [####################....................]50%
     Best feature with 1 feature(s) : 2
-    Best mean score : 0.715049525711
+    Best mean score : 0.7150495257108578
     SFFS: [##########################..............]66%    SFFS: [#################################.......]83%
     Best feature with 2 feature(s) : 1
-    Best mean score : 0.763682687221
+    Best mean score : 0.7636826872209893
     SFFS: [########################################]100%
 
     Best feature with 3 feature(s) : 0
-    Best mean score : 0.769451651927
+    Best mean score : 0.7694516519271464
 
 
 Show best features and score
@@ -141,7 +141,7 @@ Show best features and score
  .. code-block:: none
 
     Best features are : [2, 1, 0]
-    Kappa are : [0.71504952571085778, 0.76368268722098931, 0.76945165192714637]
+    Kappa are : [0.7150495257108578, 0.7636826872209893, 0.7694516519271464]
 
 
 In order to predict every classification from the best featuree
@@ -187,7 +187,7 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  12.759 seconds)
+**Total running time of the script:** ( 0 minutes  21.803 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

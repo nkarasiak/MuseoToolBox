@@ -168,7 +168,7 @@ Plot example on how a polygon was splitted
 
 
 
-**Total running time of the script:** ( 0 minutes  5.571 seconds)
+**Total running time of the script:** ( 0 minutes  3.989 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveAsideOut.py:

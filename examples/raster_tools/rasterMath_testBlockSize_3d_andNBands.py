@@ -30,7 +30,7 @@ raster,vector = datasets.historicalMap()
 
 rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 
-for return_3d in [False,True]:
+for return_3d in [True,False]:
     rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=return_3d)
     
     rM.customBlockSize(200,200) # block of 200x200pixels
@@ -39,6 +39,7 @@ for return_3d in [False,True]:
     
     #######################
     # Plot blocks
+    
     x = rM.getRandomBlock()
     def returnFlatten(x):
         try:

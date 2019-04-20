@@ -1,0 +1,22 @@
+
+
+Examples using ``museotoolbox.raster_tools.Moran``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute Moran&#x27;s I with different lags, support mask.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_MoransI_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_MoransI.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_MoransI.py`

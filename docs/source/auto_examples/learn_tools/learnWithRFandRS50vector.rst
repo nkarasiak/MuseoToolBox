@@ -121,16 +121,16 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.942544304505
-    0.942501358513
-    0.945183301249
-    0.941011938005
-    0.944012651513
-    0.94087916123
-    0.941929941741
-    0.936372272425
-    0.938293897518
-    0.943356031973
+    0.942544304504776
+    0.9425013585127046
+    0.9451833012485409
+    0.9410119380054013
+    0.944012651513346
+    0.940879161229869
+    0.9419299417406617
+    0.9363722724246675
+    0.9382938975182864
+    0.9433560319733272
 
 
 Get each confusion matrix from folds
@@ -227,16 +227,16 @@ Only get accuracies score (OA and Kappa)
 
  .. code-block:: none
 
-    {'kappa': 0.942544304504776, 'OA': 0.96694084150585258}
-    {'kappa': 0.94250135851270456, 'OA': 0.96678266371401456}
-    {'kappa': 0.94518330124854089, 'OA': 0.96836444163239477}
-    {'kappa': 0.94101193800540128, 'OA': 0.96599177475482445}
-    {'kappa': 0.94401265151334601, 'OA': 0.96773173046504268}
-    {'kappa': 0.94087916122986903, 'OA': 0.96599177475482445}
-    {'kappa': 0.94192994174066169, 'OA': 0.96662448592217654}
-    {'kappa': 0.93637227242466747, 'OA': 0.96330275229357798}
-    {'kappa': 0.9382938975182864, 'OA': 0.96440999683644413}
-    {'kappa': 0.94335603197332718, 'OA': 0.96741537488136664}
+    {'kappa': 0.942544304504776, 'OA': 0.9669408415058526}
+    {'kappa': 0.9425013585127046, 'OA': 0.9667826637140146}
+    {'kappa': 0.9451833012485409, 'OA': 0.9683644416323948}
+    {'kappa': 0.9410119380054013, 'OA': 0.9659917747548245}
+    {'kappa': 0.944012651513346, 'OA': 0.9677317304650427}
+    {'kappa': 0.940879161229869, 'OA': 0.9659917747548245}
+    {'kappa': 0.9419299417406617, 'OA': 0.9666244859221765}
+    {'kappa': 0.9363722724246675, 'OA': 0.963302752293578}
+    {'kappa': 0.9382938975182864, 'OA': 0.9644099968364441}
+    {'kappa': 0.9433560319733272, 'OA': 0.9674153748813666}
 
 
 Save each confusion matrix from folds
@@ -268,17 +268,22 @@ Predict map
 
 
 
+.. code-block:: pytb
 
-.. rst-class:: sphx-glr-script-out
+    Traceback (most recent call last):
+      File "/mnt/DATA/lib/MuseoToolBox/examples/learn_tools/learnWithRFandRS50vector.py", line 77, in <module>
+        LAP.predictRaster(raster,'/tmp/classification.tif')
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 439, in predictRaster
+        **kwargs)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 595, in addFunction
+        randomBlock = function(self.getRandomBlock())
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
+        tmp = self._manageMaskFor2D(tmp)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 865, in _manageMaskFor2D
+        X = self._returnUnmaskXed(X)
+    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
 
- Out:
 
- .. code-block:: none
-
-    Total number of blocks : 15
-    No data is set to : 0
-    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
-    Saved /tmp/classification.tif using function predictArray
 
 
 Plot example
@@ -295,15 +300,7 @@ Plot example
     plt.axis('off')
     plt.show()
 
-
-
-.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandRS50vector_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-**Total running time of the script:** ( 0 minutes  35.448 seconds)
+**Total running time of the script:** ( 0 minutes  39.430 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

@@ -26,6 +26,8 @@ import tempfile
 from ..internal_tools import progressBar, pushFeedback
 from ..vector_tools import sampleExtraction
 
+from scipy.ndimage.filters import generic_filter  # to compute moran
+
 
 def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
     """
@@ -498,20 +500,20 @@ class rasterMath:
         self.driver = gdal.GetDriverByName('GTiff')
 
         # Load raster
-        self.openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
-        if self.openRaster is None:
-            raise ReferenceError('Impossible to open ' + inRaster)
+        self.openRasters = []
 
-        self.nb = self.openRaster.RasterCount
-        self.nc = self.openRaster.RasterXSize
-        self.nl = self.openRaster.RasterYSize
+        self.addInputRaster(inRaster)
+
+        self.nb = self.openRasters[0].RasterCount
+        self.nc = self.openRasters[0].RasterXSize
+        self.nl = self.openRasters[0].RasterYSize
 
         # Get the geoinformation
-        self.GeoTransform = self.openRaster.GetGeoTransform()
-        self.Projection = self.openRaster.GetProjection()
+        self.GeoTransform = self.openRasters[0].GetGeoTransform()
+        self.Projection = self.openRasters[0].GetProjection()
 
         # Get block size
-        band = self.openRaster.GetRasterBand(1)
+        band = self.openRasters[0].GetRasterBand(1)
         self.block_sizes = band.GetBlockSize()
         self.x_block_size = self.block_sizes[0]
         self.y_block_size = self.block_sizes[1]
@@ -540,13 +542,30 @@ class rasterMath:
         # Initalize the run
         self.__position = 0
 
+    def addInputRaster(
+            self,
+            inRaster):
+        """
+        Add input raster.
+
+        Parameters
+        -----------
+        inRaster: str.
+            Path of the raster.
+        """
+        openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
+        if openRaster is None:
+            raise ReferenceError('Impossible to open ' + inRaster)
+        else:
+            self.openRasters.append(openRaster)
+
     def addFunction(
             self,
             function,
             outRaster,
             outNBand=False,
             outNumpyDT=False,
-            outNoData=True,
+            outNoData=False,
             compress=False,
             **kwargs):
         """
@@ -569,13 +588,14 @@ class rasterMath:
         compress: boolean, default False.
             If True, will use DEFLATE compression using all cpu-cores minus 1.
         **kwargs
-            
-        """
 
+        """
+        if len(kwargs) > 0:
+            randomBlock = function(self.getRandomBlock(), **kwargs)
+        else:
+            randomBlock = function(self.getRandomBlock())
         if outNumpyDT is False:
-            dtypeName = function(
-                self.getRandomBlock().data,
-                **kwargs).dtype.name
+            dtypeName = randomBlock.dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
             pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
         else:
@@ -583,7 +603,6 @@ class rasterMath:
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
 
         if outNBand is False:
-            randomBlock = function(self.getRandomBlock())
             randomBlock = self.reshape_ndim(randomBlock)
 
             outNBand = randomBlock.shape[-1]
@@ -592,29 +611,39 @@ class rasterMath:
                     'Detected {} band(s) for function {}.'.format(
                         outNBand, function.__name__))
 
-        self.__addOutput__(outRaster, outNBand, outGdalDT,compress=compress)
+        self.__addOutput__(outRaster, outNBand, outGdalDT, compress=compress)
         self.functions.append(function)
+        if len(kwargs) == 0:
+            kwargs = False
         self.functionsKwargs.append(kwargs)
 
-        if (outNoData is True) or (self.nodata is not False):
+        if (outNoData is True) or (self.nodata is not None) or (
+                self.mask is not False):
             if np.issubdtype(dtypeName, np.floating):
                 minValue = np.finfo(dtypeName).min
             else:
                 minValue = np.iinfo(dtypeName).min
-                
-            if (outNoData is True) or (outNoData < minValue):
+
+            if not isinstance(outNoData, bool):
+                if outNoData < minValue:
+                    outNoData = minValue
+            else:
                 outNoData = minValue
-                
+
             if self.verbose:
-                print('No data is set to : '+str(outNoData))
-            
+                print('No data is set to : ' + str(outNoData))
+
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self, outRaster, outNBand, outGdalDT,compress=False):
+    def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
         if compress is True:
-            options = ['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE','NUM_THREADS={}'.format(os.cpu_count()-1)]
+            options = [
+                'BIGTIFF=IF_SAFER',
+                'COMPRESS=DEFLATE',
+                'NUM_THREADS={}'.format(
+                    os.cpu_count() - 1)]
         else:
             options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
@@ -624,7 +653,7 @@ class rasterMath:
             outNBand,
             outGdalDT,
             options=options
-            )
+        )
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
 
@@ -670,19 +699,7 @@ class rasterMath:
         -------
         arr : numpy array with masked values. (`np.ma.masked_array`)
         """
-        if self.return_3d:
-            arr = np.empty((height, width, self.nb), dtype=self.ndtype)
-        else:
-            arr = np.empty((height * width, self.nb), dtype=self.ndtype)
-
-        for ind in range(self.nb):
-            band = self.openRaster.GetRasterBand(int(ind + 1))
-            if self.return_3d:
-                arr[:, :, ind] = band.ReadAsArray(
-                    col, row, width, height)
-            else:
-                arr[:, ind] = band.ReadAsArray(
-                    col, row, width, height).reshape(width * height)
+        arrs = []
         if mask:
             bandMask = self.openMask.GetRasterBand(1)
             arrMask = bandMask.ReadAsArray(
@@ -692,9 +709,30 @@ class rasterMath:
         else:
             arrMask = None
 
-        arr = self.filterNoData(arr, arrMask)
+        for nRaster in range(len(self.openRasters)):
+            nb = self.openRasters[nRaster].RasterCount
 
-        return arr
+            if self.return_3d:
+                arr = np.empty((height, width, nb), dtype=self.ndtype)
+            else:
+                arr = np.empty((height * width, nb), dtype=self.ndtype)
+            for ind in range(nb):
+                band = self.openRasters[nRaster].GetRasterBand(int(ind + 1))
+
+                if self.return_3d:
+                    arr[..., ind] = band.ReadAsArray(
+                        col, row, width, height)
+                else:
+                    arr[..., ind] = band.ReadAsArray(
+                        col, row, width, height).reshape(width * height)
+
+            arr = self.filterNoData(arr, arrMask)
+            arrs.append(arr)
+
+        if len(arrs) == 1:
+            arrs = arrs[0]
+
+        return arrs
 
     def filterNoData(self, arr, mask=None):
         """
@@ -714,7 +752,6 @@ class rasterMath:
             t = np.where(arrToCheck == self.nodata)
 
         if self.return_3d:
-
             tmpMask = np.zeros(arrShape[:2], dtype=bool)
             tmpMask[t] = True
             tmpMask = np.repeat(tmpMask.reshape(*tmpMask.shape, 1), arr.shape[-1], axis=2)
@@ -751,7 +788,12 @@ class rasterMath:
 
             tmp = self.generateBlockArray(
                 lines, cols, width, height, self.mask)
-            mask = tmp.mask
+            if len(self.openRasters) > 1:
+                mask = tmp[0].mask
+            else:
+                mask = tmp.mask
+            if self.return_3d is False:
+                tmp = self._manageMaskFor2D(tmp)
         return tmp
 
     def reshape_ndim(self, x):
@@ -782,7 +824,7 @@ class rasterMath:
         Yields each whole band as np masked array (so with masked data)
         """
         for nb in range(1, self.nb + 1):
-            band = self.openRaster.GetRasterBand(nb)
+            band = self.openRasters[0].GetRasterBand(nb)
             band = band.ReadAsArray()
             if self.mask:
                 mask = np.asarray(
@@ -798,9 +840,32 @@ class rasterMath:
         """
         for X, col, line, cols, lines in self.__iterBlock__(
                 getBlock=True, y_block_size=y_block_size, x_block_size=x_block_size):
-
-            if not np.all(X.mask == 1):
+            if isinstance(X, list):
+                mask = X[0].mask
+            else:
+                mask = X.mask
+            if not np.all(mask == 1):
                 yield X
+
+    def _returnUnmaskedX(self, X):
+        if isinstance(X.mask, np.bool_):
+            if X.mask == False:
+                X = X.data
+            else:
+                pass
+                # no return
+        else:
+            mask = np.in1d(X.mask[:, 0], True)
+            X = X[~mask, :].data
+        return X
+
+    def _manageMaskFor2D(self, X):
+        if len(self.openRasters) > 1:
+            X = [self._returnUnmaskXed(x) for x in X]
+        else:
+            X = self._returnUnmaskXed(X)
+
+        return X
 
     def customBlockSize(self, x_block_size=False, y_block_size=False):
         """
@@ -836,7 +901,6 @@ class rasterMath:
                                                                                   self.x_block_size).astype(int)
         if self.verbose:
             print('Total number of blocks : %s' % self.n_block)
-        self.pb = progressBar(self.n_block, message=self.message)
 
     def run(self):
         """
@@ -851,10 +915,16 @@ class rasterMath:
         """
 
         # TODO : Parallel
+        self.pb = progressBar(self.n_block, message=self.message)
 
         for X, col, line, cols, lines in self.__iterBlock__(
                 getBlock=True):
-            X_ = np.ma.copy(X)
+
+            if isinstance(X, list):
+                X_ = [np.ma.copy(arr) for arr in X]
+                X = X_[0]  # X_[0] is used to get mask
+            else:
+                X_ = np.ma.copy(X)
 
             if self.verbose:
                 self.pb.addPosition(self.__position)
@@ -865,13 +935,16 @@ class rasterMath:
                 if not np.all(X.mask == 1):
                     # if all the block is not masked
                     if not self.return_3d:
-                        X_ = X_[~X_.mask[:,0],...]
-                        
+                        if isinstance(X_, list):
+                            X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
+                        else:
+                            X__ = X[~X.mask[:, 0], ...].data
+
                     if self.functionsKwargs[idx] is not False:
-                        resFun = fun(X_, **
+                        resFun = fun(X__, **
                                      self.functionsKwargs[idx])
                     else:
-                        resFun = fun(X_)
+                        resFun = fun(X__)
 
                     resFun = self.reshape_ndim(resFun)
 
@@ -883,24 +956,24 @@ class rasterMath:
 
                     if not np.all(X.mask == 0):
                         # if all the block is not unmasked add the nodata value
-                                
+
                         resFun = self.reshape_ndim(resFun)
                         mask = self.reshape_ndim(X.mask[..., 0])
                         tmp = np.repeat(
-                                mask,
-                                maxBands,
-                                axis=mask.ndim - 1)
+                            mask,
+                            maxBands,
+                            axis=mask.ndim - 1)
                         if self.return_3d:
                             resFun = np.where(
-                                    tmp,
-                                    self.outputNoData[idx],
-                                    resFun)                            
+                                tmp,
+                                self.outputNoData[idx],
+                                resFun)
                         else:
                             tmp = tmp.astype(resFun.dtype)
-                            tmp[mask.flatten(),...] = self.outputNoData[idx]
-                            tmp[~mask.flatten(),...] = resFun
+                            tmp[mask.flatten(), ...] = self.outputNoData[idx]
+                            tmp[~mask.flatten(), ...] = resFun
                             resFun = tmp
-                            
+
                 else:
                     # if all the block is masked
                     if self.outputNoData[idx] is not False:
@@ -939,8 +1012,154 @@ class rasterMath:
                 band.SetNoDataValue(self.outputNoData[idx])
                 band.FlushCache()
 
-            print(
-                'Saved {} using function {}'.format(
-                    self.outputs[idx].GetDescription(), str(
-                        fun.__name__)))
+            if self.verbose:
+                print(
+                    'Saved {} using function {}'.format(
+                        self.outputs[idx].GetDescription(), str(
+                            fun.__name__)))
             self.outputs[idx] = None
+
+
+class Moran:
+    """
+    Compute Moran's I for raster.
+
+    Parameters
+    ----------
+    inRaster : str.
+        Path.
+    inMaskRaster : str, default False.
+        lag : int or
+    transform : str.
+        'r' or 'b'.
+    weights : False or array.
+        Weights (same shape as the square size).
+    intermediate_lag : boolean, default True.
+        Use all pixel values inside the specified lag.
+
+        If `intermediate_lag` is set to False, only the pixels at the specified
+        range will be kept for computing the statistics.
+
+
+    """
+
+    def __init__(self, inRaster, inMaskRaster=False, transform='r',
+                 lag=1, weights=False, intermediate_lag=True):
+
+        self.scores = dict(I=[], band=[], EI=[])
+        self.lags = []
+        if isinstance(inRaster, (np.ma.core.MaskedArray, np.ndarray)):
+            arr = inRaster
+        else:
+            rM = rasterMath(
+                inRaster,
+                inMaskRaster=inMaskRaster,
+                return_3d=True,
+                verbose=False)
+
+        for band, arr in enumerate(rM.readBandPerBand()):
+            if isinstance(lag, int):
+                lag = [lag]
+            for l in lag:
+                squareSize = l * 2 + 1
+                footprint = np.ones((squareSize, squareSize))
+                weights = np.zeros((footprint.shape[0], footprint.shape[1]))
+
+                if not intermediate_lag:
+                    weights[:, 0] = 1
+                    weights[0, :] = 1
+                    weights[-1, :] = 1
+                    weights[:, -1] = 1
+                else:
+                    weights[:, :] = 1
+
+                if transform == 'b' and band == 0:
+                    neighbors = generic_filter(
+                        arr,
+                        self.getNNeighbors,
+                        footprint=footprint,
+                        mode='constant',
+                        cval=np.nan,
+                        extra_keywords=dict(
+                            footprint=footprint,
+                            weights=weights))
+                    if not np.all(arr.mask == False):
+                        neighbors[arr.mask] = np.nan
+
+                n = arr.count()
+                arr = arr.astype(np.float64)
+                # convert masked to nan for generic_filter
+                arr.data[arr.mask] = np.nan
+
+                x_ = np.nanmean(arr)
+
+                num = generic_filter(
+                    arr,
+                    self.__computeViewForGlobanMoran,
+                    footprint=footprint,
+                    mode='constant',
+                    cval=np.nan,
+                    extra_keywords=dict(
+                        x_=x_,
+                        footprint=footprint,
+                        weights=weights,
+                        transform=transform))
+
+                den = (arr - x_)**2
+                self.z = arr - x_
+
+                # need to mask z/den/num/neighbors
+                den[arr.mask] = np.nan
+                local = np.nansum(num) / np.nansum(den)
+                if transform == 'b':
+                    self.I = (n / np.nansum(neighbors)) * local
+                else:
+                    self.I = local
+                self.EI = -1 / (n - 1)
+                self.lags.append(l)
+                self.scores['band'].append(band + 1)
+                self.scores['I'].append(self.I)
+                self.scores['EI'].append(self.EI)
+
+    def getNNeighbors(self, array, footprint, weights):
+
+        b = np.reshape(array, (footprint.shape[0], footprint.shape[1]))
+        xCenter = int((footprint.shape[0] - 1) / 2)
+        yCenter = int((footprint.shape[1] - 1) / 2)
+        b[xCenter, yCenter] = np.nan
+        w = np.count_nonzero(~np.isnan(b))
+        if w == 0:
+            w = np.nan
+        if weights is not False:
+            weightsWindow = weights * footprint
+            weightsNAN = weightsWindow[~np.isnan(b)]
+            w = np.nansum(weightsNAN)
+        return w
+
+    def __computeViewForGlobanMoran(
+            self, a, x_, footprint, weights, transform='r'):
+        xSize, ySize = footprint.shape
+        a = np.reshape(a, (xSize, ySize))
+
+        xCenter = int((xSize - 1) / 2)
+        yCenter = int((ySize - 1) / 2)
+
+        xi = a[xCenter, yCenter]
+        if np.isnan(xi):
+            return np.nan
+        else:
+            a[xCenter, yCenter] = np.nan
+            w = np.count_nonzero(~np.isnan(a))
+            if w == 0:
+                num = np.nan
+            else:
+                if weights is False:
+                    w = np.copy(footprint)
+                else:
+                    w = np.copy(weights)
+                if transform == 'r':
+                    w /= np.count_nonzero(~np.isnan(a))
+
+                num = np.nansum(w * (a - x_) * (xi - x_))
+
+        return num
