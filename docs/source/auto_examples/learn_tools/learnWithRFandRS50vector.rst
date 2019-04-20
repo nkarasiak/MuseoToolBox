@@ -268,22 +268,16 @@ Predict map
 
 
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/mnt/DATA/lib/MuseoToolBox/examples/learn_tools/learnWithRFandRS50vector.py", line 77, in <module>
-        LAP.predictRaster(raster,'/tmp/classification.tif')
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 439, in predictRaster
-        **kwargs)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 595, in addFunction
-        randomBlock = function(self.getRandomBlock())
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 795, in getRandomBlock
-        tmp = self._manageMaskFor2D(tmp)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/raster_tools/__init__.py", line 865, in _manageMaskFor2D
-        X = self._returnUnmaskXed(X)
-    AttributeError: 'rasterMath' object has no attribute '_returnUnmaskXed'
+.. rst-class:: sphx-glr-script-out
 
+ Out:
 
+ .. code-block:: none
+
+    Total number of blocks : 15
+    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
+    Saved /tmp/classification.tif using function predictArray
 
 
 Plot example
@@ -300,7 +294,15 @@ Plot example
     plt.axis('off')
     plt.show()
 
-**Total running time of the script:** ( 0 minutes  39.430 seconds)
+
+
+.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandRS50vector_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+**Total running time of the script:** ( 1 minutes  9.581 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:
