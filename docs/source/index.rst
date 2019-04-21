@@ -7,15 +7,6 @@ MuseoToolBox documentation
    :target: https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :alt: MuseoToolBox logo
 
-:Author: `Nicolas Karasiak <http://www.karasiak.net>`_
-:Source code: `github.com project <https://github.com/lennepkade/MuseoToolBox>`_
-:Bug tracker: `github.com issues <https://github.com/lennepkade/MuseoToolBox/issues>`_
-:Generated: |today|
-:License: GPL v3
-:Version: |release|
-
-What is MuseoToolBox ?
------------------------
 
 .. sidebar:: Features
 
@@ -25,6 +16,16 @@ What is MuseoToolBox ?
     - Ease the way to learn and predict raster/vector
     - Great for performing functions per pixel on your images
     
+`Generated` |today| | `License` GPL v3 | `Version` |release|
+
+:Author: `Nicolas Karasiak <http://www.karasiak.net>`_
+:Source code: `github.com project <https://github.com/lennepkade/MuseoToolBox>`_
+:Bug tracker: `github.com issues <https://github.com/lennepkade/MuseoToolBox/issues>`_
+
+
+What is MuseoToolBox ?
+-----------------------
+
 .. include:: README.rst
     :start-line: 7
 

@@ -13,13 +13,11 @@ Tests rasterMath with full block or stacken and custom block size
 Test notebook in order to validate code.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
@@ -36,8 +34,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -52,8 +49,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Set return_3d to True to have full block size (not one pixel per row)
@@ -111,31 +107,34 @@ Initialize rasterMath with raster
 
     Total number of blocks : 15
     Total number of blocks : 18
-    (166, 200, 3)
-    Using datatype from numpy table : uint8
-    Detected 9 band(s) for function returnWithOneBandMore.
+    (200, 200, 3)
+    Using datatype from numpy table : uint8.
+    Detected 9 bands for function returnWithOneBandMore.
     No data is set to : 0
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function returnFlatten.
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function returnFlatten.
     No data is set to : 0
     rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
     Saved /tmp/x_repeat_True.tif using function returnWithOneBandMore
     Saved /tmp/x_flatten_True.tif using function returnFlatten
     Total number of blocks : 15
     Total number of blocks : 18
-    (936, 3)
-    Using datatype from numpy table : uint8
-    Detected 9 band(s) for function returnWithOneBandMore.
+    (2324, 3)
+    Using datatype from numpy table : uint8.
+    Detected 9 bands for function returnWithOneBandMore.
     No data is set to : 0
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function returnFlatten.
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function returnFlatten.
     No data is set to : 0
     rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
     Saved /tmp/x_repeat_False.tif using function returnWithOneBandMore
     Saved /tmp/x_flatten_False.tif using function returnFlatten
 
 
-**Total running time of the script:** ( 0 minutes  0.864 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  1.567 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:

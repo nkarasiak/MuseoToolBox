@@ -14,13 +14,11 @@ This example shows how to make a Random Sampling with
 50% for each class.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.learn_tools import sequentialFeatureSelection
@@ -39,8 +37,8 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
+.. code-block:: default
 
-.. code-block:: python
 
 
     X,y,g = datasets.historicalMap(return_X_y_g=True)
@@ -55,8 +53,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LSGO = LeavePSubGroupOut(valid_size=0.5,n_splits=2,
@@ -72,8 +69,7 @@ Initialize Random-Forest and metrics
 --------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
@@ -91,12 +87,11 @@ Set and fit the Sequentia Feature Selection
 
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[100]),scoring=kappa)
 
-    SFFS.fit(X.astype('float'),y,g,pathToSaveModels='/tmp/SFFS/')
+    SFFS.fit(X.astype('float'),y,g,pathToSaveCM='/tmp/SFFS/')
 
 
 
@@ -109,25 +104,23 @@ Set and fit the Sequentia Feature Selection
  .. code-block:: none
 
     Feature 0 already computed
-    SFFS: [######..................................]16%    SFFS: [#############...........................]33%    SFFS: [####################....................]50%
+
     Best feature with 1 feature(s) : 2
-    Best mean score : 0.7150495257108578
+    Best mean score : 0.715
     Feature 1 already computed
-    SFFS: [##########################..............]66%    SFFS: [#################################.......]83%
+
     Best feature with 2 feature(s) : 1
-    Best mean score : 0.7636826872209893
+    Best mean score : 0.7637
     Feature 2 already computed
-    SFFS: [########################################]100%
 
     Best feature with 3 feature(s) : 0
-    Best mean score : 0.7694516519271464
+    Best mean score : 0.7695
 
 
 Show best features and score
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     print('Best features are : '+str(SFFS.best_features_))
@@ -144,16 +137,16 @@ Show best features and score
  .. code-block:: none
 
     Best features are : [2, 1, 0]
-    Kappa are : [0.7150495257108578, 0.7636826872209893, 0.7694516519271464]
+    Kappa are : [0.715, 0.7637, 0.7695]
 
 
-In order to predict every classification from the best featuree
+In order to predict every classification from the best feature
 
 
+.. code-block:: default
 
-.. code-block:: python
 
-    SFFS.predictRasters(datasets.historicalMap()[0],'/tmp/SFFS/classification_')
+    SFFS.predictBestCombination(datasets.historicalMap()[0],'/tmp/SFFS/best_classification.tif')
 
 
 
@@ -165,25 +158,16 @@ In order to predict every classification from the best featuree
 
  .. code-block:: none
 
-    [ True  True  True]
     Total number of blocks : 15
+    Detected 1 band for function predictArray.
     Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
-    Saved /tmp/SFFS/classification_0.tif using function predictArray
-    [ True  True False]
-    Total number of blocks : 15
-    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
-    Saved /tmp/SFFS/classification_1.tif using function predictArray
-    [ True False False]
-    Total number of blocks : 15
-    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
-    Saved /tmp/SFFS/classification_2.tif using function predictArray
+    Saved /tmp/SFFS/best_classification.tif using function predictArray
 
 
 Plot example
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from matplotlib import pyplot as plt
@@ -201,7 +185,10 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  32.979 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  6.473 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

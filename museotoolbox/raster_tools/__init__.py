@@ -158,7 +158,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
 
         code = NP2GDAL_CONVERSION[numpyDT]
         if numpyDT.endswith('int64'):
-            print(
+            pushFeedback(
                 'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
     return code
 
@@ -491,8 +491,13 @@ def rasterize(data, vectorSrc, field, outFile,
 
 class rasterMath:
     """
-    Read a raster per block, and perform one or many functions to one or many raster outputs.
+    Read one or multiple rasters per block, and perform one or many functions to one or many raster outputs.
     If you want a sample of your data, just call getRandomBlock().
+    
+    The default option of rasterMath will return in 2d the dataset : 
+        - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
+    
+    If you want to have the data in 3d (X,Y,Z), masked data will be given too (using numpy.ma).
 
     Parameters
     ----------
@@ -604,9 +609,6 @@ class rasterMath:
             Function to parse with one arguments used to
         outRaster : str.
             Path of the raster to save the result.
-        outNBand : int, default False.
-            Number of bands of the outRaster.
-            If False will take the number of dimensions from the first result of the function.
         outNumpyDT : int, default False.
             If False, will use the datatype of the function result.
         outNoData : int, default True.
@@ -624,20 +626,24 @@ class rasterMath:
         if outNumpyDT is False:
             dtypeName = randomBlock.dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
-            pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
+            pushFeedback('Using datatype from numpy table : {}.'.format(dtypeName))
         else:
             dtypeName = np.dtype(outNumpyDT).name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
 
-        if outNBand is False:
-            randomBlock = self.reshape_ndim(randomBlock)
+    
+        # get number of bands
+        randomBlock = self.reshape_ndim(randomBlock)
 
-            outNBand = randomBlock.shape[-1]
-            if self.verbose:
-                print(
-                    'Detected {} band(s) for function {}.'.format(
-                        outNBand, function.__name__))
-
+        outNBand = randomBlock.shape[-1]
+        need_s = ''
+        if outNBand > 1 : need_s='s'
+        
+        if self.verbose:
+            pushFeedback(
+                'Detected {} band{} for function {}.'.format(
+                    outNBand,need_s,function.__name__))
+        
         self.__addOutput__(outRaster, outNBand, outGdalDT, compress=compress)
         self.functions.append(function)
         if len(kwargs) == 0:
@@ -658,7 +664,7 @@ class rasterMath:
                 outNoData = minValue
 
             if self.verbose:
-                print('No data is set to : ' + str(outNoData))
+                pushFeedback('No data is set to : ' + str(outNoData))
 
         self.outputNoData.append(outNoData)
 
@@ -927,7 +933,7 @@ class rasterMath:
         self.n_block = np.ceil(self.nl / self.y_block_size).astype(int) * np.ceil(self.nc /
                                                                                   self.x_block_size).astype(int)
         if self.verbose:
-            print('Total number of blocks : %s' % self.n_block)
+            pushFeedback('Total number of blocks : %s' % self.n_block)
 
     def run(self):
         """
@@ -1039,7 +1045,7 @@ class rasterMath:
                 band.FlushCache()
 
             if self.verbose:
-                print(
+                pushFeedback(
                     'Saved {} using function {}'.format(
                         self.outputs[idx].GetDescription(), str(
                             fun.__name__)))

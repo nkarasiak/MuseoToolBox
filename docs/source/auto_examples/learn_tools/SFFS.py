@@ -22,6 +22,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
+
 X,y,g = datasets.historicalMap(return_X_y_g=True)
 
 ##############################################################################
@@ -45,7 +46,7 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 #
 SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[100]),scoring=kappa)
 
-SFFS.fit(X.astype('float'),y,g,pathToSaveModels='/tmp/SFFS/')
+SFFS.fit(X.astype('float'),y,g,pathToSaveCM='/tmp/SFFS/')
 
 ##############################################
 # Show best features and score
@@ -54,8 +55,9 @@ print('Best features are : '+str(SFFS.best_features_))
 print('Kappa are : '+str(SFFS.best_scores_))
 
 ##########################################################################
-# In order to predict every classification from the best featuree
-SFFS.predictRasters(datasets.historicalMap()[0],'/tmp/SFFS/classification_')
+# In order to predict every classification from the best feature
+
+SFFS.predictBestCombination(datasets.historicalMap()[0],'/tmp/SFFS/best_classification.tif')
 
 ##############################################################################
 # Plot example

@@ -17,13 +17,11 @@ Tips : A function readBlockPerBlock() yields each block, without saving results
 to a new raster.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
@@ -40,8 +38,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -56,8 +53,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Set return_3d to True to have full block size (not one pixel per row)
@@ -86,17 +82,11 @@ Initialize rasterMath with raster
 Plot blocks
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     x = rM.getRandomBlock()
 
     rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,outNumpyDT=np.int16)
-
-    for tile in rM.readBlockPerBlock():
-        pass
-    # print last column 83 from last block
-    print(tile[:,83,0])
 
     rM.run()
 
@@ -116,25 +106,16 @@ Plot blocks
 
  .. code-block:: none
 
-    Detected 1 band(s) for function mean.
+    Detected 1 band for function mean.
     No data is set to : -32768
-    [-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 131 50 124 108 77
-     57 51 123 67 107 170 104 102 150 153 118 111 158 134 154 144 133 135 149
-     147 136 139 142 143 151 143 139 138 142 143 147 -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-     -- --]
     rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
     Saved /tmp/mean.tif using function mean
 
 
-**Total running time of the script:** ( 0 minutes  0.283 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.473 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py:

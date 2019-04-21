@@ -13,13 +13,11 @@ Modal class and number of agreements
 Create a raster with the modal class and the number of agreements.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import museotoolbox as mtb
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = mtb.datasets.historicalMap()
@@ -51,8 +48,7 @@ Initialize rasterMath with raster
 -----------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     ########
@@ -74,31 +70,29 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    [[143 153 128]
-     [141 151 126]
-     [149 159 134]
+    [[ 74  62  46]
+     [162 146 133]
+     [158 142 129]
      ...
-     [200 176 142]
-     [196 173 141]
-     [194 169 138]]
+     [158 146 130]
+     [156 147 132]
+     [157 148 133]]
 
 
 Let's suppose you want compute the modal classification between several predictions
 The first band will be the most predicted class, and the second the number of times it has been predicted.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
 
     x = rM.getRandomBlock()
 
     def modalClass(x):
-        tmp = stats.mode(x, axis=-1)
+        tmp = stats.mode(x)
         tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
         return tmpStack
-
 
     rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
@@ -112,16 +106,15 @@ The first band will be the most predicted class, and the second the number of ti
 
  .. code-block:: none
 
-    Using datatype from numpy table : int16
-    Detected 2 band(s) for function modalClass.
+    Using datatype from numpy table : int16.
+    Detected 6 bands for function modalClass.
     No data is set to : 0
 
 
 Run the script
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.run()
@@ -143,8 +136,7 @@ Run the script
 Plot result
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -161,7 +153,10 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.323 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.551 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

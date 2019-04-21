@@ -12,13 +12,11 @@ rasterMath with several rasters as inputs
 
 Compute substract and addition between two raster bands.
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
@@ -34,8 +32,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -49,12 +46,10 @@ Load HistoricalMap dataset
 Initialize rasterMath with raster
 ------------------------------------
 
-
 If invert is set to True, it means polygons will be set to nodata
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=True)
@@ -77,18 +72,20 @@ If invert is set to True, it means polygons will be set to nodata
     Number of rasters : 2
 
 
-Let's suppose you want compute the substractino between the blue and green band of two inputs
+Let's suppose you want compute the substraction between the blue and green band of two inputs
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     x = rM.getRandomBlock()
 
     def sub(x):
-        return np.array((x[0][...,0]-x[1][...,2])).astype(np.uint8)
+        firstBandOfFirstRaster = x[0][...,0]
+        thirdBandOfSecondRaster = x[1][...,2]
+        difference = np.array(firstBandOfFirstRaster-thirdBandOfSecondRaster,dtype=np.uint8)
+        return difference
 
     rM.addFunction(sub,outRaster='/tmp/sub_2inputs.tif')
 
@@ -102,16 +99,15 @@ I suggest you to define type in numpy array to save space while creating the ras
 
  .. code-block:: none
 
-    Using datatype from numpy table : uint8
-    Detected 1 band(s) for function sub.
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function sub.
     No data is set to : 0
 
 
 Run the script
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.run()
@@ -133,8 +129,7 @@ Run the script
 Plot result
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -153,7 +148,10 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.212 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.526 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_twoRasters.py:

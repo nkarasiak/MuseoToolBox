@@ -13,13 +13,11 @@ Raster mask from vector
 Create a raster mask from vector.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox import raster_tools
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = historicalMap()
@@ -50,12 +47,10 @@ Load HistoricalMap dataset
 Rasterize vector
 -----------------------------------------
 
-
 Default, invert is False, it means only polygons will be kept (the rest is set to nodata)
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     raster_tools.rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 
@@ -68,8 +63,7 @@ Default, invert is False, it means only polygons will be kept (the rest is set t
 If invert is set to True, it means polygons will be set to nodata
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     raster_tools.rasterMaskFromVector(vector,raster,'/tmp/maskInvert.tif',invert=True)
 
@@ -83,8 +77,7 @@ Plot result
 -----------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -101,8 +94,7 @@ Default mask (invert=False)
 white is nodata, black is 255
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     src = gdal.Open('/tmp/mask.tif')
     plt.imshow(src.ReadAsArray(),cmap='Greys')
@@ -121,8 +113,7 @@ invert mask (invert=True)
 white is nodata, black is 255
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     src = gdal.Open('/tmp/maskInvert.tif')
     plt.imshow(src.ReadAsArray(),cmap='Greys')
@@ -135,7 +126,10 @@ white is nodata, black is 255
 
 
 
-**Total running time of the script:** ( 0 minutes  0.117 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.385 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMask.py:

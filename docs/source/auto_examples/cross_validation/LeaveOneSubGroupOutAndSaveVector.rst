@@ -14,13 +14,11 @@ This example shows how to make a Leave-One-SubGroup-Out and save
 each fold as a vector file.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import LeaveOneSubGroupOut
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -55,8 +52,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     valid_size = 0.5 # Means 50%
@@ -72,8 +68,7 @@ Create CV
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LOSGO.get_n_splits(X,y,s)
@@ -98,8 +93,7 @@ Save each train/valid fold to a vector file (here in polygon type)
 
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     vectorFiles = LOSGO.saveVectorFiles(vector,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
@@ -129,8 +123,7 @@ So you can generate each centroid of a pixel that contains the polygon.
 
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     from museotoolbox.vector_tools import sampleExtraction
@@ -160,7 +153,10 @@ So you can generate each centroid of a pixel that contains the polygon.
     (10873,) (1774,)
 
 
-**Total running time of the script:** ( 0 minutes  2.572 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  3.454 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py:

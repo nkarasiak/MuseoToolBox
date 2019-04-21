@@ -16,13 +16,11 @@ a Spatial Leave-One-Pixel-Out.
 For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.12161.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import SpatialLeaveOnePixelOut
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -57,8 +54,7 @@ Create CV
 n_splits will be the number  of the least populated class
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
@@ -84,8 +80,7 @@ n_splits will be the number  of the least populated class
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     for tr,vl in SLOPO.split(X,y):
@@ -114,8 +109,7 @@ n_splits will be the number  of the least populated class
 Draw image
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     import numpy as np
     from matplotlib import pyplot as plt
@@ -142,7 +136,10 @@ Draw image
 
 
 
-**Total running time of the script:** ( 0 minutes  1.649 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  2.334 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:

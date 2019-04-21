@@ -13,13 +13,11 @@ Plot confusion matrix
 Plot confusion matrix from Cross-Validation, with F1 as subplot.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     from museotoolbox.learn_tools import learnAndPredict
     from museotoolbox.cross_validation import RandomStratifiedKFold
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -53,8 +50,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     RSKF = RandomStratifiedKFold(n_splits=2,
                     random_state=12,verbose=False)
@@ -69,8 +65,7 @@ Initialize Random-Forest
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     classifier = RandomForestClassifier()
@@ -85,8 +80,7 @@ Start learning
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LAP = learnAndPredict()
@@ -103,8 +97,7 @@ Get kappa from each fold
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
   
     for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
@@ -120,16 +113,15 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.9425835603182926
-    0.9419647438581565
+    0.9433948060284202
+    0.943256084402116
 
 
 Get each confusion matrix from folds
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     cms = []
     for stats in LAP.getStatsFromCV(confusionMatrix=True):
@@ -146,24 +138,23 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3693   67    1   10    0]
-     [  78 1053    0   15    0]
+    [[3692   67    1   11    0]
+     [  79 1051    0   16    0]
      [   2    0 1137    0    0]
-     [  11   19    1  231    0]
+     [  13   18    1  230    0]
      [   4    0    0    0    0]]
-    [[3682   76    2   11    0]
-     [  69 1065    1   11    0]
+    [[3676   81    2   12    0]
+     [  67 1067    1   11    0]
      [   0    0 1139    0    0]
-     [   7   22    3  230    0]
-     [   3    0    1    0    0]]
+     [   6   21    3  232    0]
+     [   4    0    0    0    0]]
 
 
 Plot confusion matrix
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     import numpy as np
@@ -185,8 +176,7 @@ Plot confusion matrix and normalize per class
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     from matplotlib.pyplot import cm as colorMap
     meanCMnorm = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
@@ -204,7 +194,10 @@ Plot confusion matrix and normalize per class
 
 
 
-**Total running time of the script:** ( 0 minutes  6.599 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  8.505 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:

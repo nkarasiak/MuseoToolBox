@@ -14,13 +14,11 @@ This example shows how to make a Random Sampling with
 50% for each class.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import RandomStratifiedKFold
@@ -36,8 +34,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -54,8 +51,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     SKF = RandomStratifiedKFold(n_splits=2,n_repeats=2,
@@ -83,8 +79,7 @@ Create CV
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Show label
@@ -114,8 +109,7 @@ Create CV
    TO generate a full X and y labels, extract samples from ROI
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     X,y=raster_tools.getSamplesFromROI(raster,vector,field)
@@ -147,8 +141,7 @@ Create CV
 Plot example
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     import numpy as np
     from matplotlib import pyplot as plt
@@ -165,7 +158,10 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.138 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.241 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_RandomSampling50.py:

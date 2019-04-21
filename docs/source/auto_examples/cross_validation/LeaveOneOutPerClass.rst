@@ -13,13 +13,11 @@ Leave One Out Per Class (LOOPC)
 This example shows how to make a Leave One Out for each class.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import LeaveOneOutPerClass
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     X,y = datasets.historicalMap(return_X_y=True)
@@ -51,8 +48,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     LOOPC = LeaveOneOutPerClass(random_state=8,verbose=False)
     for tr,vl in LOOPC.split(X=None,y=y):
@@ -82,8 +78,7 @@ Create CV
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Show label
@@ -117,8 +112,7 @@ In order to translate polygons into points (each points is a pixel in the raster
 we use sampleExtraction from vector_tools to generate a temporary vector.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     trvl = LOOPC.saveVectorFiles(datasets.historicalMap()[1],'Class',outVector='/tmp/LOO.gpkg')
@@ -145,8 +139,7 @@ we use sampleExtraction from vector_tools to generate a temporary vector.
 Plot example on how a polygon was splitted
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import ogr
@@ -236,7 +229,10 @@ Plot example on how a polygon was splitted
     [6262895.191637615, 6262817.727491866, 6262671.406327676, 6262779.610213798, 6262895.191637615]
 
 
-**Total running time of the script:** ( 0 minutes  0.188 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.342 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneOutPerClass.py:

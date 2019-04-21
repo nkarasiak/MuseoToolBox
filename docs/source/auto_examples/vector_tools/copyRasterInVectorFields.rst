@@ -16,13 +16,11 @@ and how to extract and save band values in vector fields.
  
 This tool is made to avoid using raster everytime you need
 to learn and predict a model.
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import museotoolbox as mtb
@@ -38,8 +36,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = mtb.datasets.historicalMap()
@@ -57,8 +54,7 @@ Load HistoricalMap dataset
    If bandPrefix is not specified, scipt will only generate the centroid
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     mtb.vector_tools.sampleExtraction(raster,vector,
@@ -77,8 +73,7 @@ Load HistoricalMap dataset
 Read values from both vectors
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     originalY = mtb.vector_tools.readValuesFromVector(vector,'Class')
@@ -93,8 +88,7 @@ Read values from both vectors
 Original vector is polygon type, each polygons contains multiple pixel
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     print(originalY.shape)
@@ -115,8 +109,7 @@ Original vector is polygon type, each polygons contains multiple pixel
 Number of Y in the new vector is the total number of pixel in the polygons
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     print(y.shape)
@@ -137,8 +130,7 @@ Number of Y in the new vector is the total number of pixel in the polygons
 X has the same size of Y, but in 3 dimensions because our raster has 3 bands
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     print(X.shape)
@@ -172,8 +164,7 @@ X has the same size of Y, but in 3 dimensions because our raster has 3 bands
 Plot blue and red band
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     plt.figure(1)
@@ -190,7 +181,10 @@ Plot blue and red band
 
 
 
-**Total running time of the script:** ( 0 minutes  2.669 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  2.898 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_copyRasterInVectorFields.py:

@@ -13,13 +13,11 @@ Leave-P-SubGroup-Out (LPSGO)
 This example shows how to make a Leave-Percent-SubGroup-Out.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import LeavePSubGroupOut
@@ -36,8 +34,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -54,8 +51,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     valid_size = 0.5 # Means 50%
     LPSGO = LeavePSubGroupOut(valid_size = valid_size,
@@ -71,8 +67,7 @@ Extract X,y and group.
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     X,y,g=raster_tools.getSamplesFromROI(raster,vector,field,group)
@@ -87,8 +82,7 @@ Extract X,y and group.
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     for tr,vl in LPSGO.split(X,y,g):
@@ -116,8 +110,7 @@ Differences with scikit-learn
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     from sklearn.model_selection import LeavePGroupsOut
     # You need to specify the number of groups
@@ -278,8 +271,7 @@ With GroupShuffleSplit, won't keep the percentage per subgroup
 This generate unbalanced classes
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     from sklearn.model_selection import GroupShuffleSplit
@@ -312,8 +304,7 @@ This generate unbalanced classes
 Plot example in image
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     import numpy as np
@@ -332,7 +323,10 @@ Plot example in image
 
 
 
-**Total running time of the script:** ( 0 minutes  0.166 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.274 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

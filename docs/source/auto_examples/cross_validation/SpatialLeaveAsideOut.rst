@@ -15,13 +15,11 @@ This example shows how to make a Spatial Leave-Aside-Out.
 See https://doi.org/10.1016/j.foreco.2013.07.059
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import SpatialLeaveAsideOut
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -57,8 +54,7 @@ Create CV
 n_splits will be the number  of the least populated class
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     SLOPO = SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
@@ -83,8 +79,7 @@ n_splits will be the number  of the least populated class
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     for tr,vl in SLOPO.split(X,y):
@@ -110,8 +105,7 @@ In order to translate polygons into points (each points is a pixel in the raster
 we use sampleExtraction from vector_tools to generate a temporary vector.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     vector_tools.sampleExtraction(raster,vector,outVector='/tmp/pixels.gpkg',verbose=False)
@@ -137,8 +131,7 @@ we use sampleExtraction from vector_tools to generate a temporary vector.
 Plot example on how a polygon was splitted
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import ogr
@@ -168,7 +161,10 @@ Plot example on how a polygon was splitted
 
 
 
-**Total running time of the script:** ( 0 minutes  3.975 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  4.663 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveAsideOut.py:

@@ -13,13 +13,11 @@ Basics to use rasterMath
 Compute substract and addition between two raster bands.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -51,8 +48,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM = rasterMath(raster)
@@ -83,8 +79,7 @@ Let's suppose you want compute the difference between blue and green band
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     x = rM.getRandomBlock()
@@ -106,15 +101,14 @@ I suggest you to define type in numpy array to save space while creating the ras
  .. code-block:: none
 
     Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
-    Using datatype from numpy table : int64
-    Detected 1 band(s) for function sub.
+    Using datatype from numpy table : int64.
+    Detected 1 band for function sub.
 
 
 Run the script
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.run()
@@ -136,8 +130,7 @@ Run the script
 Plot result
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -154,7 +147,10 @@ Plot result
 
 
 
-**Total running time of the script:** ( 0 minutes  0.209 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.441 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

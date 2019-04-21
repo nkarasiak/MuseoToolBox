@@ -1,5 +1,9 @@
 :orphan:
 
+
+
+.. _sphx_glr_auto_examples:
+
 .. _museotoolbox:
 
 Gallery
@@ -12,6 +16,10 @@ Here you will find all the examples related to  :mod:`museotoolbox` library.
 .. raw:: html
 
     <div style='clear:both'></div>
+
+
+
+.. _sphx_glr_auto_examples_charts:
 
 .. _charts:
 
@@ -85,6 +93,10 @@ Examples related to the :mod:`museotoolbox.charts` module.
 .. raw:: html
 
     <div style='clear:both'></div>
+
+
+
+.. _sphx_glr_auto_examples_cross_validation:
 
 .. _crossvalidation:
 
@@ -259,6 +271,10 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
     <div style='clear:both'></div>
 
+
+
+.. _sphx_glr_auto_examples_learn_tools:
+
 .. _learn_tools:
 
 Learn tools
@@ -352,6 +368,10 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 
     <div style='clear:both'></div>
 
+
+
+.. _sphx_glr_auto_examples_raster_tools:
+
 .. _raster_tools:
 
 Raster tools
@@ -444,13 +464,13 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
+    <div class="sphx-glr-thumbcontainer" tooltip="Tips to use rasterMath by defining its block size and to receive a full block (not a array with...">
 
 .. only:: html
 
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_twoRasters_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMathCustomBlockAndMask_thumb.png
 
-        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_twoRasters.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py`
 
 .. raw:: html
 
@@ -460,7 +480,7 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/raster_tools/rasterMath_twoRasters
+   /auto_examples/raster_tools/rasterMathCustomBlockAndMask
 
 .. raw:: html
 
@@ -484,13 +504,13 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Tips to use rasterMath by defining its block size and to receive a full block (not a array with...">
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
 
 .. only:: html
 
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMathCustomBlockAndMask_thumb.png
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_twoRasters_thumb.png
 
-        :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlockAndMask.py`
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_twoRasters.py`
 
 .. raw:: html
 
@@ -500,7 +520,7 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/raster_tools/rasterMathCustomBlockAndMask
+   /auto_examples/raster_tools/rasterMath_twoRasters
 
 .. raw:: html
 
@@ -524,6 +544,10 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 .. raw:: html
 
     <div style='clear:both'></div>
+
+
+
+.. _sphx_glr_auto_examples_vector_tools:
 
 .. _vector_tools:
 

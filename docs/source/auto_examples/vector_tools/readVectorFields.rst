@@ -12,13 +12,11 @@ Read fields from vector
 
 This example shows how to read fields values from
 a vector file.
-
 Import librairies
 -------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import museotoolbox as mtb
@@ -33,8 +31,7 @@ Load HistoricalMap dataset
 ----------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = mtb.datasets.historicalMap()
@@ -49,8 +46,7 @@ Load HistoricalMap dataset
    If you have no memories on what the fields name are, simply put the vector path
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     mtb.vector_tools.readValuesFromVector(vector)
@@ -72,8 +68,7 @@ Read values from field 'Class'
 --------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     Y,Name = mtb.vector_tools.readValuesFromVector(vector,'Class','Type')
@@ -101,8 +96,7 @@ Read values from field beginning with 'C'
 As multiple fields can begin with C, function returns a column per field
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     C = mtb.vector_tools.readValuesFromVector(vector,bandPrefix='C')
@@ -138,7 +132,10 @@ As multiple fields can begin with C, function returns a column per field
     (17, 1)
 
 
-**Total running time of the script:** ( 0 minutes  0.014 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.064 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_readVectorFields.py:

@@ -14,13 +14,11 @@ Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -53,8 +50,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Set return2d to False to have full block size (not one pixel per row)
@@ -80,12 +76,10 @@ Initialize rasterMath with raster
 Comparing different block size (%, fixed, full block)
 -------------------------------------------------------
 
-
 You can define block by percentage of the whole width/height
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(1/2,1/2) 
@@ -108,8 +102,7 @@ You can define block by percentage of the whole width/height
 Or by fixed window 
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(50,100) # width divided every 50 pixel and height every 100
@@ -132,8 +125,7 @@ Or by fixed window
 To have the full image (one block)
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(-1,-1) # to have the full image
@@ -154,8 +146,7 @@ To have the full image (one block)
 To have block width divided by 4 and height by 2
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(1/4,1/2)
@@ -176,8 +167,7 @@ To have block width divided by 4 and height by 2
 Plot blocks
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     fig=plt.figure(figsize=(12,6),dpi=150)
@@ -199,7 +189,10 @@ Plot blocks
 
 
 
-**Total running time of the script:** ( 0 minutes  0.438 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  1.607 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:
