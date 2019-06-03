@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.getRandomBlock
-=======================================================
+museotoolbox.raster\_tools.rasterMath.getRandomBlock
+====================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

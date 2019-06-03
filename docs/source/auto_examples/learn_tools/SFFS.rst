@@ -21,7 +21,7 @@ Import librairies
 .. code-block:: default
 
 
-    from museotoolbox.learn_tools import sequentialFeatureSelection
+    from museotoolbox.learn_tools import sequentialFeatureSelection,learnAndPredict
     from museotoolbox.cross_validation import LeavePSubGroupOut
     from museotoolbox import datasets
     from sklearn.ensemble import RandomForestClassifier
@@ -91,8 +91,8 @@ Set and fit the Sequentia Feature Selection
 
     SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[100]),scoring=kappa)
 
-    SFFS.fit(X.astype('float'),y,g,pathToSaveCM='/tmp/SFFS/')
-
+    SFFS.fit(X.astype(np.float),y,g,pathToSaveCM='/tmp/SFFS/')
+    
 
 
 
@@ -110,11 +110,11 @@ Set and fit the Sequentia Feature Selection
     Feature 1 already computed
 
     Best feature with 2 feature(s) : 1
-    Best mean score : 0.7637
+    Best mean score : 0.765
     Feature 2 already computed
 
     Best feature with 3 feature(s) : 0
-    Best mean score : 0.7695
+    Best mean score : 0.7628
 
 
 Show best features and score
@@ -137,7 +137,7 @@ Show best features and score
  .. code-block:: none
 
     Best features are : [2, 1, 0]
-    Kappa are : [0.715, 0.7637, 0.7695]
+    Kappa are : [0.715, 0.765, 0.7628]
 
 
 In order to predict every classification from the best feature
@@ -188,7 +188,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.473 seconds)
+   **Total running time of the script:** ( 0 minutes  13.837 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

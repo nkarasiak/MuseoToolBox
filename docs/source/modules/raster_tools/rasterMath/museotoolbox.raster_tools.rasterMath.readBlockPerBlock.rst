@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.readBlockPerBlock
-==========================================================
+museotoolbox.raster\_tools.rasterMath.readBlockPerBlock
+=======================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.LeaveOneSubGroupOut\.reinitialize
-==================================================================
+museotoolbox.cross\_validation.LeaveOneSubGroupOut.reinitialize
+===============================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

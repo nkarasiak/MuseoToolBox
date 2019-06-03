@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.LeavePSubGroupOut\.split
-=========================================================
+museotoolbox.cross\_validation.LeavePSubGroupOut.split
+======================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

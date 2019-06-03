@@ -300,11 +300,10 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 raise ValueError('Field "{}" was not found.'.format(f))
             fdefn = ldefn.GetFieldDefn(idx)
             fdefn_type = fdefn.type
-            if fdefn_type < 4:
-                if fdefn_type > 1:
+            if fdefn_type < 4 or fdefn_type == 12:
+                if fdefn_type > 1 and fdefn_type != 12:
                     np_dtype = np.float64
                 else:
-
                     np_dtype = np.int64
             else:
                 raise ValueError(
@@ -493,10 +492,10 @@ class rasterMath:
     """
     Read one or multiple rasters per block, and perform one or many functions to one or many raster outputs.
     If you want a sample of your data, just call getRandomBlock().
-    
-    The default option of rasterMath will return in 2d the dataset : 
+
+    The default option of rasterMath will return in 2d the dataset :
         - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
-    
+
     If you want to have the data in 3d (X,Y,Z), masked data will be given too (using numpy.ma).
 
     Parameters
@@ -598,7 +597,7 @@ class rasterMath:
             outNBand=False,
             outNumpyDT=False,
             outNoData=False,
-            compress=False,
+            compress=True,
             **kwargs):
         """
         Add function to rasterMath.
@@ -614,7 +613,7 @@ class rasterMath:
         outNoData : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compress: boolean, default False.
+        compress: boolean, default True.
             If True, will use DEFLATE compression using all cpu-cores minus 1.
         **kwargs
 
@@ -626,24 +625,25 @@ class rasterMath:
         if outNumpyDT is False:
             dtypeName = randomBlock.dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
-            pushFeedback('Using datatype from numpy table : {}.'.format(dtypeName))
+            pushFeedback(
+                'Using datatype from numpy table : {}.'.format(dtypeName))
         else:
             dtypeName = np.dtype(outNumpyDT).name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
 
-    
         # get number of bands
         randomBlock = self.reshape_ndim(randomBlock)
 
         outNBand = randomBlock.shape[-1]
         need_s = ''
-        if outNBand > 1 : need_s='s'
-        
+        if outNBand > 1:
+            need_s = 's'
+
         if self.verbose:
             pushFeedback(
                 'Detected {} band{} for function {}.'.format(
-                    outNBand,need_s,function.__name__))
-        
+                    outNBand, need_s, function.__name__))
+
         self.__addOutput__(outRaster, outNBand, outGdalDT, compress=compress)
         self.functions.append(function)
         if len(kwargs) == 0:

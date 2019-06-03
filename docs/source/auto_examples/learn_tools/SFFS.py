@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import sequentialFeatureSelection
+from museotoolbox.learn_tools import sequentialFeatureSelection,learnAndPredict
 from museotoolbox.cross_validation import LeavePSubGroupOut
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -46,8 +46,8 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 #
 SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[100]),scoring=kappa)
 
-SFFS.fit(X.astype('float'),y,g,pathToSaveCM='/tmp/SFFS/')
-
+SFFS.fit(X.astype(np.float),y,g,pathToSaveCM='/tmp/SFFS/')
+    
 ##############################################
 # Show best features and score
 

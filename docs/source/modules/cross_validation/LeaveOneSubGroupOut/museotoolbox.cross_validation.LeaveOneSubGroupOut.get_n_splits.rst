@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.LeaveOneSubGroupOut\.get\_n\_splits
-====================================================================
+museotoolbox.cross\_validation.LeaveOneSubGroupOut.get\_n\_splits
+=================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

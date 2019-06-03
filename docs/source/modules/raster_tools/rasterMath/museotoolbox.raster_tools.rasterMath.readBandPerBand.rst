@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.readBandPerBand
-========================================================
+museotoolbox.raster\_tools.rasterMath.readBandPerBand
+=====================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

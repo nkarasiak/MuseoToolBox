@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.standardizeX
-=========================================================
+museotoolbox.learn\_tools.learnAndPredict.standardizeX
+======================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

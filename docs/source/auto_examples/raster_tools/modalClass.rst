@@ -70,13 +70,13 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    [[ 74  62  46]
-     [162 146 133]
-     [158 142 129]
+    [[143 153 128]
+     [141 151 126]
+     [149 159 134]
      ...
-     [158 146 130]
-     [156 147 132]
-     [157 148 133]]
+     [200 176 142]
+     [196 173 141]
+     [194 169 138]]
 
 
 Let's suppose you want compute the modal classification between several predictions
@@ -90,7 +90,7 @@ The first band will be the most predicted class, and the second the number of ti
     x = rM.getRandomBlock()
 
     def modalClass(x):
-        tmp = stats.mode(x)
+        tmp = stats.mode(x,axis=1)
         tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
         return tmpStack
 
@@ -107,7 +107,7 @@ The first band will be the most predicted class, and the second the number of ti
  .. code-block:: none
 
     Using datatype from numpy table : int16.
-    Detected 6 bands for function modalClass.
+    Detected 2 bands for function modalClass.
     No data is set to : 0
 
 
@@ -156,7 +156,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.551 seconds)
+   **Total running time of the script:** ( 0 minutes  1.703 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

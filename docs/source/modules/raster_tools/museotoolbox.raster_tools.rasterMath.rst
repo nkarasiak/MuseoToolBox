@@ -15,6 +15,7 @@ rasterMath
    
       ~rasterMath.__init__
       ~rasterMath.addFunction
+      ~rasterMath.addInputRaster
       ~rasterMath.customBlockSize
       ~rasterMath.filterNoData
       ~rasterMath.generateBlockArray

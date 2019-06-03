@@ -294,7 +294,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  46.801 seconds)
+   **Total running time of the script:** ( 1 minutes  57.350 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

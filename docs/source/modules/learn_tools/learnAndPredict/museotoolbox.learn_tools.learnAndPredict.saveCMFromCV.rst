@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.saveCMFromCV
-=========================================================
+museotoolbox.learn\_tools.learnAndPredict.saveCMFromCV
+======================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

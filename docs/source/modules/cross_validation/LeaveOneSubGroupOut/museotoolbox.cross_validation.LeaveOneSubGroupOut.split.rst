@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.LeaveOneSubGroupOut\.split
-===========================================================
+museotoolbox.cross\_validation.LeaveOneSubGroupOut.split
+========================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

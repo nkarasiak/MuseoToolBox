@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.SpatialLeaveAsideOut\.reinitialize
-===================================================================
+museotoolbox.cross\_validation.SpatialLeaveAsideOut.reinitialize
+================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

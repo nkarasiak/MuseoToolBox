@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.LeaveOneSubGroupOut\.saveVectorFiles
-=====================================================================
+museotoolbox.cross\_validation.LeaveOneSubGroupOut.saveVectorFiles
+==================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

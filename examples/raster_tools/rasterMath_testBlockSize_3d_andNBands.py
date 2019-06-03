@@ -15,6 +15,7 @@ from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 import numpy as np
+
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
@@ -37,27 +38,17 @@ for return_3d in [True,False]:
     
     print(rM.getRandomBlock().shape)
     
-    #######################
-    # Plot blocks
-    
     x = rM.getRandomBlock()
-    def returnFlatten(x):
-        try:
-            x = x[:,:,0]
-        except:
-            x = x[:,0].reshape(-1,1)
-        return x
-    def returnWithOneBandMore(x):
-        try:
-            x = np.repeat(x,3,axis=2)
-        except:
-            x= np.repeat(x,3,axis=1)
-        return x
     
-    rM.addFunction(returnWithOneBandMore,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
+    # Returns with only 1 dimension
+    returnFlatten = lambda x : x[...,0]
+    
+    # Returns 3x the original last dimension
+    addOneBand = lambda x : np.repeat(x,3,axis=x.ndim-1)
+    
+    # Add functions to rasterMath
+    rM.addFunction(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
     rM.addFunction(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
-
-    
     
     rM.run()
     

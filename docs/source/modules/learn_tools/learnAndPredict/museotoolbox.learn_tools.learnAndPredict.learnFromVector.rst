@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.learnFromVector
-============================================================
+museotoolbox.learn\_tools.learnAndPredict.learnFromVector
+=========================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

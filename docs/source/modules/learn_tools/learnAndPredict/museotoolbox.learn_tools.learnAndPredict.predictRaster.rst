@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.predictRaster
-==========================================================
+museotoolbox.learn\_tools.learnAndPredict.predictRaster
+=======================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

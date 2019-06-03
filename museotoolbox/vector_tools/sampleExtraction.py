@@ -35,6 +35,7 @@ class sampleExtraction:
         Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
 
         This script is available via terminal by entering : `mtb_sampleExtraction`.
+
         Parameters
         ----------
         inRaster : str.

@@ -20,10 +20,11 @@ from joblib import Parallel, delayed
 import os
 import numpy as np
 from sklearn import metrics
-from sklearn.base import clone, BaseEstimator
+from sklearn.base import clone
 from sklearn import warnings
 from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues, convertGdalAndNumpyDataType
 from ..internal_tools import progressBar
+
 
 class learnAndPredict:
     def __init__(self, n_jobs=1, verbose=False):
@@ -423,7 +424,7 @@ class learnAndPredict:
         outNoData : int, default 0.
             Value of no data for the outRaster.
         """
-        
+
         rM = rasterMath(inRaster, inMaskRaster, message='Prediction...')
 
         numpyDT = convertGdalAndNumpyDataType(
@@ -636,10 +637,10 @@ class learnAndPredict:
             return statsCV
 
 
-class sequentialFeatureSelection(BaseEstimator):
+class sequentialFeatureSelection:
     """
-    Sequential Feature Selection 
-    
+    Sequential Feature Selection
+
     Parameters
     ----------
     classifier : array.
@@ -648,123 +649,176 @@ class sequentialFeatureSelection(BaseEstimator):
     cv : int, default 1.
         The number of component per feature. If 4, each feature has 4 columns.
     """
-    def __init__(self,classifier,param_grid,cv=5,scoring='accuracy',n_comp=1,verbose=1):
+
+    def __init__(self, classifier, param_grid, cv=5,
+                 scoring='accuracy', n_comp=1, verbose=1):
         # share args
         self.n_comp = n_comp
         self.classifier = classifier
         self.param_grid = param_grid
-        self.scoring=scoring
+        self.scoring = scoring
         self.cv = cv
         self.verbose = verbose
-        
-        self.xFunction = False 
+
+        self.xFunction = False
         self.xKwargs = False
 
-    def fit(self,X,y,group=None,standardize=True,pathToSaveCM=False,max_features=False,n_jobs=1):
+    def fit(self, X, y, group=None, standardize=True,
+            pathToSaveCM=False, max_features=False, n_jobs=1):
         """
         Parameters
         ----------
-        X : 
-        y : 
-            
+        X :
+        y :
+
         """
         self.X = X
         self.X_ = np.copy(X)
         self.y = y
         self.group = group
-        
+
         self.models_path_ = []
-        
+
         if self.xFunction:
-            self.X = self.xFunction(X,**self.xKwargs)            
+            self.X = self.xFunction(X, **self.xKwargs)
 
         xSize = self.X.shape[1]
-        self.n_features = int(xSize/self.n_comp)
-        
+        self.n_features = int(xSize / self.n_comp)
+
         self.max_features = self.n_features
-        
+
         if max_features is not False:
             if max_features < self.n_features:
                 self.max_features = max_features
-            
-        totalIter = np.sum([self.n_features-i for i in range(self.max_features)])
-        
-        if self.verbose:
-            pB = progressBar(totalIter,message='SFFS:')
-        self.mask = np.ones(xSize,dtype=bool)
 
-        self.models_,self.best_scores_,self.best_features_ = [[],[],[]]
+        totalIter = np.sum(
+            [self.n_features - i for i in range(self.max_features)])
+
+        if self.verbose:
+            pB = progressBar(totalIter, message='SFFS:')
+        self.mask = np.ones(xSize, dtype=bool)
+
+        self.models_, self.best_scores_, self.best_features_ = [[], [], []]
         self.subsets_ = dict()
-        
-        for j in range(self.max_features):    
+
+        for j in range(self.max_features):
             resPerFeatures = list()
-            #bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
-            n_features_to_test = int(self.X[:,self.mask].shape[1]/self.n_comp)
-            all_scores_file = pathToSaveCM+'all_scores_{}.csv'.format(j)
+            # bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
+            n_features_to_test = int(
+                self.X[:, self.mask].shape[1] / self.n_comp)
+            all_scores_file = pathToSaveCM + 'all_scores_{}.csv'.format(j)
             if os.path.exists(all_scores_file):
                 print('Feature {} already computed'.format(j))
-                scores = np.loadtxt(all_scores_file,delimiter=',')
-                
-                if scores.ndim==1:
+                scores = np.loadtxt(all_scores_file, delimiter=',')
+
+                if scores.ndim == 1:
                     all_scores = [scores[1]]
                     best_candidate = 0
                 else:
-                    all_scores = scores[:,1]
-                    best_candidate = np.argmax(scores[:,1])
-                LAP = learnAndPredict(n_jobs=n_jobs,verbose=self.verbose-1)
-                LAP.loadModel(pathToSaveCM+'model_{}.npz'.format(j))
-                self.models_path_.append(pathToSaveCM+'model_{}.npz'.format(j))
+                    all_scores = scores[:, 1]
+                    best_candidate = np.argmax(scores[:, 1])
+                LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
+                LAP.loadModel(pathToSaveCM + 'model_{}.npz'.format(j))
+                self.models_path_.append(
+                    pathToSaveCM + 'model_{}.npz'.format(j))
             else:
-                for idx in range(n_features_to_test): # at each loop, remove best candidate                    
+                for idx in range(
+                        n_features_to_test):  # at each loop, remove best candidate
                     if self.verbose:
                         pB.addPosition()
-                    LAP = learnAndPredict(n_jobs=n_jobs,verbose=self.verbose-1)        
-                    curX = self.__getX(self.X,idx)
+                    LAP = learnAndPredict(
+                        n_jobs=n_jobs, verbose=self.verbose - 1)
+                    curX = self.__transformInFit(self.X, idx)
                     if standardize is False:
-                        scale=False
+                        scale = False
                     else:
-                        scale=True
-                        
-                    LAP.learnFromVector(curX,y,group=group,classifier=self.classifier,param_grid=self.param_grid,standardize=scale,scoring=self.scoring,cv=self.cv)
-                    
+                        scale = True
+
+                    LAP.learnFromVector(
+                        curX,
+                        y,
+                        group=group,
+                        classifier=self.classifier,
+                        param_grid=self.param_grid,
+                        standardize=scale,
+                        scoring=self.scoring,
+                        cv=self.cv)
+
                     resPerFeatures.append(LAP)
-                    
-                all_scores = [np.amax(LAP.model.best_score_) for LAP in resPerFeatures]
+
+                all_scores = [np.amax(LAP.model.best_score_)
+                              for LAP in resPerFeatures]
                 best_candidate = np.argmax(all_scores)
                 # self.__bestLAPs.append(resPerFeatures[best_candidate])
                 LAP = resPerFeatures[best_candidate]
 
                 if pathToSaveCM:
-                    if not os.path.exists(os.path.join(pathToSaveCM,str(j))):
-                        os.makedirs(os.path.join(pathToSaveCM,str(j)))
-                    LAP.saveModel(pathToSaveCM+'model_{}.npz'.format(j))
-                    LAP.saveCMFromCV(os.path.join(pathToSaveCM,str(j)),n_jobs=-1)
-                    scoreWithIdx = np.hstack((np.where(self.mask==1)[0].reshape(-1,1),np.asarray(all_scores,dtype=np.float32).reshape(-1,1)))
-                    np.savetxt(all_scores_file,scoreWithIdx,fmt='%0.d,%.4f')
-                
+                    if not os.path.exists(os.path.join(pathToSaveCM, str(j))):
+                        os.makedirs(os.path.join(pathToSaveCM, str(j)))
+                    LAP.saveModel(pathToSaveCM + 'model_{}.npz'.format(j))
+                    LAP.saveCMFromCV(
+                        os.path.join(
+                            pathToSaveCM,
+                            str(j)),
+                        n_jobs=-1)
+
+                    if self.n_comp == 1:
+                        bandidx = np.where(self.mask == 1)[0].reshape(-1, 1)
+                    else:
+                        bandidx = np.arange(
+                            0, self.mask.shape[0], self.n_comp).reshape(-1, 1)
+                        bandidx = np.int32(
+                            bandidx[np.in1d(self.mask[bandidx], 1)] / self.n_comp)
+                    scoreWithIdx = np.hstack((bandidx, np.asarray(
+                        all_scores, dtype=np.float32).reshape(-1, 1)))
+                    np.savetxt(all_scores_file, scoreWithIdx, fmt='%0.d,%.4f')
+
                 self.models_.append(resPerFeatures[best_candidate].model)
-                
+                self.models_path_.append(
+                    pathToSaveCM + 'model_{}.npz'.format(j))
                 # store results
-            best_feature_id = int(self.__getFeatureId(best_candidate)/self.n_comp)
+            best_feature_id = int(
+                self.__getFeatureId(best_candidate) / self.n_comp)
             self.best_scores_.append(all_scores[best_candidate])
             self.best_features_.append(best_feature_id)
-                
+
             if self.verbose:
-                print('\nBest feature with %s feature(s) : %s' %(j+1,best_feature_id))
-                print('Best mean score : %s' %np.amax(all_scores))
-    
+                print(
+                    '\nBest feature with %s feature(s) : %s' %
+                    (j + 1, best_feature_id))
+                print('Best mean score : %s' % np.amax(all_scores))
+
             self.subsets_[str(j)] = dict(avg_score=np.amax(all_scores),
-                         feature_idx=self.best_features_.copy(),
-                         cv_score=LAP.model.cv_results_,
-                         best_score_=np.amax(all_scores),
-                         best_feature_=best_feature_id)
-                
+                                         feature_idx=self.best_features_.copy(),
+                                         cv_score=LAP.model.cv_results_,
+                                         best_score_=np.amax(all_scores),
+                                         best_feature_=best_feature_id)
+
             self.__maskIdx(best_candidate)
 
-    def predictBestCombination(self,inRaster,outRaster,inMaskRaster=False,confidence=False):
+    def predict(self, X, idx):
         """
         Predict in raster using the best features.
-        
+
+        Parameters
+        -----------
+        X : array.
+            The array to predict. Must have the same number of bands of the initial array/raster.
+        idx : int.
+            The combination (from 0).
+        """
+
+        self.__resetMask()
+
+        LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
+        LAP.loadModel(self.models_path_[idx])
+        return LAP.predictArray(self.transform(X, idx=idx))
+
+    def predictBestCombination(
+            self, inRaster, outRaster, inMaskRaster=False, confidence=False):
+        """
+        Predict in raster using the best features.
+
         Parameters
         -----------
         inRaster : str.
@@ -776,28 +830,24 @@ class sequentialFeatureSelection(BaseEstimator):
         confidence : False or str. Default False.
             If str, same as outRasterPrefix.
         """
-        
+
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
-        
-        for idx,model in enumerate(self.models_path_):
-            if idx < self.best_idx_:
-                rM=rasterMath(inRaster,verbose=False)
-                self.__getX(rM.getRandomBlock(),idx=idx,customizeX=True)
-                
-            elif idx == self.best_idx_:
-                    
-                LAP = learnAndPredict(n_jobs=1,verbose=self.verbose)
+
+        for idx, model in enumerate(self.models_path_):
+            if idx == self.best_idx_:
+                LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
                 LAP.loadModel(model)
-                LAP.predictRaster(inRaster,outRaster,confidence=confidence,inMaskRaster=inMaskRaster,
-                                  Xfunction=self.__getX,idx=idx,customizeX=True)          
-            else:
-                break    
-            
-    def predictRasters(self,inRaster,outRasterPrefix,inMaskRaster=False,confidence=False,modelPath=False):
+                LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
+                                  Xfunction=self.transform, idx=idx, customizeX=True)
+            elif idx > self.best_idx_:
+                break
+
+    def predictRasters(self, inRaster, outRasterPrefix,
+                       inMaskRaster=False, confidence=False, modelPath=False):
         """
         Predict each best found features with SFFS.fit(X,y).
-        
+
         Parameters
         ----------
         inRaster : str.
@@ -808,64 +858,99 @@ class sequentialFeatureSelection(BaseEstimator):
         confidence : False or str. Default False.
             If str, same as outRasterPrefix.
         """
-        
+
         self.__resetMask()
-        
-        for idx,model in enumerate(self.models_path_):
-            LAP = learnAndPredict(n_jobs=1,verbose=self.verbose)
+
+        for idx, model in enumerate(self.models_path_):
+            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
             LAP.loadModel(model)
-            
-            outRaster = outRasterPrefix+str(idx)+'.tif'
-            LAP.predictRaster(inRaster,outRaster,confidence=confidence,inMaskRaster=inMaskRaster,
-                              Xfunction=self.__getX,idx=idx,customizeX=True)
-                
-    def customizeX(self,xFunction,**kwargs):
+
+            outRaster = outRasterPrefix + str(idx) + '.tif'
+            LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
+                              Xfunction=self.transform, idx=idx, customizeX=True)
+
+    def customizeX(self, xFunction, **kwargs):
         self.xFunction = xFunction
         self.xKwargs = kwargs
-        
-    def __getX(self,X,idx=0,customizeX=False):
+
+    def __transformInFit(self, X, idx=0, customizeX=False):
+        mask = np.copy(self.mask)
+        if customizeX is False:
+            fieldsToKeep = self.__convertIdxToNComp(idx)
+            mask[fieldsToKeep] = 0
+            X = X[:, ~mask]
+        if customizeX is True:
+            self.mask[self.best_features_[idx]] = 0
+            if self.xFunction:
+                X = self.xFunction(X, **self.xKwargs)
+            X = X[:, ~self.mask]
+
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
+
+        return X
+
+    def transform(self, X, idx=0, customizeX=False):
         """
         Parameters
         ----------
         idx : int.
             The idx to return X array
         """
-        if customizeX is False:
-            fieldsToKeep = self.__convertIdxToNComp(idx)
-            xToStack = X[:,fieldsToKeep]
-            if xToStack.ndim == 1: 
-                xToStack = xToStack.reshape(-1,1)        
-            X = np.hstack((X[:,~self.mask],xToStack))
-        
-        if customizeX is True:
-            self.mask[self.best_features_[idx]] = 0
-            if self.xFunction:
-                X = self.xFunction(X,**self.xKwargs)
-            X = X[:,~self.mask]
+        self.__resetMask()
 
-        if X.ndim==1:
-            X = X.reshape(-1,1)
+        self.best_idx_ = np.argmax(self.best_scores_)
+
+        if self.n_comp > 1:
+            for candidate in range(idx + 1):
+                if candidate <= idx:
+                    idxToMask = [
+                        self.best_features_[candidate] *
+                        self.n_comp +
+                        i for i in range(
+                            self.n_comp)]
+                    self.mask[idxToMask] = 0
+        else:
+            self.mask[self.best_features_[:idx + 1]] = 0
+
+        if customizeX is False:
+            #            fieldsToKeep = self.__convertIdxToNComp(idx)
+            X = X[:, ~self.mask]
+#            X = np.hstack((X[:, ~self.mask], xToStack))
+
+        if customizeX is True:
+            #            if self.n_comp>1:
+            #                idxToMask = [self.best_features_[candidate]*self.n_comp + i for i in range(self.n_comp)]
+            #                self.mask[idxToMask] = 0
+            #            else:
+            #                self.mask[self.best_features_[idx]] = 0
+            if self.xFunction:
+                X = self.xFunction(X, **self.xKwargs)
+            X = X[:, ~self.mask]
+
+        if X.ndim == 1:
+            X = X.reshape(-1, 1)
         return X
-        
-    def __getFeatureId(self,best_candidate):
+
+    def __getFeatureId(self, candidate):
         """
-        
+
         """
-        return np.where(self.mask==1)[0][best_candidate*self.n_comp]
-     
-    def __convertIdxToNComp(self,idx):
+        return np.where(self.mask == 1)[0][candidate * self.n_comp]
+
+    def __convertIdxToNComp(self, idx):
         """
         """
         idxUnmask = self.__getFeatureId(idx)
-        n_features_to_get = [idxUnmask+j for j in range(self.n_comp)]
+        n_features_to_get = [idxUnmask + j for j in range(self.n_comp)]
         return n_features_to_get
-    
-    def __maskIdx(self,idx):
+
+    def __maskIdx(self, idx):
         """
         Add the idx to the mask
         """
         self.mask[self.__convertIdxToNComp(idx)] = 0
-    
+
     def __resetMask(self):
         """
         """
