@@ -68,7 +68,10 @@ class sampleExtraction:
             coord, geoTransform) for coord in coords]
         # init outLayer
         if np.issubdtype(X.dtype, np.integer):
-            dtype = ogr.OFTInteger64
+            try:
+                dtype = ogr.OFTInteger64
+            except:
+                dtype = ogr.OFTInteger
         else:
             dtype = ogr.OFTReal
         outLayer = createPointLayer(
@@ -111,7 +114,7 @@ class sampleExtraction:
 
 class createPointLayer:
     def __init__(self, inVector, outVector, uniqueIDField,
-                 dtype=ogr.OFTInteger64, verbose=1):
+                 dtype=ogr.OFTInteger, verbose=1):
         """
         Create a vector layer as point type.
 

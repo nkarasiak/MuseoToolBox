@@ -139,7 +139,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
 
     NP2GDAL_CONVERSION = {
         "uint8": 1,
-        "int8": 1,
+        "int8": 3,
         "uint16": 2,
         "int16": 3,
         "uint32": 4,
@@ -156,10 +156,15 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
 
-        code = NP2GDAL_CONVERSION[numpyDT]
-        if numpyDT.endswith('int64'):
+        try:
+            code = NP2GDAL_CONVERSION[numpyDT]
+            if numpyDT.endswith('int64'):
+                pushFeedback(
+                        'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+        except:
+            code = 7
             pushFeedback(
-                'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+                        'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(numpyDT))
     return code
 
 
@@ -477,8 +482,17 @@ def rasterize(data, vectorSrc, field, outFile,
     dst_ds.SetProjection(dataSrc.GetProjection())
 
     if field is False or field is None:
-        options = gdal.RasterizeOptions(inverse=invert)
-        gdal.Rasterize(dst_ds, vectorSrc, options=options)
+        if invert == True:
+            try:
+                options = gdal.RasterizeOptions(inverse=invert)
+                gdal.Rasterize(dst_ds, vectorSrc, options=options)
+            except:
+                raise Exception('Version of gdal is too old : RasterizeOptions is not available.\nPlease update.')
+        else:
+#            gdal.Rasterize(dst_ds, vectorSrc)
+            gdal.RasterizeLayer(dst_ds, [1], lyr, None)
+
+            
         dst_ds.GetRasterBand(1).SetNoDataValue(0)
     else:
         OPTIONS = ['ATTRIBUTE=' + field]
@@ -586,7 +600,7 @@ class rasterMath:
         """
         openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
         if openRaster is None:
-            raise ReferenceError('Impossible to open ' + inRaster)
+            raise ReferenceError('Impossible to open image ' + inRaster)
         else:
             self.openRasters.append(openRaster)
 
@@ -856,16 +870,18 @@ class rasterMath:
         """
         Yields each whole band as np masked array (so with masked data)
         """
-        for nb in range(1, self.nb + 1):
-            band = self.openRasters[0].GetRasterBand(nb)
-            band = band.ReadAsArray()
-            if self.mask:
-                mask = np.asarray(
-                    self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
-                band = np.ma.MaskedArray(band, mask=~mask)
-            else:
-                band = np.ma.MaskedArray(band)
-            yield band
+        for nRaster in range(len(self.openRasters)):
+            nb = self.openRasters[nRaster].RasterCount
+            for n in range(1,nb+1):
+                band = self.openRasters[nRaster].GetRasterBand(n)
+                band = band.ReadAsArray()
+                if self.mask:
+                    mask = np.asarray(
+                        self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
+                    band = np.ma.MaskedArray(band, mask=~mask)
+                else:
+                    band = np.ma.MaskedArray(band,mask=np.where(band==self.nodata,True,False))
+                yield band
 
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
         """
@@ -1025,7 +1041,7 @@ class rasterMath:
                     curBand = self.outputs[idx].GetRasterBand(indGdal)
 
                     resToWrite = resFun[..., ind]
-
+                    
                     if self.return_3d is False:
                         # need to reshape as block
                         resToWrite = resToWrite.reshape(lines, cols)

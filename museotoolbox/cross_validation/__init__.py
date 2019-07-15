@@ -29,7 +29,8 @@ class LeaveOneOutPerClass(_sampleSelection):
     Parameters
     ----------
     n_splits : int or False, default False.
-        If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
+        If False : will iterate as many times as the smallest class.
+        If int : will iterate the number of times given in n_splits.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -63,6 +64,7 @@ class LeavePSubGroupOut(_sampleSelection):
         From 0 to 1.
     n_splits : int or False, default False.
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
+        If int : will iterate the number of times given in n_splits.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -85,7 +87,9 @@ class LeavePSubGroupOut(_sampleSelection):
         else:
             raise Exception(
                 'Percent must be between 0 and 1 and must be a float')
-
+        if n_splits == False:
+            n_splits = int(1/valid_size)
+            
         self.params = dict(
             valid_size=valid_size,
             n_splits=n_splits,
@@ -137,6 +141,7 @@ class SpatialLeaveAsideOut(_sampleSelection):
         The percentage of validaton to keep : from 0 to 1.
     n_splits : int or False, default False.
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
+        If int : will iterate the number of times given in n_splits.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -159,7 +164,9 @@ class SpatialLeaveAsideOut(_sampleSelection):
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
-
+        if n_splits == False:
+            n_splits = int(1/valid_size)
+            
         self.params = dict(
             distanceMatrix=distanceMatrix,
             valid_size=valid_size,

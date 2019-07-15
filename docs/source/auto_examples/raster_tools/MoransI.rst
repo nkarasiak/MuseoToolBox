@@ -63,7 +63,7 @@ Compute Moran's I for lag 1
 
 .. code-block:: default
 
-    lags = range(1,11)
+    lags = range(1,5)
     Is = []
     for lag in lags:
         MoransI = raster_tools.Moran(raster,'/tmp/mask.tif',lag=lag)
@@ -98,7 +98,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 3 minutes  24.279 seconds)
+   **Total running time of the script:** ( 0 minutes  47.897 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_MoransI.py:
