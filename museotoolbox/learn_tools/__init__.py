@@ -974,7 +974,7 @@ class sequentialFeatureSelection:
         if X.ndim == 1:
             X = X.reshape(-1, 1)
         return X
-
+    
     def __getFeatureId(self, candidate):
         """
 

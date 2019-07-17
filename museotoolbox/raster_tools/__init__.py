@@ -627,8 +627,9 @@ class rasterMath:
         outNoData : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compress: boolean, default True.
+        compress: boolean, str ('high'),  default True.
             If True, will use DEFLATE compression using all cpu-cores minus 1.
+            If 'high', will use DEFLATE with ZLEVEL = 9 and PREDICTOR=2.
         **kwargs
 
         """
@@ -685,12 +686,16 @@ class rasterMath:
     def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
-        if compress is True:
+        if compress is True or compress=='high':
             options = [
                 'BIGTIFF=IF_SAFER',
                 'COMPRESS=DEFLATE',
                 'NUM_THREADS={}'.format(
                     os.cpu_count() - 1)]
+            if compress == 'high':
+                options.append('PREDICTOR=2')
+                options.append('ZLEVEL=9')
+                
         else:
             options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
