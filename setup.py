@@ -51,6 +51,9 @@ setuptools.setup(
             'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
     },
+    package_data={
+      'museotoolbox': ['datasets/historcalmap/*.tif','datasets/historcalmap/*.gpkg'],
+   },
     data_files=[('', ['museotoolbox/datasets/historicalmap/map_compress.tif']),('', ['museotoolbox/datasets/historicalmap/train.gpkg','museotoolbox/datasets/historicalmap/train_centroid.gpkg'])]
 
  )
