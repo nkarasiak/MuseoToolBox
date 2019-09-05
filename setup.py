@@ -50,5 +50,8 @@ setuptools.setup(
             'mtb_sampleExtraction=museotoolbox.vector_tools.sampleExtraction:main',
             'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
-    }
+    },
+    data_files=[('tiff', ['museotoolbox/datasets/historicalmap/map_compress.tif']),
+                  ('gpkg', ['museotoolbox/datasets/historicalmap/train.gpkg','museotoolbox/datasets/historicalmap/train_centroid.gpkg'])],
+
  )
