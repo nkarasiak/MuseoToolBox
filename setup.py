@@ -51,7 +51,6 @@ setuptools.setup(
             'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
     },
-    #data_files=[('tiff', ['museotoolbox/datasets/historicalmap/map_compress.tif']),('gpkg', ['museotoolbox/datasets/historicalmap/train.gpkg','museotoolbox/datasets/historicalmap/train_centroid.gpkg'])],
-    data_files=[('tiff', ['datasets/historicalmap/map_compress.tif']),('gpkg', ['datasets/historicalmap/train.gpkg','datasets/historicalmap/train_centroid.gpkg'])]
+    data_files=[('', ['museotoolbox/datasets/historicalmap/map_compress.tif']),('', ['museotoolbox/datasets/historicalmap/train.gpkg','museotoolbox/datasets/historicalmap/train_centroid.gpkg'])]
 
  )
