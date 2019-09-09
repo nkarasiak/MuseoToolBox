@@ -64,19 +64,11 @@ Initialize rasterMath with raster
 
 
 .. rst-class:: sphx-glr-script-out
-<<<<<<< HEAD
 
  Out:
 
  .. code-block:: none
 
-=======
-
- Out:
-
- .. code-block:: none
-
->>>>>>> develop
     Total number of blocks : 15
     [[143 153 128]
      [141 151 126]
@@ -105,24 +97,6 @@ The first band will be the most predicted class, and the second the number of ti
     rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Using datatype from numpy table : int16
-    Detected 2 band(s) for function modalClass.
-    No data is set to : 0
-
-
-Run the script
-=======
->>>>>>> develop
 
 
 
@@ -146,23 +120,6 @@ Run the script
     rM.run()
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
-    Saved /tmp/modal.tif using function modalClass
-
-
-Plot result
-=======
->>>>>>> develop
 
 
 
@@ -196,14 +153,10 @@ Plot result
 
 
 
-<<<<<<< HEAD
-**Total running time of the script:** ( 0 minutes  0.297 seconds)
-=======
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.991 seconds)
->>>>>>> develop
+   **Total running time of the script:** ( 0 minutes  1.220 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

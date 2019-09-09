@@ -20,7 +20,7 @@ import os
 __pathFile = os.path.dirname(os.path.realpath(__file__))
 
 
-def historicalMap(return_X_y=False, return_X_y_g=False, centroid=False):
+def historicalMap(return_X_y=False, return_X_y_g=False, centroid=False,low_res=False):
     """
     Get a sample of a french Historical map made by the army (carte d'état-major).
     These maps are used to identify forest in the 1800's.
@@ -65,8 +65,10 @@ def historicalMap(return_X_y=False, return_X_y_g=False, centroid=False):
     /mnt/DATA/lib/MuseoToolBox/museotoolbox/datasets/historicalmap/train.gpkg
     """
     toReturn = []
-
-    raster = os.path.join(__pathFile, 'historicalmap/map_compress.tif')
+    if low_res:
+        raster = os.path.join(__pathFile, 'historicalmap/map_lowres.tif')
+    else:    
+        raster = os.path.join(__pathFile, 'historicalmap/map_compress.tif')
     vector = os.path.join(__pathFile, 'historicalmap/train.gpkg')
 
     if return_X_y or return_X_y_g:

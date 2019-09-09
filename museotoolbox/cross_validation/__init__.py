@@ -253,7 +253,8 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
                  distanceMatrix=None,
                  n_splits=False,
                  random_state=None,
-                 verbose=False):
+                 verbose=False,
+                 **kwargs):
 
         self.samplingType = 'Spatial'
         self.verbose = verbose
@@ -267,7 +268,8 @@ class SpatialLeaveOnePixelOut(_sampleSelection):
             minTrain=False,
             SLOO=True,
             n_splits=n_splits,
-            random_state=random_state)
+            random_state=random_state,
+            **kwargs)
         _sampleSelection.__init__(self)
 
 

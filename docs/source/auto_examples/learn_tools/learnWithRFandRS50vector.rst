@@ -259,14 +259,6 @@ Predict map
 
 
 .. rst-class:: sphx-glr-script-out
-<<<<<<< HEAD
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 15
-=======
 
  Out:
 
@@ -274,7 +266,6 @@ Predict map
 
     Total number of blocks : 15
     Detected 1 band for function predictArray.
->>>>>>> develop
     Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
     Saved /tmp/classification.tif using function predictArray
 
@@ -300,14 +291,10 @@ Plot example
 
 
 
-<<<<<<< HEAD
-**Total running time of the script:** ( 1 minutes  9.581 seconds)
-=======
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  59.928 seconds)
->>>>>>> develop
+   **Total running time of the script:** ( 0 minutes  46.638 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

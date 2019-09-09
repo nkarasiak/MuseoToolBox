@@ -70,11 +70,7 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-<<<<<<< HEAD
-    (1566, 3)
-=======
     (54, 256, 3)
->>>>>>> develop
 
 
 Comparing different block size (%, fixed, full block)
@@ -90,23 +86,6 @@ You can define block by percentage of the whole width/height
     print(rM.getRandomBlock().shape)
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 4
-    (148858, 3)
-
-
-Or by fixed window 
-=======
->>>>>>> develop
 
 
 
@@ -130,23 +109,6 @@ Or by fixed window
     print(rM.getRandomBlock().shape)
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 132
-    (5000, 3)
-
-
-To have the full image (one block)
-=======
->>>>>>> develop
 
 
 
@@ -169,22 +131,6 @@ To have the full image (one block)
     rM.customBlockSize(-1,-1) # to have the full image
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 1
-
-
-To have block width divided by 4 and height by 2
-=======
->>>>>>> develop
 
 
 
@@ -206,22 +152,6 @@ To have block width divided by 4 and height by 2
     rM.customBlockSize(1/4,1/2)
 
 
-<<<<<<< HEAD
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Total number of blocks : 8
-
-
-Plot blocks
-=======
->>>>>>> develop
 
 
 
@@ -259,14 +189,10 @@ Plot blocks
 
 
 
-<<<<<<< HEAD
-**Total running time of the script:** ( 0 minutes  0.354 seconds)
-=======
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.924 seconds)
->>>>>>> develop
+   **Total running time of the script:** ( 0 minutes  1.404 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:
