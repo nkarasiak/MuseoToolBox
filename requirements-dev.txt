@@ -8,3 +8,4 @@ sphinx-rtd-theme
 ipykernel
 nbsphinx
 sphinx-gallery
+gdal
