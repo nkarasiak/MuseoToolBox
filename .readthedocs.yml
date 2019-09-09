@@ -7,7 +7,9 @@ build:
 
 python:
     version: 3.7
+    system_packages: true
     setup_py_install: true
+    pip_install: true
     install:
      - requirements: requirements-dev.txt
 
