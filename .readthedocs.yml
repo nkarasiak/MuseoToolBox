@@ -13,6 +13,7 @@ python:
     install:
       - requirements: requirements-dev.txt
       - method: setuptools
+        path: .
      
 conda:
     environment: .environment.yml
