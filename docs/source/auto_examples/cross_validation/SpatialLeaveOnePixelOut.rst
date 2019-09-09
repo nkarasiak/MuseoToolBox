@@ -38,7 +38,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
     X,y = raster_tools.getSamplesFromROI(raster,vector,field)
     distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
@@ -60,6 +60,7 @@ n_splits will be the number  of the least populated class
     SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                     random_state=12)
 
+
     print(SLOPO.get_n_splits(X,y))
 
 
@@ -73,7 +74,7 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    8
+    3
 
 
 .. note::
@@ -85,7 +86,7 @@ n_splits will be the number  of the least populated class
 
     for tr,vl in SLOPO.split(X,y):
         print(tr.shape,vl.shape)
-    
+
 
 
 
@@ -96,14 +97,9 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    (10257,) (5,)
-    (8010,) (5,)
-    (9927,) (5,)
-    (8797,) (5,)
-    (10945,) (5,)
-    (8448,) (5,)
-    (8780,) (5,)
-    (8101,) (5,)
+    (2388,) (5,)
+    (1982,) (5,)
+    (1929,) (5,)
 
 
 Draw image
@@ -139,7 +135,7 @@ Draw image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.347 seconds)
+   **Total running time of the script:** ( 0 minutes  0.260 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:
