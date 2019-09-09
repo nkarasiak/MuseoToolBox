@@ -6,4 +6,5 @@ dependencies:
            - nbsphinx
            - sphinx-rtd-theme
            - sphinx-gallery
+           - joblib
 
