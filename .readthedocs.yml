@@ -8,6 +8,9 @@ build:
 python:
     version: 3.7
     setup_py_install: true
+    install:
+     - requirements: requirements-dev.txt
+
 
 conda:
     file: .environment.yml
