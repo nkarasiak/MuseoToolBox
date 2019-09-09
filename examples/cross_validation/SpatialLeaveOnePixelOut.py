@@ -20,7 +20,7 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 X,y = raster_tools.getSamplesFromROI(raster,vector,field)
 distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
@@ -33,6 +33,7 @@ distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
 SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                 random_state=12)
 
+
 print(SLOPO.get_n_splits(X,y))
 
 
@@ -42,7 +43,7 @@ print(SLOPO.get_n_splits(X,y))
 
 for tr,vl in SLOPO.split(X,y):
     print(tr.shape,vl.shape)
-    
+
 #############################################
 # Draw image
 import numpy as np

@@ -52,6 +52,6 @@ setuptools.setup(
         ],
     },
     package_data={
-      'museotoolbox': ['datasets/historicalmap/map_compress.tif','datasets/historicalmap/train.gpkg','datasets/historicalmap/train_centroid.gpkg']
+      'museotoolbox': ['datasets/historicalmap/map_compress.tif','datasets/historicalmap/map_lowres.tif','datasets/historicalmap/train.gpkg','datasets/historicalmap/train_centroid.gpkg']
    }
  )

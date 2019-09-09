@@ -39,9 +39,9 @@ classifier = RandomForestClassifier(random_state=12)
 # Start learning
 # ---------------------------
 
-LAP = learnAndPredict(n_jobs=-1)
+LAP = learnAndPredict(n_jobs=1)
 LAP.learnFromVector(X,y,cv=SKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+                    classifier=classifier,param_grid=dict(n_estimators=[10]))
 
 ##############################################################################
 # Get kappa from each fold

@@ -38,7 +38,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
     X,y = raster_tools.getSamplesFromROI(raster,vector,field)
     distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
@@ -95,8 +95,8 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    (8416,) (4231,)
-    (8379,) (4268,)
+    (2072,) (1090,)
+    (2087,) (1075,)
 
 
 Save each train/valid fold in a file
@@ -164,7 +164,7 @@ Plot example on how a polygon was splitted
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  5.754 seconds)
+   **Total running time of the script:** ( 0 minutes  0.774 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveAsideOut.py:

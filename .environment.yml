@@ -1,0 +1,10 @@
+name: museotoolbox
+dependencies:
+        - python=3.7
+        - GDAL
+        - pip:
+           - nbsphinx
+           - sphinx-rtd-theme
+           - sphinx-gallery
+           - joblib
+

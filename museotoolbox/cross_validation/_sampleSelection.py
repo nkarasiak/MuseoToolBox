@@ -54,7 +54,7 @@ class _sampleSelection:
         if self.params['random_state'] is None:
             import time
             self.params['random_state'] = int(time.time())
-
+        
     def reinitialize(self):
         _sampleSelection.__init__(self)
 
