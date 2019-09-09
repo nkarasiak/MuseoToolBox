@@ -6,4 +6,10 @@ dependencies:
         - scikit-learn
         - scipy
         - matplotlib
-        
+        - recommonmark
+        - sphinx>=1.4
+        - numpydoc
+        - sphinx-rtd-theme
+        - ipykernel
+        - nbsphinx
+        - sphinx-gallery
