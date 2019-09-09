@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.addFunction
-====================================================
+museotoolbox.raster\_tools.rasterMath.addFunction
+=================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

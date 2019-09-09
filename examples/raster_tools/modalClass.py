@@ -40,10 +40,9 @@ print(rM.getRandomBlock())
 x = rM.getRandomBlock()
 
 def modalClass(x):
-    tmp = stats.mode(x, axis=-1)
+    tmp = stats.mode(x,axis=1)
     tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
     return tmpStack
-
 
 rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 

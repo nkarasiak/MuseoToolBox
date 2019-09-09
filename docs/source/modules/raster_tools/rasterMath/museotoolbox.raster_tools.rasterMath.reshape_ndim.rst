@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.reshape\_ndim
-======================================================
+museotoolbox.raster\_tools.rasterMath.reshape\_ndim
+===================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

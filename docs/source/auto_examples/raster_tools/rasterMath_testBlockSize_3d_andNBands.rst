@@ -13,13 +13,11 @@ Tests rasterMath with full block or stacken and custom block size
 Test notebook in order to validate code.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
@@ -32,12 +30,12 @@ Import librairies
 
 
 
+
 Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -52,8 +50,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Set return_3d to True to have full block size (not one pixel per row)
@@ -68,27 +65,17 @@ Initialize rasterMath with raster
     
         print(rM.getRandomBlock().shape)
     
-        #######################
-        # Plot blocks
-    
         x = rM.getRandomBlock()
-        def returnFlatten(x):
-            try:
-                x = x[:,:,0]
-            except:
-                x = x[:,0].reshape(-1,1)
-            return x
-        def returnWithOneBandMore(x):
-            try:
-                x = np.repeat(x,3,axis=2)
-            except:
-                x= np.repeat(x,3,axis=1)
-            return x
     
-        rM.addFunction(returnWithOneBandMore,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
+        # Returns with only 1 dimension
+        returnFlatten = lambda x : x[...,0]
+    
+        # Returns 3x the original last dimension
+        addOneBand = lambda x : np.repeat(x,3,axis=x.ndim-1)
+    
+        # Add functions to rasterMath
+        rM.addFunction(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
         rM.addFunction(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
-
-    
     
         rM.run()
     
@@ -112,6 +99,7 @@ Initialize rasterMath with raster
     Total number of blocks : 15
     Total number of blocks : 18
     (200, 200, 3)
+<<<<<<< HEAD
     Using datatype from numpy table : uint8
     Detected 9 band(s) for function returnWithOneBandMore.
     No data is set to : 0
@@ -136,6 +124,35 @@ Initialize rasterMath with raster
 
 
 **Total running time of the script:** ( 0 minutes  0.908 seconds)
+=======
+    Using datatype from numpy table : uint8.
+    Detected 9 bands for function <lambda>.
+    No data is set to : 0
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function <lambda>.
+    No data is set to : 0
+    rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
+    Saved /tmp/x_repeat_True.tif using function <lambda>
+    Saved /tmp/x_flatten_True.tif using function <lambda>
+    Total number of blocks : 15
+    Total number of blocks : 18
+    (2324, 3)
+    Using datatype from numpy table : uint8.
+    Detected 9 bands for function <lambda>.
+    No data is set to : 0
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function <lambda>.
+    No data is set to : 0
+    rasterMath... [........................................]0%    rasterMath... [##......................................]5%    rasterMath... [####....................................]11%    rasterMath... [######..................................]16%    rasterMath... [########................................]22%    rasterMath... [###########.............................]27%    rasterMath... [#############...........................]33%    rasterMath... [###############.........................]38%    rasterMath... [#################.......................]44%    rasterMath... [####################....................]50%    rasterMath... [######################..................]55%    rasterMath... [########################................]61%    rasterMath... [##########################..............]66%    rasterMath... [############################............]72%    rasterMath... [###############################.........]77%    rasterMath... [#################################.......]83%    rasterMath... [###################################.....]88%    rasterMath... [#####################################...]94%    rasterMath... [########################################]100%
+    Saved /tmp/x_repeat_False.tif using function <lambda>
+    Saved /tmp/x_flatten_False.tif using function <lambda>
+
+
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  5.302 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:

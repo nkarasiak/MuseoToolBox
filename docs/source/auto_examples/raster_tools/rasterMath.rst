@@ -13,13 +13,11 @@ Basics to use rasterMath
 Compute substract and addition between two raster bands.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -51,8 +48,7 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM = rasterMath(raster)
@@ -64,11 +60,19 @@ Initialize rasterMath with raster
 
 
 .. rst-class:: sphx-glr-script-out
+<<<<<<< HEAD
 
  Out:
 
  .. code-block:: none
 
+=======
+
+ Out:
+
+ .. code-block:: none
+
+>>>>>>> develop
     Total number of blocks : 15
     [[178 154 120]
      [196 172 138]
@@ -83,19 +87,31 @@ Let's suppose you want compute the difference between blue and green band
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
+.. code-block:: default
 
-.. code-block:: python
+
+    X = rM.getRandomBlock()
+ 
+    sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
 
-    x = rM.getRandomBlock()
 
-    def sub(x):
-        return np.array((x[:,0]-x[:,1])).astype(np.int64) 
 
+
+
+
+You can use a standard python function too :
+
+def sub(X):
+    return np.array((X[:,0]-X[:,1])).astype(np.int64) 
+
+
+.. code-block:: default
 
 
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
 
+<<<<<<< HEAD
 
 
 
@@ -111,15 +127,32 @@ I suggest you to define type in numpy array to save space while creating the ras
 
 
 Run the script
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
+    Using datatype from numpy table : int64.
+    Detected 1 band for function <lambda>.
+
+
+Run the script
+
+
+.. code-block:: default
 
 
     rM.run()
 
 
+<<<<<<< HEAD
 
 
 
@@ -134,10 +167,25 @@ Run the script
 
 
 Plot result
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
+    Saved /tmp/sub.tif using function <lambda>
+
+
+Plot result
+
+
+.. code-block:: default
 
 
     import gdal
@@ -154,7 +202,14 @@ Plot result
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 0 minutes  0.192 seconds)
+=======
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.546 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.predictConfidenceOfPredictedClass
-==============================================================================
+museotoolbox.learn\_tools.learnAndPredict.predictConfidenceOfPredictedClass
+===========================================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

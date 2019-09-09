@@ -13,13 +13,11 @@ Learn with Random-Forest and compare Cross-Validation methods
 This example shows how to make a classification with different cross-validation methods.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.learn_tools import learnAndPredict
@@ -38,8 +36,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -56,8 +53,7 @@ Initialize Random-Forest
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     classifier = RandomForestClassifier(random_state=12)
@@ -72,8 +68,7 @@ Create list of different CV
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
@@ -115,19 +110,19 @@ Create list of different CV
     Received groups value, but randomCV don't use it
     Received groups value, but randomCV don't use it
     Kappa for RandomStratifiedKFold
-    0.9449216394803083
-    0.9402962903419407
-    0.956770458550679
-    0.9527118613729597
-    0.9498465389079399
+    0.9459508997985406
+    0.950684223065908
+    0.9448851656144066
+    0.9434477048060472
+    0.9499702757735622
     ====================
     Kappa for LeavePSubGroupOut
-    0.7729732773963548
-    0.7528741974239855
+    0.6544460536982609
+    0.6994215020651169
     ====================
     Kappa for LeaveOneSubGroupOut
-    0.8455136259149088
-    0.9639252475817985
+    0.9443718915193251
+    0.7742689896895922
     ====================
     Kappa for StratifiedKFold
     0.9328613433474189
@@ -141,8 +136,7 @@ Create list of different CV
 Plot example
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
 
@@ -162,7 +156,10 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  45.022 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  44.455 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:

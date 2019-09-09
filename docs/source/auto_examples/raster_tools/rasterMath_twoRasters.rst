@@ -12,13 +12,11 @@ rasterMath with several rasters as inputs
 
 Compute substract and addition between two raster bands.
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
@@ -34,8 +32,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -49,12 +46,10 @@ Load HistoricalMap dataset
 Initialize rasterMath with raster
 ------------------------------------
 
-
 If invert is set to True, it means polygons will be set to nodata
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=True)
@@ -72,27 +67,36 @@ If invert is set to True, it means polygons will be set to nodata
  Out:
 
  .. code-block:: none
+<<<<<<< HEAD
+
+    Total number of blocks : 15
+    Number of rasters : 2
+=======
+>>>>>>> develop
 
     Total number of blocks : 15
     Number of rasters : 2
 
 
-Let's suppose you want compute the substractino between the blue and green band of two inputs
+Let's suppose you want compute the substraction between the blue and green band of two inputs
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     x = rM.getRandomBlock()
 
     def sub(x):
-        return np.array((x[0][...,0]-x[1][...,2])).astype(np.uint8)
+        firstBandOfFirstRaster = x[0][...,0]
+        thirdBandOfSecondRaster = x[1][...,2]
+        difference = np.array(firstBandOfFirstRaster-thirdBandOfSecondRaster,dtype=np.uint8)
+        return difference
 
     rM.addFunction(sub,outRaster='/tmp/sub_2inputs.tif')
 
 
+<<<<<<< HEAD
 
 
 
@@ -108,15 +112,48 @@ I suggest you to define type in numpy array to save space while creating the ras
 
 
 Run the script
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Using datatype from numpy table : uint8.
+    Detected 1 band for function sub.
+    No data is set to : 0
+
+
+Run the script
+
+
+.. code-block:: default
 
 
     rM.run()
 
 
+<<<<<<< HEAD
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
+    Saved /tmp/sub_2inputs.tif using function sub
+
+
+Plot result
+=======
+>>>>>>> develop
 
 
 
@@ -133,8 +170,7 @@ Run the script
 Plot result
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -153,7 +189,14 @@ Plot result
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 0 minutes  0.271 seconds)
+=======
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.470 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_twoRasters.py:

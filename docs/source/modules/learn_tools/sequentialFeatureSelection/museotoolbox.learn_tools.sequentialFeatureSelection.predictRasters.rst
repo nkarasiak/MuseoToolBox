@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.sequentialFeatureSelection\.predictRasters
-======================================================================
+museotoolbox.learn\_tools.sequentialFeatureSelection.predictRasters
+===================================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

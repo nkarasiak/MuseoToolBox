@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.RandomStratifiedKFold\.saveVectorFiles
-=======================================================================
+museotoolbox.cross\_validation.RandomStratifiedKFold.saveVectorFiles
+====================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

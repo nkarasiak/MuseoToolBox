@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.RandomStratifiedKFold\.reinitialize
-====================================================================
+museotoolbox.cross\_validation.RandomStratifiedKFold.reinitialize
+=================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

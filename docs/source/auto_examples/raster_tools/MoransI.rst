@@ -13,13 +13,11 @@ Compute Moran's I with different lags from raster
 Compute Moran's I with different lags, support mask.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     import numpy as np
     from museotoolbox import raster_tools
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = historicalMap()
@@ -50,8 +47,7 @@ Load HistoricalMap dataset
 Default, invert is False, it means only polygons will be kept (the rest is set to nodata)
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     mask = '/tmp/mask.tif'
     raster_tools.rasterMaskFromVector(vector,raster,mask,invert=False)
@@ -65,10 +61,9 @@ Default, invert is False, it means only polygons will be kept (the rest is set t
 Compute Moran's I for lag 1
 
 
+.. code-block:: default
 
-.. code-block:: python
-
-    lags = range(1,11)
+    lags = range(1,5)
     Is = []
     for lag in lags:
         MoransI = raster_tools.Moran(raster,'/tmp/mask.tif',lag=lag)
@@ -84,8 +79,7 @@ Plot result
 -----------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     from matplotlib import pyplot as plt 
     plt.title('Evolution of Moran\'s I')
@@ -101,7 +95,10 @@ Plot result
 
 
 
-**Total running time of the script:** ( 1 minutes  35.244 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  47.897 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_MoransI.py:

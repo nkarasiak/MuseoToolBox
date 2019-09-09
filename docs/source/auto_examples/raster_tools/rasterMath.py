@@ -32,12 +32,15 @@ print(rM.getRandomBlock())
 # Let's suppose you want compute the difference between blue and green band
 # I suggest you to define type in numpy array to save space while creating the raster!
 
-x = rM.getRandomBlock()
+X = rM.getRandomBlock()
+ 
+sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
-def sub(x):
-    return np.array((x[:,0]-x[:,1])).astype(np.int64) 
-
-
+####################
+# You can use a standard python function too :
+#
+# def sub(X):
+#     return np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
 rM.addFunction(sub,outRaster='/tmp/sub.tif')
 #####################

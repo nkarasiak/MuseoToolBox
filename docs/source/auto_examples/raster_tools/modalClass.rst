@@ -13,13 +13,11 @@ Modal class and number of agreements
 Create a raster with the modal class and the number of agreements.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import museotoolbox as mtb
@@ -35,8 +33,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = mtb.datasets.historicalMap()
@@ -51,8 +48,7 @@ Initialize rasterMath with raster
 -----------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     ########
@@ -68,11 +64,19 @@ Initialize rasterMath with raster
 
 
 .. rst-class:: sphx-glr-script-out
+<<<<<<< HEAD
 
  Out:
 
  .. code-block:: none
 
+=======
+
+ Out:
+
+ .. code-block:: none
+
+>>>>>>> develop
     Total number of blocks : 15
     [[143 153 128]
      [141 151 126]
@@ -87,22 +91,21 @@ Let's suppose you want compute the modal classification between several predicti
 The first band will be the most predicted class, and the second the number of times it has been predicted.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
 
     x = rM.getRandomBlock()
 
     def modalClass(x):
-        tmp = stats.mode(x, axis=-1)
+        tmp = stats.mode(x,axis=1)
         tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
         return tmpStack
-
 
     rM.addFunction(modalClass,outRaster='/tmp/modal.tif',outNoData=0)
 
 
+<<<<<<< HEAD
 
 
 
@@ -118,15 +121,48 @@ The first band will be the most predicted class, and the second the number of ti
 
 
 Run the script
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Using datatype from numpy table : int16.
+    Detected 2 bands for function modalClass.
+    No data is set to : 0
+
+
+Run the script
+
+
+.. code-block:: default
 
 
     rM.run()
 
 
+<<<<<<< HEAD
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
+    Saved /tmp/modal.tif using function modalClass
+
+
+Plot result
+=======
+>>>>>>> develop
 
 
 
@@ -143,8 +179,7 @@ Run the script
 Plot result
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     import gdal
@@ -161,7 +196,14 @@ Plot result
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 0 minutes  0.297 seconds)
+=======
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.991 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_modalClass.py:

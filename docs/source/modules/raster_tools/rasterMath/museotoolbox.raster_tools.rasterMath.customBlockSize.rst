@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.customBlockSize
-========================================================
+museotoolbox.raster\_tools.rasterMath.customBlockSize
+=====================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

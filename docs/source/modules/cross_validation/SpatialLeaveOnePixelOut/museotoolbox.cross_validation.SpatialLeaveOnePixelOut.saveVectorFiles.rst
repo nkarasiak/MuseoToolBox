@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.SpatialLeaveOnePixelOut\.saveVectorFiles
-=========================================================================
+museotoolbox.cross\_validation.SpatialLeaveOnePixelOut.saveVectorFiles
+======================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

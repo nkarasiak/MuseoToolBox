@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.filterNoData
-=====================================================
+museotoolbox.raster\_tools.rasterMath.filterNoData
+==================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

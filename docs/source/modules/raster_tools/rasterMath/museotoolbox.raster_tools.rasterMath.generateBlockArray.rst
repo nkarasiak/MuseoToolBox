@@ -1,5 +1,5 @@
-museotoolbox\.raster\_tools\.rasterMath\.generateBlockArray
-===========================================================
+museotoolbox.raster\_tools.rasterMath.generateBlockArray
+========================================================
 
 .. currentmodule:: museotoolbox.raster_tools
 

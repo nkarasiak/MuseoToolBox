@@ -19,6 +19,7 @@ The :mod:`museotoolbox.raster_tools` module gathers raster functions.
 from __future__ import absolute_import, print_function
 
 import gdal
+import ogr
 import numpy as np
 import os
 import tempfile
@@ -138,7 +139,7 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
 
     NP2GDAL_CONVERSION = {
         "uint8": 1,
-        "int8": 1,
+        "int8": 3,
         "uint16": 2,
         "int16": 3,
         "uint32": 4,
@@ -155,10 +156,15 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
     else:
 
-        code = NP2GDAL_CONVERSION[numpyDT]
-        if numpyDT.endswith('int64'):
-            print(
-                'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+        try:
+            code = NP2GDAL_CONVERSION[numpyDT]
+            if numpyDT.endswith('int64'):
+                pushFeedback(
+                        'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+        except:
+            code = 7
+            pushFeedback(
+                        'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(numpyDT))
     return code
 
 
@@ -285,8 +291,32 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     # Convert vector to raster
 
     nFields = len(fields)
-    if nFields == 0:
-        fields = None
+
+    if nFields == 0 or fields[0] == False:
+        fields = [False]
+    else:
+        source = ogr.Open(inVector)
+        layer = source.GetLayer()
+        np_dtypes = []
+        ldefn = layer.GetLayerDefn()
+        for f in fields:
+            idx = ldefn.GetFieldIndex(f)
+            if idx == -1:
+                raise ValueError('Field "{}" was not found.'.format(f))
+            fdefn = ldefn.GetFieldDefn(idx)
+            fdefn_type = fdefn.type
+            if fdefn_type < 4 or fdefn_type == 12:
+                if fdefn_type > 1 and fdefn_type != 12:
+                    np_dtype = np.float64
+                else:
+                    np_dtype = np.int64
+            else:
+                raise ValueError(
+                    'Wrong type for field "{}" : {}. \nPlease use int or float.'.format(
+                        f, fdefn.GetFieldTypeName(
+                            fdefn.type)))
+            np_dtypes.append(np_dtype)
+
     rois = []
     temps = []
     for field in fields:
@@ -324,6 +354,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         coords = np.array([], dtype=np.int64).reshape(0, 2)
 
     xDataType = convertGdalAndNumpyDataType(gdalDT)
+
     # Read block data
     X = np.array([], dtype=xDataType).reshape(0, d)
     F = np.array([], dtype=np.int64).reshape(
@@ -384,7 +415,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                         X = np.concatenate((X, Xtp))
                     except MemoryError:
                         raise MemoryError(
-                            'Impossible to allocate memory: ROI too big')
+                            'Impossible to allocate memory: ROI file is too big.')
 
     if verbose:
         pb.addPosition(100)
@@ -451,8 +482,17 @@ def rasterize(data, vectorSrc, field, outFile,
     dst_ds.SetProjection(dataSrc.GetProjection())
 
     if field is False or field is None:
-        options = gdal.RasterizeOptions(inverse=invert)
-        gdal.Rasterize(dst_ds, vectorSrc, options=options)
+        if invert == True:
+            try:
+                options = gdal.RasterizeOptions(inverse=invert)
+                gdal.Rasterize(dst_ds, vectorSrc, options=options)
+            except:
+                raise Exception('Version of gdal is too old : RasterizeOptions is not available.\nPlease update.')
+        else:
+#            gdal.Rasterize(dst_ds, vectorSrc)
+            gdal.RasterizeLayer(dst_ds, [1], lyr, None)
+
+            
         dst_ds.GetRasterBand(1).SetNoDataValue(0)
     else:
         OPTIONS = ['ATTRIBUTE=' + field]
@@ -464,8 +504,13 @@ def rasterize(data, vectorSrc, field, outFile,
 
 class rasterMath:
     """
-    Read a raster per block, and perform one or many functions to one or many raster outputs.
+    Read one or multiple rasters per block, and perform one or many functions to one or many raster outputs.
     If you want a sample of your data, just call getRandomBlock().
+
+    The default option of rasterMath will return in 2d the dataset :
+        - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
+
+    If you want to have the data in 3d (X,Y,Z), masked data will be given too (using numpy.ma).
 
     Parameters
     ----------
@@ -555,7 +600,7 @@ class rasterMath:
         """
         openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
         if openRaster is None:
-            raise ReferenceError('Impossible to open ' + inRaster)
+            raise ReferenceError('Impossible to open image ' + inRaster)
         else:
             self.openRasters.append(openRaster)
 
@@ -566,7 +611,7 @@ class rasterMath:
             outNBand=False,
             outNumpyDT=False,
             outNoData=False,
-            compress=False,
+            compress=True,
             **kwargs):
         """
         Add function to rasterMath.
@@ -577,16 +622,14 @@ class rasterMath:
             Function to parse with one arguments used to
         outRaster : str.
             Path of the raster to save the result.
-        outNBand : int, default False.
-            Number of bands of the outRaster.
-            If False will take the number of dimensions from the first result of the function.
         outNumpyDT : int, default False.
             If False, will use the datatype of the function result.
         outNoData : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compress: boolean, default False.
+        compress: boolean, str ('high'),  default True.
             If True, will use DEFLATE compression using all cpu-cores minus 1.
+            If 'high', will use DEFLATE with ZLEVEL = 9 and PREDICTOR=2.
         **kwargs
 
         """
@@ -597,19 +640,24 @@ class rasterMath:
         if outNumpyDT is False:
             dtypeName = randomBlock.dtype.name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
-            pushFeedback('Using datatype from numpy table : ' + str(dtypeName))
+            pushFeedback(
+                'Using datatype from numpy table : {}.'.format(dtypeName))
         else:
             dtypeName = np.dtype(outNumpyDT).name
             outGdalDT = convertGdalAndNumpyDataType(numpyDT=dtypeName)
 
-        if outNBand is False:
-            randomBlock = self.reshape_ndim(randomBlock)
+        # get number of bands
+        randomBlock = self.reshape_ndim(randomBlock)
 
-            outNBand = randomBlock.shape[-1]
-            if self.verbose:
-                print(
-                    'Detected {} band(s) for function {}.'.format(
-                        outNBand, function.__name__))
+        outNBand = randomBlock.shape[-1]
+        need_s = ''
+        if outNBand > 1:
+            need_s = 's'
+
+        if self.verbose:
+            pushFeedback(
+                'Detected {} band{} for function {}.'.format(
+                    outNBand, need_s, function.__name__))
 
         self.__addOutput__(outRaster, outNBand, outGdalDT, compress=compress)
         self.functions.append(function)
@@ -631,19 +679,23 @@ class rasterMath:
                 outNoData = minValue
 
             if self.verbose:
-                print('No data is set to : ' + str(outNoData))
+                pushFeedback('No data is set to : ' + str(outNoData))
 
         self.outputNoData.append(outNoData)
 
     def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
-        if compress is True:
+        if compress is True or compress=='high':
             options = [
                 'BIGTIFF=IF_SAFER',
                 'COMPRESS=DEFLATE',
                 'NUM_THREADS={}'.format(
                     os.cpu_count() - 1)]
+            if compress == 'high':
+                options.append('PREDICTOR=2')
+                options.append('ZLEVEL=9')
+                
         else:
             options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
@@ -823,16 +875,18 @@ class rasterMath:
         """
         Yields each whole band as np masked array (so with masked data)
         """
-        for nb in range(1, self.nb + 1):
-            band = self.openRasters[0].GetRasterBand(nb)
-            band = band.ReadAsArray()
-            if self.mask:
-                mask = np.asarray(
-                    self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
-                band = np.ma.MaskedArray(band, mask=~mask)
-            else:
-                band = np.ma.MaskedArray(band)
-            yield band
+        for nRaster in range(len(self.openRasters)):
+            nb = self.openRasters[nRaster].RasterCount
+            for n in range(1,nb+1):
+                band = self.openRasters[nRaster].GetRasterBand(n)
+                band = band.ReadAsArray()
+                if self.mask:
+                    mask = np.asarray(
+                        self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
+                    band = np.ma.MaskedArray(band, mask=~mask)
+                else:
+                    band = np.ma.MaskedArray(band,mask=np.where(band==self.nodata,True,False))
+                yield band
 
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
         """
@@ -900,14 +954,11 @@ class rasterMath:
         self.n_block = np.ceil(self.nl / self.y_block_size).astype(int) * np.ceil(self.nc /
                                                                                   self.x_block_size).astype(int)
         if self.verbose:
-            print('Total number of blocks : %s' % self.n_block)
+            pushFeedback('Total number of blocks : %s' % self.n_block)
 
     def run(self):
         """
-        Process with outside function.
-
-        Parameters
-        ----------
+        Process writing with outside function.
 
         Returns
         -------
@@ -995,7 +1046,7 @@ class rasterMath:
                     curBand = self.outputs[idx].GetRasterBand(indGdal)
 
                     resToWrite = resFun[..., ind]
-
+                    
                     if self.return_3d is False:
                         # need to reshape as block
                         resToWrite = resToWrite.reshape(lines, cols)
@@ -1015,7 +1066,7 @@ class rasterMath:
                 band.FlushCache()
 
             if self.verbose:
-                print(
+                pushFeedback(
                     'Saved {} using function {}'.format(
                         self.outputs[idx].GetDescription(), str(
                             fun.__name__)))

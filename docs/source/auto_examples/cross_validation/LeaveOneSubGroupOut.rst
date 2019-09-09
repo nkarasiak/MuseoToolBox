@@ -13,13 +13,11 @@ Leave-One-SubGroup-Out (LOSGO)
 This example shows how to make a Leave-One-SubGroup-Out.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.cross_validation import LeaveOneSubGroupOut
@@ -36,8 +34,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -57,8 +54,7 @@ if n_splits is False (default), the number of splits will be the smallest
 number of subgroup of all labels.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     valid_size = 0.5 # Means 50%
@@ -74,8 +70,7 @@ number of subgroup of all labels.
    Split is made to generate each fold
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LOSGO.get_n_splits(X,y,s)
@@ -101,8 +96,7 @@ Differences with sklearn
 Sklearn do not use subgroups (only groups), so no hierarchical dependances.
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     from sklearn.model_selection import LeaveOneGroupOut
@@ -142,8 +136,7 @@ Sklearn do not use subgroups (only groups), so no hierarchical dependances.
 Plot example
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     
     import numpy as np
@@ -161,7 +154,10 @@ Plot example
 
 
 
-**Total running time of the script:** ( 0 minutes  0.167 seconds)
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.268 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneSubGroupOut.py:

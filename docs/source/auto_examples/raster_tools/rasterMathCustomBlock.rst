@@ -14,13 +14,11 @@ Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.raster_tools import rasterMath
@@ -37,8 +35,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     raster,vector = datasets.historicalMap()
@@ -53,13 +50,12 @@ Initialize rasterMath with raster
 ------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     # Set return2d to False to have full block size (not one pixel per row)
 
-    rM = rasterMath(raster,return_3d=False)
+    rM = rasterMath(raster,return_3d=True)
 
     print(rM.getRandomBlock().shape)
 
@@ -74,24 +70,27 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
+<<<<<<< HEAD
     (1566, 3)
+=======
+    (54, 256, 3)
+>>>>>>> develop
 
 
 Comparing different block size (%, fixed, full block)
 -------------------------------------------------------
 
-
 You can define block by percentage of the whole width/height
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(1/2,1/2) 
     print(rM.getRandomBlock().shape)
 
 
+<<<<<<< HEAD
 
 
 
@@ -106,16 +105,32 @@ You can define block by percentage of the whole width/height
 
 
 Or by fixed window 
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 4
+    (283, 526, 3)
+
+
+Or by fixed window 
+
+
+.. code-block:: default
 
 
     rM.customBlockSize(50,100) # width divided every 50 pixel and height every 100
     print(rM.getRandomBlock().shape)
 
 
+<<<<<<< HEAD
 
 
 
@@ -130,15 +145,46 @@ Or by fixed window
 
 
 To have the full image (one block)
+=======
+>>>>>>> develop
 
 
 
-.. code-block:: python
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 132
+    (100, 50, 3)
+
+
+To have the full image (one block)
+
+
+.. code-block:: default
 
 
     rM.customBlockSize(-1,-1) # to have the full image
 
 
+<<<<<<< HEAD
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 1
+
+
+To have block width divided by 4 and height by 2
+=======
+>>>>>>> develop
 
 
 
@@ -154,13 +200,28 @@ To have the full image (one block)
 To have block width divided by 4 and height by 2
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     rM.customBlockSize(1/4,1/2)
 
 
+<<<<<<< HEAD
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 8
+
+
+Plot blocks
+=======
+>>>>>>> develop
 
 
 
@@ -176,8 +237,7 @@ To have block width divided by 4 and height by 2
 Plot blocks
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     fig=plt.figure(figsize=(12,6),dpi=150)
@@ -199,7 +259,14 @@ Plot blocks
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 0 minutes  0.354 seconds)
+=======
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  0.924 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:

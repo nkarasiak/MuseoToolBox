@@ -33,13 +33,16 @@ rM.addInputRaster(raster)
 print('Number of rasters : '+str(len(rM.getRandomBlock())))
 
 ##########################
-# Let's suppose you want compute the substractino between the blue and green band of two inputs
+# Let's suppose you want compute the substraction between the blue and green band of two inputs
 # I suggest you to define type in numpy array to save space while creating the raster!
 
 x = rM.getRandomBlock()
 
 def sub(x):
-    return np.array((x[0][...,0]-x[1][...,2])).astype(np.uint8)
+    firstBandOfFirstRaster = x[0][...,0]
+    thirdBandOfSecondRaster = x[1][...,2]
+    difference = np.array(firstBandOfFirstRaster-thirdBandOfSecondRaster,dtype=np.uint8)
+    return difference
 
 rM.addFunction(sub,outRaster='/tmp/sub_2inputs.tif')
 

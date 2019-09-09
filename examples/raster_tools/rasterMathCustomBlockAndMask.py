@@ -44,11 +44,6 @@ x = rM.getRandomBlock()
 
 rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,outNumpyDT=np.int16)
 
-for tile in rM.readBlockPerBlock():
-    pass
-# print last column 83 from last block
-print(tile[:,83,0])
-
 rM.run()
 
 import gdal

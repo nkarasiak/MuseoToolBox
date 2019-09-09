@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.sequentialFeatureSelection\.customizeX
-==================================================================
+museotoolbox.learn\_tools.sequentialFeatureSelection.customizeX
+===============================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

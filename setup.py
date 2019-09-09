@@ -36,7 +36,7 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=["numpy","scipy","matplotlib","scikit-learn","GDAL"],
+    install_requires=["numpy","scipy","scikit-learn"],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -50,5 +50,8 @@ setuptools.setup(
             'mtb_sampleExtraction=museotoolbox.vector_tools.sampleExtraction:main',
             'mtb_modalClass=museotoolbox.stats.computeClassificationStability:modalClassCLI'
         ],
-    }
+    },
+    package_data={
+      'museotoolbox': ['datasets/historicalmap/map_compress.tif','datasets/historicalmap/train.gpkg','datasets/historicalmap/train_centroid.gpkg']
+   }
  )

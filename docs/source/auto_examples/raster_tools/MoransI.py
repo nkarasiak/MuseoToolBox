@@ -27,7 +27,7 @@ raster_tools.rasterMaskFromVector(vector,raster,mask,invert=False)
 
 ################################
 # Compute Moran's I for lag 1
-lags = range(1,11)
+lags = range(1,5)
 Is = []
 for lag in lags:
     MoransI = raster_tools.Moran(raster,'/tmp/mask.tif',lag=lag)

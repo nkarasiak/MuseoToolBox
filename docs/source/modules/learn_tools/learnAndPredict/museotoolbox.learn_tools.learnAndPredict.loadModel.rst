@@ -1,5 +1,5 @@
-museotoolbox\.learn\_tools\.learnAndPredict\.loadModel
-======================================================
+museotoolbox.learn\_tools.learnAndPredict.loadModel
+===================================================
 
 .. currentmodule:: museotoolbox.learn_tools
 

@@ -14,6 +14,7 @@ vector_tools
       addUniqueIDForVector
       getDistanceMatrix
       getDriverAccordingToFileName
+      getOgrDataTypeToNumpy
       readValuesFromVector
    
    

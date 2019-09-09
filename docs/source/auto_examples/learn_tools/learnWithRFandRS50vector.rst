@@ -14,13 +14,11 @@ This example shows how to make a Random Sampling with
 50% for each class.
 
 
-
 Import librairies
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from museotoolbox.learn_tools import learnAndPredict
@@ -38,8 +36,7 @@ Load HistoricalMap dataset
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     X,y = datasets.historicalMap(return_X_y=True)
@@ -54,8 +51,7 @@ Create CV
 -------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     SKF = RandomStratifiedKFold(n_splits=2,n_repeats=5,
                     random_state=12,verbose=False)
@@ -70,8 +66,7 @@ Initialize Random-Forest
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     classifier = RandomForestClassifier(random_state=12)
@@ -86,8 +81,7 @@ Start learning
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LAP = learnAndPredict(n_jobs=-1)
@@ -104,8 +98,7 @@ Get kappa from each fold
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
   
     for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
@@ -137,8 +130,7 @@ Get each confusion matrix from folds
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     for stats in LAP.getStatsFromCV(confusionMatrix=True):
@@ -210,8 +202,7 @@ Only get accuracies score (OA and Kappa)
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=False):
@@ -243,8 +234,7 @@ Save each confusion matrix from folds
 -----------------------------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
@@ -259,8 +249,7 @@ Predict map
 ---------------------------
 
 
-
-.. code-block:: python
+.. code-block:: default
 
     raster,_ = datasets.historicalMap()
     LAP.predictRaster(raster,'/tmp/classification.tif')
@@ -270,12 +259,22 @@ Predict map
 
 
 .. rst-class:: sphx-glr-script-out
+<<<<<<< HEAD
 
  Out:
 
  .. code-block:: none
 
     Total number of blocks : 15
+=======
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 15
+    Detected 1 band for function predictArray.
+>>>>>>> develop
     Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
     Saved /tmp/classification.tif using function predictArray
 
@@ -283,8 +282,7 @@ Predict map
 Plot example
 
 
-
-.. code-block:: python
+.. code-block:: default
 
 
     from matplotlib import pyplot as plt
@@ -302,7 +300,14 @@ Plot example
 
 
 
+<<<<<<< HEAD
 **Total running time of the script:** ( 1 minutes  9.581 seconds)
+=======
+
+.. rst-class:: sphx-glr-timing
+
+   **Total running time of the script:** ( 0 minutes  59.928 seconds)
+>>>>>>> develop
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

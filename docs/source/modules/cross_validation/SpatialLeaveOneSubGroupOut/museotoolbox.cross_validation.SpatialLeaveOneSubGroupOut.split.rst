@@ -1,5 +1,5 @@
-museotoolbox\.cross\_validation\.SpatialLeaveOneSubGroupOut\.split
-==================================================================
+museotoolbox.cross\_validation.SpatialLeaveOneSubGroupOut.split
+===============================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 

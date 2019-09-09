@@ -28,6 +28,7 @@ raster_tools
       :toctree: raster_tools
       :template: class.rst
    
+      Moran
       rasterMath
    
    
