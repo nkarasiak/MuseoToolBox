@@ -1,0 +1,7 @@
+name: museotoolbox
+dependencies:
+        - python=3.7
+        - GDAL
+        - numpy
+        - scikit-learn
+        - scipy
