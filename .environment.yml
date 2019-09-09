@@ -5,3 +5,8 @@ dependencies:
         - numpy
         - scikit-learn
         - scipy
+        - pip:
+           - nbsphinx
+           - sphinx-rtd-theme
+           - sphinx-gallery
+
