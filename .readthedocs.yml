@@ -3,20 +3,15 @@
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
 version: 2
-formats: []
 
 build:
     image: latest
-
+    
 python:
     version: 3.7
     system_packages: true
-    setup_py_install: true
-    pip_install: true
     install:
      - requirements: requirements-dev.txt
-
-
+     
 conda:
-    file: .environment.yml
-
+    environment: .environment.yml
