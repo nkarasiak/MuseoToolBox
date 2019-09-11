@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/museotoolbox.svg)](https://badge.fury.io/py/museotoolbox) [![Downloads](https://pepy.tech/badge/museotoolbox)](https://pepy.tech/project/museotoolbox)
+
 ![MuseoToolBox logo](https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
 **Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a spatial or subgroup cross-validation strategy and learning and prediction steps with Scikit-Learn. 
