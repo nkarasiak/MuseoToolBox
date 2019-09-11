@@ -6,7 +6,21 @@
 
 The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a few lines : mean/modal/prediction/whittaker (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
 
+#### Using and citing the toolbox
+
+If you use this toolbox in your research and find it useful, please cite MuseoToolBox using the following bibtex reference:
+```
+@misc{karasiak2019mtb,
+title={MuseoToolBox, a remote sensing python library},
+author={Karasiak Nicolas},
+url={https://github.com/lennepkade/museotoolbox},
+year={2019},
+doi={10.5281/zenodo.3404728}
+}
+```
+
 ## What's the point ?
+
 Today, the main usages of Museo ToolBox are :
 - museotoolbox.**cross_validation**
   - Create validation/training sets from vector, and a cross-validation directly compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial validation/training** in order to better estimate a model (a lower spatial auto-correlation overestimation).
@@ -31,7 +45,8 @@ Alternatively, you can install **museotoolbox** directly from the git :
 Feel free to remove the `--user` if you like to install the library for every user on the machine.
 
 ## Who build Museo ToolBox ?
-I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who gave me the love of nice and open-source coding.
+
+I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who initiates me to the nice and open-source coding.
 
 ## Why this name ?
 As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.
