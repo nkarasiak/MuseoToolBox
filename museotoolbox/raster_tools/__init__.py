@@ -15,9 +15,6 @@
 """
 The :mod:`museotoolbox.raster_tools` module gathers raster functions.
 """
-
-from __future__ import absolute_import, print_function
-
 import gdal
 import ogr
 import numpy as np
@@ -160,11 +157,11 @@ def convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
             code = NP2GDAL_CONVERSION[numpyDT]
             if numpyDT.endswith('int64'):
                 pushFeedback(
-                        'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
-        except:
+                    'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+        except BaseException:
             code = 7
             pushFeedback(
-                        'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(numpyDT))
+                'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(numpyDT))
     return code
 
 
@@ -486,13 +483,13 @@ def rasterize(data, vectorSrc, field, outFile,
             try:
                 options = gdal.RasterizeOptions(inverse=invert)
                 gdal.Rasterize(dst_ds, vectorSrc, options=options)
-            except:
-                raise Exception('Version of gdal is too old : RasterizeOptions is not available.\nPlease update.')
+            except BaseException:
+                raise Exception(
+                    'Version of gdal is too old : RasterizeOptions is not available.\nPlease update.')
         else:
-#            gdal.Rasterize(dst_ds, vectorSrc)
+            #            gdal.Rasterize(dst_ds, vectorSrc)
             gdal.RasterizeLayer(dst_ds, [1], lyr, None)
 
-            
         dst_ds.GetRasterBand(1).SetNoDataValue(0)
     else:
         OPTIONS = ['ATTRIBUTE=' + field]
@@ -686,7 +683,7 @@ class rasterMath:
     def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
-        if compress is True or compress=='high':
+        if compress is True or compress == 'high':
             options = [
                 'BIGTIFF=IF_SAFER',
                 'COMPRESS=DEFLATE',
@@ -695,7 +692,7 @@ class rasterMath:
             if compress == 'high':
                 options.append('PREDICTOR=2')
                 options.append('ZLEVEL=9')
-                
+
         else:
             options = ['BIGTIFF=IF_NEEDED']
         dst_ds = self.driver.Create(
@@ -877,7 +874,7 @@ class rasterMath:
         """
         for nRaster in range(len(self.openRasters)):
             nb = self.openRasters[nRaster].RasterCount
-            for n in range(1,nb+1):
+            for n in range(1, nb + 1):
                 band = self.openRasters[nRaster].GetRasterBand(n)
                 band = band.ReadAsArray()
                 if self.mask:
@@ -885,7 +882,9 @@ class rasterMath:
                         self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
                     band = np.ma.MaskedArray(band, mask=~mask)
                 else:
-                    band = np.ma.MaskedArray(band,mask=np.where(band==self.nodata,True,False))
+                    band = np.ma.MaskedArray(
+                        band, mask=np.where(
+                            band == self.nodata, True, False))
                 yield band
 
     def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
@@ -1046,7 +1045,7 @@ class rasterMath:
                     curBand = self.outputs[idx].GetRasterBand(indGdal)
 
                     resToWrite = resFun[..., ind]
-                    
+
                     if self.return_3d is False:
                         # need to reshape as block
                         resToWrite = resToWrite.reshape(lines, cols)

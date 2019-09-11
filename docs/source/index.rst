@@ -18,12 +18,11 @@ What is MuseoToolBox ?
 -----------------------
 
 .. sidebar:: Features
-
-    - Compatible with scikit-learn
-    - Supports python 2 and 3
     - Perfect to do spatial cross-validation and cross-validation with subgroups
     - Ease the way to learn and predict raster/vector
+    - Easy to extract raster values from vector
     - Great for performing functions per pixel on your images
+    - Build in part with scikit-learn
     
 .. include:: README.rst
     :start-line: 7

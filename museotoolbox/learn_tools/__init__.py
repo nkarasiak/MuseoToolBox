@@ -15,7 +15,6 @@
 """
 The :mod:`museotoolbox.learn_tools` module gathers learn and predict functions.
 """
-from __future__ import absolute_import, print_function, division
 from joblib import Parallel, delayed
 import os
 import numpy as np
@@ -93,17 +92,17 @@ class learnAndPredict:
 
         """
         from sklearn.preprocessing import StandardScaler
-        
+
         try:
             self.StandardScaler
-        except :
+        except BaseException:
             self.StandardScaler = StandardScaler()
-            
-        if X is not None:    
+
+        if X is not None:
             if self.standardized is False:
                 self.StandardScaler.fit(X)
                 self.standardized = True
-        
+
             Xt = self.StandardScaler.transform(X)
 
             return Xt
@@ -160,7 +159,7 @@ class learnAndPredict:
             cv,
             scoring,
             **gridSearchCVParams)
-    
+
     def learnFromRaster(
             self,
             inRaster,
@@ -312,7 +311,7 @@ class learnAndPredict:
         else:
             if not path.endswith('npz'):
                 path += '.npz'
-            model = np.load(path,allow_pickle=True)
+            model = np.load(path, allow_pickle=True)
             self.__dict__.update(model['LAP'].tolist())
             if hasattr(self, 'scale'):
                 if self.scale is True:
@@ -397,7 +396,10 @@ class learnAndPredict:
         if hasattr(self, 'Xpredict_proba'):
             Xpredict_proba = np.amax(self.Xpredict_proba, axis=1)
         else:
-            Xpredict_proba = np.amax(self.model.predict_proba(self.__convertX(X, **kwargs)) * 100, axis=1)
+            Xpredict_proba = np.amax(
+                self.model.predict_proba(
+                    self.__convertX(
+                        X, **kwargs)) * 100, axis=1)
         return Xpredict_proba
 
     def predictRaster(
@@ -669,7 +671,7 @@ class sequentialFeatureSelection:
 
         self.xFunction = False
         self.xKwargs = False
-    
+
     def fit(self, X, y, group=None, standardize=True,
             pathToSaveCM=False, max_features=False, n_jobs=1):
         """
@@ -841,33 +843,34 @@ class sequentialFeatureSelection:
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
 
-        model  = self.models_path_[self.best_idx_]
-        
-        print('Predict with combination '+str(self.best_idx_))
+        model = self.models_path_[self.best_idx_]
+
+        print('Predict with combination ' + str(self.best_idx_))
         LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
         LAP.loadModel(model)
         LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
                           Xfunction=self.transform, idx=self.best_idx_, customizeX=True)
-    
-    def relearnBestModelWithBestParams(self,X,y,group=None,standardize=True,n_jobs=1):
-        
+
+    def relearnBestModelWithBestParams(
+            self, X, y, group=None, standardize=True, n_jobs=1):
+
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
 
         model = self.models_path_[self.best_idx_]
         LAP = learnAndPredict(
-        n_jobs=n_jobs, verbose=self.verbose - 1)
+            n_jobs=n_jobs, verbose=self.verbose - 1)
         if self.xFunction is not False:
             customizeX = True
         else:
             customizeX = False
-        curX = self.transform(X,self.best_idx_,customizeX=customizeX)
+        curX = self.transform(X, self.best_idx_, customizeX=customizeX)
         if standardize is False:
             scale = False
         else:
             scale = True
         LAP.loadModel(model)
-        
+
         best_params_ = LAP.model.best_params_
         for key in best_params_.keys():
             best_params_[key] = [best_params_[key]]
@@ -881,10 +884,13 @@ class sequentialFeatureSelection:
             standardize=scale,
             scoring=self.scoring,
             cv=self.cv)
-        
-        modelDir = os.path.join(os.path.dirname(self.models_path_[0]),'model_{}.npz'.format(self.best_idx_))
+
+        modelDir = os.path.join(
+            os.path.dirname(
+                self.models_path_[0]), 'model_{}.npz'.format(
+                self.best_idx_))
         LAP.saveModel(modelDir)
-                
+
     def predictRasters(self, inRaster, outRasterPrefix,
                        inMaskRaster=False, confidence=False, modelPath=False):
         """
@@ -974,7 +980,7 @@ class sequentialFeatureSelection:
         if X.ndim == 1:
             X = X.reshape(-1, 1)
         return X
-    
+
     def __getFeatureId(self, candidate):
         """
 
@@ -998,10 +1004,10 @@ class sequentialFeatureSelection:
         """
         """
         self.mask[:] = 1
-        
-    def getBestModel(self,clone=False):
+
+    def getBestModel(self, clone=False):
         self.best_idx_ = np.argmax(self.best_scores_)
         LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
         LAP.loadModel(self.models_path_[self.best_idx_])
-        
+
         return LAP

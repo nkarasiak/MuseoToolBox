@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function, division
 import numpy as np
 
 from itertools import tee
@@ -73,7 +72,7 @@ class distanceCV:
 
         """
         self.name = 'SLOO'
-        
+
         self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
         self.y = y
@@ -214,8 +213,9 @@ class distanceCV:
                                               self.distanceThresold]
                                 if self.LOOsameSize is True:
                                     np.random.seed(self.random_state)
-                                    tmpTrain = np.random.permutation(CT)[:len(CT[distanceROI >self.distanceThresold])]
-                                    
+                                    tmpTrain = np.random.permutation(
+                                        CT)[:len(CT[distanceROI > self.distanceThresold])]
+
                             else:
                                 if self.valid_size >= 1:
                                     nToCut = self.valid_size
@@ -224,15 +224,12 @@ class distanceCV:
 
                                 distanceToCut = np.sort(distanceROI)[
                                     :nToCut][-1]
-                        
+
                                 tmpValid = CT[distanceROI <=
                                               distanceToCut]
                                 tmpTrain = CT[distanceROI >
                                               distanceToCut]
-                                
-                                
-                                    
-                                    
+
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True
 

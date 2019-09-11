@@ -15,8 +15,6 @@
 """
 The :mod:`museotoolbox.charts` module gathers plotting functions.
 """
-from __future__ import division
-
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 import numpy as np
@@ -37,7 +35,8 @@ class plotConfusionMatrix:
     >>> plot.addF1()
     """
 
-    def __init__(self, cm, cmap=plt.cm.Greens,left=None,right=None, **kwargs):
+    def __init__(self, cm, cmap=plt.cm.Greens,
+                 left=None, right=None, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -45,15 +44,14 @@ class plotConfusionMatrix:
             2, 2, width_ratios=[
                 self.cm.shape[1], 1], height_ratios=[
                 self.cm.shape[0], 1])
-        
+
         self.gs.update(
             bottom=0,
             top=1,
             wspace=0,
             hspace=0.7 /
-            self.cm.shape[1],right=right,left=left)
+            self.cm.shape[1], right=right, left=left)
 
-        
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.vmin = np.amin(self.cm)
         self.vmax = np.amax(self.cm)

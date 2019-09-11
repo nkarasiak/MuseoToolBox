@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function, division
 from .. import vector_tools, raster_tools
 from ..internal_tools import progressBar
 
@@ -70,7 +69,7 @@ class sampleExtraction:
         if np.issubdtype(X.dtype, np.integer):
             try:
                 dtype = ogr.OFTInteger64
-            except:
+            except BaseException:
                 dtype = ogr.OFTInteger
         else:
             dtype = ogr.OFTReal
