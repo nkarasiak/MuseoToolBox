@@ -1,4 +1,7 @@
-[![Documentation Status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/museotoolbox.svg)](https://badge.fury.io/py/museotoolbox) [![Downloads](https://pepy.tech/badge/museotoolbox)](https://pepy.tech/project/museotoolbox)
+[![Documentation Status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/museotoolbox.svg)](https://badge.fury.io/py/museotoolbox)
+[![Downloads](https://pepy.tech/badge/museotoolbox)](https://pepy.tech/project/museotoolbox)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg)](https://doi.org/10.5281/zenodo.3404728)
 
 ![MuseoToolBox logo](https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 

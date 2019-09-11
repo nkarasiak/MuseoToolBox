@@ -28,7 +28,6 @@ class distanceCV:
             SLOO=True,
             n_splits=False,
             valid_size=False,
-            useMaxDistance=False,
             stats=False,
             verbose=False,
             random_state=False,
@@ -41,10 +40,12 @@ class distanceCV:
 
         Parameters
         ----------
-        distanceMatrix : array
-            Matrix distance
+        X : array-like
+            Matrix of values. As many row as the Y array.
         Y : array-like
             contain class for each ROI. Same effective as distanceArray.
+        distanceMatrix : array
+            Matrix distance
         distanceThresold : int or float
             Distance(same unit of your distanceArray)
         minTrain : int or float
@@ -89,14 +90,14 @@ class distanceCV:
                 'You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
-        self.useMaxDistance = useMaxDistance
         self.stats = stats
 
         self.nTries = 0
 
         self.random_state = random_state
+
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        self.Stats = stats
+
         if self.stats:
             self.Cstats = []
 
