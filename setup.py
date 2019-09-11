@@ -19,7 +19,6 @@ __version__ = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
     open('museotoolbox/__init__.py').read()).group(1)
 
-
 import setuptools
 
 with open("README.md", "r") as fh:

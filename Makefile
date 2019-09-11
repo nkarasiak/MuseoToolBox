@@ -39,7 +39,8 @@ clean : FORCE
 
 uploadpypi :
 	#python setup.py register
-	$(PYTHON) setup.py sdist upload -r pypi
+	$(PYTHON) setup.py sdist
+	twine upload dist/*
 
 doc :
 	m2r README.md
