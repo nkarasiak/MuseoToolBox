@@ -15,8 +15,6 @@
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation functions.
 """
-from __future__ import absolute_import, print_function, division
-
 from ._sampleSelection import _sampleSelection
 from . import crossValidationClass as _cvc
 
@@ -88,8 +86,8 @@ class LeavePSubGroupOut(_sampleSelection):
             raise Exception(
                 'Percent must be between 0 and 1 and must be a float')
         if n_splits == False:
-            n_splits = int(1/valid_size)
-            
+            n_splits = int(1 / valid_size)
+
         self.params = dict(
             valid_size=valid_size,
             n_splits=n_splits,
@@ -165,8 +163,8 @@ class SpatialLeaveAsideOut(_sampleSelection):
 
         self.crossvalidation = _cvc.distanceCV
         if n_splits == False:
-            n_splits = int(1/valid_size)
-            
+            n_splits = int(1 / valid_size)
+
         self.params = dict(
             distanceMatrix=distanceMatrix,
             valid_size=valid_size,

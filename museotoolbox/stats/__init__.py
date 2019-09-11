@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import division
 import numpy as np
 
 

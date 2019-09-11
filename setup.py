@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import
 import re
 
 __version__ = re.search(
@@ -35,13 +34,12 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=["numpy","scipy","scikit-learn"],
+    install_requires=["numpy","scipy","scikit-learn",'joblib'],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
             "Topic :: Scientific/Engineering :: GIS",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2",
             "Intended Audience :: Science/Research"],
     zip_safe=False,
     entry_points = {

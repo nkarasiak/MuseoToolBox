@@ -15,8 +15,6 @@
 """
 The :mod:`museotoolbox.charts` module gathers plotting functions.
 """
-from __future__ import division
-
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 import numpy as np
@@ -37,7 +35,8 @@ class plotConfusionMatrix:
     >>> plot.addF1()
     """
 
-    def __init__(self, cm, cmap=plt.cm.Greens,left=None,right=None, **kwargs):
+    def __init__(self, cm, cmap=plt.cm.Greens,
+                 left=None, right=None, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -45,15 +44,14 @@ class plotConfusionMatrix:
             2, 2, width_ratios=[
                 self.cm.shape[1], 1], height_ratios=[
                 self.cm.shape[0], 1])
-        
+
         self.gs.update(
             bottom=0,
             top=1,
             wspace=0,
             hspace=0.7 /
-            self.cm.shape[1],right=right,left=left)
+            self.cm.shape[1], right=right, left=left)
 
-        
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.vmin = np.amin(self.cm)
         self.vmax = np.amax(self.cm)
@@ -61,6 +59,7 @@ class plotConfusionMatrix:
         self.xlabelsPos = 'bottom'
         self.xrotation = 0
         self.yrotation = 0
+        self.font_size = False
 
         self.cmap = cmap
         self.diagColor = cmap
@@ -81,7 +80,7 @@ class plotConfusionMatrix:
         self.subplot = False
         self.axes.append(self.ax)
 
-    def addText(self, thresold=False, alpha=1, alpha_zero=1):
+    def addText(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
         Add value of each case on the matrix image.
 
@@ -97,6 +96,7 @@ class plotConfusionMatrix:
         --------
         >>> plot.addText(alpha_zero=0.5)
         """
+        self.font_size = font_size
         if thresold is False:
             thresold = int(np.amax(self.cm) / 2)
         for i, j in itertools.product(
@@ -105,12 +105,12 @@ class plotConfusionMatrix:
                 # print(cm[i,j])
                 self.ax.text(j, i, str(self.cm[i, j]),
                              horizontalalignment="center",
-                             color="white" if self.cm[i, j] > thresold else 'black', va='center', alpha=alpha_zero if self.cm[i, j] == 0 else alpha)
+                             color="white" if self.cm[i, j] > thresold else 'black', fontsize=font_size, va='center', alpha=alpha_zero if self.cm[i, j] == 0 else alpha)
             else:
                 print(self.cm2[i, j])
                 self.ax.text(j, i, str(self.cm2[i, j]),
                              horizontalalignment="center",
-                             color="white" if self.cm2[i, j] > thresold else "black", va='center')
+                             color="white" if self.cm2[i, j] > thresold else "black", va='center', fontsize=font_size, )
 
     def addXlabels(self, labels=None, rotation=90, position='top'):
         """
@@ -139,16 +139,21 @@ class plotConfusionMatrix:
         self.ax.set_xticklabels(
             ['F1'],
             horizontalalignment='left',
-            rotation=rotation)
+            rotation=rotation, fontsize=self.font_size)
 
         self.ax.set_xticks(np.arange(self.cm.shape[1]))
         if rotation != 90:
             ha = 'left'
         else:
             ha = 'center'
-        self.ax.set_xticklabels(self.xlabels, rotation=rotation, ha=ha)
+        self.ax.set_xticklabels(
+            self.xlabels,
+            rotation=rotation,
+            ha=ha,
+            fontsize=self.font_size)
 
-    def addMean(self, xLabel='', yLabel='', thresold=50, vmin=0, vmax=100):
+    def addMean(self, xLabel='', yLabel='', hide_ticks=False,
+                thresold=50, vmin=0, vmax=100):
         """
         Add Mean for both axis.
 
@@ -202,7 +207,10 @@ class plotConfusionMatrix:
             vmin=vmin,
             vmax=vmax)
 
-        self.ax1v.set_yticks(np.arange(self.cm_.shape[0]))
+        if hide_ticks:
+            self.ax1v.set_yticks([])
+        else:
+            self.ax1v.set_yticks(np.arange(self.cm_.shape[0]))
         self.ax1v.set_xticks([])
 
         self.ax1h.set_yticks([0])
@@ -214,7 +222,7 @@ class plotConfusionMatrix:
             except BaseException:
                 iVal = 0
             self.ax1v.text(0, i, iVal, color="white" if iVal >
-                           thresold else 'black', ha='center', va='center')
+                           thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
@@ -223,13 +231,13 @@ class plotConfusionMatrix:
             except BaseException:
                 jVal = 0
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
-                           thresold else 'black', ha='center', va='center')
+                           thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
         self.ax1h.set_yticklabels(
             [yLabel],
             rotation=self.yrotation,
             ha='right',
-            va='center')
+            va='center', fontsize=self.font_size)
 
         self.ax1v.xaxis.set_ticks_position('top')  # THIS IS THE ONLY CHANGE
         self.ax1v.set_xticks([0])
@@ -241,7 +249,8 @@ class plotConfusionMatrix:
             [xLabel],
             horizontalalignment='left',
             rotation=self.xrotation,
-            ha=ha)
+            ha=ha,
+            fontsize=self.font_size)
         self.axes.append([self.ax1v, self.ax1h])
 
     def addYlabels(self, labels=None, rotation=0):
@@ -264,7 +273,8 @@ class plotConfusionMatrix:
         self.ax.set_yticklabels(
             self.ylabels,
             rotation=rotation,
-            horizontalalignment='right')
+            horizontalalignment='right',
+            fontsize=self.font_size)
 
     def addF1(self):
         """

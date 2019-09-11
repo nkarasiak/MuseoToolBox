@@ -4,6 +4,7 @@
 *_filtered*
 *.swp
 __pycache__
+*.spyproject/*
 
 # nb
 *.pickle

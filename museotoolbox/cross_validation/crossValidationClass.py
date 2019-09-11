@@ -12,7 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/lennepkade/MuseoToolBox
 # =============================================================================
-from __future__ import absolute_import, print_function, division
 import numpy as np
 
 from itertools import tee
@@ -29,7 +28,6 @@ class distanceCV:
             SLOO=True,
             n_splits=False,
             valid_size=False,
-            useMaxDistance=False,
             stats=False,
             verbose=False,
             random_state=False,
@@ -42,10 +40,12 @@ class distanceCV:
 
         Parameters
         ----------
-        distanceMatrix : array
-            Matrix distance
+        X : array-like
+            Matrix of values. As many row as the Y array.
         Y : array-like
             contain class for each ROI. Same effective as distanceArray.
+        distanceMatrix : array
+            Matrix distance
         distanceThresold : int or float
             Distance(same unit of your distanceArray)
         minTrain : int or float
@@ -73,7 +73,7 @@ class distanceCV:
 
         """
         self.name = 'SLOO'
-        
+
         self.distanceArray = distanceMatrix
         self.distanceThresold = distanceThresold
         self.y = y
@@ -90,14 +90,14 @@ class distanceCV:
                 'You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
-        self.useMaxDistance = useMaxDistance
         self.stats = stats
 
         self.nTries = 0
 
         self.random_state = random_state
+
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        self.Stats = stats
+
         if self.stats:
             self.Cstats = []
 
@@ -214,8 +214,9 @@ class distanceCV:
                                               self.distanceThresold]
                                 if self.LOOsameSize is True:
                                     np.random.seed(self.random_state)
-                                    tmpTrain = np.random.permutation(CT)[:len(CT[distanceROI >self.distanceThresold])]
-                                    
+                                    tmpTrain = np.random.permutation(
+                                        CT)[:len(CT[distanceROI > self.distanceThresold])]
+
                             else:
                                 if self.valid_size >= 1:
                                     nToCut = self.valid_size
@@ -224,15 +225,12 @@ class distanceCV:
 
                                 distanceToCut = np.sort(distanceROI)[
                                     :nToCut][-1]
-                        
+
                                 tmpValid = CT[distanceROI <=
                                               distanceToCut]
                                 tmpTrain = CT[distanceROI >
                                               distanceToCut]
-                                
-                                
-                                    
-                                    
+
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True
 
