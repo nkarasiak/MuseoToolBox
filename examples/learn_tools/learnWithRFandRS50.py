@@ -15,7 +15,6 @@ This example shows how to make a Random Sampling with
 from museotoolbox.learn_tools import learnAndPredict
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
-from museotoolbox import raster_tools
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 

@@ -16,9 +16,11 @@ sequentialFeatureSelection
       ~sequentialFeatureSelection.__init__
       ~sequentialFeatureSelection.customizeX
       ~sequentialFeatureSelection.fit
+      ~sequentialFeatureSelection.getBestModel
       ~sequentialFeatureSelection.predict
       ~sequentialFeatureSelection.predictBestCombination
       ~sequentialFeatureSelection.predictRasters
+      ~sequentialFeatureSelection.relearnBestModelWithBestParams
       ~sequentialFeatureSelection.transform
    
    

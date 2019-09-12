@@ -98,7 +98,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  27.823 seconds)
+   **Total running time of the script:** ( 0 minutes  26.772 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_MoransI.py:

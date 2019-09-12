@@ -40,6 +40,7 @@ autoclass_content = 'both'
 source_parsers = {
    '.md': 'recommonmark.parser.CommonMarkParser',
 }
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',

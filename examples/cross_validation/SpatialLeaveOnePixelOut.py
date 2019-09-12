@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Spatial Leave-One-Pixel-Out (SLOPO)
+Spatial Leave-One-Out (SLOO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out called here
@@ -14,7 +14,7 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.cross_validation import SpatialLeaveOnePixelOut
+from museotoolbox.cross_validation import SpatialLeaveOneOut
 from museotoolbox import datasets,raster_tools,vector_tools
 ##############################################################################
 # Load HistoricalMap dataset
@@ -30,7 +30,7 @@ distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
+SLOPO = SpatialLeaveOneOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                 random_state=12)
 
 

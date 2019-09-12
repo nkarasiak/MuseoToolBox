@@ -51,7 +51,7 @@ ddoc :
 	m2r README.md
 	mv README.rst docs/source/
 	rm -rf docs/source/auto_examples/
-	rm -rf docs/sources/modules/
+	rm -rf docs/source/modules/
 	cd docs/ && make html
 
 autopep8 :

@@ -137,7 +137,7 @@ Draw image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.186 seconds)
+   **Total running time of the script:** ( 0 minutes  0.155 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOneSubGroupOut.py:

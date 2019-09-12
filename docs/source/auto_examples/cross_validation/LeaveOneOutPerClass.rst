@@ -20,7 +20,7 @@ Import librairies
 .. code-block:: default
 
 
-    from museotoolbox.cross_validation import LeaveOneOutPerClass
+    from museotoolbox.cross_validation import LeaveOneOut
     from museotoolbox import datasets
 
 
@@ -50,7 +50,7 @@ Create CV
 
 .. code-block:: default
 
-    LOOPC = LeaveOneOutPerClass(random_state=8,verbose=False)
+    LOOPC = LeaveOneOut(random_state=8,verbose=False)
     for tr,vl in LOOPC.split(X=None,y=y):
         print(tr,vl)
 
@@ -232,7 +232,7 @@ Plot example on how a polygon was splitted
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.275 seconds)
+   **Total running time of the script:** ( 0 minutes  0.249 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneOutPerClass.py:

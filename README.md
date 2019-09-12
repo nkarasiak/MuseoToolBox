@@ -5,9 +5,10 @@
 
 ![MuseoToolBox logo](https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
-**Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a spatial or subgroup cross-validation strategy and learning and prediction steps with Scikit-Learn. 
+**Museo ToolBox** is a python library to simplify the use of raster/vector.
+It allows to extract easily raster values from vector and to do some spatial/unspatial cross-validation for scikit-learn.
 
-The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a few lines : mean/modal/prediction/whittaker (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
+The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : mean/modal/whittaker/ndvi (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
 
 #### Using and citing the toolbox
 
@@ -33,10 +34,9 @@ Today, the main usages of Museo ToolBox are :
   Compatible with every python function (including numpy) as the first argument an array.
 - museotoolbox.**learn_tools**
   - Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model).
-  Also simplify the prediction of a model to a raster.
-
+  
 ## That seems cool, but is there some help to use this ?
-I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of course I help you : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
+I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation and to learn/predict from raster, so of course there is some help : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
 
 ## How do I install it ?
 A package will be available on pip : 

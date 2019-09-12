@@ -598,7 +598,16 @@ class rasterMath:
         openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
         if openRaster is None:
             raise ReferenceError('Impossible to open image ' + inRaster)
-        else:
+        
+        sameSize = True
+              
+        if len(self.openRasters)>0:
+            if openRaster.RasterXSize != self.openRasters[0].RasterXSize or openRaster.RasterYSize != self.openRasters[0].RasterYSize:
+                sameSize = False
+                print("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
+                      Museotoolbox can't add it as an input raster.".format(os.path.basename(inRaster)))
+                
+        if sameSize:
             self.openRasters.append(openRaster)
 
     def addFunction(

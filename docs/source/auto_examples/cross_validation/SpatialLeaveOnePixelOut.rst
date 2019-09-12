@@ -7,7 +7,7 @@
 .. _sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:
 
 
-Spatial Leave-One-Pixel-Out (SLOPO)
+Spatial Leave-One-Out (SLOO)
 ======================================================
 
 This example shows how to make a Spatial Leave-One-Out called here
@@ -23,7 +23,7 @@ Import librairies
 .. code-block:: default
 
 
-    from museotoolbox.cross_validation import SpatialLeaveOnePixelOut
+    from museotoolbox.cross_validation import SpatialLeaveOneOut
     from museotoolbox import datasets,raster_tools,vector_tools
 
 
@@ -57,7 +57,7 @@ n_splits will be the number  of the least populated class
 .. code-block:: default
 
 
-    SLOPO = SpatialLeaveOnePixelOut(distanceThresold=100,distanceMatrix=distanceMatrix,
+    SLOPO = SpatialLeaveOneOut(distanceThresold=100,distanceMatrix=distanceMatrix,
                                     random_state=12)
 
 
@@ -135,7 +135,7 @@ Draw image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.260 seconds)
+   **Total running time of the script:** ( 0 minutes  0.241 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py:

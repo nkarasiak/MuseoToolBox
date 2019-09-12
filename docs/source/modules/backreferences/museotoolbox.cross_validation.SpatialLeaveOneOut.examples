@@ -1,7 +1,7 @@
 
 
-Examples using ``museotoolbox.cross_validation.SpatialLeaveOnePixelOut``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``museotoolbox.cross_validation.SpatialLeaveOneOut``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

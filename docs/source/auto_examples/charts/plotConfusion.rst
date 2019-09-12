@@ -113,8 +113,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.9428540238280907
-    0.9433056019084161
+    0.9411764808186635
+    0.9427621470989488
 
 
 Get each confusion matrix from folds
@@ -138,16 +138,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3691   69    1   10    0]
+    [[3694   67    1    9    0]
      [  84 1046    0   16    0]
      [   2    0 1137    0    0]
-     [  10   18    1  233    0]
+     [  10   19    1  232    0]
      [   4    0    0    0    0]]
-    [[3681   75    2   13    0]
-     [  67 1066    1   12    0]
+    [[3677   81    2   11    0]
+     [  67 1067    1   11    0]
      [   0    0 1139    0    0]
      [   8   22    3  229    0]
-     [   4    0    0    0    0]]
+     [   3    0    1    0    0]]
 
 
 Plot confusion matrix
@@ -197,7 +197,7 @@ Plot confusion matrix and normalize per class
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  5.882 seconds)
+   **Total running time of the script:** ( 0 minutes  5.445 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:

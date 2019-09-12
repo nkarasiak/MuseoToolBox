@@ -19,10 +19,10 @@ from ._sampleSelection import _sampleSelection
 from . import crossValidationClass as _cvc
 
 
-class LeaveOneOutPerClass(_sampleSelection):
+class LeaveOneOut(_sampleSelection):
     """
-    Generate a Cross-Validation using Leave One Out per class.
-    Note : ``LeaveOneOutPerClass()`` is equivalent to ``RandomCV(valid_size=1)``.
+    Generate a Cross-Validation using a Stratified Leave One Out.
+    Note : ``LeaveOneOut()`` is equivalent to ``RandomCV(valid_size=1)``.
 
     Parameters
     ----------
@@ -221,9 +221,9 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
         _sampleSelection.__init__(self)
 
 
-class SpatialLeaveOnePixelOut(_sampleSelection):
+class SpatialLeaveOneOut(_sampleSelection):
     """
-    Generate a Cross-Validation with Spatial Leave-One-Out method.
+    Generate a Cross-Validation with a stratified spatial Leave-One-Out method.
 
     Parameters
     ----------

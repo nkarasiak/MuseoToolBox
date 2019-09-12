@@ -15,12 +15,12 @@ cross_validation
       :toctree: cross_validation
       :template: class.rst
    
-      LeaveOneOutPerClass
+      LeaveOneOut
       LeaveOneSubGroupOut
       LeavePSubGroupOut
       RandomStratifiedKFold
       SpatialLeaveAsideOut
-      SpatialLeaveOnePixelOut
+      SpatialLeaveOneOut
       SpatialLeaveOneSubGroupOut
    
    

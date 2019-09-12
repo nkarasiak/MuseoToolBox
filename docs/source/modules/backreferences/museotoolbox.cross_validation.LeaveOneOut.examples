@@ -1,7 +1,7 @@
 
 
-Examples using ``museotoolbox.cross_validation.LeaveOneOutPerClass``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``museotoolbox.cross_validation.LeaveOneOut``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

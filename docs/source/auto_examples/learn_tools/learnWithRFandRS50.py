@@ -15,7 +15,6 @@ This example shows how to make a Random Sampling with
 from museotoolbox.learn_tools import learnAndPredict
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
-from museotoolbox import raster_tools
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 
@@ -37,7 +36,7 @@ SKF = RandomStratifiedKFold(n_splits=2,
 # Initialize Random-Forest and metrics
 # --------------------------------------
 
-classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
+classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
 # 
 kappa = metrics.make_scorer(metrics.cohen_kappa_score)
@@ -50,7 +49,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 LAP = learnAndPredict(n_jobs=-1,verbose=1)
 LAP.learnFromRaster(raster,vector,field,cv=SKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[100,200]),
+                    classifier=classifier,param_grid=dict(n_estimators=[10]),
                     scoring=scoring,refit='kappa')
 
 ##############################################################################

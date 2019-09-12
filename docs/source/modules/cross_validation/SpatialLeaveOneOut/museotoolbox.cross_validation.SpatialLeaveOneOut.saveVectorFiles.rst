@@ -1,6 +1,6 @@
-museotoolbox.cross\_validation.LeaveOneOutPerClass.get\_n\_splits
+museotoolbox.cross\_validation.SpatialLeaveOneOut.saveVectorFiles
 =================================================================
 
 .. currentmodule:: museotoolbox.cross_validation
 
-.. automethod:: LeaveOneOutPerClass.get_n_splits
+.. automethod:: SpatialLeaveOneOut.saveVectorFiles

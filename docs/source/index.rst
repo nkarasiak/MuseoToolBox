@@ -16,16 +16,9 @@ MuseoToolBox documentation
 
 What is MuseoToolBox ?
 -----------------------
-
-.. sidebar:: Features
-    - Perfect to do spatial cross-validation and cross-validation with subgroups
-    - Ease the way to learn and predict raster/vector
-    - Easy to extract raster values from vector
-    - Great for performing functions per pixel on your images
-    - Build in part with scikit-learn
     
 .. include:: README.rst
-    :start-line: 7
+    :start-line: 28
 
 .. toctree::
    :maxdepth: 2

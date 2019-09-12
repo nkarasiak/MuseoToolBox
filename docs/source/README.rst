@@ -1,13 +1,50 @@
 
 
+.. image:: https://readthedocs.org/projects/museotoolbox/badge/?version=latest
+   :target: https://museotoolbox.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+
+.. image:: https://badge.fury.io/py/museotoolbox.svg
+   :target: https://badge.fury.io/py/museotoolbox
+   :alt: PyPI version
+
+
+.. image:: https://pepy.tech/badge/museotoolbox
+   :target: https://pepy.tech/project/museotoolbox
+   :alt: Downloads
+
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg
+   :target: https://doi.org/10.5281/zenodo.3404728
+   :alt: DOI
+
+
+
 .. image:: https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :target: https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :alt: MuseoToolBox logo
 
 
-**Museo ToolBox** is a python library to simplify the use of raster/vector. One of the most important contributions is the interface between a spatial or subgroup cross-validation strategy and learning and prediction steps with Scikit-Learn. 
+**Museo ToolBox** is a python library to simplify the use of raster/vector.
+It allows to extract easily raster values from vector and to do some spatial/unspatial cross-validation for scikit-learn.
 
-The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a few lines : mean/modal/prediction/whittaker (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
+The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : mean/modal/whittaker/ndvi (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
+
+Using and citing the toolbox
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you use this toolbox in your research and find it useful, please cite MuseoToolBox using the following bibtex reference:
+
+.. code-block::
+
+   @misc{karasiak2019mtb,
+   title={MuseoToolBox, a remote sensing python library},
+   author={Karasiak Nicolas},
+   url={https://github.com/lennepkade/museotoolbox},
+   year={2019},
+   doi={10.5281/zenodo.3404728}
+   }
 
 What's the point ?
 ------------------
@@ -28,12 +65,11 @@ Today, the main usages of Museo ToolBox are :
 * museotoolbox.\ **learn_tools**
 
   * Based on Scikit-Learn. Simplify the use the cross-Validations by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. Ease the way to predict a raster (just give the raster name and the model).
-    Also simplify the prediction of a model to a raster.
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
 
-I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation (or validation/training at least by subgroup) and to learn and predict from raster, so of course I help you : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
+I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation and to learn/predict from raster, so of course there is some help : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
 How do I install it ?
 ---------------------
@@ -49,7 +85,7 @@ Feel free to remove the ``--user`` if you like to install the library for every 
 Who build Museo ToolBox ?
 -------------------------
 
-I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who gave me the love of nice and open-source coding.
+I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work on the identification of tree species throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who initiates me to the nice and open-source coding.
 
 Why this name ?
 ---------------
