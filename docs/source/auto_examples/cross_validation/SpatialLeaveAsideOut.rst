@@ -58,7 +58,7 @@ n_splits will be the number  of the least populated class
 
 
     SLOPO = SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
-                                 distanceMatrix=distanceMatrix,random_state=12)
+                                 distanceMatrix=distanceMatrix,random_state=2)
 
     print(SLOPO.get_n_splits(X,y))
 
@@ -95,8 +95,8 @@ n_splits will be the number  of the least populated class
 
  .. code-block:: none
 
-    (2072,) (1090,)
-    (2087,) (1075,)
+    (2093,) (1069,)
+    (2093,) (1069,)
 
 
 Save each train/valid fold in a file
@@ -142,15 +142,15 @@ Plot example on how a polygon was splitted
     for idx,vector in enumerate([tr,vl]):
         ds = ogr.Open(vector)
         lyr = ds.GetLayer(0)
-        lyr.SetAttributeFilter ( "uniquefid=6" )
+        lyr.SetAttributeFilter ( "uniquefid=17" ) # select a specific group
         for feat in lyr:
             geom = feat.GetGeometryRef()
             xyl = np.vstack((xyl,np.asarray((geom.GetX(),geom.GetY(),idx))))
     
     trPoints = xyl[xyl[:,2]==0][:,:2]
     vlPoints = xyl[xyl[:,2]==1][:,:2]
-    plt.scatter(trPoints[:,0],trPoints[:,1],label='train')
-    plt.scatter(vlPoints[:,0],vlPoints[:,1],label='valid')
+    plt.scatter(trPoints[:,0],trPoints[:,1],label='train',color='C0')
+    plt.scatter(vlPoints[:,0],vlPoints[:,1],label='valid',color='C1')
     plt.legend()
     plt.show()
 
@@ -164,7 +164,7 @@ Plot example on how a polygon was splitted
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.723 seconds)
+   **Total running time of the script:** ( 0 minutes  0.943 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_SpatialLeaveAsideOut.py:

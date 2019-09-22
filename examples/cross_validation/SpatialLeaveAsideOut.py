@@ -31,7 +31,7 @@ distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
 # n_splits will be the number  of the least populated class
 
 SLOPO = SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
-                             distanceMatrix=distanceMatrix,random_state=12)
+                             distanceMatrix=distanceMatrix,random_state=2)
 
 print(SLOPO.get_n_splits(X,y))
 
@@ -65,14 +65,14 @@ xyl= np.array([],dtype=float).reshape((-1,3))
 for idx,vector in enumerate([tr,vl]):
     ds = ogr.Open(vector)
     lyr = ds.GetLayer(0)
-    lyr.SetAttributeFilter ( "uniquefid=6" )
+    lyr.SetAttributeFilter ( "uniquefid=17" ) # select a specific group
     for feat in lyr:
         geom = feat.GetGeometryRef()
         xyl = np.vstack((xyl,np.asarray((geom.GetX(),geom.GetY(),idx))))
     
 trPoints = xyl[xyl[:,2]==0][:,:2]
 vlPoints = xyl[xyl[:,2]==1][:,:2]
-plt.scatter(trPoints[:,0],trPoints[:,1],label='train')
-plt.scatter(vlPoints[:,0],vlPoints[:,1],label='valid')
+plt.scatter(trPoints[:,0],trPoints[:,1],label='train',color='C0')
+plt.scatter(vlPoints[:,0],vlPoints[:,1],label='valid',color='C1')
 plt.legend()
 plt.show()

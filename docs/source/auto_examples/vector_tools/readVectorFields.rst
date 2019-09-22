@@ -135,7 +135,7 @@ As multiple fields can begin with C, function returns a column per field
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.067 seconds)
+   **Total running time of the script:** ( 0 minutes  0.090 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_readVectorFields.py:

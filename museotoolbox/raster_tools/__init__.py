@@ -527,11 +527,16 @@ class rasterMath:
 
     Examples
     ---------
-    >>> rM = rasterMath('tmp.tif')
-    >>> rM.addFunction(np.mean,outRaster='/tmp/mean.tif',functionKwargs=dict(axis=1,dtype=np.int16))
-    Using datatype from numpy table : int16
+    >>> import museotoolbox as mtb
+    >>> raster,_=mtb.datasets.historicalMap()
+    >>> rM = mtb.raster_tools.rasterMath(r)
+    Total number of blocks : 15
+    >>> rM.addFunction(np.mean,outRaster='/tmp/test.tif',axis=1,dtype=np.int16)
+    Using datatype from numpy table : int16.
+    Detected 1 band for function mean.
     >>> rM.run()
-    Saved /tmp/mean.tif using function mean
+    rasterMath... [########################################]100%
+    Saved /tmp/test.tif using function mean
     """
 
     def __init__(self, inRaster, inMaskRaster=False, return_3d=False,
@@ -689,7 +694,7 @@ class rasterMath:
 
         self.outputNoData.append(outNoData)
 
-    def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=False):
+    def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=True):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
         if compress is True or compress == 'high':
