@@ -631,7 +631,7 @@ class learnAndPredict:
                 'You must have learnt with a Cross-Validation')
         else:
             statsCV = Parallel(
-                n_jobs=-1,
+                n_jobs=self.n_jobs,
                 verbose=self.verbose)(
                 delayed(__computeStatsPerCV)(
                     statsidx,
