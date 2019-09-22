@@ -5,12 +5,11 @@
 
 ![MuseoToolBox logo](https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
-**Museo ToolBox** is a python library to simplify the use of raster/vector.
-It allows to extract easily raster values from vector and to do some spatial/unspatial cross-validation for scikit-learn.
+**Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and for remote sensing. It is now really easy to extract raster values from vector and to do some spatial/unspatial cross-validation for scikit-learn.
 
-The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : mean/modal/whittaker/ndvi (you use your own function), and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving to a new raster...
+The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : compute the mean in all bands, the modal vaue, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. [Examples and code using rasterMath are available on readthedocs](https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath)
 
-#### Using and citing the toolbox
+### Using and citing the toolbox
 
 If you use this toolbox in your research and find it useful, please cite MuseoToolBox using the following bibtex reference:
 ```
@@ -39,7 +38,7 @@ Today, the main usages of Museo ToolBox are :
 I imagined Museo ToolBox as a tool to promote the use of spatial cross-validation and to learn/predict from raster, so of course there is some help : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
 
 ## How do I install it ?
-A package will be available on pip : 
+A package is available on pip : 
 `python3 -m pip install museotoolbox --user` 
 
 Alternatively, you can install **museotoolbox** directly from the git :
