@@ -36,7 +36,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    X,y = datasets.historicalMap(return_X_y=True)
+    X,y = datasets.historicalMap(return_X_y=True,low_res=True)
 
 
 
@@ -64,14 +64,9 @@ Create CV
 
  .. code-block:: none
 
-    [ 1599  1600  1601 ...  9560  9561 10321] [ 6183  8386  2217  8824 10322]
-    [ 1599  1600  1601 ...  9560 10321 10322] [12584  1472   832  8885  9561]
-    [ 1599  1600  1601 ...  9561 10321 10322] [3488 1409 2733 8843 9508]
-    [ 1599  1600  1601 ...  9561 10321 10322] [1838  721 2874 9002 9509]
-    [ 1599  1600  1601 ...  9561 10321 10322] [6302 1550 2814 8964 9457]
-    [ 1599  1600  1601 ...  9561 10321 10322] [3808  677 2899 9135 9560]
-    [ 1599  1600  1601 ...  9561 10321 10322] [ 3487 10243  2828  1291  9458]
-    [ 1599  1600  1601 ...  9560  9561 10322] [ 3988  8369   690  8979 10321]
+    [   0    1    2 ... 2961 3023 3160] [1864  674 3131 2910 3161]
+    [   0    1    2 ... 2961 3023 3161] [ 278  453  301  508 3160]
+    [   0    1    2 ... 2961 3160 3161] [2538  661 1505 2922 3023]
 
 
 .. note::
@@ -96,11 +91,6 @@ Create CV
 
  .. code-block:: none
 
-    [1 2 3 4 5]
-    [1 2 3 4 5]
-    [1 2 3 4 5]
-    [1 2 3 4 5]
-    [1 2 3 4 5]
     [1 2 3 4 5]
     [1 2 3 4 5]
     [1 2 3 4 5]
@@ -232,7 +222,7 @@ Plot example on how a polygon was splitted
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.380 seconds)
+   **Total running time of the script:** ( 0 minutes  0.333 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeaveOneOutPerClass.py:

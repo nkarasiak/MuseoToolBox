@@ -22,7 +22,7 @@ from sklearn import metrics
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 
 ##############################################################################
@@ -47,7 +47,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = learnAndPredict(n_jobs=-1,verbose=1)
+LAP = learnAndPredict(n_jobs=1,verbose=1)
 LAP.learnFromRaster(raster,vector,field,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10]),
                     scoring=scoring,refit='kappa')

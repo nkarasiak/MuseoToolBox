@@ -23,7 +23,7 @@ import numpy as np
 # -------------------------------------------
 
 
-X,y,g = datasets.historicalMap(return_X_y_g=True)
+X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
 
 ##############################################################################
 # Create CV
@@ -36,7 +36,7 @@ LSGO = LeavePSubGroupOut(valid_size=0.5,n_splits=2,
 # Initialize Random-Forest and metrics
 # --------------------------------------
 
-classifier = RandomForestClassifier(random_state=12,n_jobs=-1)
+classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
 kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 
@@ -44,7 +44,7 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 # Set and fit the Sequentia Feature Selection
 # ---------------------------------------------------------------
 #
-SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[100]),scoring=kappa)
+SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[10]),scoring=kappa)
 
 SFFS.fit(X.astype(np.float),y,g,pathToSaveCM='/tmp/SFFS/')
 

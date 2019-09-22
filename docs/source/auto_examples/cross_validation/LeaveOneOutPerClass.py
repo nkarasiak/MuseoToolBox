@@ -18,7 +18,7 @@ from museotoolbox import datasets
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y = datasets.historicalMap(return_X_y=True)
+X,y = datasets.historicalMap(return_X_y=True,low_res=True)
 
 ##############################################################################
 # Create CV

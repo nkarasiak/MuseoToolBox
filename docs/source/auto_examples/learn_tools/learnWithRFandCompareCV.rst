@@ -39,7 +39,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
     group = 'uniquefid'
 
@@ -99,38 +99,26 @@ Create list of different CV
 
 
 
+.. code-block:: pytb
 
-.. rst-class:: sphx-glr-script-out
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.6/dist-packages/sphinx_gallery/gen_rst.py", line 394, in _memory_usage
+        out = func()
+      File "/usr/local/lib/python3.6/dist-packages/sphinx_gallery/gen_rst.py", line 382, in __call__
+        exec(self.code, self.globals)
+      File "/mnt/DATA/lib/MuseoToolBox/examples/learn_tools/learnWithRFandCompareCV.py", line 51, in <module>
+        classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 230, in learnFromRaster
+        **gridSearchCVParams)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 238, in __learn__
+        X, y, groups) if cv is not None):
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/cross_validation/_sampleSelection.py", line 134, in split
+        X=X, y=y, groups=groups, verbose=self.verbose, **self.params)
+      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/cross_validation/crossValidationClass.py", line 337, in __init__
+        raise ValueError('Valid size is too small')
+    ValueError: Valid size is too small
 
- Out:
 
- .. code-block:: none
-
-    Received groups value, but randomCV don't use it
-    Received groups value, but randomCV don't use it
-    Received groups value, but randomCV don't use it
-    Kappa for RandomStratifiedKFold
-    0.9484334264039358
-    0.9437808817991507
-    0.9416188956962503
-    0.9476810596511435
-    0.948334730428738
-    ====================
-    Kappa for LeavePSubGroupOut
-    0.6846231932224425
-    0.6790029247334961
-    ====================
-    Kappa for LeaveOneSubGroupOut
-    0.5855428544880351
-    0.9426734587146155
-    ====================
-    Kappa for StratifiedKFold
-    0.9328613433474189
-    0.9005613348481454
-    0.9037326056962451
-    0.9552948967024273
-    0.9554782694489665
-    ====================
 
 
 Plot example
@@ -149,17 +137,9 @@ Plot example
     plt.show()
 
 
-
-.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandCompareCV_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  40.646 seconds)
+   **Total running time of the script:** ( 0 minutes  0.118 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:
