@@ -769,7 +769,7 @@ class sequentialFeatureSelection:
                         os.path.join(
                             pathToSaveCM,
                             str(j)),
-                        n_jobs=-1)
+                        n_jobs=n_jobs)
 
                     if self.n_comp == 1:
                         bandidx = np.where(self.mask == 1)[0].reshape(-1, 1)
