@@ -56,7 +56,7 @@ Create CV
 .. code-block:: default
 
 
-    LSGO = LeavePSubGroupOut(valid_size=0.5,n_splits=2,
+    LSGO = LeavePSubGroupOut(valid_size=0.8,n_splits=2,
                     random_state=12,verbose=False)
 
 
@@ -106,15 +106,15 @@ Set and fit the Sequentia Feature Selection
     Feature 0 already computed
 
     Best feature with 1 feature(s) : 2
-    Best mean score : 0.715
+    Best mean score : 0.6001
     Feature 1 already computed
 
     Best feature with 2 feature(s) : 1
-    Best mean score : 0.765
+    Best mean score : 0.6829
     Feature 2 already computed
 
     Best feature with 3 feature(s) : 0
-    Best mean score : 0.7628
+    Best mean score : 0.6815
 
 
 Show best features and score
@@ -137,7 +137,7 @@ Show best features and score
  .. code-block:: none
 
     Best features are : [2, 1, 0]
-    Kappa are : [0.715, 0.765, 0.7628]
+    Kappa are : [0.6001, 0.6829, 0.6815]
 
 
 In order to predict every classification from the best feature
@@ -189,7 +189,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.667 seconds)
+   **Total running time of the script:** ( 0 minutes  1.207 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

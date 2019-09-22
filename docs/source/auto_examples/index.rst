@@ -37,26 +37,6 @@ Examples related to the :mod:`museotoolbox.charts` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
-
-        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/charts/plotConfusionF1
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
-
-.. only:: html
-
     .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
 
         :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
@@ -70,6 +50,26 @@ Examples related to the :mod:`museotoolbox.charts` module.
    :hidden:
 
    /auto_examples/charts/plotConfusion
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/charts/plotConfusionF1
 
 .. raw:: html
 

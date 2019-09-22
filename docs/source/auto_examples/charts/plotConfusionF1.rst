@@ -38,7 +38,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
 
 
@@ -114,8 +114,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.942577077558655
-    0.9419361896111812
+    0.9238591025450185
+    0.882400057895702
 
 
 Get each confusion matrix from folds
@@ -139,16 +139,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3691   69    1   10    0]
-     [  84 1048    0   14    0]
-     [   2    0 1137    0    0]
-     [  11   17    1  233    0]
-     [   4    0    0    0    0]]
-    [[3680   78    2   11    0]
-     [  66 1068    1   11    0]
-     [   0    0 1139    0    0]
-     [   8   21    3  230    0]
-     [   4    0    0    0    0]]
+    [[922  19   0   1   0]
+     [ 32 243   0  11   0]
+     [  0   0 284   0   0]
+     [  1  10   1  54   0]
+     [  0   1   0   0   0]]
+    [[914  24   0   4   0]
+     [ 47 231   0   8   0]
+     [  0   0 283   1   0]
+     [  1  17   1  47   0]
+     [  0   1   0   0   0]]
 
 
 Plot confusion matrix
@@ -167,31 +167,7 @@ Plot confusion matrix
     pltCM.show()
 
 
-
-
 .. image:: /auto_examples/charts/images/sphx_glr_plotConfusionF1_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-Plot confusion matrix and normalize per class
------------------------------------------------
-
-
-.. code-block:: default
-
-
-    meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-    pltCM = plotConfusionMatrix(meanCM.astype(int).T)
-    pltCM.addText(alpha_zero=0.3) # in order to hide a little zero values
-    pltCM.addF1()
-    pltCM.colorDiag()
-    pltCM.show()
-
-
-
-.. image:: /auto_examples/charts/images/sphx_glr_plotConfusionF1_002.png
     :class: sphx-glr-single-img
 
 
@@ -200,7 +176,7 @@ Plot confusion matrix and normalize per class
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.326 seconds)
+   **Total running time of the script:** ( 0 minutes  1.847 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionF1.py:

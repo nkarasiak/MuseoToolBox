@@ -251,7 +251,7 @@ Predict map
 
 .. code-block:: default
 
-    raster,_ = datasets.historicalMap()
+    raster,_ = datasets.historicalMap(low_res=True)
     LAP.predictRaster(raster,'/tmp/classification.tif')
 
 
@@ -264,9 +264,9 @@ Predict map
 
  .. code-block:: none
 
-    Total number of blocks : 15
+    Total number of blocks : 18
     Detected 1 band for function predictArray.
-    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
+    Prediction... [........................................]0%    Prediction... [##......................................]5%    Prediction... [####....................................]11%    Prediction... [######..................................]16%    Prediction... [########................................]22%    Prediction... [###########.............................]27%    Prediction... [#############...........................]33%    Prediction... [###############.........................]38%    Prediction... [#################.......................]44%    Prediction... [####################....................]50%    Prediction... [######################..................]55%    Prediction... [########################................]61%    Prediction... [##########################..............]66%    Prediction... [############################............]72%    Prediction... [###############################.........]77%    Prediction... [#################################.......]83%    Prediction... [###################################.....]88%    Prediction... [#####################################...]94%    Prediction... [########################################]100%
     Saved /tmp/classification.tif using function predictArray
 
 
@@ -294,7 +294,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.610 seconds)
+   **Total running time of the script:** ( 0 minutes  1.645 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50vector.py:

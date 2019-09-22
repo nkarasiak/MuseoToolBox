@@ -24,8 +24,8 @@ class _sampleSelection:
         """
         sampleSelection generate the duo valid/train samples in order to your samplingMethods choosen function.
 
-        Functions
-        ----------
+        Methods
+        ---------
         split(X,y,g) : Function.
             Get a memory cross validation to use directly in Scikit-Learn.
 

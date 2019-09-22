@@ -20,7 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 
 ##############################################################################
@@ -76,17 +76,3 @@ pltCM.addXlabels(labels,rotation=90)
 pltCM.addYlabels(labels)
 pltCM.colorDiag(diagColor=colorMap.Purples,matrixColor=colorMap.Reds)
 pltCM.addAccuracy()
-
-##############################################################################
-# Plot confusion matrix and normalize per class
-# -----------------------------------------------
-
-# a bug in Sphinx doesn't show the whole plot, sorry.
-
-meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-pltCM = plotConfusionMatrix(meanCM.astype(int).T)
-pltCM.addText(alpha_zero=0.3) # in order to hide a little zero values
-pltCM.addXlabels(labels)
-pltCM.addYlabels(labels)
-pltCM.colorDiag(diagColor=colorMap.Purples,matrixColor=colorMap.Greys)
-pltCM.addMean('Mean per Y','Mean per X')

@@ -20,7 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 ##############################################################################
 # Create CV
@@ -66,17 +66,6 @@ import numpy as np
 meanCM = np.mean(cms,axis=0).astype(np.int16)
 pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
 pltCM.addText()
-pltCM.addF1()
-pltCM.colorDiag()
-pltCM.show()
-
-##############################################################################
-# Plot confusion matrix and normalize per class
-# -----------------------------------------------
-
-meanCM = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-pltCM = plotConfusionMatrix(meanCM.astype(int).T)
-pltCM.addText(alpha_zero=0.3) # in order to hide a little zero values
 pltCM.addF1()
 pltCM.colorDiag()
 pltCM.show()

@@ -39,7 +39,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = mtb.datasets.historicalMap()
+    raster,vector = mtb.datasets.historicalMap(low_res=True)
     outVector='/tmp/vector_withROI.gpkg'
 
 
@@ -124,7 +124,7 @@ Number of Y in the new vector is the total number of pixel in the polygons
 
  .. code-block:: none
 
-    (12647,)
+    (3162,)
 
 
 X has the same size of Y, but in 3 dimensions because our raster has 3 bands
@@ -147,18 +147,18 @@ X has the same size of Y, but in 3 dimensions because our raster has 3 bands
 
  .. code-block:: none
 
-    (12647, 3)
-    [[147 130 120]
-     [155 139 126]
-     [213 189 155]
-     [217 192 161]
-     [211 186 155]
-     [206 181 151]
-     [207 182 152]
-     [213 188 158]
-     [216 191 161]
-     [213 188 158]]
-    [2 2 3 3 3 3 3 3 3 3]
+    (3162, 3)
+    [[169 157 137]
+     [136 123 106]
+     [ 87  78  67]
+     [ 67  63  56]
+     [146 129 114]
+     [161 145 129]
+     [162 146 131]
+     [115  98  83]
+     [134 117 102]
+     [158 141 126]]
+    [2 2 2 2 2 2 2 2 2 2]
 
 
 Plot blue and red band
@@ -184,7 +184,7 @@ Plot blue and red band
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  4.291 seconds)
+   **Total running time of the script:** ( 0 minutes  1.142 seconds)
 
 
 .. _sphx_glr_download_auto_examples_vector_tools_copyRasterInVectorFields.py:

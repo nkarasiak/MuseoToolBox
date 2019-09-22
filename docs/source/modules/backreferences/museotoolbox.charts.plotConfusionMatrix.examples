@@ -9,24 +9,6 @@ Examples using ``museotoolbox.charts.plotConfusionMatrix``
 
 .. only:: html
 
-    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
-
-        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
-
-.. only:: html
-
     .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
 
         :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
@@ -38,6 +20,24 @@ Examples using ``museotoolbox.charts.plotConfusionMatrix``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
 
 .. raw:: html
 

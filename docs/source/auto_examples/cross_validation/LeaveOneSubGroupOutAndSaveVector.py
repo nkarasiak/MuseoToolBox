@@ -20,7 +20,7 @@ from museotoolbox import datasets
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 group = 'uniquefid'
 X,y,s = getSamplesFromROI(raster,vector,field,group)

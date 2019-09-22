@@ -29,7 +29,7 @@ X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
 # Create CV
 # -------------------------------------------
 
-LSGO = LeavePSubGroupOut(valid_size=0.5,n_splits=2,
+LSGO = LeavePSubGroupOut(valid_size=0.8,n_splits=2,
                 random_state=12,verbose=False)
 
 ##############################################################################

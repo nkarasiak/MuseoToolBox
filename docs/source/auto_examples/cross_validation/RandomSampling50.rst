@@ -37,7 +37,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
     y = vector_tools.readValuesFromVector(vector,field)
 
@@ -128,14 +128,14 @@ Create CV
 
  .. code-block:: none
 
-    [ 1600  1601  1605 ...  9509  9561 10322] [ 3632  1988 11480 ... 10321  9457  9508]
-    (6325,) (6322,)
-    [ 1599  1602  1603 ...  9508  9560 10321] [ 3948 10928  3490 ... 10322  9458  9561]
-    (6325,) (6322,)
-    [1601 1603 1604 ... 9458 9509 9560] [ 1649  7237  7414 ... 10321 10322  9508]
-    (6325,) (6322,)
-    [ 1599  1600  1602 ...  9561 10321 10322] [11779  3484 10912 ...  9560  9458  9457]
-    (6325,) (6322,)
+    [   0    1    2 ... 2961 3160 3161] [ 999  398 2667 ... 2843 2842 3023]
+    (1583,) (1579,)
+    [   3    4    5 ... 2960 3023 3160] [1093 2607 2672 ... 2834  715 3161]
+    (1583,) (1579,)
+    [   1    2    4 ... 2961 3023 3161] [1477   51 1805 ... 2883 2833 3160]
+    (1583,) (1579,)
+    [   0    3    6 ... 2960 3023 3160] [2331 2317  999 ...  391  508 3161]
+    (1583,) (1579,)
 
 
 Plot example
@@ -161,7 +161,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.372 seconds)
+   **Total running time of the script:** ( 0 minutes  0.221 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_RandomSampling50.py:

@@ -38,7 +38,7 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-    raster,vector = datasets.historicalMap()
+    raster,vector = datasets.historicalMap(low_res=True)
     field = 'Class'
 
 
@@ -113,8 +113,8 @@ Get kappa from each fold
 
  .. code-block:: none
 
-    0.9414602197060008
-    0.9422516056288517
+    0.9182291830686276
+    0.8756478724189698
 
 
 Get each confusion matrix from folds
@@ -138,16 +138,16 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[3689   70    1   11    0]
-     [  81 1050    0   15    0]
-     [   2    0 1137    0    0]
-     [  11   19    1  231    0]
-     [   4    0    0    0    0]]
-    [[3678   81    2   10    0]
-     [  69 1065    1   11    0]
-     [   0    0 1139    0    0]
-     [   9   20    3  230    0]
-     [   4    0    0    0    0]]
+    [[924  17   0   1   0]
+     [ 30 245   0  11   0]
+     [  0   0 284   0   0]
+     [  1  10   1  54   0]
+     [  0   1   0   0   0]]
+    [[915  23   0   4   0]
+     [ 47 230   0   9   0]
+     [  0   0 283   1   0]
+     [  1  18   1  46   0]
+     [  0   0   0   1   0]]
 
 
 Plot confusion matrix
@@ -164,31 +164,7 @@ Plot confusion matrix
     pltCM.colorDiag()
 
 
-
-
 .. image:: /auto_examples/charts/images/sphx_glr_plotConfusion_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-Plot confusion matrix and normalize per class
------------------------------------------------
-
-
-.. code-block:: default
-
-    from matplotlib.pyplot import cm as colorMap
-    meanCMnorm = meanCM.astype('float') / meanCM.sum(axis=1)[:, np.newaxis]*100
-    pltCM = plotConfusionMatrix(meanCMnorm.astype(int).T)
-    pltCM.addText(alpha_zero=0.8) # in order to hide a little zero values
-    pltCM.addXlabels(['One','Two','3','Four','Five!'],rotation=90,position='bottom')
-    pltCM.addYlabels(['','','','','']) # to remove labels
-    pltCM.colorDiag(diagColor=colorMap.Blues,matrixColor=colorMap.YlOrBr)
-
-
-
-.. image:: /auto_examples/charts/images/sphx_glr_plotConfusion_002.png
     :class: sphx-glr-single-img
 
 
@@ -197,7 +173,7 @@ Plot confusion matrix and normalize per class
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  11.629 seconds)
+   **Total running time of the script:** ( 0 minutes  3.948 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusion.py:
