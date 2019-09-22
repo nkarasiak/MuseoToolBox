@@ -21,7 +21,7 @@ from matplotlib import pyplot as plt
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = mtb.datasets.historicalMap()
+raster,vector = mtb.datasets.historicalMap(low_res=True)
 outVector='/tmp/vector_withROI.gpkg'
 
 

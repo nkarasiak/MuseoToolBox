@@ -73,7 +73,7 @@ LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
 ##############################################################################
 # Predict map
 # ---------------------------
-raster,_ = datasets.historicalMap()
+raster,_ = datasets.historicalMap(low_res=True)
 LAP.predictRaster(raster,'/tmp/classification.tif')
 
 ##########################
