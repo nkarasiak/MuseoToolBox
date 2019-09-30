@@ -395,12 +395,14 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                 # Load the Variables
                 if not onlyCoords:
                     # extract values from each field
-                    Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.int64)
-                    for idx, roiTemp in enumerate(rois):
-                        roiField = roiTemp.GetRasterBand(
-                            1).ReadAsArray(j, i, cols, lines)
-                        Ftemp[:, idx] = roiField[t]
-                    F = np.concatenate((F, Ftemp))
+                    if nFields > 0 :
+                        Ftemp = np.empty((t[0].shape[0], nFields), dtype=np.int64)
+                        for idx, roiTemp in enumerate(rois):
+                            roiField = roiTemp.GetRasterBand(
+                                1).ReadAsArray(j, i, cols, lines)
+                            Ftemp[:, idx] = roiField[t]
+                        
+                        F = np.concatenate((F, Ftemp))
 
                     # extract raster values (X)
                     Xtp = np.empty((t[0].shape[0], d), dtype=xDataType)
@@ -429,10 +431,16 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     if onlyCoords:
         toReturn = coords
     else:
-        toReturn = [X] + [F[:, f] for f in range(nFields)]
+        if nFields > 0:
+            toReturn = [X] + [F[:, f] for f in range(nFields)]
+        else:
+            toReturn = X
 
         if getCoords:
-            toReturn = toReturn + [coords]
+            if nFields == 0 :
+                toReturn = [toReturn] + [coords]
+            else:
+                toReturn = toReturn + [coords]
 
     return toReturn
 

@@ -7,7 +7,7 @@
 
 **Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and for remote sensing. It is now really easy to extract raster values from vector and to do some spatial/unspatial cross-validation for scikit-learn.
 
-The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : compute the mean in all bands, the modal vaue, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. [Examples and code using rasterMath are available on readthedocs](https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath)
+The other meaningful contribution is the **rasterMath** function which allow you to do whatever you like on a raster in a just few lines : compute the mean in all bands, the modal value, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **rasterMath** manage everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. [Examples and code using rasterMath are available on readthedocs](https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath)
 
 ### Using and citing the toolbox
 
