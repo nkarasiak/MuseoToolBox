@@ -444,6 +444,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Easily extract raster values from vector files (polygon/point) ">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_extractRasterValues_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_extractRasterValues.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/extractRasterValues
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
 
 .. only:: html

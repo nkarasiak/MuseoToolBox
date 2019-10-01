@@ -275,7 +275,7 @@ This generate unbalanced classes
 
     
     from sklearn.model_selection import GroupShuffleSplit
-    GSS = GroupShuffleSplit(test_size=0.5,n_splits=5)
+    GSS = GroupShuffleSplit(test_size=0.5,n_splits=2)
     for tr,vl in GSS.split(X,y,g):
         print(tr.shape,vl.shape)
 
@@ -294,11 +294,8 @@ This generate unbalanced classes
 
     (1718,) (1444,)
     (1904,) (1258,)
-    (1869,) (1293,)
-    (1622,) (1540,)
-    (1601,) (1561,)
     y label with number of samples
-    (array([1, 2, 3, 5]), array([997, 266, 336,   2]))
+    (array([1, 2, 3, 5]), array([1237,  307,  359,    1]))
 
 
 Plot example in image
@@ -326,7 +323,7 @@ Plot example in image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.221 seconds)
+   **Total running time of the script:** ( 0 minutes  0.203 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

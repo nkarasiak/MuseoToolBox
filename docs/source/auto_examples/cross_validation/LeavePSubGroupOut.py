@@ -60,7 +60,7 @@ for tr,vl in LPGO.split(X,y,g):
 # This generate unbalanced classes
     
 from sklearn.model_selection import GroupShuffleSplit
-GSS = GroupShuffleSplit(test_size=0.5,n_splits=5)
+GSS = GroupShuffleSplit(test_size=0.5,n_splits=2)
 for tr,vl in GSS.split(X,y,g):
     print(tr.shape,vl.shape)
 

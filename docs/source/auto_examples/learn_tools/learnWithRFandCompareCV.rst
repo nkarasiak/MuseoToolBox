@@ -56,7 +56,7 @@ Initialize Random-Forest
 .. code-block:: default
 
 
-    classifier = RandomForestClassifier(random_state=12)
+    classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
 
 
@@ -71,20 +71,20 @@ Create list of different CV
 .. code-block:: default
 
 
-    CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
+    CVs = [cross_validation.RandomStratifiedKFold(n_splits=2),
            cross_validation.LeavePSubGroupOut(valid_size=0.5),
            cross_validation.LeaveOneSubGroupOut(),
-           StratifiedKFold(n_splits=5) #from sklearn
+           StratifiedKFold(n_splits=2,shuffle=True) #from sklearn
            ]
 
     kappas=[]
 
-    LAP = learnAndPredict()
+    LAP = learnAndPredict(n_jobs=1)
 
     for cv in CVs : 
         
         LAP.learnFromRaster(raster,vector,inField=field,inGroup=group,cv=cv,
-                            classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+                            classifier=classifier,param_grid=dict(n_estimators=[50,100]))
         print('Kappa for '+str(type(cv).__name__))
         cvKappa = []
     
@@ -99,26 +99,32 @@ Create list of different CV
 
 
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/usr/local/lib/python3.6/dist-packages/sphinx_gallery/gen_rst.py", line 394, in _memory_usage
-        out = func()
-      File "/usr/local/lib/python3.6/dist-packages/sphinx_gallery/gen_rst.py", line 382, in __call__
-        exec(self.code, self.globals)
-      File "/mnt/DATA/lib/MuseoToolBox/examples/learn_tools/learnWithRFandCompareCV.py", line 51, in <module>
-        classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 230, in learnFromRaster
-        **gridSearchCVParams)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/learn_tools/__init__.py", line 238, in __learn__
-        X, y, groups) if cv is not None):
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/cross_validation/_sampleSelection.py", line 134, in split
-        X=X, y=y, groups=groups, verbose=self.verbose, **self.params)
-      File "/mnt/DATA/lib/MuseoToolBox/museotoolbox/cross_validation/crossValidationClass.py", line 337, in __init__
-        raise ValueError('Valid size is too small')
-    ValueError: Valid size is too small
+.. rst-class:: sphx-glr-script-out
 
+ Out:
 
+ .. code-block:: none
+
+    Received groups value, but randomCV don't use it
+    Received groups value, but randomCV don't use it
+    Received groups value, but randomCV don't use it
+    Kappa for RandomStratifiedKFold
+    0.9072760860075378
+    0.9066171277887362
+    ====================
+    Kappa for LeavePSubGroupOut
+    0.7772911861076087
+    0.7708147021999643
+    ====================
+    Kappa for LeaveOneSubGroupOut
+    0.898947692623582
+    0.7889230314289939
+    ====================
+    Kappa for StratifiedKFold
+    0.9109032869539115
+    0.9055529635955106
+    ====================
 
 
 Plot example
@@ -137,9 +143,17 @@ Plot example
     plt.show()
 
 
+
+.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandCompareCV_001.png
+    :class: sphx-glr-single-img
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.118 seconds)
+   **Total running time of the script:** ( 0 minutes  4.630 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandCompareCV.py:

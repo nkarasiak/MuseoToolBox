@@ -134,7 +134,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7f5fca67b2b0>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7f9baf219198>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -147,7 +147,7 @@ Read the model
            refit='kappa', return_train_score='warn',
            scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([0.01915026]), 'std_fit_time': array([0.00185943]), 'mean_score_time': array([0.0103687]), 'std_score_time': array([0.00019777]), 'param_n_estimators': masked_array(data=[10],
+    {'mean_fit_time': array([0.01711714]), 'std_fit_time': array([0.00133264]), 'mean_score_time': array([0.00932479]), 'std_score_time': array([0.00033045]), 'param_n_estimators': masked_array(data=[10],
                  mask=[False],
            fill_value='?',
                 dtype=object), 'params': [{'n_estimators': 10}], 'split0_test_kappa': array([0.90341985]), 'split1_test_kappa': array([0.87692881]), 'mean_test_kappa': array([0.89017433]), 'std_test_kappa': array([0.01324552]), 'rank_test_kappa': array([1], dtype=int32), 'split0_train_kappa': array([0.98903974]), 'split1_train_kappa': array([0.99014025]), 'mean_train_kappa': array([0.98959]), 'std_train_kappa': array([0.00055026]), 'split0_test_f1_mean': array([0.94490184]), 'split1_test_f1_mean': array([0.92970234]), 'mean_test_f1_mean': array([0.93730209]), 'std_test_f1_mean': array([0.00759975]), 'rank_test_f1_mean': array([1], dtype=int32), 'split0_train_f1_mean': array([0.99368288]), 'split1_train_f1_mean': array([0.99431459]), 'mean_train_f1_mean': array([0.99399874]), 'std_train_f1_mean': array([0.00031586]), 'split0_test_accuracy': array([0.94490184]), 'split1_test_accuracy': array([0.92970234]), 'mean_test_accuracy': array([0.93730209]), 'std_test_accuracy': array([0.00759975]), 'rank_test_accuracy': array([1], dtype=int32), 'split0_train_accuracy': array([0.99368288]), 'split1_train_accuracy': array([0.99431459]), 'mean_train_accuracy': array([0.99399874]), 'std_train_accuracy': array([0.00031586])}
@@ -280,7 +280,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.988 seconds)
+   **Total running time of the script:** ( 0 minutes  0.946 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

@@ -21,7 +21,7 @@ from sklearn.model_selection import StratifiedKFold
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 group = 'uniquefid'
 
@@ -29,26 +29,26 @@ group = 'uniquefid'
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier(random_state=12)
+classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
 ##############################################################################
 # Create list of different CV
 # ---------------------------
 
-CVs = [cross_validation.RandomStratifiedKFold(n_splits=5),
+CVs = [cross_validation.RandomStratifiedKFold(n_splits=2),
        cross_validation.LeavePSubGroupOut(valid_size=0.5),
        cross_validation.LeaveOneSubGroupOut(),
-       StratifiedKFold(n_splits=5) #from sklearn
+       StratifiedKFold(n_splits=2,shuffle=True) #from sklearn
        ]
 
 kappas=[]
 
-LAP = learnAndPredict()
+LAP = learnAndPredict(n_jobs=1)
 
 for cv in CVs : 
         
     LAP.learnFromRaster(raster,vector,inField=field,inGroup=group,cv=cv,
-                        classifier=classifier,param_grid=dict(n_estimators=[100,200]))
+                        classifier=classifier,param_grid=dict(n_estimators=[50,100]))
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []
     

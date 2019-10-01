@@ -329,6 +329,24 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Easily extract raster values from vector files (polygon/point) ">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_extractRasterValues_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_extractRasterValues.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_extractRasterValues.py`
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Create a raster with the modal class and the number of agreements.">
 
 .. only:: html

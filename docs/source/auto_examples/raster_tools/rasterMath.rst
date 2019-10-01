@@ -66,13 +66,13 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    [[178 154 120]
-     [196 172 138]
-     [206 182 148]
+    [[ 69  69  41]
+     [119 119  91]
+     [141 141 113]
      ...
-     [ 94  85  68]
-     [174 161 144]
-     [196 183 164]]
+     [ 72  59  42]
+     [ 54  41  24]
+     [ 63  50  33]]
 
 
 Let's suppose you want compute the difference between blue and green band
@@ -162,7 +162,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.729 seconds)
+   **Total running time of the script:** ( 0 minutes  0.648 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:
