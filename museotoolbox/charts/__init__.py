@@ -49,7 +49,7 @@ class plotConfusionMatrix:
             bottom=0,
             top=1,
             wspace=0,
-            hspace=0.7/self.cm.shape[0], right=right, left=left)
+            hspace=0.7 / self.cm.shape[0], right=right, left=left)
 
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.vmin = np.amin(self.cm)
