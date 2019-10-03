@@ -364,6 +364,26 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
    :hidden:
 
    /auto_examples/learn_tools/learnWithRFandRS50
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to customize your raster (ndvi, smooth signal...) in the  learning proce...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithBandRatio_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/learn_tools/learnWithBandRatio
 .. raw:: html
 
     <div style='clear:both'></div>

@@ -43,14 +43,17 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 f1_mean = metrics.make_scorer(metrics.f1_score,average='micro')
 scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 
+
 ##############################################################################
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 LAP = learnAndPredict(n_jobs=1,verbose=1)
+
 LAP.learnFromRaster(raster,vector,field,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=scoring,refit='kappa')
+                    scoring=kappa,refit='d')
+
 
 ##############################################################################
 # Read the model
@@ -58,7 +61,6 @@ LAP.learnFromRaster(raster,vector,field,cv=SKF,
 print(LAP.model)
 print(LAP.model.cv_results_)
 print(LAP.model.best_score_)
-
 
 ##############################################################################
 # Get F1 for every class from best params

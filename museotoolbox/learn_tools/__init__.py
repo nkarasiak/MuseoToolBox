@@ -77,6 +77,8 @@ class learnAndPredict:
             warnings.filterwarnings("ignore")
         self.standardize = False
         self.standardized = False
+        self._x_is_customized = False
+        self.xKwargs = {}
         self.CV = False
         self.cloneModel = False
 
@@ -99,6 +101,8 @@ class learnAndPredict:
             self.StandardScaler = StandardScaler()
 
         if X is not None:
+            if self._x_is_customized:
+                X = self.xFunction(X,**self.xKwargs)
             if self.standardized is False:
                 self.StandardScaler.fit(X)
                 self.standardized = True
@@ -116,7 +120,9 @@ class learnAndPredict:
             param_grid=None,
             standardize=True,
             cv=False,
-            scoring='accuracy', **gridSearchCVParams):
+            scoring='accuracy',
+            refit=True,
+            **gridSearchCVParams):
         """
         learn Model from vector/array.
 
@@ -143,8 +149,11 @@ class learnAndPredict:
         if cv is not False and self.param_grid is None:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
+        if self._x_is_customized:
+                X = self.xFunction(X,**self.xKwargs)
+        
         self.X = X
-
+        
         if standardize:
             self.standardize = True
             self.standardizeX()
@@ -158,6 +167,7 @@ class learnAndPredict:
             param_grid,
             cv,
             scoring,
+            refit,
             **gridSearchCVParams)
 
     def learnFromRaster(
@@ -171,6 +181,7 @@ class learnAndPredict:
             standardize=True,
             cv=False,
             scoring='accuracy',
+            refit=True,
             **gridSearchCVParams):
         """
         learn Model from raster.
@@ -212,7 +223,9 @@ class learnAndPredict:
         self.y = y
         self.X = X
         self.group = group
-
+        
+        if self._x_is_customized is True:
+            self.X = self.xFunction(X,**self.xKwargs)
         if standardize:
             self.standardize = True
             self.standardizeX()
@@ -227,17 +240,18 @@ class learnAndPredict:
             param_grid,
             cv,
             scoring,
+            refit,
             **gridSearchCVParams)
 
     def __learn__(self, X, y, groups, classifier,
-                  param_grid, cv, scoring='accuracy', **gridSearchCVParams):
+                  param_grid, cv, scoring='accuracy',refit=True, **gridSearchCVParams):
 
         if cv is not False and not isinstance(cv, int):
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
-        else:
+        elif cv is not False:
             self.CV = cv
 
         from sklearn.model_selection import GridSearchCV
@@ -248,6 +262,7 @@ class learnAndPredict:
                 param_grid=param_grid,
                 cv=cv,
                 scoring=scoring,
+                refit=refit,
                 n_jobs=self.n_jobs,
                 verbose=self.verbose,
                 **gridSearchCVParams)
@@ -319,11 +334,9 @@ class learnAndPredict:
                     self.standardize, self.StandardScaler = self.scale, self.scaler
                     del self.scaler, self.scale
 
-    def __convertX(self, X, **kwargs):
-        if 'Xfunction' in kwargs:
-            Xfunction = kwargs['Xfunction']
-            kwargs.pop('Xfunction', None)
-            X = Xfunction(X, **kwargs)
+    def __convertX(self, X):
+        if self._x_is_customized is True:
+            X = self.xFunction(X,**self.xKwargs)
 
         if self.standardize:
             if np.ma.is_masked(X):
@@ -338,7 +351,7 @@ class learnAndPredict:
 
         return X
 
-    def predictArray(self, X, **kwargs):
+    def predictArray(self, X):
         """
         Predict label from array.
 
@@ -350,12 +363,12 @@ class learnAndPredict:
             Xfunction : a custom function to modify directly the array from the raster.
         """
 
-        X = self.__convertX(X, **kwargs)
+        X = self.__convertX(X)
         self.Xpredict = self.model.predict(X)
 
         return self.Xpredict
 
-    def predictConfidencePerClass(self, X, **kwargs):
+    def predictConfidencePerClass(self, X):
         """
         Predict label from array.
 
@@ -369,7 +382,7 @@ class learnAndPredict:
         Xpredict : array.
             The probability from 0 to 100.
         """
-        self.__convertX(X, **kwargs)
+        X = self.__convertX(X)
 
         Xpredict_proba = self.model.predict_proba(X) * 100
         if Xpredict_proba.ndim == 1:
@@ -379,7 +392,7 @@ class learnAndPredict:
         self.Xpredict_proba = Xpredict_proba
         return Xpredict_proba
 
-    def predictConfidenceOfPredictedClass(self, X, **kwargs):
+    def predictConfidenceOfPredictedClass(self, X):
         """
         Predict label from array.
 
@@ -399,7 +412,7 @@ class learnAndPredict:
             Xpredict_proba = np.amax(
                 self.model.predict_proba(
                     self.__convertX(
-                        X, **kwargs)) * 100, axis=1)
+                        X)) * 100, axis=1)
         return Xpredict_proba
 
     def predictRaster(
@@ -410,8 +423,7 @@ class learnAndPredict:
             confidence=False,
             inMaskRaster=False,
             outNoData=0,
-            compress=True,
-            **kwargs):
+            compress=True):
         """
         Predict label from raster using previous learned model.
         This function will call self.predictArray(X).
@@ -445,8 +457,7 @@ class learnAndPredict:
             outNBand=1,
             outNumpyDT=numpyDT,
             outNoData=outNoData,
-            compress=compress,
-            **kwargs)
+            compress=compress)
 
         if confidencePerClass:
             rM.addFunction(
@@ -455,8 +466,7 @@ class learnAndPredict:
                 outNBand=False,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
-                compress=compress,
-                **kwargs)
+                compress=compress)
 
         if confidence:
             rM.addFunction(
@@ -465,8 +475,7 @@ class learnAndPredict:
                 outNBand=1,
                 outNumpyDT=np.int16,
                 outNoData=np.iinfo(np.int16).min,
-                compress=compress,
-                **kwargs)
+                compress=compress)
         rM.run()
 
     def saveCMFromCV(self, savePath, prefix='', header=True, n_jobs=1):
@@ -605,7 +614,7 @@ class learnAndPredict:
         F1 : bool, default False.
             If True, will return F1 Score per class.
         nTrain : bool, default False.
-            If True, will return numbe of train samples ordered asc. per label.
+            If True, will return number of train samples ordered asc. per label.
 
         Returns
         -------
@@ -623,6 +632,7 @@ class learnAndPredict:
         0.942560083148
         ...
         """
+        
         def __computeStatsPerCV(statsidx, trvl, **kwargs):
             dictStats = self.__getStatsFromCVidx(statsidx, trvl, **kwargs)
             return dictStats
@@ -645,6 +655,10 @@ class learnAndPredict:
                     self.CV))
             return statsCV
 
+    def customizeX(self, xFunction, **kwargs):
+        self._x_is_customized = True
+        self.xFunction = xFunction
+        self.xKwargs = kwargs
 
 class sequentialFeatureSelection:
     """
@@ -848,8 +862,8 @@ class sequentialFeatureSelection:
         print('Predict with combination ' + str(self.best_idx_))
         LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
         LAP.loadModel(model)
-        LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
-                          Xfunction=self.transform, idx=self.best_idx_, customizeX=True)
+        LAP.customizeX(self.transform,idx=self.best_idx_,customizeX=True)
+        LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster)
 
     def relearnBestModelWithBestParams(
             self, X, y, group=None, standardize=True, n_jobs=1):
@@ -914,8 +928,8 @@ class sequentialFeatureSelection:
             LAP.loadModel(model)
 
             outRaster = outRasterPrefix + str(idx) + '.tif'
-            LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster,
-                              Xfunction=self.transform, idx=idx, customizeX=True)
+            LAP.customizeX(self.transform,idx=idx,customizeX=True)
+            LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster)
 
     def customizeX(self, xFunction, **kwargs):
         self.xFunction = xFunction

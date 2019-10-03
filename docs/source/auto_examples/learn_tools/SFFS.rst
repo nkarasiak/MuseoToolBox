@@ -40,7 +40,6 @@ Load HistoricalMap dataset
 .. code-block:: default
 
 
-
     X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
 
 
@@ -103,16 +102,18 @@ Set and fit the Sequentia Feature Selection
 
  .. code-block:: none
 
-    SFFS: [######..................................]16%    SFFS: [#############...........................]33%    SFFS: [####################....................]50%
+    Feature 0 already computed
+
     Best feature with 1 feature(s) : 2
-    Best mean score : 0.600050545868619
-    SFFS: [##########################..............]66%    SFFS: [#################################.......]83%
+    Best mean score : 0.6001
+    Feature 1 already computed
+
     Best feature with 2 feature(s) : 1
-    Best mean score : 0.6829413013452377
-    SFFS: [########################################]100%
+    Best mean score : 0.6829
+    Feature 2 already computed
 
     Best feature with 3 feature(s) : 0
-    Best mean score : 0.6814660085318481
+    Best mean score : 0.6815
 
 
 Show best features and score
@@ -135,7 +136,7 @@ Show best features and score
  .. code-block:: none
 
     Best features are : [2, 1, 0]
-    Kappa are : [0.600050545868619, 0.6829413013452377, 0.6814660085318481]
+    Kappa are : [0.6001, 0.6829, 0.6815]
 
 
 In order to predict every classification from the best feature
@@ -187,7 +188,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.891 seconds)
+   **Total running time of the script:** ( 0 minutes  1.113 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:

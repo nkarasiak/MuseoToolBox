@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Learn with Random-Forest and Random Sampling 50% (RS50)
-========================================================
+Learn algorithm and customize your input raster without writing it on disk
+=============================================================================
 
-This example shows how to make a Random Sampling with 
-50% for each class.
+This example shows how to customize your raster (ndvi, smooth signal...) in the 
+learning process to avoi generate a new raster.
 
 """
 
@@ -12,6 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
+import numpy as np
 from museotoolbox.learn_tools import learnAndPredict
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
@@ -50,10 +51,20 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
 LAP = learnAndPredict(n_jobs=1,verbose=1)
 
+##############################################################################
+# Create or use custom function
+
+def bandRatio(X,bandToKeep=[0,2]):
+    # this function get the first and the last band
+    X=X[:,bandToKeep].reshape(-1,len(bandToKeep))
+    return X
+
+# add this function to learnAndPredict class
+LAP.customizeX(bandRatio)
+
 LAP.learnFromRaster(raster,vector,field,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=kappa,refit='d')
-
+                    scoring=scoring,refit='kappa')
 
 ##############################################################################
 # Read the model

@@ -275,6 +275,24 @@ Examples using ``museotoolbox.datasets.historicalMap``
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to customize your raster (ndvi, smooth signal...) in the  learning proce...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithBandRatio_thumb.png
+
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
 
 .. only:: html

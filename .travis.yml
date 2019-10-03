@@ -1,23 +1,27 @@
 language: python
 matrix:
-#    allow_failures:
-#        - os: osx
-    include:
-#        - os: osx
-#          language: generic
-        - os: linux
-          sudo: required
-          python: 3.5
-        - os: linux
-          sudo: required
-          python: 3.6
-        - os: linux
-          sudo: required
-          python: 3.7
-
+  include:
+  - os: linux
+    sudo: required
+    python: 3.5
+  - os: linux
+    sudo: required
+    python: 3.6
+  - os: linux
+    sudo: required
+    python: 3.7
 install:
-  - pip install -r requirements.txt
-  - pip install .
-
+- pip install -r requirements.txt
+- pip install .
 script:
-  - python setup.py develop
+- python setup.py develop
+
+deploy:
+  provider: pypi
+  user: "karasiak"
+  password:
+    secure: 7NeKw+T+tO7LWvwjgj1agHIo8zQlA33bkg9x6pQ4zXd24ZJ4XDhqnGSxG9NKr9pP9l9PwDrPZIIW50JeBWula+JXQxtRj80LNJB8ySJVn3BEdLojxUMthVvOtdUqzqFME5iFpP6SEdUrODMHXJa18tCP5QN2XHUWEixmmqrbFg8JYgg6nswVmmCHpXor5h9LW1V0bJ1uOThmpjhXUhKx7xM6lcXJssC91Ghmkh1SApNuK3Ah8ir92HK53VSdQScK8QAHIpvWGbTLhbt7C4IuwDFERgDIbOec6L9UxOePMXmIF/5wu+mlQeVzFV5DiFBJ0U+fDEqg1PTKifM9KQmOtBX8iFVyiZmwqM6wRJjt83C5j4VKDj8vs8Y9dGkmOobRNlE3HdEekB69mj5177oCpOSZtgntkbR/9wfEK7j4qnj/mALaKx9mYKdI9nRepEnnocp6R2aGvZD0BxSwRWxjgubfolsG3mBHBRhjog5pVOcC4de3aPwZKxWTls2AIMP47lxocKnpHWTzKAtuPEo4w/Y2IaFXbk0EQleC6BLHAWi7DbAYct7/6Ju7VOdm80ko0To4PQ+9fzpSZndcAxf1cEys0OaVcQPJ9XjxfvzHUz1OXqQKzZe5tfAxFS6q6rbMV4J9zNRP+xX8rOhmB4HajBmBfIEcz/Avt4R+pl5lIeo=
+  on:
+    tags: true
+    branch: master
+  skip_existing: true

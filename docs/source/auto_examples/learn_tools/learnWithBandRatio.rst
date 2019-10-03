@@ -1,17 +1,17 @@
 .. note::
     :class: sphx-glr-download-link-note
 
-    Click :ref:`here <sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py>` to download the full example code
+    Click :ref:`here <sphx_glr_download_auto_examples_learn_tools_learnWithBandRatio.py>` to download the full example code
 .. rst-class:: sphx-glr-example-title
 
-.. _sphx_glr_auto_examples_learn_tools_learnWithRFandRS50.py:
+.. _sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py:
 
 
-Learn with Random-Forest and Random Sampling 50% (RS50)
-========================================================
+Learn algorithm and customize your input raster without writing it on disk
+=============================================================================
 
-This example shows how to make a Random Sampling with 
-50% for each class.
+This example shows how to customize your raster (ndvi, smooth signal...) in the 
+learning process to avoi generate a new raster.
 
 
 Import librairies
@@ -21,6 +21,7 @@ Import librairies
 .. code-block:: default
 
 
+    import numpy as np
     from museotoolbox.learn_tools import learnAndPredict
     from museotoolbox.cross_validation import RandomStratifiedKFold
     from museotoolbox import datasets
@@ -95,10 +96,29 @@ sklearn will compute different metrics, but will keep best results from kappa (r
 
     LAP = learnAndPredict(n_jobs=1,verbose=1)
 
+
+
+
+
+
+
+Create or use custom function
+
+
+.. code-block:: default
+
+
+    def bandRatio(X,bandToKeep=[0,2]):
+        # this function get the first and the last band
+        X=X[:,bandToKeep].reshape(-1,len(bandToKeep))
+        return X
+
+    # add this function to learnAndPredict class
+    LAP.customizeX(bandRatio)
+
     LAP.learnFromRaster(raster,vector,field,cv=SKF,
                         classifier=classifier,param_grid=dict(n_estimators=[10]),
-                        scoring=kappa,refit='d')
-
+                        scoring=scoring,refit='kappa')
 
 
 
@@ -112,7 +132,7 @@ sklearn will compute different metrics, but will keep best results from kappa (r
 
     Reading raster values...  [........................................]0%    Reading raster values...  [##......................................]5%    Reading raster values...  [####....................................]11%    Reading raster values...  [######..................................]16%    Reading raster values...  [#########...............................]22%    Reading raster values...  [###########.............................]28%    Reading raster values...  [#############...........................]33%    Reading raster values...  [###############.........................]39%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################....................]50%    Reading raster values...  [######################..................]56%    Reading raster values...  [########################................]62%    Reading raster values...  [###########################.............]67%    Reading raster values...  [#############################...........]73%    Reading raster values...  [###############################.........]79%    Reading raster values...  [#################################.......]84%    Reading raster values...  [####################################....]90%    Reading raster values...  [######################################..]96%    Reading raster values...  [########################################]100%
     Fitting 2 folds for each of 1 candidates, totalling 2 fits
-    best score : 0.8901743308054896
+    best score : 0.8236149998745168
     best n_estimators : 10
 
 
@@ -136,7 +156,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7fb0b6997828>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7fb0b693cef0>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -146,13 +166,14 @@ Read the model
                 oob_score=False, random_state=12, verbose=0, warm_start=False),
            fit_params=None, iid=True, n_jobs=1,
            param_grid={'n_estimators': [10]}, pre_dispatch='2*n_jobs',
-           refit='d', return_train_score='warn',
-           scoring=make_scorer(cohen_kappa_score), verbose=1)
-    {'mean_fit_time': array([0.01744843]), 'std_fit_time': array([0.00104499]), 'mean_score_time': array([0.00409412]), 'std_score_time': array([0.00018239]), 'param_n_estimators': masked_array(data=[10],
+           refit='kappa', return_train_score='warn',
+           scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
+           verbose=1)
+    {'mean_fit_time': array([0.01835954]), 'std_fit_time': array([0.00153911]), 'mean_score_time': array([0.0103091]), 'std_score_time': array([0.00058258]), 'param_n_estimators': masked_array(data=[10],
                  mask=[False],
            fill_value='?',
-                dtype=object), 'params': [{'n_estimators': 10}], 'split0_test_score': array([0.90341985]), 'split1_test_score': array([0.87692881]), 'mean_test_score': array([0.89017433]), 'std_test_score': array([0.01324552]), 'rank_test_score': array([1], dtype=int32), 'split0_train_score': array([0.98903974]), 'split1_train_score': array([0.99014025]), 'mean_train_score': array([0.98959]), 'std_train_score': array([0.00055026])}
-    0.8901743308054896
+                dtype=object), 'params': [{'n_estimators': 10}], 'split0_test_kappa': array([0.82580219]), 'split1_test_kappa': array([0.82142781]), 'mean_test_kappa': array([0.823615]), 'std_test_kappa': array([0.00218719]), 'rank_test_kappa': array([1], dtype=int32), 'split0_train_kappa': array([0.96596809]), 'split1_train_kappa': array([0.97362344]), 'mean_train_kappa': array([0.96979576]), 'std_train_kappa': array([0.00382768]), 'split0_test_f1_mean': array([0.90056998]), 'split1_test_f1_mean': array([0.89867004]), 'mean_test_f1_mean': array([0.89962001]), 'std_test_f1_mean': array([0.00094997]), 'rank_test_f1_mean': array([1], dtype=int32), 'split0_train_f1_mean': array([0.98041693]), 'split1_train_f1_mean': array([0.98483891]), 'mean_train_f1_mean': array([0.98262792]), 'std_train_f1_mean': array([0.00221099]), 'split0_test_accuracy': array([0.90056998]), 'split1_test_accuracy': array([0.89867004]), 'mean_test_accuracy': array([0.89962001]), 'std_test_accuracy': array([0.00094997]), 'rank_test_accuracy': array([1], dtype=int32), 'split0_train_accuracy': array([0.98041693]), 'split1_train_accuracy': array([0.98483891]), 'mean_train_accuracy': array([0.98262792]), 'std_train_accuracy': array([0.00221099])}
+    0.8236149998745168
 
 
 Get F1 for every class from best params
@@ -175,8 +196,8 @@ Get F1 for every class from best params
 
  .. code-block:: none
 
-    [0.9706191  0.85152057 0.99824253 0.73170732 0.        ]
-    [0.95853018 0.81654676 0.99647887 0.703125   0.        ]
+    [0.94179339 0.73126143 0.98954704 0.625      0.        ]
+    [0.94363257 0.72202166 0.99472759 0.54700855 0.        ]
 
 
 Get each confusion matrix from folds
@@ -199,15 +220,15 @@ Get each confusion matrix from folds
 
  .. code-block:: none
 
-    [[925  16   0   1   0]
-     [ 37 238   0  11   0]
+    [[898  42   0   2   0]
+     [ 66 200   0  20   0]
      [  0   0 284   0   0]
-     [  1  19   1  45   0]
+     [  0  19   6  40   1]
      [  1   0   0   0   0]]
-    [[913  25   0   4   0]
-     [ 48 227   0  11   0]
+    [[904  37   0   0   1]
+     [ 69 200   0  17   0]
      [  0   0 283   1   0]
-     [  2  18   1  45   0]
+     [  1  31   2  32   0]
      [  0   0   0   1   0]]
 
 
@@ -272,7 +293,7 @@ Plot example
 
 
 
-.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithRFandRS50_001.png
+.. image:: /auto_examples/learn_tools/images/sphx_glr_learnWithBandRatio_001.png
     :class: sphx-glr-single-img
 
 
@@ -281,10 +302,10 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.025 seconds)
+   **Total running time of the script:** ( 0 minutes  1.082 seconds)
 
 
-.. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:
+.. _sphx_glr_download_auto_examples_learn_tools_learnWithBandRatio.py:
 
 
 .. only :: html
@@ -296,13 +317,13 @@ Plot example
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: learnWithRFandRS50.py <learnWithRFandRS50.py>`
+     :download:`Download Python source code: learnWithBandRatio.py <learnWithBandRatio.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: learnWithRFandRS50.ipynb <learnWithRFandRS50.ipynb>`
+     :download:`Download Jupyter notebook: learnWithBandRatio.ipynb <learnWithBandRatio.ipynb>`
 
 
 .. only:: html

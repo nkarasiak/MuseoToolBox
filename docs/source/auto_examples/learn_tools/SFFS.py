@@ -22,7 +22,6 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-
 X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
 
 ##############################################################################

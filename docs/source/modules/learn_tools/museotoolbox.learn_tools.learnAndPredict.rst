@@ -14,6 +14,7 @@ learnAndPredict
       :toctree: learnAndPredict
    
       ~learnAndPredict.__init__
+      ~learnAndPredict.customizeX
       ~learnAndPredict.getStatsFromCV
       ~learnAndPredict.learnFromRaster
       ~learnAndPredict.learnFromVector
