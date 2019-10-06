@@ -10,7 +10,7 @@
 #
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
-# @git:     www.github.com/lennepkade/MuseoToolBox
+# @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 from .. import vector_tools, raster_tools
 from ..internal_tools import progressBar

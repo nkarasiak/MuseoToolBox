@@ -21,8 +21,8 @@
 
 
 
-.. image:: https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
-   :target: https://github.com/lennepkade/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
+.. image:: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
+   :target: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :alt: MuseoToolBox logo
 
 
@@ -40,7 +40,7 @@ If you use this toolbox in your research and find it useful, please cite MuseoTo
    @misc{karasiak2019mtb,
    title={MuseoToolBox, a remote sensing python library},
    author={Karasiak Nicolas},
-   url={https://github.com/lennepkade/museotoolbox},
+   url={https://github.com/nkarasiak/museotoolbox},
    year={2019},
    doi={10.5281/zenodo.3404728}
    }
@@ -77,7 +77,7 @@ A package is available on pip :
 ``python3 -m pip install museotoolbox --user`` 
 
 Alternatively, you can install **museotoolbox** directly from the git :
-``python3 -m pip install git+https://github.com/lennepkade/MuseoToolBox.git --user``
+``python3 -m pip install git+https://github.com/nkarasiak/MuseoToolBox.git --user``
 
 Feel free to remove the ``--user`` if you like to install the library for every user on the machine.
 

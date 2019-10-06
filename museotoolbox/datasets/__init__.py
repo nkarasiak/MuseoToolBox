@@ -10,7 +10,7 @@
 #
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
-# @git:     www.github.com/lennepkade/MuseoToolBox
+# @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
 The :mod:`museotoolbox.datasets` module gathers available datasets for testing
@@ -52,7 +52,7 @@ def historicalMap(return_X_y=False, return_X_y_g=False,
 
     References
     -----------
-    https://github.com/lennepkade/HistoricalMap
+    https://github.com/nkarasiak/HistoricalMap
 
     Examples
     --------

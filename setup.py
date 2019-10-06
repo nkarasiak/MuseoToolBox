@@ -10,7 +10,7 @@
 #
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
-# @git:     www.github.com/lennepkade/MuseoToolBox
+# @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 import re
 
@@ -30,7 +30,7 @@ setuptools.setup(
     description='Raster and vector tools for Remote Sensing and Classification',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/lennepkade/MuseoToolBox',
+    url='https://github.com/nkarasiak/MuseoToolBox',
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',

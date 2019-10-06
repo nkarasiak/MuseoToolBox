@@ -10,7 +10,7 @@
 #
 # @author:  Nicolas Karasiak
 # @site:    www.karasiak.net
-# @git:     www.github.com/lennepkade/MuseoToolBox
+# @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation functions.
