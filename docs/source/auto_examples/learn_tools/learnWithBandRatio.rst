@@ -130,43 +130,7 @@ Create or use custom function
 
  .. code-block:: none
 
-    Reading raster values...  [........................................]0%
-
-    Reading raster values...  [##......................................]5%
-
-    Reading raster values...  [####....................................]11%
-
-    Reading raster values...  [######..................................]16%
-
-    Reading raster values...  [#########...............................]22%
-
-    Reading raster values...  [###########.............................]28%
-
-    Reading raster values...  [#############...........................]33%
-
-    Reading raster values...  [###############.........................]39%
-
-    Reading raster values...  [##################......................]45%
-
-    Reading raster values...  [####################....................]50%
-
-    Reading raster values...  [######################..................]56%
-
-    Reading raster values...  [########################................]62%
-
-    Reading raster values...  [###########################.............]67%
-
-    Reading raster values...  [#############################...........]73%
-
-    Reading raster values...  [###############################.........]79%
-
-    Reading raster values...  [#################################.......]84%
-
-    Reading raster values...  [####################################....]90%
-
-    Reading raster values...  [######################################..]96%
-
-    Reading raster values...  [########################################]100%
+    Reading raster values...  [........................................]0%    Reading raster values...  [##......................................]5%    Reading raster values...  [####....................................]11%    Reading raster values...  [######..................................]16%    Reading raster values...  [#########...............................]22%    Reading raster values...  [###########.............................]28%    Reading raster values...  [#############...........................]33%    Reading raster values...  [###############.........................]39%    Reading raster values...  [##################......................]45%    Reading raster values...  [####################....................]50%    Reading raster values...  [######################..................]56%    Reading raster values...  [########################................]62%    Reading raster values...  [###########################.............]67%    Reading raster values...  [#############################...........]73%    Reading raster values...  [###############################.........]79%    Reading raster values...  [#################################.......]84%    Reading raster values...  [####################################....]90%    Reading raster values...  [######################################..]96%    Reading raster values...  [########################################]100%
     Fitting 2 folds for each of 1 candidates, totalling 2 fits
     best score : 0.8236149998745168
     best n_estimators : 10
@@ -192,7 +156,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7fb0b693cef0>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7f39785710f0>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -205,7 +169,7 @@ Read the model
            refit='kappa', return_train_score='warn',
            scoring={'kappa': make_scorer(cohen_kappa_score), 'f1_mean': make_scorer(f1_score, average=micro), 'accuracy': 'accuracy'},
            verbose=1)
-    {'mean_fit_time': array([0.01835954]), 'std_fit_time': array([0.00153911]), 'mean_score_time': array([0.0103091]), 'std_score_time': array([0.00058258]), 'param_n_estimators': masked_array(data=[10],
+    {'mean_fit_time': array([0.01534486]), 'std_fit_time': array([0.00073123]), 'mean_score_time': array([0.00836432]), 'std_score_time': array([0.00018895]), 'param_n_estimators': masked_array(data=[10],
                  mask=[False],
            fill_value='?',
                 dtype=object), 'params': [{'n_estimators': 10}], 'split0_test_kappa': array([0.82580219]), 'split1_test_kappa': array([0.82142781]), 'mean_test_kappa': array([0.823615]), 'std_test_kappa': array([0.00218719]), 'rank_test_kappa': array([1], dtype=int32), 'split0_train_kappa': array([0.96596809]), 'split1_train_kappa': array([0.97362344]), 'mean_train_kappa': array([0.96979576]), 'std_train_kappa': array([0.00382768]), 'split0_test_f1_mean': array([0.90056998]), 'split1_test_f1_mean': array([0.89867004]), 'mean_test_f1_mean': array([0.89962001]), 'std_test_f1_mean': array([0.00094997]), 'rank_test_f1_mean': array([1], dtype=int32), 'split0_train_f1_mean': array([0.98041693]), 'split1_train_f1_mean': array([0.98483891]), 'mean_train_f1_mean': array([0.98262792]), 'std_train_f1_mean': array([0.00221099]), 'split0_test_accuracy': array([0.90056998]), 'split1_test_accuracy': array([0.89867004]), 'mean_test_accuracy': array([0.89962001]), 'std_test_accuracy': array([0.00094997]), 'rank_test_accuracy': array([1], dtype=int32), 'split0_train_accuracy': array([0.98041693]), 'split1_train_accuracy': array([0.98483891]), 'mean_train_accuracy': array([0.98262792]), 'std_train_accuracy': array([0.00221099])}
@@ -308,44 +272,7 @@ Predict map
     Detected 1 band for function predictArray.
     Detected 5 bands for function predictConfidencePerClass.
     Detected 1 band for function predictConfidenceOfPredictedClass.
-
-    Prediction... [........................................]0%
-
-    Prediction... [##......................................]5%
-
-    Prediction... [####....................................]11%
-
-    Prediction... [######..................................]16%
-
-    Prediction... [########................................]22%
-
-    Prediction... [###########.............................]27%
-
-    Prediction... [#############...........................]33%
-
-    Prediction... [###############.........................]38%
-
-    Prediction... [#################.......................]44%
-
-    Prediction... [####################....................]50%
-
-    Prediction... [######################..................]55%
-
-    Prediction... [########################................]61%
-
-    Prediction... [##########################..............]66%
-
-    Prediction... [############################............]72%
-
-    Prediction... [###############################.........]77%
-
-    Prediction... [#################################.......]83%
-
-    Prediction... [###################################.....]88%
-
-    Prediction... [#####################################...]94%
-
-    Prediction... [########################################]100%
+    Prediction... [........................................]0%    Prediction... [##......................................]5%    Prediction... [####....................................]11%    Prediction... [######..................................]16%    Prediction... [########................................]22%    Prediction... [###########.............................]27%    Prediction... [#############...........................]33%    Prediction... [###############.........................]38%    Prediction... [#################.......................]44%    Prediction... [####################....................]50%    Prediction... [######################..................]55%    Prediction... [########################................]61%    Prediction... [##########################..............]66%    Prediction... [############################............]72%    Prediction... [###############################.........]77%    Prediction... [#################################.......]83%    Prediction... [###################################.....]88%    Prediction... [#####################################...]94%    Prediction... [########################################]100%
     Saved /tmp/classification.tif using function predictArray
     Saved /tmp/confidencePerClass.tif using function predictConfidencePerClass
     Saved /tmp/confidence.tif using function predictConfidenceOfPredictedClass
@@ -375,7 +302,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.082 seconds)
+   **Total running time of the script:** ( 0 minutes  0.903 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithBandRatio.py:

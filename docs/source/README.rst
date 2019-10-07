@@ -2,12 +2,17 @@
 
 .. image:: https://readthedocs.org/projects/museotoolbox/badge/?version=latest
    :target: https://museotoolbox.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
+   :alt: Documentation status
 
 
 .. image:: https://badge.fury.io/py/museotoolbox.svg
    :target: https://badge.fury.io/py/museotoolbox
    :alt: PyPI version
+
+
+.. image:: https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master
+   :target: https://travis-ci.org/nkarasiak/MuseoToolBox
+   :alt: Build status
 
 
 .. image:: https://pepy.tech/badge/museotoolbox

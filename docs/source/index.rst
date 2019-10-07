@@ -18,7 +18,7 @@ What is MuseoToolBox ?
 -----------------------
     
 .. include:: README.rst
-    :start-line: 28
+    :start-line: 31
 
 .. toctree::
    :maxdepth: 2
