@@ -1,0 +1,6 @@
+1.6.2
+------
+* update rasterMath to generate by default a 256*256 raster block size.
+* update rasterMath to prevent bug if user has osgeo/gdal<2.1.
+* prevent bug when in rasterMath if processor has only 1 core.
+* minor fixes and doc update
