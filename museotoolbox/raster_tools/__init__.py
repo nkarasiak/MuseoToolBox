@@ -15,6 +15,7 @@
 """
 The :mod:`museotoolbox.raster_tools` module gathers raster functions.
 """
+from osgeo import __version__ as osgeo_version
 import gdal
 import ogr
 import numpy as np
@@ -707,18 +708,22 @@ class rasterMath:
     def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=True):
         if not os.path.exists(os.path.dirname(outRaster)):
             os.makedirs(os.path.dirname(outRaster))
+        options = ['blockXSize=256','blockYSize=256']
         if compress is True or compress == 'high':
-            options = [
-                'BIGTIFF=IF_SAFER',
-                'COMPRESS=DEFLATE',
-                'NUM_THREADS={}'.format(
-                    os.cpu_count() - 1)]
+            n_jobs = os.cpu_count() - 1
+            if n_jobs < 1 : n_jobs=1
+            
+            options.extend(['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE'])
+            
+            if osgeo_version >= '2.1':
+                options.append('NUM_THREADS={}'.format(n_jobs))
+
             if compress == 'high':
                 options.append('PREDICTOR=2')
                 options.append('ZLEVEL=9')
-
         else:
             options = ['BIGTIFF=IF_NEEDED']
+            
         dst_ds = self.driver.Create(
             outRaster,
             self.nc,

@@ -176,7 +176,7 @@ Plot confusion matrix
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.427 seconds)
+   **Total running time of the script:** ( 0 minutes  1.830 seconds)
 
 
 .. _sphx_glr_download_auto_examples_charts_plotConfusionF1.py:

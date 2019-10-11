@@ -69,12 +69,5 @@ print(np.unique(y[tr],return_counts=True))
 
 ###############################################################################
 # Plot example in image
-    
-import numpy as np
-from matplotlib import pyplot as plt
-plt.scatter(np.random.randint(10,20,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
-plt.scatter(np.random.randint(20,30,20),np.random.randint(10,30,20),s=100,color='#ff7f0e')
-plt.axis('off')
-plt.show()
+from __drawCVmethods import plotMethod
+plotMethod('SKF-group')

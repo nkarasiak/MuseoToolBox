@@ -47,11 +47,12 @@ doc :
 	mv README.rst docs/source/
 	cd docs/ && make html
 
-ddoc : 
+ddoc :
 	m2r README.md
 	mv README.rst docs/source/
 	rm -rf docs/source/auto_examples/
 	rm -rf docs/source/modules/
+	rm -rf docs/build/html/
 	cd docs/ && make html
 
 autopep8 :

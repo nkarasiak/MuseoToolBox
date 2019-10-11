@@ -46,19 +46,5 @@ for tr,vl in SLOPO.split(X,y):
 
 #############################################
 # Draw image
-import numpy as np
-from matplotlib import pyplot as plt
-fig, ax = plt.subplots()
-plt.ylim(40,150)
-plt.xlim(40,150)
-
-
-plt.scatter(np.random.randint(50,150,50),np.random.randint(50,150,50),alpha=.8)
-plt.scatter(80,80, s=80*100,alpha=.8)
-plt.scatter(80,80,color='green',s=60)
-plt.text(82,82,'Validation pixel',size=12)
-plt.text(110,110,'Training pixels',size=12)
-plt.text(46,52,'Buffer of spatial auto-correlated pixels')
-plt.axis('off')
-
-plt.show()
+from __drawCVmethods import plotMethod
+plotMethod('SLOO-pixel')

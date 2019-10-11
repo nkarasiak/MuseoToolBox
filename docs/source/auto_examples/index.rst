@@ -110,6 +110,26 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/cross_validation/SpatialLeaveOnePixelOut
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
 
 .. only:: html
@@ -127,26 +147,6 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
    :hidden:
 
    /auto_examples/cross_validation/RandomSampling50
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
-
-        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/cross_validation/LeaveOneSubGroupOutAndSaveVector
 
 .. raw:: html
 
@@ -170,26 +170,6 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-Out called here a Spatial Leave-One-Pixel-Ou...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveOnePixelOut_thumb.png
-
-        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveOnePixelOut.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/cross_validation/SpatialLeaveOnePixelOut
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-One-SubGroup-Out.">
 
 .. only:: html
@@ -210,13 +190,13 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
 
 .. only:: html
 
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
 
-        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
 
 .. raw:: html
 
@@ -226,7 +206,7 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/cross_validation/SpatialLeaveAsideOut
+   /auto_examples/cross_validation/LeaveOneSubGroupOutAndSaveVector
 
 .. raw:: html
 
@@ -247,6 +227,26 @@ Examples related to the :mod:`museotoolbox.cross_validation` module.
    :hidden:
 
    /auto_examples/cross_validation/LeavePSubGroupOut
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Spatial Leave-Aside-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_SpatialLeaveAsideOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_SpatialLeaveAsideOut.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/cross_validation/SpatialLeaveAsideOut
 
 .. raw:: html
 
@@ -371,9 +371,9 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 
 .. only:: html
 
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithBandRatio_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithCustomRaster_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithCustomRaster.py`
 
 .. raw:: html
 
@@ -383,7 +383,7 @@ Examples related to the :mod:`museotoolbox.learn_tools` module.
 .. toctree::
    :hidden:
 
-   /auto_examples/learn_tools/learnWithBandRatio
+   /auto_examples/learn_tools/learnWithCustomRaster
 .. raw:: html
 
     <div style='clear:both'></div>
@@ -401,26 +401,6 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
 
 
 
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_thumb.png
-
-        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/raster_tools/rasterMath
 
 .. raw:: html
 
@@ -481,6 +461,26 @@ Examples related to the :mod:`museotoolbox.raster_tools` module.
    :hidden:
 
    /auto_examples/raster_tools/extractRasterValues
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMath_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMath.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/raster_tools/rasterMath
 
 .. raw:: html
 

@@ -5,24 +5,6 @@ Examples using ``museotoolbox.cross_validation.LeaveOneSubGroupOut``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
-
-.. only:: html
-
-    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
-
-        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out.">
 
 .. only:: html
@@ -38,6 +20,24 @@ Examples using ``museotoolbox.cross_validation.LeaveOneSubGroupOut``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOut.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-One-SubGroup-Out and save each fold as a vector file.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeaveOneSubGroupOutAndSaveVector_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeaveOneSubGroupOutAndSaveVector.py`
 
 .. raw:: html
 

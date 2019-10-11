@@ -72,16 +72,17 @@ master_doc = 'index'
 
 
 # General information about the project.
-project = 'Museo ToolBox'
-copyright = '2018, Nicolas Karasiak'
+project = 'MuseoToolBox'
+copyright = '2019, Nicolas Karasiak'
 author = 'Nicolas Karasiak'
 sphinx_gallery_conf = {
      'backreferences_dir'  : os.path.join('modules','backreferences'),
      'doc_module':'museotoolbox',
-         # path to your examples scripts
+     # path to your examples scripts
      'examples_dirs': '../../examples',
      'filename_pattern' : '/',
      # path where to save gallery generated examples
+     'ignore_pattern' : '__',
      'gallery_dirs': 'auto_examples',
      'plot_gallery': True,
      #'doc_module' : ('sphinx_gallery', 'numpy') #  enable 'Examples using..'
@@ -115,7 +116,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints','../../examples/cross_validation/__*']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -196,7 +197,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'museotoolbox', 'Museo ToolBox Documentation',
+    (master_doc, 'museotoolbox', 'MuseoToolBox Documentation',
      [author], 1)
 ]
 
@@ -206,9 +207,3 @@ man_pages = [
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'MuseoToolBox', 'Museo ToolBox Documentation',
-     author, 'MuseoToolBox', 'One line description of project.',
-     'Miscellaneous'),
-]
-

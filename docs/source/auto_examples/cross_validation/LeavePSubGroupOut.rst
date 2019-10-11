@@ -303,15 +303,8 @@ Plot example in image
 
 .. code-block:: default
 
-    
-    import numpy as np
-    from matplotlib import pyplot as plt
-    plt.scatter(np.random.randint(10,20,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-    plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-    plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
-    plt.scatter(np.random.randint(20,30,20),np.random.randint(10,30,20),s=100,color='#ff7f0e')
-    plt.axis('off')
-    plt.show()
+    from __drawCVmethods import plotMethod
+    plotMethod('SKF-group')
 
 
 .. image:: /auto_examples/cross_validation/images/sphx_glr_LeavePSubGroupOut_001.png
@@ -323,7 +316,7 @@ Plot example in image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.223 seconds)
+   **Total running time of the script:** ( 0 minutes  0.209 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

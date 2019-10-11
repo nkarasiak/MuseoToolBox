@@ -120,7 +120,7 @@ You can put as many fields as you want, except fields of string type
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.529 seconds)
+   **Total running time of the script:** ( 0 minutes  0.280 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_extractRasterValues.py:

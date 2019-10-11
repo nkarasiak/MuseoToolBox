@@ -66,16 +66,16 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    [[ 69  69  41]
-     [119 119  91]
-     [141 141 113]
+    [[104 100  71]
+     [107 103  76]
+     [130 124 102]
      ...
-     [ 72  59  42]
-     [ 54  41  24]
-     [ 63  50  33]]
+     [182 173 158]
+     [164 158 146]
+     [116 109 101]]
 
 
-Let's suppose you want compute the difference between blue and green band
+Let's suppose you want compute the difference between blue and green band.
 I suggest you to define type in numpy array to save space while creating the raster!
 
 
@@ -87,21 +87,8 @@ I suggest you to define type in numpy array to save space while creating the ras
     sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
 
-
-
-
-
-
-You can use a standard python function too :
-
-def sub(X):
-    return np.array((X[:,0]-X[:,1])).astype(np.int64) 
-
-
-.. code-block:: default
-
-
     rM.addFunction(sub,outRaster='/tmp/sub.tif')
+
 
 
 
@@ -115,6 +102,48 @@ def sub(X):
     Warning : Numpy type int64 is not recognized by gdal. Will use int32 instead
     Using datatype from numpy table : int64.
     Detected 1 band for function <lambda>.
+
+
+Use a python function to use arguments
+------------------------
+
+
+.. code-block:: default
+
+
+    def sub(X,band1=0,band2=1):
+        outX = np.array((X[:,band1]-X[:,band2])).astype(np.int16)
+        return outX
+
+
+
+
+
+
+
+We can add keyword argument in the addFunction.
+This function is going to substract band2 from band 1 
+
+
+.. code-block:: default
+
+
+    rM = rasterMath(raster)
+    rM.addFunction(sub,outRaster='/tmp/sub.tif',band1=1,band2=0)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 15
+    Using datatype from numpy table : int16.
+    Detected 1 band for function sub.
 
 
 Run the script
@@ -136,7 +165,7 @@ Run the script
  .. code-block:: none
 
     rasterMath... [........................................]0%    rasterMath... [##......................................]6%    rasterMath... [#####...................................]13%    rasterMath... [########................................]20%    rasterMath... [##########..............................]26%    rasterMath... [#############...........................]33%    rasterMath... [################........................]40%    rasterMath... [##################......................]46%    rasterMath... [#####################...................]53%    rasterMath... [########################................]60%    rasterMath... [##########################..............]66%    rasterMath... [#############################...........]73%    rasterMath... [################################........]80%    rasterMath... [##################################......]86%    rasterMath... [#####################################...]93%    rasterMath... [########################################]100%
-    Saved /tmp/sub.tif using function <lambda>
+    Saved /tmp/sub.tif using function sub
 
 
 Plot result
@@ -162,7 +191,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.497 seconds)
+   **Total running time of the script:** ( 0 minutes  0.889 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

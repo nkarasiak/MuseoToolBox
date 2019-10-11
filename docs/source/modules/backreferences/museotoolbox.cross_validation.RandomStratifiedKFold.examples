@@ -135,9 +135,9 @@ Examples using ``museotoolbox.cross_validation.RandomStratifiedKFold``
 
 .. only:: html
 
-    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithBandRatio_thumb.png
+    .. figure:: /auto_examples/learn_tools/images/thumb/sphx_glr_learnWithCustomRaster_thumb.png
 
-        :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+        :ref:`sphx_glr_auto_examples_learn_tools_learnWithCustomRaster.py`
 
 .. raw:: html
 
@@ -145,4 +145,4 @@ Examples using ``museotoolbox.cross_validation.RandomStratifiedKFold``
 
 .. only:: not html
 
-    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithBandRatio.py`
+    * :ref:`sphx_glr_auto_examples_learn_tools_learnWithCustomRaster.py`

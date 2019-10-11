@@ -143,13 +143,8 @@ Plot example
 
 .. code-block:: default
 
-    import numpy as np
-    from matplotlib import pyplot as plt
-    plt.scatter(np.random.rand(30),np.random.rand(30),s=100)
-    plt.scatter(np.random.rand(30),np.random.rand(30),s=100)
-    plt.axis('off')
-    plt.show()
-
+    from __drawCVmethods import plotMethod
+    plotMethod('SKF-pixel')
 
 
 .. image:: /auto_examples/cross_validation/images/sphx_glr_RandomSampling50_001.png
@@ -161,7 +156,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.397 seconds)
+   **Total running time of the script:** ( 0 minutes  0.167 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_RandomSampling50.py:

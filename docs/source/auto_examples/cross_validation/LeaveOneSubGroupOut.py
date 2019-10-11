@@ -53,11 +53,5 @@ for tr,vl in LOGO.split(X=X,y=y,groups=s):
 
 ###############################################################################
 # Plot example
-    
-import numpy as np
-from matplotlib import pyplot as plt
-plt.scatter(np.random.randint(10,30,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,40),np.random.randint(10,30,40),s=100,color='#1f77b4')
-plt.scatter(np.random.randint(0,10,20),np.random.randint(0,10,20),s=100,color='#ff7f0e')
-plt.axis('off')
-plt.show()
+from __drawCVmethods import plotMethod
+plotMethod('SLOO-pixel')

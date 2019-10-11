@@ -55,9 +55,5 @@ for tr,vl in SKF.split(X,y):
         
 ##########################
 # Plot example
-import numpy as np
-from matplotlib import pyplot as plt
-plt.scatter(np.random.rand(30),np.random.rand(30),s=100)
-plt.scatter(np.random.rand(30),np.random.rand(30),s=100)
-plt.axis('off')
-plt.show()
+from __drawCVmethods import plotMethod
+plotMethod('SKF-pixel')
