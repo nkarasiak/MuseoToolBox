@@ -7,12 +7,14 @@ MuseoToolBox documentation
    :target: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :alt: MuseoToolBox logo
 
-:Author: `Nicolas Karasiak <http://www.karasiak.net>`_
-:Source code: `github.com project <https://github.com/nkarasiak/MuseoToolBox>`_
-:Bug tracker: `github.com issues <https://github.com/nkarasiak/MuseoToolBox/issues>`_
-:Generated: |today|
-:License: GPL v3
-:Version: |release|
+.. sidebar:: About MuseoToolBox
+        
+    :Author: `Nicolas Karasiak <http://www.karasiak.net>`_
+    :Source code: `github.com project <https://github.com/nkarasiak/MuseoToolBox>`_
+    :Bug tracker: `github.com issues <https://github.com/nkarasiak/MuseoToolBox/issues>`_
+    :Generated: |today|
+    :License: GPL v3
+    :Version: |release|
 
 What is MuseoToolBox ?
 -----------------------

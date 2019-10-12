@@ -22,6 +22,7 @@ docs/source/gen_modules
 docs/source/_autosummary
 docs/source/_static
 docs/source/auto_examples/**.pickle
+docs/source/auto_examples/
 docs/source/auto_examples/**.md5
 docs/modules/
 
