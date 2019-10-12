@@ -595,6 +595,7 @@ class rasterMath:
         self.functionsKwargs = []
         self.outputs = []
         self.outputNoData = []
+        self.options = [] # options is raster parameters
 
         # Initalize the run
         self.__position = 0
@@ -680,8 +681,11 @@ class rasterMath:
             pushFeedback(
                 'Detected {} band{} for function {}.'.format(
                     outNBand, need_s, function.__name__))
-
-        self.__addOutput__(outRaster, outNBand, outGdalDT, compress=compress)
+        
+        if self.options == []:
+            self.__initRasterParameters(compress=compress)
+        
+        self.__addOutput__(outRaster, outNBand, outGdalDT)
         self.functions.append(function)
         if len(kwargs) == 0:
             kwargs = False
@@ -704,33 +708,73 @@ class rasterMath:
                 pushFeedback('No data is set to : ' + str(outNoData))
 
         self.outputNoData.append(outNoData)
-
-    def __addOutput__(self, outRaster, outNBand, outGdalDT, compress=True):
-        if not os.path.exists(os.path.dirname(outRaster)):
-            os.makedirs(os.path.dirname(outRaster))
-        options = ['blockXSize=256','blockYSize=256']
+    
+    def __initRasterParameters(self,compress=True):
+        self.options = ['TILES=YES']
+        self.options = []
         if compress is True or compress == 'high':
             n_jobs = os.cpu_count() - 1
             if n_jobs < 1 : n_jobs=1
             
-            options.extend(['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE'])
+            self.options.extend(['BIGTIFF=IF_SAFER','COMPRESS=DEFLATE'])
             
             if osgeo_version >= '2.1':
-                options.append('NUM_THREADS={}'.format(n_jobs))
+                self.options.append('NUM_THREADS={}'.format(n_jobs))
 
             if compress == 'high':
-                options.append('PREDICTOR=2')
-                options.append('ZLEVEL=9')
+                self.options.append('PREDICTOR=2')
+                self.options.append('ZLEVEL=9')
         else:
-            options = ['BIGTIFF=IF_NEEDED']
-            
+            self.options = ['BIGTIFF=IF_NEEDED']
+        
+    def getRasterParameters(self):
+        """
+        Get raster parameters (compression, block size...)
+        
+        Returns
+        --------
+        List of parameters
+        
+        References
+        -----------
+        As MuseoToolBox only saves in geotiff, parameters of gdal drivers for GeoTiff are here :
+        https://gdal.org/drivers/raster/gtiff.html
+        """
+        if self.options == []:
+            self.__initRasterParameters()
+        return self.options
+    
+    def customRasterParameters(self,parameters_list):
+        """
+        Parameters to custom raster creation.
+        
+        Do not enter here blockXsize and blockYsize parameters as it is directly managed by :mod:`customBlockSize` function.
+        
+        Parameters
+        -----------
+        parameters_list : list.
+            - example : ['BIGTIFF='IF_NEEDED','COMPRESS=DEFLATE']
+            - example : ['COMPRESS=JPEG','JPEG_QUALITY=80']
+        
+        References
+        -----------
+        As MuseoToolBox only saves in geotiff, parameters of gdal drivers for GeoTiff are here :
+        https://gdal.org/drivers/raster/gtiff.html
+        """
+        self.options = parameters_list 
+        
+    def __addOutput__(self, outRaster, outNBand, outGdalDT):
+        if not os.path.exists(os.path.dirname(outRaster)):
+            os.makedirs(os.path.dirname(outRaster))
+        self.options.extend(['blockysize={}'.format(self.y_block_size),'blockxsize={}'.format(self.x_block_size)])            
+        
         dst_ds = self.driver.Create(
             outRaster,
             self.nc,
             self.nl,
             outNBand,
             outGdalDT,
-            options=options
+            options=self.options
         )
         dst_ds.SetGeoTransform(self.GeoTransform)
         dst_ds.SetProjection(self.Projection)
@@ -841,7 +885,7 @@ class rasterMath:
 
         return outArr
 
-    def getRandomBlock(self):
+    def getRandomBlock(self,seed=None):
         """
         Get Random Block from the raster.
         """
@@ -849,12 +893,14 @@ class rasterMath:
 
         while np.all(mask == True):
             # TODO, stop and warn if no block has valid data (infinite loop...)
+            np.random.seed(seed)
             cols = int(
                 np.random.permutation(
                     range(
                         0,
                         self.nl,
                         self.y_block_size))[0])
+            np.random.seed(seed)
             lines = int(
                 np.random.permutation(
                     range(
@@ -951,15 +997,20 @@ class rasterMath:
 
     def customBlockSize(self, x_block_size=False, y_block_size=False):
         """
-        Define custom block size for reading/writing the raster.
+        Define custom block size for reading and writing the raster.
 
         Parameters
         ----------
-        y_block_size : int, default False.
-            Integer, number of rows.
-        x_block_size : int, default False.
-            Integer, number of columns.
+        y_block_size : float or int, default False.
+            IF integer, number of rows per block.
+            If -1, means all the rows.
+            If float, value must be between 0 and 1, such as 1/3.
+        x_block_size : float or int, default False.
+            If integer, number of columns per block.
+            If -1, means all the columns.
+            If float, value must be between 0 and 1, such as 1/3.
         """
+        
         if y_block_size:
             if y_block_size == -1:
                 self.y_block_size = self.nl

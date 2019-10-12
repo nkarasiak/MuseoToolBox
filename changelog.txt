@@ -1,3 +1,11 @@
+1.6.3
+------
+* Improvements of rasterMath
+** customBlockSize defines now the same block size for window reading and for the output
+** add seed parameter (to set a random generator) in getRandomBlock()
+** add getRasterParameters() and customRasterParameters() function.
+
+
 1.6.2
 ------
 * update rasterMath to generate by default a 256*256 raster block size.
