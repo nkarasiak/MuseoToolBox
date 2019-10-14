@@ -13,7 +13,7 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
-The :mod:`museotoolbox.learn_tools` module gathers learn and predict functions.
+The :mod:`museotoolbox.learn_tools` module gathers machine learning classes.
 """
 from joblib import Parallel, delayed
 import os

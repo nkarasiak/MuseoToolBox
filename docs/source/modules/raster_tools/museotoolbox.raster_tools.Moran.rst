@@ -1,6 +1,7 @@
 Moran
 ===============================
 
+
 .. currentmodule:: museotoolbox.raster_tools
 
 .. autoclass:: Moran

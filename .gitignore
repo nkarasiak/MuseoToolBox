@@ -18,6 +18,7 @@ cv_*.sqlite
 # Sphinx documentation
 docs/source/_build/
 docs/build/
+docs/source/modules
 docs/source/gen_modules
 docs/source/_autosummary
 docs/source/_static

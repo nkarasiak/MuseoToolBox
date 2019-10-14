@@ -2,7 +2,7 @@ getGdalDTFromMinMaxValues
 ===================================================
 
 .. currentmodule:: museotoolbox.raster_tools
-
+   
 .. autofunction:: getGdalDTFromMinMaxValues
 
 .. include:: ../backreferences/museotoolbox.raster_tools.getGdalDTFromMinMaxValues.examples

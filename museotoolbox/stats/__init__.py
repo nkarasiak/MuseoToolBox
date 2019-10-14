@@ -12,6 +12,9 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
+"""
+The :mod:`museotoolbox.stats` module gathers stats functions/classes.
+"""
 import numpy as np
 
 
@@ -95,6 +98,10 @@ class computeConfusionMatrix:
 
 class statsFromConfusionMatrix:
     def __init__(self, confusionMatrix):
+        """
+        Get stats (OA, kappa, F1 and F1 man) from confusion matrix
+        
+        """
         self.confusionMatrix = confusionMatrix
         self.n = np.sum(self.confusionMatrix)
         self.OA = self.__get_OA()
@@ -141,14 +148,3 @@ class statsFromConfusionMatrix:
 
             f1.append(2 * TP / (2 * TP + FP + FN))
         return f1
-
-
-if __name__ == '__main__':
-
-    cm = np.random.randint(30, 90, 100).reshape(10, 10)
-    cm[-1, :-1] = 0
-    cm[0:5, 5] = 0
-    cm[6:-1, 5] = 0
-    cmo = commissionOmission(cm)
-    print(cmo[0][-1] == 0)
-    print(cmo[1][5] == 0)

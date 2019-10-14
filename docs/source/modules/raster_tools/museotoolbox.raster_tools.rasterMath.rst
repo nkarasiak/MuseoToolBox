@@ -1,6 +1,7 @@
 rasterMath
 ====================================
 
+
 .. currentmodule:: museotoolbox.raster_tools
 
 .. autoclass:: rasterMath
@@ -17,9 +18,11 @@ rasterMath
       ~rasterMath.addFunction
       ~rasterMath.addInputRaster
       ~rasterMath.customBlockSize
+      ~rasterMath.customRasterParameters
       ~rasterMath.filterNoData
       ~rasterMath.generateBlockArray
       ~rasterMath.getRandomBlock
+      ~rasterMath.getRasterParameters
       ~rasterMath.readBandPerBand
       ~rasterMath.readBlockPerBlock
       ~rasterMath.reshape_ndim

@@ -1,6 +1,7 @@
 SpatialLeaveOneSubGroupOut
 ========================================================
 
+
 .. currentmodule:: museotoolbox.cross_validation
 
 .. autoclass:: SpatialLeaveOneSubGroupOut

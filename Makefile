@@ -52,7 +52,7 @@ ddoc :
 	mv README.rst docs/source/
 	rm -rf docs/source/auto_examples/
 	rm -rf docs/source/modules/
-	rm -rf docs/build/html/
+	rm -rf docs/build/
 	cd docs/ && make html
 
 autopep8 :

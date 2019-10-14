@@ -1,6 +1,7 @@
 sequentialFeatureSelection
 ===================================================
 
+
 .. currentmodule:: museotoolbox.learn_tools
 
 .. autoclass:: sequentialFeatureSelection

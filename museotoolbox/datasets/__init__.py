@@ -14,7 +14,7 @@
 # =============================================================================
 """
 The :mod:`museotoolbox.datasets` module gathers available datasets for testing
-`Museo ToolBox`.
+`MuseoToolBox`.
 """
 import os
 __pathFile = os.path.dirname(os.path.realpath(__file__))

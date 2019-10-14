@@ -59,24 +59,6 @@ Examples using ``museotoolbox.raster_tools.rasterMath``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Tips to use rasterMath by defining its block size and to receive a full block (not a array with...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMathCustomBlock_thumb.png
-
-        :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlock.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
-    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlock.py`
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Compute substract and addition between two raster bands. ">
 
 .. only:: html
@@ -110,3 +92,21 @@ Examples using ``museotoolbox.raster_tools.rasterMath``
 .. only:: not html
 
     * :ref:`sphx_glr_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Tips to use rasterMath by defining its block size and to receive a full block (not a array with...">
+
+.. only:: html
+
+    .. figure:: /auto_examples/raster_tools/images/thumb/sphx_glr_rasterMathCustomBlock_thumb.png
+
+        :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlock.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_raster_tools_rasterMathCustomBlock.py`

@@ -66,13 +66,13 @@ Initialize rasterMath with raster
  .. code-block:: none
 
     Total number of blocks : 15
-    [[104 100  71]
-     [107 103  76]
-     [130 124 102]
+    [[215 189 154]
+     [213 187 152]
+     [213 187 152]
      ...
-     [182 173 158]
-     [164 158 146]
-     [116 109 101]]
+     [208 179 137]
+     [221 189 142]
+     [204 170 122]]
 
 
 Let's suppose you want compute the difference between blue and green band.
@@ -83,6 +83,7 @@ I suggest you to define type in numpy array to save space while creating the ras
 
 
     X = rM.getRandomBlock()
+
  
     sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
@@ -105,7 +106,7 @@ I suggest you to define type in numpy array to save space while creating the ras
 
 
 Use a python function to use arguments
-------------------------
+----------------------------------------
 
 
 .. code-block:: default
@@ -191,7 +192,7 @@ Plot result
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.889 seconds)
+   **Total running time of the script:** ( 0 minutes  0.417 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath.py:

@@ -2,7 +2,7 @@
 {{ underline }}
 
 .. currentmodule:: {{ module }}
-
+   
 .. autofunction:: {{ objname }}
 
 .. include:: ../backreferences/{{fullname}}.examples

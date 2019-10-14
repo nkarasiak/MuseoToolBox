@@ -13,7 +13,7 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
-The :mod:`museotoolbox.raster_tools` module gathers raster functions.
+The :mod:`museotoolbox.raster_tools` module gathers raster functions/classes.
 """
 from osgeo import __version__ as osgeo_version
 import gdal

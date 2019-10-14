@@ -33,6 +33,7 @@ print(rM.getRandomBlock())
 # I suggest you to define type in numpy array to save space while creating the raster!
 
 X = rM.getRandomBlock()
+
  
 sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
 
@@ -41,7 +42,7 @@ rM.addFunction(sub,outRaster='/tmp/sub.tif')
 
 ###########################################################
 # Use a python function to use arguments
-# ------------------------
+# ----------------------------------------
 
 def sub(X,band1=0,band2=1):
     outX = np.array((X[:,band1]-X[:,band2])).astype(np.int16)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 rasterMath with custom window/block size (and with 3 dimensions)
-===============================================================
+=================================================================
 
 Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)

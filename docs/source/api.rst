@@ -15,4 +15,6 @@ The complete Museo ToolBox project is automatically documented for every module.
    vector_tools
    learn_tools
    cross_validation
+   stats
+   charts
    datasets

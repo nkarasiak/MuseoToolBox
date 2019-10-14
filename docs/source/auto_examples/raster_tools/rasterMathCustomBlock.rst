@@ -7,8 +7,8 @@
 .. _sphx_glr_auto_examples_raster_tools_rasterMathCustomBlock.py:
 
 
-rasterMath with custom block size (and with 3 dimensions)
-===============================================================
+rasterMath with custom window/block size (and with 3 dimensions)
+=================================================================
 
 Tips to use rasterMath by defining its block size and to receive
 a full block (not a array with one pixel per row.)
@@ -24,7 +24,7 @@ Import librairies
     from museotoolbox.raster_tools import rasterMath
     from museotoolbox import datasets
     from matplotlib import pyplot as plt
-    import numpy as np
+
 
 
 
@@ -53,7 +53,7 @@ Initialize rasterMath with raster
 .. code-block:: default
 
 
-    # Set return2d to False to have full block size (not one pixel per row)
+    # Set return3d to True to have full block size (not one pixel per row)
 
     rM = rasterMath(raster,return_3d=True)
 
@@ -164,22 +164,103 @@ To have block width divided by 4 and height by 2
     Total number of blocks : 8
 
 
+Define block size for output raster
+-------------------------------------
+
+
+.. code-block:: default
+
+
+    raster_parameters = rM.getRasterParameters()
+
+    print('Default parameters are '+str(raster_parameters))
+
+
+    # to do before adding the function
+
+    rM.customBlockSize(512,512) # custom for reading AND writing the output
+    raster_parameters = ['compress=JPEG','JPEG_QUALITY=70']
+    rM.customRasterParameters(raster_parameters)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Default parameters are ['BIGTIFF=IF_SAFER', 'COMPRESS=DEFLATE', 'NUM_THREADS=3']
+    Total number of blocks : 6
+
+
+now add a function to just return the same raster
+
+
+.. code-block:: default
+
+
+    returnSameImage  = lambda x : x
+    rM.addFunction(returnSameImage,'/tmp/testcustomblock.tif')
+    rM.run()
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Using datatype from numpy table : uint8.
+    Detected 3 bands for function <lambda>.
+    rasterMath... [........................................]0%    rasterMath... [######..................................]16%    rasterMath... [#############...........................]33%    rasterMath... [####################....................]50%    rasterMath... [##########################..............]66%    rasterMath... [#################################.......]83%    rasterMath... [########################################]100%
+    Saved /tmp/testcustomblock.tif using function <lambda>
+
+
+check block size of new raster
+
+
+.. code-block:: default
+
+
+    rMblock = rasterMath('/tmp/testcustomblock.tif')
+    rMblock.block_sizes
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 2
+
+
 Plot blocks
 
 
 .. code-block:: default
 
 
+    n_row,n_col = 2,4
+    rM.customBlockSize(1/n_col,1/n_row)
+
     fig=plt.figure(figsize=(12,6),dpi=150)
 
     for idx,tile in enumerate(rM.readBlockPerBlock()):
-
-        fig.add_subplot(2,4,idx+1)
-        plt.imshow(tile)
-
+        fig.add_subplot(n_row,n_col,idx+1)
         plt.title('block %s' %(idx+1))
         plt.imshow(tile)
     plt.show()
+
 
 
 
@@ -187,12 +268,19 @@ Plot blocks
     :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Total number of blocks : 8
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.261 seconds)
+   **Total running time of the script:** ( 0 minutes  0.811 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMathCustomBlock.py:

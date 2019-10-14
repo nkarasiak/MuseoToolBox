@@ -316,7 +316,7 @@ Plot example in image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.209 seconds)
+   **Total running time of the script:** ( 0 minutes  0.162 seconds)
 
 
 .. _sphx_glr_download_auto_examples_cross_validation_LeavePSubGroupOut.py:

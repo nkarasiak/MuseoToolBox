@@ -110,7 +110,7 @@ Initialize rasterMath with raster
     Saved /tmp/x_flatten_True.tif using function <lambda>
     Total number of blocks : 15
     Total number of blocks : 18
-    (1072, 3)
+    (341, 3)
     Using datatype from numpy table : uint8.
     Detected 9 bands for function <lambda>.
     No data is set to : 0
@@ -125,7 +125,7 @@ Initialize rasterMath with raster
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.349 seconds)
+   **Total running time of the script:** ( 0 minutes  0.478 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMath_testBlockSize_3d_andNBands.py:

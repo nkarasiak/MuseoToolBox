@@ -15,6 +15,7 @@
 """
 The :mod:`museotoolbox.charts` module gathers plotting functions.
 """
+
 from matplotlib import pyplot as plt
 from matplotlib import gridspec
 import numpy as np

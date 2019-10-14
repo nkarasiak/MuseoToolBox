@@ -13,8 +13,9 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
-The :mod:`museotoolbox.cross_validation` module gathers cross-validation functions.
+The :mod:`museotoolbox.cross_validation` module gathers cross-validation classes.
 """
+
 from ._sampleSelection import _sampleSelection
 from . import crossValidationClass as _cvc
 

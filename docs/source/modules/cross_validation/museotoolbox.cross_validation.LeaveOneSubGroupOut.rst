@@ -1,6 +1,7 @@
 LeaveOneSubGroupOut
 =================================================
 
+
 .. currentmodule:: museotoolbox.cross_validation
 
 .. autoclass:: LeaveOneSubGroupOut

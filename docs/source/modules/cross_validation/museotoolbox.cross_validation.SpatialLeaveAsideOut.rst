@@ -1,6 +1,7 @@
 SpatialLeaveAsideOut
 ==================================================
 
+
 .. currentmodule:: museotoolbox.cross_validation
 
 .. autoclass:: SpatialLeaveAsideOut

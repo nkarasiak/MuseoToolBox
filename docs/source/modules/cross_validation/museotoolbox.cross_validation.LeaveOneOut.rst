@@ -1,6 +1,7 @@
 LeaveOneOut
 =========================================
 
+
 .. currentmodule:: museotoolbox.cross_validation
 
 .. autoclass:: LeaveOneOut

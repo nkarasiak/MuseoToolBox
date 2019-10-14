@@ -129,7 +129,7 @@ white is nodata, black is 255
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.326 seconds)
+   **Total running time of the script:** ( 0 minutes  0.265 seconds)
 
 
 .. _sphx_glr_download_auto_examples_raster_tools_rasterMask.py:

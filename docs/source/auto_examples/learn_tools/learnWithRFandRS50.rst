@@ -136,7 +136,7 @@ Read the model
 
  .. code-block:: none
 
-    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7f8637f69518>,
+    GridSearchCV(cv=<museotoolbox.cross_validation.RandomStratifiedKFold object at 0x7ff7b4d78e80>,
            error_score='raise',
            estimator=RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
                 max_depth=None, max_features='auto', max_leaf_nodes=None,
@@ -148,7 +148,7 @@ Read the model
            param_grid={'n_estimators': [10]}, pre_dispatch='2*n_jobs',
            refit='d', return_train_score='warn',
            scoring=make_scorer(cohen_kappa_score), verbose=1)
-    {'mean_fit_time': array([0.04833281]), 'std_fit_time': array([0.00038183]), 'mean_score_time': array([0.00955987]), 'std_score_time': array([0.0011797]), 'param_n_estimators': masked_array(data=[10],
+    {'mean_fit_time': array([0.01372373]), 'std_fit_time': array([0.00147355]), 'mean_score_time': array([0.00319004]), 'std_score_time': array([0.00013638]), 'param_n_estimators': masked_array(data=[10],
                  mask=[False],
            fill_value='?',
                 dtype=object), 'params': [{'n_estimators': 10}], 'split0_test_score': array([0.90341985]), 'split1_test_score': array([0.87692881]), 'mean_test_score': array([0.89017433]), 'std_test_score': array([0.01324552]), 'rank_test_score': array([1], dtype=int32), 'split0_train_score': array([0.98903974]), 'split1_train_score': array([0.99014025]), 'mean_train_score': array([0.98959]), 'std_train_score': array([0.00055026])}
@@ -281,7 +281,7 @@ Plot example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.365 seconds)
+   **Total running time of the script:** ( 0 minutes  0.739 seconds)
 
 
 .. _sphx_glr_download_auto_examples_learn_tools_learnWithRFandRS50.py:

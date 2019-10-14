@@ -2,7 +2,7 @@ getSamplesFromROI
 ===========================================
 
 .. currentmodule:: museotoolbox.raster_tools
-
+   
 .. autofunction:: getSamplesFromROI
 
 .. include:: ../backreferences/museotoolbox.raster_tools.getSamplesFromROI.examples

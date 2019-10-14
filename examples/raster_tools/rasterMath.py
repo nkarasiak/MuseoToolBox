@@ -42,7 +42,7 @@ rM.addFunction(sub,outRaster='/tmp/sub.tif')
 
 ###########################################################
 # Use a python function to use arguments
-# ------------------------
+# ----------------------------------------
 
 def sub(X,band1=0,band2=1):
     outX = np.array((X[:,band1]-X[:,band2])).astype(np.int16)

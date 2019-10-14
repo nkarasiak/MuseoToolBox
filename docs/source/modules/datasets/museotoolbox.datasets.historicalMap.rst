@@ -2,7 +2,7 @@ historicalMap
 ===================================
 
 .. currentmodule:: museotoolbox.datasets
-
+   
 .. autofunction:: historicalMap
 
 .. include:: ../backreferences/museotoolbox.datasets.historicalMap.examples

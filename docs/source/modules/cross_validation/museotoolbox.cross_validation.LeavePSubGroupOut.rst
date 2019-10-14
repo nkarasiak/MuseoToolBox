@@ -1,6 +1,7 @@
 LeavePSubGroupOut
 ===============================================
 
+
 .. currentmodule:: museotoolbox.cross_validation
 
 .. autoclass:: LeavePSubGroupOut
