@@ -1,219 +1,0 @@
-.. note::
-    :class: sphx-glr-download-link-note
-
-    Click :ref:`here <sphx_glr_download_auto_examples_learn_tools_SFFS.py>` to download the full example code
-.. rst-class:: sphx-glr-example-title
-
-.. _sphx_glr_auto_examples_learn_tools_SFFS.py:
-
-
-Sequential Forward Feature Selection (SFFS)
-========================================================
-
-This example shows how to make a Random Sampling with 
-50% for each class.
-
-
-Import librairies
--------------------------------------------
-
-
-.. code-block:: default
-
-
-    from museotoolbox.learn_tools import sequentialFeatureSelection,learnAndPredict
-    from museotoolbox.cross_validation import LeavePSubGroupOut
-    from museotoolbox import datasets
-    from sklearn.ensemble import RandomForestClassifier
-    from sklearn import metrics
-    import numpy as np
-
-
-
-
-
-
-Load HistoricalMap dataset
--------------------------------------------
-
-
-.. code-block:: default
-
-
-    X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
-
-
-
-
-
-
-
-Create CV
--------------------------------------------
-
-
-.. code-block:: default
-
-
-    LSGO = LeavePSubGroupOut(valid_size=0.8,n_splits=2,
-                    random_state=12,verbose=False)
-
-
-
-
-
-
-
-Initialize Random-Forest and metrics
---------------------------------------
-
-
-.. code-block:: default
-
-
-    classifier = RandomForestClassifier(random_state=12,n_jobs=1)
-
-    kappa = metrics.make_scorer(metrics.cohen_kappa_score)
-
-
-
-
-
-
-
-Set and fit the Sequentia Feature Selection
----------------------------------------------------------------
-
-
-
-.. code-block:: default
-
-    SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[10]),scoring=kappa)
-
-    SFFS.fit(X.astype(np.float),y,g,pathToSaveCM='/tmp/SFFS/')
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Feature 0 already computed
-
-    Best feature with 1 feature(s) : 2
-    Best mean score : 0.6001
-    Feature 1 already computed
-
-    Best feature with 2 feature(s) : 1
-    Best mean score : 0.6829
-    Feature 2 already computed
-
-    Best feature with 3 feature(s) : 0
-    Best mean score : 0.6815
-
-
-Show best features and score
-
-
-.. code-block:: default
-
-
-    print('Best features are : '+str(SFFS.best_features_))
-    print('Kappa are : '+str(SFFS.best_scores_))
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Best features are : [2, 1, 0]
-    Kappa are : [0.6001, 0.6829, 0.6815]
-
-
-In order to predict every classification from the best feature
-
-
-.. code-block:: default
-
-
-    SFFS.predictBestCombination(datasets.historicalMap()[0],'/tmp/SFFS/best_classification.tif')
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Predict with combination 1
-    Total number of blocks : 15
-    Detected 1 band for function predictArray.
-    Prediction... [........................................]0%    Prediction... [##......................................]6%    Prediction... [#####...................................]13%    Prediction... [########................................]20%    Prediction... [##########..............................]26%    Prediction... [#############...........................]33%    Prediction... [################........................]40%    Prediction... [##################......................]46%    Prediction... [#####################...................]53%    Prediction... [########################................]60%    Prediction... [##########################..............]66%    Prediction... [#############################...........]73%    Prediction... [################################........]80%    Prediction... [##################################......]86%    Prediction... [#####################################...]93%    Prediction... [########################################]100%
-    Saved /tmp/SFFS/best_classification.tif using function predictArray
-
-
-Plot example
-
-
-.. code-block:: default
-
-
-    from matplotlib import pyplot as plt
-    plt.plot(np.arange(1,len(SFFS.best_scores_)+1),SFFS.best_scores_)
-    plt.xlabel('Number of features')
-    plt.xticks(np.arange(1,len(SFFS.best_scores_)+1))
-    plt.ylabel('Kappa')
-    plt.show()
-
-
-
-.. image:: /auto_examples/learn_tools/images/sphx_glr_SFFS_001.png
-    :class: sphx-glr-single-img
-
-
-
-
-
-.. rst-class:: sphx-glr-timing
-
-   **Total running time of the script:** ( 0 minutes  1.468 seconds)
-
-
-.. _sphx_glr_download_auto_examples_learn_tools_SFFS.py:
-
-
-.. only :: html
-
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
-
-
-
-  .. container:: sphx-glr-download
-
-     :download:`Download Python source code: SFFS.py <SFFS.py>`
-
-
-
-  .. container:: sphx-glr-download
-
-     :download:`Download Jupyter notebook: SFFS.ipynb <SFFS.ipynb>`
-
-
-.. only:: html
-
- .. rst-class:: sphx-glr-signature
-
-    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.readthedocs.io>`_
