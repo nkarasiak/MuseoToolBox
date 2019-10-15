@@ -1151,32 +1151,31 @@ class rasterMath:
                             fun.__name__)))
             self.outputs[idx] = None
 
-
 class Moran:
-    """
-    Compute Moran's I for raster.
-
-    Parameters
-    ----------
-    inRaster : str.
-        Path.
-    inMaskRaster : str, default False.
-        lag : int or
-    transform : str.
-        'r' or 'b'.
-    weights : False or array.
-        Weights (same shape as the square size).
-    intermediate_lag : boolean, default True.
-        Use all pixel values inside the specified lag.
-
-        If `intermediate_lag` is set to False, only the pixels at the specified
-        range will be kept for computing the statistics.
-
-
-    """
-
     def __init__(self, inRaster, inMaskRaster=False, transform='r',
                  lag=1, weights=False, intermediate_lag=True):
+        """
+        Compute Moran's I for raster.
+    
+        Parameters
+        ----------
+        inRaster        :   str
+                            Path.
+        inMaskRaster    :   str
+                            Path to mask raster, default False.
+        transform       :   str
+                            default is row-standardized 'r'.
+                            orther option is 'b' for binary.
+        lag             :   int
+                            Default 1
+        weights         :   False or array.
+                            Weights (same shape as the square size).
+        intermediate_lag :  boolean, default True.
+                            Use all pixel values inside the specified lag.
+                    
+                            If `intermediate_lag` is set to False, only the pixels at the specified
+                            range will be kept for computing the statistics.
+        """
 
         self.scores = dict(I=[], band=[], EI=[])
         self.lags = []
