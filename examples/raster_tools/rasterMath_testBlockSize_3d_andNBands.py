@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Tests rasterMath with full block or stacken and custom block size
+Using rasterMath with 3d block or 2d block
 ==================================================================
 
-Test notebook in order to validate code.
-
+Test notebook to validate code.
 """
 
 ##############################################################################
@@ -34,7 +33,7 @@ rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
 for return_3d in [True,False]:
     rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=return_3d)
     
-    rM.customBlockSize(200,200) # block of 200x200pixels
+    rM.customBlockSize(128,128) # block of 200x200pixels
     
     print(rM.getRandomBlock().shape)
     

@@ -1,3 +1,10 @@
+1.6.4
+-----
+* learnAndPredict manages int value for cross-validation by using RandomStratifiedKFold
+* Enhance blocksize management for rasterMath
+* Move command line code in _cli folder
+* Move some functions from vector_tools to raster_tools, functions are anyway still available from vector_tools
+
 1.6.3
 ------
 * Improvements of rasterMath

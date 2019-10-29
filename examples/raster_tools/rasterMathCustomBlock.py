@@ -69,9 +69,9 @@ print('Default parameters are '+str(raster_parameters))
 
 # to do before adding the function
 
-rM.customBlockSize(512,512) # custom for reading AND writing the output
-raster_parameters = ['compress=JPEG','JPEG_QUALITY=70']
-rM.customRasterParameters(raster_parameters)
+rM.customBlockSize(256,256) # custom for reading AND writing the output
+#raster_parameters = ['COMPRESS=DEFLATE']
+#rM.customRasterParameters(raster_parameters)
 
 #####################################
 # now add a function to just return the same raster
@@ -84,7 +84,7 @@ rM.run()
 # check block size of new raster
 
 rMblock = rasterMath('/tmp/testcustomblock.tif')
-rMblock.block_sizes
+print(rMblock.block_sizes)
 
 #######################
 # Plot blocks

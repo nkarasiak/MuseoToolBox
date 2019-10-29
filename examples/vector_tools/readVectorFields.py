@@ -4,7 +4,8 @@ Read fields from vector
 ======================================================
 
 This example shows how to read fields values from
-a vector file."""
+a vector file.
+"""
 
 ##############################################################################
 # Import librairies
@@ -40,3 +41,11 @@ print(Y.shape)
 C = mtb.vector_tools.readValuesFromVector(vector,bandPrefix='C')
 print(C)
 print(C.shape)
+
+
+#############################################
+
+from matplotlib import pyplot as plt
+import numpy as np
+plt.title('Number of polygons per label')
+plt.bar(np.arange(np.unique(Y).size)+1,np.unique(Y,return_counts=True)[1])

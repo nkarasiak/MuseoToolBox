@@ -100,7 +100,6 @@ LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
 LAP.predictRaster(raster,'/tmp/classification.tif',
                   confidence='/tmp/confidence.tif',
                   confidencePerClass='/tmp/confidencePerClass.tif')
-
 ##########################
 # Plot example
 

@@ -107,7 +107,7 @@ class plotConfusionMatrix:
                              horizontalalignment="center",
                              color="white" if self.cm[i, j] > thresold else 'black', fontsize=font_size, va='center', alpha=alpha_zero if self.cm[i, j] == 0 else alpha)
             else:
-#                print(self.cm2[i, j])
+                #                print(self.cm2[i, j])
                 self.ax.text(j, i, str(self.cm2[i, j]),
                              horizontalalignment="center",
                              color="white" if self.cm2[i, j] > thresold else "black", va='center', fontsize=font_size, )

@@ -25,11 +25,12 @@ class modalClass:
             self,
             inRaster,
             outRaster,
-            inMaskRaster):
+            inMaskRaster=False):
         #process = raster_tools.readAndWriteRaster(inRaster,outRaster=outRaster,inMaskRaster=inMaskRaster,outNBand=2,outGdalGDT=outGdalDT,outNoData=outNoData)
 
-        process = raster_tools.rasterMath(inRaster, inMaskRaster)
-        process.addFunction(self.stabCalc, outRaster, 2, 3, 0)
+        process = raster_tools.rasterMath(inRaster, inMaskRaster=inMaskRaster)
+        process.addFunction(self.stabCalc, outRaster)
+        process.customBlockSize(1/4, 1/4)
         process.run()
 
     def stabCalc(self, arr):
@@ -45,8 +46,8 @@ class modalClass:
         --------
         arr : array of shape (:,2).
         """
-        tmp = stats.mode(arr, axis=-1)
-        tmpStack = np.column_stack((tmp[0], tmp[1]))
+        tmp = stats.mode(arr, axis=1)
+        tmpStack = np.hstack((tmp[0], tmp[1])).astype(np.int16)
         return tmpStack
 
 

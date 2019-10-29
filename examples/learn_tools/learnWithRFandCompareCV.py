@@ -47,7 +47,7 @@ LAP = learnAndPredict(n_jobs=1)
 
 for cv in CVs : 
         
-    LAP.learnFromRaster(raster,vector,inField=field,inGroup=group,cv=cv,
+    LAP.learnFromRaster(raster,vector,inField=field,group=group,cv=cv,
                         classifier=classifier,param_grid=dict(n_estimators=[50,100]))
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []

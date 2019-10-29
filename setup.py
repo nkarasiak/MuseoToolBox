@@ -44,8 +44,8 @@ setuptools.setup(
     zip_safe=False,
     entry_points = {
         'console_scripts': [
-            'mtb_sampleExtraction=museotoolbox.vector_tools.sampleExtraction:main',
-            'mtb_modalClass=museotoolbox.stats.computeClassificationStability:__modalClassCLI'
+            'mtb_sampleExtraction=museotoolbox._cli.sampleExtraction:main',
+            'mtb_modalClass=museotoolbox._cli.computeClassificationStability:__modalClassCLI'
         ],
     },
     package_data={

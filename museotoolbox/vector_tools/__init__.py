@@ -18,10 +18,10 @@ The :mod:`museotoolbox.vector_tools` module gathers vector functions.
 import os
 from osgeo import ogr
 import numpy as np
-from ..internal_tools import progressBar
 
-from .sampleExtraction import sampleExtraction
-from .. import raster_tools
+from ..raster_tools import getSamplesFromROI, sampleExtraction, rasterMaskFromVector
+
+from ..internal_tools import progressBar
 
 
 def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
@@ -44,7 +44,7 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
     else:
         onlyCoords = True
 
-    coords = raster_tools.getSamplesFromROI(
+    coords = getSamplesFromROI(
         inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords, verbose=verbose)
     from scipy.spatial import distance
     if inLevel:
@@ -60,7 +60,7 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
         return distanceMatrix
 
 
-def getOgrDataTypeToNumpy(ogrType):
+def _getOgrDataTypeToNumpy(ogrType):
     FIELD_TYPES = [
         np.int32,          # OFTInteger, Simple 32bit integer
         None,           # OFTIntegerList, List of 32bit integers
@@ -100,7 +100,7 @@ def getDriverAccordingToFileName(fileName):
     --------
     >>> mtb.vector_tools.getDriverAccordingToFileName('goVegan.gpkg')
     'GPKG'
-    >>> getDriverAccordingToFileName('stopEatingAnimals.shp')
+    >>> mtb.vector_tools.getDriverAccordingToFileName('stopEatingAnimals.shp')
     'ESRI Shapefile'
     """
     extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']

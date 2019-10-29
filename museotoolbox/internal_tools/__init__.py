@@ -15,6 +15,14 @@
 import sys
 
 
+def checkOTB():
+    try:
+        import otbApplication
+        return True
+    except:
+        raise ImportError('Please install OTB python binding')
+
+
 def pushFeedback(msg, feedback=None):
 
     if feedback and feedback is not True:

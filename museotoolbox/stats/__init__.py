@@ -100,7 +100,7 @@ class statsFromConfusionMatrix:
     def __init__(self, confusionMatrix):
         """
         Get stats (OA, kappa, F1 and F1 man) from confusion matrix
-        
+
         """
         self.confusionMatrix = confusionMatrix
         self.n = np.sum(self.confusionMatrix)

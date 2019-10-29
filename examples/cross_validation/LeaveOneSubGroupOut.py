@@ -54,4 +54,4 @@ for tr,vl in LOGO.split(X=X,y=y,groups=s):
 ###############################################################################
 # Plot example
 from __drawCVmethods import plotMethod
-plotMethod('SLOO-pixel')
+plotMethod('LOO-group')

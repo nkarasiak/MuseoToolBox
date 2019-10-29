@@ -21,7 +21,7 @@ import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
 from sklearn import warnings
-from ..raster_tools import rasterMath, getGdalDTFromMinMaxValues, convertGdalAndNumpyDataType
+from ..raster_tools import rasterMath, _getGdalDTFromMinMaxValues, _convertGdalAndNumpyDataType
 from ..internal_tools import progressBar
 
 
@@ -102,7 +102,7 @@ class learnAndPredict:
 
         if X is not None:
             if self._x_is_customized:
-                X = self.xFunction(X,**self.xKwargs)
+                X = self.xFunction(X, **self.xKwargs)
             if self.standardized is False:
                 self.StandardScaler.fit(X)
                 self.standardized = True
@@ -115,8 +115,8 @@ class learnAndPredict:
             self,
             X,
             y,
-            group=None,
             classifier=None,
+            group=None,
             param_grid=None,
             standardize=True,
             cv=False,
@@ -130,16 +130,18 @@ class learnAndPredict:
         ----------
         X : array.
             Array with values of each label variable.
-        Y : array.
+        y : array.
             Array with labels only.
         classifier : class from scikit-learn.
             E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
+        group : str or False.
+            If you use a cross-validation which needs group-splitting.
         param_grid : None, else dict.
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         strandardize : Bool, default True.
             If True, will standardize features by removing the mean and scaling to unit variance.
-        cv : Cross-Validation or None.
-            if cv, choose one from vector_tools.samplingMethods and generate it via vector_tools.sampleSelection().
+        cv : Cross-Validation or int or None.
+            if cv, choose one from cross_validation.
         """
         self.classifier = classifier
         self.param_grid = param_grid
@@ -150,10 +152,10 @@ class learnAndPredict:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
         if self._x_is_customized:
-                X = self.xFunction(X,**self.xKwargs)
-        
+            X = self.xFunction(X, **self.xKwargs)
+
         self.X = X
-        
+
         if standardize:
             self.standardize = True
             self.standardizeX()
@@ -175,8 +177,8 @@ class learnAndPredict:
             inRaster,
             inVector,
             inField,
-            classifier,
-            inGroup=False,
+            classifier=None,
+            group=None,            
             param_grid=None,
             standardize=True,
             cv=False,
@@ -196,12 +198,14 @@ class learnAndPredict:
             Field name containing the label to predict.
         classifier : class from scikit-learn.
             E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
+        group : str or False.
+            If you use a cross-validation which needs group-splitting.
         param_grid : None, else dict.
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         standardize : Bool, default True.
             If True, will standardize features by removing the mean and scaling to unit variance.
-        cv : Cross-Validation or None.
-            if cv, choose one from vector_tools.samplingMethods and generate it via vector_tools.sampleSelection().
+        cv : Cross-Validation or int or None.
+            if cv, choose one from cross_validation.
         """
         from ..raster_tools import getSamplesFromROI
 
@@ -212,20 +216,20 @@ class learnAndPredict:
             raise Exception(
                 'Please specify a param_grid if you use a cross-validation method')
 
-        if inGroup is False:
+        if group is False or group is None:
             group = None
             X, y = getSamplesFromROI(
                 inRaster, inVector, inField, verbose=self.verbose)
         else:
             X, y, group = getSamplesFromROI(
-                inRaster, inVector, inField, inGroup, verbose=self.verbose)
+                inRaster, inVector, inField, group, verbose=self.verbose)
 
         self.y = y
         self.X = X
         self.group = group
-        
+
         if self._x_is_customized is True:
-            self.X = self.xFunction(X,**self.xKwargs)
+            self.X = self.xFunction(X, **self.xKwargs)
         if standardize:
             self.standardize = True
             self.standardizeX()
@@ -244,15 +248,19 @@ class learnAndPredict:
             **gridSearchCVParams)
 
     def __learn__(self, X, y, groups, classifier,
-                  param_grid, cv, scoring='accuracy',refit=True, **gridSearchCVParams):
-
-        if cv is not False and not isinstance(cv, int):
+                  param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
+        
+        if isinstance(cv, int):
+            from ..cross_validation import RandomStratifiedKFold
+            cv = RandomStratifiedKFold(n_splits=cv)
+        if cv is not None and cv is not False:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
         elif cv is not False:
-            self.CV = cv
+                self.CV = cv
+            
 
         from sklearn.model_selection import GridSearchCV
 
@@ -336,7 +344,7 @@ class learnAndPredict:
 
     def __convertX(self, X):
         if self._x_is_customized is True:
-            X = self.xFunction(X,**self.xKwargs)
+            X = self.xFunction(X, **self.xKwargs)
 
         if self.standardize:
             if np.ma.is_masked(X):
@@ -441,15 +449,15 @@ class learnAndPredict:
         inMaskRaster : str, default False.
             Path of the raster where 0 is mask and value above are no mask.
         outNumpyDT : numpy datatype, default will get the datatype according to your maximum class value.
-            Get numpy datatype throught : convertGdalAndNumpyDataType(getGdalDTFromMinMaxValues(maximumClassValue)))
+            Get numpy datatype throught : _convertGdalAndNumpyDataType(_getGdalDTFromMinMaxValues(maximumClassValue)))
         outNoData : int, default 0.
             Value of no data for the outRaster.
         """
 
         rM = rasterMath(inRaster, inMaskRaster, message='Prediction...')
 
-        numpyDT = convertGdalAndNumpyDataType(
-            getGdalDTFromMinMaxValues(np.amax(self.model.classes_)))
+        numpyDT = _convertGdalAndNumpyDataType(
+            _getGdalDTFromMinMaxValues(np.amax(self.model.classes_)))
 
         rM.addFunction(
             self.predictArray,
@@ -632,7 +640,7 @@ class learnAndPredict:
         0.942560083148
         ...
         """
-        
+
         def __computeStatsPerCV(statsidx, trvl, **kwargs):
             dictStats = self.__getStatsFromCVidx(statsidx, trvl, **kwargs)
             return dictStats
@@ -660,17 +668,24 @@ class learnAndPredict:
         self.xFunction = xFunction
         self.xKwargs = kwargs
 
+
 class sequentialFeatureSelection:
     """
     Sequential Feature Selection
 
     Parameters
     ----------
-    classifier : array.
-        The feature array, each column represent an idx
-    param_gridy : array.
-    cv : int, default 1.
+    classifier : class.
+        Classifier from scikit-learn.    
+    param_grid : array.
+        param_grid for hyperparameters of the classifier.
+    cv : int, default 5.
+    scoring : str or class, optional
+        default is 'accuracy'. See sklearn.metrics.make_scorer from scikit-learn.
+    n_comp : int, optional
         The number of component per feature. If 4, each feature has 4 columns.
+    verbose : int, optional
+        The higher it is the more sequential will show progression.
     """
 
     def __init__(self, classifier, param_grid, cv=5,
@@ -691,10 +706,24 @@ class sequentialFeatureSelection:
         """
         Parameters
         ----------
-        X :
-        y :
-
+        X : arr
+            arr
+        y : arr
+            Size of X.shape[0].
+        group : None, optional
+            group for cross-validation
+        standardize : optional
+            Default True.
+        pathToSaveCM : str.
+            Path to save models.
+        max_features : int or bool.
+            Default False, if value int.
+        n_jobs : int.
+            Number of job to compute cross-validation.
         """
+        if pathToSaveCM is False:
+            raise ValueError('Sorry, you need a path to save models.')
+
         self.X = X
         self.X_ = np.copy(X)
         self.y = y
@@ -788,10 +817,12 @@ class sequentialFeatureSelection:
                     if self.n_comp == 1:
                         bandidx = np.where(self.mask == 1)[0].reshape(-1, 1)
                     else:
+
                         bandidx = np.arange(
                             0, self.mask.shape[0], self.n_comp).reshape(-1, 1)
                         bandidx = np.int32(
                             bandidx[np.in1d(self.mask[bandidx], 1)] / self.n_comp)
+
                     scoreWithIdx = np.hstack((bandidx, np.asarray(
                         all_scores, dtype=np.float32).reshape(-1, 1)))
                     np.savetxt(all_scores_file, scoreWithIdx, fmt='%0.d,%.4f')
@@ -862,11 +893,12 @@ class sequentialFeatureSelection:
         print('Predict with combination ' + str(self.best_idx_))
         LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
         LAP.loadModel(model)
-        LAP.customizeX(self.transform,idx=self.best_idx_,customizeX=True)
-        LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster)
+        LAP.customizeX(self.transform, idx=self.best_idx_, customizeX=True)
+        LAP.predictRaster(inRaster, outRaster,
+                          confidence=confidence, inMaskRaster=inMaskRaster)
 
     def relearnBestModelWithBestParams(
-            self, X, y, group=None, standardize=True, n_jobs=1):
+            self, X, y, group=None, standardize=True, n_jobs=1, save_dir=False):
 
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
@@ -888,7 +920,8 @@ class sequentialFeatureSelection:
         best_params_ = LAP.model.best_params_
         for key in best_params_.keys():
             best_params_[key] = [best_params_[key]]
-        LAP.n_jobs = 1
+        LAP.n_jobs = n_jobs
+
         LAP.learnFromVector(
             curX,
             y,
@@ -904,6 +937,8 @@ class sequentialFeatureSelection:
                 self.models_path_[0]), 'model_{}.npz'.format(
                 self.best_idx_))
         LAP.saveModel(modelDir)
+        if save_dir:
+            LAP.saveCMFromCV(save_dir)
 
     def predictRasters(self, inRaster, outRasterPrefix,
                        inMaskRaster=False, confidence=False, modelPath=False):
@@ -928,8 +963,9 @@ class sequentialFeatureSelection:
             LAP.loadModel(model)
 
             outRaster = outRasterPrefix + str(idx) + '.tif'
-            LAP.customizeX(self.transform,idx=idx,customizeX=True)
-            LAP.predictRaster(inRaster, outRaster, confidence=confidence, inMaskRaster=inMaskRaster)
+            LAP.customizeX(self.transform, idx=idx, customizeX=True)
+            LAP.predictRaster(inRaster, outRaster,
+                              confidence=confidence, inMaskRaster=inMaskRaster)
 
     def customizeX(self, xFunction, **kwargs):
         self.xFunction = xFunction
@@ -1006,6 +1042,7 @@ class sequentialFeatureSelection:
         """
         idxUnmask = self.__getFeatureId(idx)
         n_features_to_get = [idxUnmask + j for j in range(self.n_comp)]
+
         return n_features_to_get
 
     def __maskIdx(self, idx):
