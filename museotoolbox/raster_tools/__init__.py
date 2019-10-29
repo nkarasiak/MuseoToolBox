@@ -1168,7 +1168,6 @@ class rasterMath:
                             fun.__name__)))
             self.outputs[idx] = None
 
-
 class Moran:
     def __init__(self, inRaster, inMaskRaster=False, transform='r',
                  lag=1, weights=False, intermediate_lag=True):
@@ -1190,9 +1189,8 @@ class Moran:
                             Weights (same shape as the square size).
         intermediate_lag :  boolean, default True.
                             Use all pixel values inside the specified lag.
-
-                            If `intermediate_lag` is set to False, only the pixels at the specified
-                            range will be kept for computing the statistics.
+                            If `intermediate_lag` is set to False, only the 
+                            pixels at the specified range will be kept for computing the statistics.
         """
 
         self.scores = dict(I=[], band=[], EI=[])
