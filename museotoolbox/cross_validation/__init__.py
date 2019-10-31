@@ -15,9 +15,8 @@
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation classes.
 """
-
 from ._sampleSelection import _sampleSelection
-from . import crossValidationClass as _cvc
+from . import _crossValidationClass as _cvc
 
 
 class LeaveOneOut(_sampleSelection):

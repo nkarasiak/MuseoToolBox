@@ -14,7 +14,7 @@ learning process to avoi generate a new raster.
 
 import numpy as np
 from museotoolbox.learn_tools import learnAndPredict
-from museotoolbox.cross_validation import RandomStratifiedKFold
+from museotoolbox.raster_tools import getSamplesFromROI
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
@@ -27,19 +27,11 @@ raster,vector = datasets.historicalMap(low_res=True)
 field = 'Class'
 
 ##############################################################################
-# Create CV
-# -------------------------------------------
-
-SKF = RandomStratifiedKFold(n_splits=2,
-                random_state=12,verbose=False)
-
-##############################################################################
 # Initialize Random-Forest and metrics
 # --------------------------------------
 
 classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
-# 
 kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 f1_mean = metrics.make_scorer(metrics.f1_score,average='micro')
 scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
@@ -54,17 +46,23 @@ LAP = learnAndPredict(n_jobs=1,verbose=1)
 ##############################################################################
 # Create or use custom function
 
-def bandRatio(X,bandToKeep=[0,2]):
+def reduceBands(X,bandToKeep=[0,2]):
     # this function get the first and the last band
     X=X[:,bandToKeep].reshape(-1,len(bandToKeep))
     return X
 
 # add this function to learnAndPredict class
-LAP.customizeX(bandRatio)
+LAP.customizeX(reduceBands)
 
-LAP.learnFromRaster(raster,vector,field,cv=SKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=scoring,refit='kappa')
+# if you learn from vector, refit according to the f1_mean
+X,y = getSamplesFromROI(raster,vector,field)
+LAP.learnFromVector(X,y,cv=2,classifier=classifier,param_grid=dict(n_estimators=[10]),
+                    scoring=scoring,refit='f1_mean')
+
+# if you learn from raster
+LAP.learnFromRaster(raster,vector,field,cv=2,classifier=classifier,param_grid=dict(n_estimators=[10]),
+                    scoring=scoring,refit='f1_mean')
+
 
 ##############################################################################
 # Read the model

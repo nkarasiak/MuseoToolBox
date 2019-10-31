@@ -82,7 +82,7 @@ class learnAndPredict:
         self.CV = False
         self.cloneModel = False
 
-    def standardizeX(self, X=None):
+    def standardizeX(self, X=None,need_transformation=True):
         """
         Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
@@ -101,8 +101,9 @@ class learnAndPredict:
             self.StandardScaler = StandardScaler()
 
         if X is not None:
-            if self._x_is_customized:
-                X = self.xFunction(X, **self.xKwargs)
+            if need_transformation:    
+                if self._x_is_customized:
+                    X = self.xFunction(X, **self.xKwargs)
             if self.standardized is False:
                 self.StandardScaler.fit(X)
                 self.standardized = True
@@ -119,7 +120,7 @@ class learnAndPredict:
             group=None,
             param_grid=None,
             standardize=True,
-            cv=False,
+            cv=None,
             scoring='accuracy',
             refit=True,
             **gridSearchCVParams):
@@ -140,17 +141,15 @@ class learnAndPredict:
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         strandardize : Bool, default True.
             If True, will standardize features by removing the mean and scaling to unit variance.
-        cv : Cross-Validation or int or None.
+        cv : Cross-Validation or int or None. Default None.
             if cv, choose one from cross_validation.
+            if int, uses :class:`museotoolbox.cross_validation.RandomStratifiedKFold` with K = the int value.
         """
         self.classifier = classifier
         self.param_grid = param_grid
         self.y = y
         self.group = group
 
-        if cv is not False and self.param_grid is None:
-            raise Exception(
-                'Please specify a param_grid if you use a cross-validation method')
         if self._x_is_customized:
             X = self.xFunction(X, **self.xKwargs)
 
@@ -159,7 +158,7 @@ class learnAndPredict:
         if standardize:
             self.standardize = True
             self.standardizeX()
-            self.X = self.standardizeX(X)
+            self.X = self.standardizeX(X,need_transformation=False)
 
         self.__learn__(
             self.X,
@@ -181,7 +180,7 @@ class learnAndPredict:
             group=None,            
             param_grid=None,
             standardize=True,
-            cv=False,
+            cv=None,
             scoring='accuracy',
             refit=True,
             **gridSearchCVParams):
@@ -204,17 +203,14 @@ class learnAndPredict:
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         standardize : Bool, default True.
             If True, will standardize features by removing the mean and scaling to unit variance.
-        cv : Cross-Validation or int or None.
+        cv : Cross-Validation or int or None. Default 2.
             if cv, choose one from cross_validation.
+            if int, uses :class:`museotoolbox.cross_validation.RandomStratifiedKFold` with K = the int value.
         """
         from ..raster_tools import getSamplesFromROI
 
         self.classifier = classifier
         self.param_grid = param_grid
-
-        if cv is not False and self.param_grid is None:
-            raise Exception(
-                'Please specify a param_grid if you use a cross-validation method')
 
         if group is False or group is None:
             group = None
@@ -250,9 +246,12 @@ class learnAndPredict:
     def __learn__(self, X, y, groups, classifier,
                   param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
         
-        if isinstance(cv, int):
+        
+        if isinstance(cv, int) and cv != False:
             from ..cross_validation import RandomStratifiedKFold
             cv = RandomStratifiedKFold(n_splits=cv)
+        if cv is False or cv is None and isinstance(param_grid, dict):
+            raise ValueError('You need to select a cross-validation method to use the param_grid for the gridSearchCV.')
         if cv is not None and cv is not False:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
@@ -702,7 +701,7 @@ class sequentialFeatureSelection:
         self.xKwargs = False
 
     def fit(self, X, y, group=None, standardize=True,
-            pathToSaveCM=False, max_features=False, n_jobs=1):
+            path_to_save_models=False, max_features=False, n_jobs=1,**kwargs):
         """
         Parameters
         ----------
@@ -714,15 +713,19 @@ class sequentialFeatureSelection:
             group for cross-validation
         standardize : optional
             Default True.
-        pathToSaveCM : str.
+        path_to_save_models : str.
             Path to save models.
         max_features : int or bool.
             Default False, if value int.
         n_jobs : int.
             Number of job to compute cross-validation.
         """
-        if pathToSaveCM is False:
-            raise ValueError('Sorry, you need a path to save models.')
+        # for retrocompatibily museotoolbox <1.6.5
+        if 'pathToSaveCM' in kwargs and path_to_save_models is False:    
+            print('Please use path_to_save_models instead of pathToSaveCM')
+            self.path_to_save_models = kwargs['pathToSaveCM']
+        else:
+            self.path_to_save_models = path_to_save_models
 
         self.X = X
         self.X_ = np.copy(X)
@@ -755,25 +758,29 @@ class sequentialFeatureSelection:
 
         for j in range(self.max_features):
             resPerFeatures = list()
+            need_learn = True
             # bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
             n_features_to_test = int(
                 self.X[:, self.mask].shape[1] / self.n_comp)
-            all_scores_file = pathToSaveCM + 'all_scores_{}.csv'.format(j)
-            if os.path.exists(all_scores_file):
-                print('Feature {} already computed'.format(j))
-                scores = np.loadtxt(all_scores_file, delimiter=',')
-
-                if scores.ndim == 1:
-                    all_scores = [scores[1]]
-                    best_candidate = 0
-                else:
-                    all_scores = scores[:, 1]
-                    best_candidate = np.argmax(scores[:, 1])
-                LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
-                LAP.loadModel(pathToSaveCM + 'model_{}.npz'.format(j))
-                self.models_path_.append(
-                    pathToSaveCM + 'model_{}.npz'.format(j))
-            else:
+            if self.path_to_save_models :
+                all_scores_file = self.path_to_save_models + 'all_scores_{}.csv'.format(j)
+                if os.path.exists(all_scores_file):
+                    need_learn = False
+                    print('Feature {} already computed'.format(j))
+                    scores = np.loadtxt(all_scores_file, delimiter=',')
+    
+                    if scores.ndim == 1:
+                        all_scores = [scores[1]]
+                        best_candidate = 0
+                    else:
+                        all_scores = scores[:, 1]
+                        best_candidate = np.argmax(scores[:, 1])
+                    LAP = learnAndPredict(n_jobs=n_jobs, verbose=self.verbose - 1)
+                    LAP.loadModel(self.path_to_save_models + 'model_{}.npz'.format(j))
+                    self.models_path_.append(
+                        self.path_to_save_models + 'model_{}.npz'.format(j))
+                
+            if need_learn is True:
                 for idx in range(
                         n_features_to_test):  # at each loop, remove best candidate
                     if self.verbose:
@@ -804,32 +811,33 @@ class sequentialFeatureSelection:
                 # self.__bestLAPs.append(resPerFeatures[best_candidate])
                 LAP = resPerFeatures[best_candidate]
 
-                if pathToSaveCM:
-                    if not os.path.exists(os.path.join(pathToSaveCM, str(j))):
-                        os.makedirs(os.path.join(pathToSaveCM, str(j)))
-                    LAP.saveModel(pathToSaveCM + 'model_{}.npz'.format(j))
+                if self.path_to_save_models:
+                    if not os.path.exists(os.path.join(self.path_to_save_models, str(j))):
+                        os.makedirs(os.path.join(self.path_to_save_models, str(j)))
+                    LAP.saveModel(self.path_to_save_models + 'model_{}.npz'.format(j))
                     LAP.saveCMFromCV(
                         os.path.join(
-                            pathToSaveCM,
+                            self.path_to_save_models,
                             str(j)),
                         n_jobs=n_jobs)
+            
+                if self.n_comp == 1:
+                    bandidx = np.where(self.mask == 1)[0].reshape(-1, 1)
+                else:
 
-                    if self.n_comp == 1:
-                        bandidx = np.where(self.mask == 1)[0].reshape(-1, 1)
-                    else:
+                    bandidx = np.arange(
+                        0, self.mask.shape[0], self.n_comp).reshape(-1, 1)
+                    bandidx = np.int32(
+                        bandidx[np.in1d(self.mask[bandidx], 1)] / self.n_comp)
 
-                        bandidx = np.arange(
-                            0, self.mask.shape[0], self.n_comp).reshape(-1, 1)
-                        bandidx = np.int32(
-                            bandidx[np.in1d(self.mask[bandidx], 1)] / self.n_comp)
-
-                    scoreWithIdx = np.hstack((bandidx, np.asarray(
-                        all_scores, dtype=np.float32).reshape(-1, 1)))
+                scoreWithIdx = np.hstack((bandidx, np.asarray(
+                    all_scores, dtype=np.float32).reshape(-1, 1)))
+                if self.path_to_save_models:
                     np.savetxt(all_scores_file, scoreWithIdx, fmt='%0.d,%.4f')
-
-                self.models_.append(resPerFeatures[best_candidate].model)
-                self.models_path_.append(
-                    pathToSaveCM + 'model_{}.npz'.format(j))
+                    self.models_path_.append(self.path_to_save_models + 'model_{}.npz'.format(j))
+                else:
+                    self.models_.append(resPerFeatures[best_candidate])
+                
                 # store results
             best_feature_id = int(
                 self.__getFeatureId(best_candidate) / self.n_comp)
@@ -864,8 +872,11 @@ class sequentialFeatureSelection:
 
         self.__resetMask()
 
-        LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-        LAP.loadModel(self.models_path_[idx])
+        if self.path_to_save_models  is False:
+            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
+            LAP.loadModel(self.models_path_[idx])
+        else:
+            LAP = self.models_[idx]
         return LAP.predictArray(self.transform(X, idx=idx))
 
     def predictBestCombination(
@@ -888,16 +899,21 @@ class sequentialFeatureSelection:
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
 
-        model = self.models_path_[self.best_idx_]
-
         print('Predict with combination ' + str(self.best_idx_))
-        LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-        LAP.loadModel(model)
+        
+        if self.path_to_save_models  is False:
+            LAP = self.models_[self.best_idx_]
+        else:
+            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
+            LAP.loadModel(self.models_path_[self.best_idx_])
+            
         LAP.customizeX(self.transform, idx=self.best_idx_, customizeX=True)
+            
+            
         LAP.predictRaster(inRaster, outRaster,
                           confidence=confidence, inMaskRaster=inMaskRaster)
 
-    def relearnBestModelWithBestParams(
+    def _relearnBestModelWithBestParams(
             self, X, y, group=None, standardize=True, n_jobs=1, save_dir=False):
 
         self.__resetMask()
@@ -958,12 +974,17 @@ class sequentialFeatureSelection:
 
         self.__resetMask()
 
-        for idx, model in enumerate(self.models_path_):
-            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-            LAP.loadModel(model)
-
-            outRaster = outRasterPrefix + str(idx) + '.tif'
+        for idx, model in enumerate(self.models_):
+            if self.path_to_save_models  is False:
+                LAP = self.models_[idx]
+            else:
+                LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
+                LAP.loadModel(model)
+                
             LAP.customizeX(self.transform, idx=idx, customizeX=True)
+                
+            outRaster = outRasterPrefix + str(idx) + '.tif'
+            
             LAP.predictRaster(inRaster, outRaster,
                               confidence=confidence, inMaskRaster=inMaskRaster)
 
@@ -1058,7 +1079,10 @@ class sequentialFeatureSelection:
 
     def getBestModel(self, clone=False):
         self.best_idx_ = np.argmax(self.best_scores_)
-        LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-        LAP.loadModel(self.models_path_[self.best_idx_])
+        if self.path_to_save_models  :
+            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
+            LAP.loadModel(self.models_path_[self.best_idx_])
+        else:
+            LAP = self.models_[self.best_idx_]
 
         return LAP

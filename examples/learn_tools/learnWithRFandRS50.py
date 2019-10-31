@@ -52,7 +52,7 @@ LAP = learnAndPredict(n_jobs=1,verbose=1)
 
 LAP.learnFromRaster(raster,vector,field,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=kappa,refit='d')
+                    scoring=kappa)
 
 
 ##############################################################################

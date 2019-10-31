@@ -14,7 +14,7 @@
 # =============================================================================
 import os
 from .. import raster_tools, vector_tools
-from . import crossValidationClass
+from . import _crossValidationClass
 import numpy as np
 from itertools import tee
 
