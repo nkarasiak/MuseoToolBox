@@ -27,7 +27,7 @@ doi={10.5281/zenodo.3404728}
 
 Today, the main usages of MuseoToolBox are :
 -  [museotoolbox.cross_validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html)
-  - Create validation/training sets from vector, and cross-validation compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial cross-validation** in order to better estimate a model (with a lower spatial auto-correlation overestimation).
+    - Create validation/training sets from vector, and cross-validation compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial cross-validation** in order to better estimate a model (with a lower spatial auto-correlation overestimation).
 - [museotoolbox.raster_tools](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.raster_tools.html)
   - Extract bands values from vector ROI (polygons/points) (function : [*getSamplesFromROI*](https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.getSamplesFromROI.html))
   - [rasterMath](https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath), allows you to do some math on your raster and save it. Just load rasterMath, then it will return you the value for each pixel (in all bands) and now you can do whatever you want : predicting a model, smooth signal (whittaker, double logistic...), modal value, mean... rasterMath read and write block per block to avoid loading the full image in memory. It is compatible with every python function (including numpy) as the first and only argument needed is an array.
