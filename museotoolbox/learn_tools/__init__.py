@@ -82,7 +82,7 @@ class learnAndPredict:
         self.CV = False
         self.cloneModel = False
 
-    def standardizeX(self, X=None,need_transformation=True):
+    def standardizeX(self, X=None,need_transformation=False):
         """
         Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
@@ -91,6 +91,8 @@ class learnAndPredict:
         ----------
          X : arr, or None.
              The array to scale the data from.
+        need_transformation : bool, default True
+            If you used function to transform your array.
 
         """
         from sklearn.preprocessing import StandardScaler
@@ -229,7 +231,7 @@ class learnAndPredict:
         if standardize:
             self.standardize = True
             self.standardizeX()
-            self.X = self.standardizeX(X)
+            self.X = self.standardizeX(self.X,need_transformation=False)
         self.Xpredict = False
 
         self.__learn__(

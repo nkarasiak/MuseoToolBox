@@ -1,9 +1,9 @@
 1.6.5
 ------
-* Fix bug using learnFromVector with outside customized function
+* Minor fix when using learnAndPredict with an outside customized function
 * Better management fo cross-validation in learnAndPredict
 ** Fix minor bug using False or None value with cv in learnAndPredict
-* Enable SFS only in memory and not only by writing best model on the disk.
+* Add an option to use SFS without writing each best model on the disk.
 
 1.6.4
 -----
