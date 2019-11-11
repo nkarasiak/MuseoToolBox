@@ -266,7 +266,6 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     >>> Y.shape
     (12647,)
     """
-
     # generate kwargs value
     if 'verbose' in kwargs.keys():
         verbose = kwargs['verbose']
@@ -299,7 +298,15 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
         for f in fields:
             idx = ldefn.GetFieldIndex(f)
             if idx == -1:
-                raise ValueError('Field "{}" was not found.'.format(f))
+                
+                listFields = []
+                for n in range(ldefn.GetFieldCount()):
+                    fdefn = ldefn.GetFieldDefn(n)
+                    if fdefn.name is not listFields:
+                        listFields.append('"'+fdefn.name+'"')
+                raise ValueError('Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(f,', '.join(listFields)))
+                
+                 
             fdefn = ldefn.GetFieldDefn(idx)
             fdefn_type = fdefn.type
             if fdefn_type < 4 or fdefn_type == 12:
@@ -483,7 +490,7 @@ def rasterize(data, vectorSrc, field, outFile,
         dataSrc.RasterYSize,
         1,
         gdt,
-        options=['COMPRESS=DEFLATE', 'BIGTIFF=IF_SAFER'])
+        options=['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER'])
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
 
@@ -658,7 +665,7 @@ class rasterMath:
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
         compress: boolean, str ('high'),  default True.
-            If True, will use DEFLATE compression using all cpu-cores minus 1.
+            If True, will use PACKBITS.
             If 'high', will use DEFLATE with ZLEVEL = 9 and PREDICTOR=2.
         **kwargs
 
@@ -724,14 +731,17 @@ class rasterMath:
             if n_jobs < 1:
                 n_jobs = 1
 
-            self.options.extend(['BIGTIFF=IF_SAFER', 'COMPRESS=DEFLATE'])
+            self.options.append('BIGTIFF=IF_SAFER')
 
             if osgeo_version >= '2.1':
                 self.options.append('NUM_THREADS={}'.format(n_jobs))
 
             if compress == 'high':
+                self.options.append('COMPRESS=DEFLATE')
                 self.options.append('PREDICTOR=2')
                 self.options.append('ZLEVEL=9')
+            else:
+                self.options.append('COMPRESS=PACKBITS')
         else:
             self.options = ['BIGTIFF=IF_NEEDED']
 
@@ -1122,6 +1132,7 @@ class rasterMath:
                             tmp[mask.flatten(), ...] = self.outputNoData[idx]
                             tmp[~mask.flatten(), ...] = resFun
                             resFun = tmp
+                
 
                 else:
                     # if all the block is masked
@@ -1135,7 +1146,9 @@ class rasterMath:
                         raise ValueError(
                             'Some blocks are masked and no nodata value was given.\
                             \n Please give a nodata value when adding the function.')
-
+                if np.__version__>= '1.17' and self.outputNoData[idx] is not False:
+                    resFun = np.nan_to_num(resFun,nan=self.outputNoData[idx])
+                
                 for ind in range(maxBands):
                     # write result band per band
                     indGdal = ind + 1

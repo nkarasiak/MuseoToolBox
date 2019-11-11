@@ -154,7 +154,8 @@ class learnAndPredict:
 
         if self._x_is_customized:
             X = self.xFunction(X, **self.xKwargs)
-
+            if X.ndim == 1:
+                X=X.reshape(-1,1)
         self.X = X
 
         if standardize:
@@ -228,6 +229,8 @@ class learnAndPredict:
 
         if self._x_is_customized is True:
             self.X = self.xFunction(X, **self.xKwargs)
+            if self.X.ndim == 1:
+                self.X = self.X.reshape(-1,1)
         if standardize:
             self.standardize = True
             self.standardizeX()
@@ -350,9 +353,10 @@ class learnAndPredict:
         if self.standardize:
             if np.ma.is_masked(X):
                 tmpMask = X.mask[:, 0]
-
+            if X.ndim == 1:
+                X = X.reshape(-1,1)
             X = self.StandardScaler.transform(X)
-
+            
             if np.ma.is_masked(X):
                 tmpMask = np.repeat(tmpMask.reshape(-1, 1),
                                     X.shape[-1], axis=1)
@@ -373,6 +377,8 @@ class learnAndPredict:
         """
 
         X = self.__convertX(X)
+        if X.ndim == 1:
+            X = X.reshape(-1,1)
         self.Xpredict = self.model.predict(X)
 
         return self.Xpredict

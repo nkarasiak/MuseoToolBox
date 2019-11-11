@@ -1,3 +1,8 @@
+1.6.6
+------
+* getSamplesFromROI return list of available fields if wrong field given.
+* rasterMath convert np.nan value to nodata value (if numpy >= 1.17)
+
 1.6.5
 ------
 * Minor fix when using learnAndPredict with an outside customized function
