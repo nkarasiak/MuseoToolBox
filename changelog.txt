@@ -1,3 +1,8 @@
+1.6.7
+------
+* Fix bug #7 : getSamplesFromROI now extracts ROI values using memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
+* 
+
 1.6.6
 ------
 * getSamplesFromROI return list of available fields if wrong field given.

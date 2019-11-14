@@ -324,20 +324,28 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     rois = []
     temps = []
     for field in fields:
-        rstField = tempfile.mktemp('_roi.tif')
-        rstField = rasterize(inRaster, inVector, field,
+        try :
+            raster_in_mem = True
+            data_src = rasterize(inRaster, inVector, field, gdal.GDT_Float64,in_memory=True)
+            
+        except:
+            
+            raster_in_mem = False
+            rstField = tempfile.mktemp('_roi.tif')
+            rstField = rasterize(inRaster, inVector, field,
                              rstField, gdal.GDT_Float64)
-        roiField = gdal.Open(rstField, gdal.GA_ReadOnly)
-        if roiField is None:
+            data_src = gdal.Open(rstField, gdal.GA_ReadOnly)
+            temps.append(rstField)
+            
+        if data_src is None:
             raise Exception(
                 'A problem occured when rasterizing {} with field {}'.format(
                     inVector, field))
-        if (raster.RasterXSize != roiField.RasterXSize) or (
-                raster.RasterYSize != roiField.RasterYSize):
+        if (raster.RasterXSize != data_src.RasterXSize) or (
+                raster.RasterYSize != data_src.RasterYSize):
             raise Exception('Raster and vector do not cover the same extent.')
 
-        rois.append(roiField)
-        temps.append(rstField)
+        rois.append(data_src)
 
     # Get block size
     band = raster.GetRasterBand(1)
@@ -432,8 +440,9 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     raster = None  # Close the raster file
 
     # remove temp raster
-    for roi in temps:
-        os.remove(roi)
+    if raster_in_mem :
+        for roi in temps:
+            os.remove(roi)
 
     # generate output
     if onlyCoords:
@@ -453,8 +462,8 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     return toReturn
 
 
-def rasterize(data, vectorSrc, field, outFile,
-              gdt=gdal.GDT_Int16, invert=False):
+def rasterize(data, vectorSrc, field, outFile=False,
+              gdt=gdal.GDT_Int16, invert=False,in_memory=False):
     """
     Rasterize vector to the size of data (raster)
 
@@ -482,15 +491,22 @@ def rasterize(data, vectorSrc, field, outFile,
     shp = ogr.Open(vectorSrc)
 
     lyr = shp.GetLayer()
-
-    driver = gdal.GetDriverByName('GTiff')
+    
+    if in_memory is not False:
+        driver = gdal.GetDriverByName('MEM')
+        outFile = ''        
+        options=[]
+    else:
+        driver = gdal.GetDriverByName('GTiff')
+        options=['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER']
+        
     dst_ds = driver.Create(
         outFile,
         dataSrc.RasterXSize,
         dataSrc.RasterYSize,
         1,
         gdt,
-        options=['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER'])
+        options=options)
     dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
     dst_ds.SetProjection(dataSrc.GetProjection())
 
@@ -511,8 +527,8 @@ def rasterize(data, vectorSrc, field, outFile,
         OPTIONS = ['ATTRIBUTE=' + field]
         gdal.RasterizeLayer(dst_ds, [1], lyr, None, options=OPTIONS)
 
-    data, dst_ds, shp, lyr = None, None, None, None
-    return outFile
+    data, shp, lyr = None, None, None
+    return dst_ds
 
 
 class rasterMath:
