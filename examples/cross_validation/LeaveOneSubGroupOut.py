@@ -12,17 +12,17 @@ This example shows how to make a Leave-One-SubGroup-Out.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import LeaveOneSubGroupOut
-from museotoolbox.raster_tools import getSamplesFromROI
+from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.load_historical_data()
 field = 'Class'
 group = 'uniquefid'
-X,y,s = getSamplesFromROI(raster,vector,field,group)
+X,y,s = extract_values(raster,vector,field,group)
 
 ##############################################################################
 # Create CV

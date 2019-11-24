@@ -19,7 +19,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 group = 'uniquefid'
 
@@ -34,7 +34,7 @@ LPSGO = LeavePSubGroupOut(valid_size = valid_size,
 # Extract X,y and group.
 # -------------------------------------------
 
-X,y,g=raster_tools.getSamplesFromROI(raster,vector,field,group)
+X,y,g=raster_tools.extract_values(raster,vector,field,group)
 
 ###############################################################################
 # .. note::

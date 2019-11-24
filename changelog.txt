@@ -1,7 +1,19 @@
-1.6.7
-------
-* Fix bug #7 : getSamplesFromROI now extracts ROI values using memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
-* 
+1.7rc1
+----
+Lot of changes to satisfy PEP8 conventions.
+
+functions names have changed :
+    - getSamplesFromROI > extract_values
+    - historicalMap > load_historical_data
+    - getDistanceMatrix > get_distance_matrix
+
+classes now always begin with a capital case : 
+    - rasterMath > RasterMath
+    - sampleExtraction > SampleExtraction
+    - learnAndPredict > LearnAndPredict
+    - sequentialFeatureSelection > SequentialFeatureSelection 
+
+Fix bug #7 : getSamplesFromROI now extracts ROI values using memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
 
 1.6.6
 ------

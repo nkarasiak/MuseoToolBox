@@ -22,22 +22,24 @@ import numpy as np
 import os
 import tempfile
 
-from ..internal_tools import progressBar, pushFeedback
+from ..internal_tools import ProgressBar, push_feedback
 from scipy.ndimage.filters import generic_filter  # to compute moran
 
 
-def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
+def image_mask_from_vector(in_vector, in_image, out_image, invert=False):
     """
-    Create a raster mask where polygons/point are pixels to keep.
+    Create a image mask where polygons/points are the pixels to keep.
 
     Parameters
     ----------
-    inVector : str.
+    in_vector : str.
         Path of the vector file to rasterize.
-    inRaster : str.
+    in_image : str.
         Path of the raster file where the vector file will be rasterize.
-    outRaster : str.
+    out_image : str.
         Path of the file (.tif) to create.
+    invert : boolean.
+        Default False. USe invert=True make polygons/points with 0 values in out_image.
     Returns
     -------
     None
@@ -46,15 +48,15 @@ def rasterMaskFromVector(inVector, inRaster, outRaster, invert=False):
     --------
     """
     rasterize(
-        inRaster,
-        inVector,
+        in_image,
+        in_vector,
         None,
-        outRaster,
+        out_image,
         invert=invert,
         gdt=gdal.GDT_Byte)
 
 
-def _getGdalDTFromMinMaxValues(maxValue, minValue=0):
+def _get_dt_from_minmax_values(max_value, min_value=0):
     """
     Return the Gdal DataType according the minimum or the maximum value.
 
@@ -78,26 +80,26 @@ def _getGdalDTFromMinMaxValues(maxValue, minValue=0):
     >>> _getGdalDTFromMinMaxValues(16,-260)
     3
     """
-    maxAbsValue = np.amax(np.abs([maxValue, minValue]))
+    max_abs_value = np.amax(np.abs([max_value, min_value]))
 
     # if values are integer
-    if isinstance(maxAbsValue, (int, np.integer)):
-        if minValue >= 0:
-            if maxValue <= 255:
+    if isinstance(max_abs_value, (int, np.integer)):
+        if min_value >= 0:
+            if max_value <= 255:
                 gdalDT = gdal.GDT_Byte
-            elif maxValue > 255 and maxValue <= 65535:
+            elif max_value > 255 and max_value <= 65535:
                 gdalDT = gdal.GDT_UInt16
-            elif maxValue >= 65535:
+            elif max_value >= 65535:
                 gdalDT = gdal.GDT_UInt32
-        elif minValue < 0:
-            if minValue > -65535:
+        elif min_value < 0:
+            if min_value > -65535:
                 gdalDT = gdal.GDT_Int16
             else:
                 gdalDT = gdal.GDT_Int32
 
     # if values are float
-    if isinstance(maxAbsValue, float):
-        if maxAbsValue <= +3.4E+38:
+    if isinstance(max_abs_value, float):
+        if max_abs_value <= +3.4E+38:
             gdalDT = gdal.GDT_Float32
         else:
             gdalDT = gdal.GDT_Float64
@@ -105,7 +107,7 @@ def _getGdalDTFromMinMaxValues(maxValue, minValue=0):
     return gdalDT
 
 
-def _convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
+def convert_dt(dt):
     """
     Return the datatype from gdal to numpy or from numpy to gdal.
 
@@ -122,17 +124,20 @@ def _convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
 
     Examples
     ---------
-    >>> _convertGdalAndNumpyDataType(gdal.GDT_Int16)
+    >>> _convert_dt(gdal.GDT_Int16)
     numpy.int16
-    >>> _convertGdalAndNumpyDataType(gdal.GDT_Float64)
+    >>> _convert_dt(gdal.GDT_Float64)
     numpy.float64
-    >>> _convertGdalAndNumpyDataType(numpyDT=np.array([],dtype=np.int16).dtype.name)
+    >>> _convert_dt(numpyDT=np.array([],dtype=np.int16).dtype.name)
     3
-    >>> _convertGdalAndNumpyDataType(numpyDT=np.array([],dtype=np.float64).dtype.name)
+    >>> _convert_dt(numpyDT=np.array([],dtype=np.float64).dtype.name)
     7
     """
     from osgeo import gdal_array
-
+    if isinstance(dt, int):
+        is_gdal = True
+    else:
+        is_gdal = False
     NP2GDAL_CONVERSION = {
         "uint8": 1,
         "int8": 3,
@@ -148,23 +153,23 @@ def _convertGdalAndNumpyDataType(gdalDT=None, numpyDT=None):
         "uint64": 5
     }
 
-    if numpyDT is None:
-        code = gdal_array.GDALTypeCodeToNumericTypeCode(gdalDT)
+    if is_gdal is True:
+        code = gdal_array.GDALTypeCodeToNumericTypeCode(dt)
     else:
 
         try:
-            code = NP2GDAL_CONVERSION[numpyDT]
-            if numpyDT.endswith('int64'):
-                pushFeedback(
-                    'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(numpyDT))
+            code = NP2GDAL_CONVERSION[dt]
+            if dt.endswith('int64'):
+                push_feedback(
+                    'Warning : Numpy type {} is not recognized by gdal. Will use int32 instead'.format(dt))
         except BaseException:
             code = 7
-            pushFeedback(
-                'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(numpyDT))
+            push_feedback(
+                'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(dt))
     return code
 
 
-def _convertGdalDataTypeToOTB(gdalDT):
+def convert_gdal_to_otb_dt(dt):
     """
     Convert Gdal DataType to OTB str format.
 
@@ -180,13 +185,13 @@ def _convertGdalDataTypeToOTB(gdalDT):
 
     Examples
     ---------
-    >>> convertGdalDataTypeToOTB(gdal.GDT_Float32)
+    >>> _convert_gdal_to_otb_dt(gdal.GDT_Float32)
     'float'
-    >>> convertGdalDataTypeToOTB(gdal.GDT_Byte)
+    >>> _convert_gdal_to_otb_dt(gdal.GDT_Byte)
     'uint8'
-    >>> convertGdalDataTypeToOTB(gdal.GDT_UInt32)
+    >>> _convert_gdal_to_otb_dt(gdal.GDT_UInt32)
     'uint32'
-    >>> convertGdalDataTypeToOTB(gdal.GDT_CFloat64)
+    >>> _convert_gdal_to_otb_dt(gdal.GDT_CFloat64)
     'cdouble'
     """
     # uint8/uint16/int16/uint32/int32/float/double/cint16/cint32/cfloat/cdouble
@@ -203,15 +208,15 @@ def _convertGdalDataTypeToOTB(gdalDT):
         'cint32',
         'cfloat',
         'cdouble']
-    if gdalDT > len(code):
+    if dt > len(code):
         otbDT = ('cdouble')
     else:
-        otbDT = code[gdalDT]
+        otbDT = code[dt]
 
     return otbDT
 
 
-def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
+def extract_values(in_image, in_vector, *fields, **kwargs):
     """
     Get the set of pixels given a vector. Data is read per block.
 
@@ -219,10 +224,11 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
 
     Parameters
     -----------
-    inRaster: str.
-        the name of the raster file, could be any file that GDAL can open
-    inVector: str.
-        the name of the thematic image: each pixel whose values is greater than 0 is returned
+    in_image : str.
+        the name or path of the raster file, could be any file that GDAL can open.
+    in_vector : str
+        A filename or path corresponding to a vector file.
+        It could be any file that GDAL/OGR can open.
     *fields : str.
         Each field to extract label/value from.
     **kwargs:
@@ -237,20 +243,22 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     Returns
     --------
     X : arr.
-        The sample matrix. A nXd matrix, where n is the number of referenced pixels and d is the number of variables. Each line of the matrix is a pixel.
-    Y : arr.
-        The label of the pixel.
+        The sample matrix.
+        A n*d matrix, where n is the number of referenced pixels and d is the number of features.
+        Each line of the matrix is a pixel.
+    y : arr.
+        The label of each pixel.
 
     See also
     ---------
-    museotoolbox.vector_tools.readValuesFromVector : read field values from vector file.
+    museotoolbox.vector_tools.read_values : read field values from vector file.
 
     Examples
     ---------
-    >>> from museotoolbox.datasets import historicalMap
-    >>> from museotoolbox.raster_tools import getSamplesFromROI
-    >>> raster,vector= historicalMap()
-    >>> X,Y = getSamplesFromROI(raster,vector,'Class')
+    >>> from museotoolbox.datasets import load_historical_data
+    >>> from museotoolbox.raster_tools import extract_values
+    >>> raster,vector= load_historical_data()
+    >>> X,Y = extract_values(raster,vector,'Class')
     >>> X
     array([[ 213.,  189.,  151.],
        [ 223.,  198.,  158.],
@@ -280,9 +288,9 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     else:
         onlyCoords = False
     # Open Raster
-    raster = gdal.Open(inRaster, gdal.GA_ReadOnly)
+    raster = gdal.Open(in_image, gdal.GA_ReadOnly)
     if raster is None:
-        raise ImportError('Impossible to open ' + inRaster)
+        raise ImportError('Impossible to open ' + in_image)
         # exit()
     # Convert vector to raster
 
@@ -291,22 +299,22 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     if nFields == 0 or fields[0] == False:
         fields = [False]
     else:
-        source = ogr.Open(inVector)
+        source = ogr.Open(in_vector)
         layer = source.GetLayer()
         np_dtypes = []
         ldefn = layer.GetLayerDefn()
         for f in fields:
             idx = ldefn.GetFieldIndex(f)
             if idx == -1:
-                
+
                 listFields = []
                 for n in range(ldefn.GetFieldCount()):
                     fdefn = ldefn.GetFieldDefn(n)
                     if fdefn.name is not listFields:
                         listFields.append('"'+fdefn.name+'"')
-                raise ValueError('Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(f,', '.join(listFields)))
-                
-                 
+                raise ValueError('Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(
+                    f, ', '.join(listFields)))
+
             fdefn = ldefn.GetFieldDefn(idx)
             fdefn_type = fdefn.type
             if fdefn_type < 4 or fdefn_type == 12:
@@ -324,23 +332,25 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     rois = []
     temps = []
     for field in fields:
-        try :
+        try:
             raster_in_mem = True
-            data_src = rasterize(inRaster, inVector, field, gdal.GDT_Float64,in_memory=True)
-            
+            image_field = 'MEM'
+            data_src = rasterize(in_image, in_vector, field,
+                                 out_image=image_field, gdt=gdal.GDT_Float64)
+
         except:
-            
+
             raster_in_mem = False
-            rstField = tempfile.mktemp('_roi.tif')
-            rstField = rasterize(inRaster, inVector, field,
-                             rstField, gdal.GDT_Float64)
-            data_src = gdal.Open(rstField, gdal.GA_ReadOnly)
-            temps.append(rstField)
-            
+            image_field = tempfile.mktemp('_roi.tif')
+            rasterize(in_image, in_vector, field,
+                      out_image=image_field, gdt=gdal.GDT_Float64)
+            data_src = gdal.Open(image_field, gdal.GA_ReadOnly)
+            temps.append(image_field)
+
         if data_src is None:
             raise Exception(
                 'A problem occured when rasterizing {} with field {}'.format(
-                    inVector, field))
+                    in_vector, field))
         if (raster.RasterXSize != data_src.RasterXSize) or (
                 raster.RasterYSize != data_src.RasterYSize):
             raise Exception('Raster and vector do not cover the same extent.')
@@ -365,7 +375,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     if getCoords is True or onlyCoords is True:
         coords = np.array([], dtype=np.int64).reshape(0, 2)
 
-    xDataType = _convertGdalAndNumpyDataType(gdalDT)
+    xDataType = convert_dt(gdalDT)
 
     # Read block data
     X = np.array([], dtype=xDataType).reshape(0, d)
@@ -375,7 +385,7 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     # for progress bar
     if verbose:
         total = 100
-        pb = progressBar(total, message='Reading raster values... ')
+        pb = ProgressBar(total, message='Reading raster values... ')
 
     for i in range(0, nl, y_block_size):
         if i + y_block_size < nl:  # Check for size consistency in Y
@@ -388,10 +398,10 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
             else:
                 cols = nc - j
 
-            # for progressbar
+            # for ProgressBar
             if verbose:
                 currentPosition = (i / nl) * 100
-                pb.addPosition(currentPosition)
+                pb.add_position(currentPosition)
             # Load the reference data
 
             ROI = rois[0].GetRasterBand(1).ReadAsArray(j, i, cols, lines)
@@ -433,14 +443,14 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
                             'Impossible to allocate memory: ROI file is too big.')
 
     if verbose:
-        pb.addPosition(100)
+        pb.add_position(100)
     # Clean/Close variables
     # del Xtp,band
     roi = None  # Close the roi file
     raster = None  # Close the raster file
 
     # remove temp raster
-    if raster_in_mem :
+    if raster_in_mem:
         for roi in temps:
             os.remove(roi)
 
@@ -462,79 +472,86 @@ def getSamplesFromROI(inRaster, inVector, *fields, **kwargs):
     return toReturn
 
 
-def rasterize(data, vectorSrc, field, outFile=False,
-              gdt=gdal.GDT_Int16, invert=False,in_memory=False):
+def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
+              gdt=gdal.GDT_Int16, invert=False):
     """
     Rasterize vector to the size of data (raster)
 
     Parameters
     -----------
-    data : str
-        path of raster
-    vectorSrc : str
-        path of vector
-    field : str
-        field to rasteirze (False is no field)
-    outFile : str
-        raster file where to save the rasterization
-    gdt : int
+    in_image : str
+        A filename or path corresponding to a raster image.
+    in_vector : str
+        A filename or path corresponding to a vector file.
+    in_field : str, optional (default=False)
+        Name of the filed to rasteirze.
+        If False, will rasterize the polygons or points with >0 value, and set the other values to 0.
+    out_image : str, optional (default = 'MEM')
+        A filename or path corresponding to a geotiff (.tif) raster image to save.
+        'MEM' will store raster in memory.
+    gdt : int, optional (default gdal.GDT_Int16)
         gdal GDT datatype (default gdal.GDT_Int16 = 3)
-    invert : boolean.
-        if invert, polygons will be masked.
+    invert : boolean, optional (default=False).
+        if invert, polygons will have 0 values in the out_image.
+        
     Returns
     --------
-    outFile : str
+     dst_ds : gdal object
+         The open data with gdal (essential if out_image is set to 'MEM')
     """
 
-    dataSrc = gdal.Open(data)
+    data_src = gdal.Open(in_image)
     import ogr
-    shp = ogr.Open(vectorSrc)
+    shp = ogr.Open(in_vector)
 
     lyr = shp.GetLayer()
-    
-    if in_memory is not False:
-        driver = gdal.GetDriverByName('MEM')
-        outFile = ''        
-        options=[]
-    else:
-        driver = gdal.GetDriverByName('GTiff')
-        options=['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER']
+
+    if out_image.upper() == 'MEM':
         
+        driver = gdal.GetDriverByName('MEM')
+        out_image = ''
+        options = []
+    else:
+        
+        driver = gdal.GetDriverByName('GTiff')
+        options = ['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER']
+
     dst_ds = driver.Create(
-        outFile,
-        dataSrc.RasterXSize,
-        dataSrc.RasterYSize,
+        out_image,
+        data_src.RasterXSize,
+        data_src.RasterYSize,
         1,
         gdt,
         options=options)
-    dst_ds.SetGeoTransform(dataSrc.GetGeoTransform())
-    dst_ds.SetProjection(dataSrc.GetProjection())
+    dst_ds.SetGeoTransform(data_src.GetGeoTransform())
+    dst_ds.SetProjection(data_src.GetProjection())
 
-    if field is False or field is None:
+    if in_field is False or in_field is None:
         if invert == True:
             try:
                 options = gdal.RasterizeOptions(inverse=invert)
-                gdal.Rasterize(dst_ds, vectorSrc, options=options)
+                gdal.Rasterize(dst_ds, in_vector, options=options)
             except BaseException:
                 raise Exception(
                     'Version of gdal is too old : RasterizeOptions is not available.\nPlease update.')
         else:
             #            gdal.Rasterize(dst_ds, vectorSrc)
-            gdal.RasterizeLayer(dst_ds, [1], lyr, None)
+            gdal.RasterizeLayer(dst_ds, [1], lyr, options=options)
 
         dst_ds.GetRasterBand(1).SetNoDataValue(0)
     else:
-        OPTIONS = ['ATTRIBUTE=' + field]
-        gdal.RasterizeLayer(dst_ds, [1], lyr, None, options=OPTIONS)
+        options = ['ATTRIBUTE=' + in_field]
+        gdal.RasterizeLayer(dst_ds, [1], lyr, None, options=options)
 
-    data, shp, lyr = None, None, None
+    data_src, shp, lyr = None, None, None
+
     return dst_ds
 
 
-class rasterMath:
+class RasterMath:
     """
     Read one or multiple rasters per block, and perform one or many functions to one or many raster outputs.
-    If you want a sample of your data, just call getRandomBlock().
+    If you want a sample of your data, just call get_random_block().
 
     The default option of rasterMath will return in 2d the dataset :
         - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
@@ -543,9 +560,9 @@ class rasterMath:
 
     Parameters
     ----------
-    inRaster : str
-        Gdal supported raster
-    inMaskRaster : str or False.
+    in_image : str
+        Path of a gdal extension supported raster.
+    in_image_mask : str or False.
         If str, path of the raster mask. Value masked are 0, other are considered not masked.
         Use `invert=True` in :mod:`museotoolbox.raster_tools.rasterMaskFromVector` to mask only what is not in polygons.
     return_3d : boolean, default False.
@@ -559,10 +576,10 @@ class rasterMath:
     Examples
     ---------
     >>> import museotoolbox as mtb
-    >>> raster,_=mtb.datasets.historicalMap()
-    >>> rM = mtb.raster_tools.rasterMath(r)
+    >>> raster,_= mtb.datasets.load_historical_data()
+    >>> rM = mtb.raster_tools.RasterMath(raster)
     Total number of blocks : 15
-    >>> rM.addFunction(np.mean,outRaster='/tmp/test.tif',axis=1,dtype=np.int16)
+    >>> rM.add_function(np.mean,out_image='/tmp/test.tif',axis=1,dtype=np.int16)
     Using datatype from numpy table : int16.
     Detected 1 band for function mean.
     >>> rM.run()
@@ -570,7 +587,7 @@ class rasterMath:
     Saved /tmp/test.tif using function mean
     """
 
-    def __init__(self, inRaster, inMaskRaster=False, return_3d=False,
+    def __init__(self, in_image, in_image_mask=False, return_3d=False,
                  message='rasterMath...', verbose=True):
 
         self.verbose = verbose
@@ -578,46 +595,47 @@ class rasterMath:
         self.driver = gdal.GetDriverByName('GTiff')
 
         # Load raster
-        self.openRasters = []
+        self.opened_images = []
 
-        self.addInputRaster(inRaster)
+        self.add_image(in_image)
 
-        self.nb = self.openRasters[0].RasterCount
-        self.nc = self.openRasters[0].RasterXSize
-        self.nl = self.openRasters[0].RasterYSize
+        self.nb = self.opened_images[0].RasterCount
+        self.nc = self.opened_images[0].RasterXSize
+        self.nl = self.opened_images[0].RasterYSize
 
         # Get the geoinformation
-        self.GeoTransform = self.openRasters[0].GetGeoTransform()
-        self.Projection = self.openRasters[0].GetProjection()
+        self.GeoTransform = self.opened_images[0].GetGeoTransform()
+        self.Projection = self.opened_images[0].GetProjection()
 
         # Get block size
-        band = self.openRasters[0].GetRasterBand(1)
+        band = self.opened_images[0].GetRasterBand(1)
         self.input_block_sizes = band.GetBlockSize()
         # input block size, old method
         # self.x_block_size = self.block_sizes[0]
         # self.y_block_size = self.block_sizes[1]
-        
+
         # now define by default block_size of 256x256
         self.x_block_size = 256
         self.y_block_size = 256
-        self.block_sizes = [self.x_block_size,self.y_block_size]
-        
+        self.block_sizes = [self.x_block_size, self.y_block_size]
+
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
-        self.ndtype = _convertGdalAndNumpyDataType(band.DataType)
+        self.ndtype = convert_dt(band.DataType)
         self.return_3d = return_3d
 
-        self.customBlockSize()  # get
+        self.custom_block_size()  # get
 
         del band
 
         # Load inMask if given
-        self.mask = inMaskRaster
+        self.mask = in_image_mask
         if self.mask:
             self.maskNoData = 0
-            self.openMask = gdal.Open(inMaskRaster)
-            if self.openMask is None:
-                raise ReferenceError('Impossible to open image ' + inMaskRaster)
+            self.opened_mask = gdal.Open(in_image_mask)
+            if self.opened_mask is None:
+                raise ReferenceError(
+                    'Impossible to open image ' + in_image_mask)
 
         # Initialize the output
         self.lastProgress = 0
@@ -630,40 +648,41 @@ class rasterMath:
         # Initalize the run
         self.__position = 0
 
-    def addInputRaster(
+    def add_image(
             self,
-            inRaster):
+            in_image):
         """
-        Add input raster.
+        Add raster image.
 
         Parameters
         -----------
-        inRaster: str.
-            Path of the raster.
+        in_image : str
+            Path of a gdal extension supported raster.
         """
-        openRaster = gdal.Open(inRaster, gdal.GA_ReadOnly)
-        if openRaster is None:
-            raise ReferenceError('Impossible to open image ' + inRaster)
+
+        opened_raster = gdal.Open(in_image, gdal.GA_ReadOnly)
+        if opened_raster is None:
+            raise ReferenceError('Impossible to open image ' + in_image)
 
         sameSize = True
 
-        if len(self.openRasters) > 0:
-            if openRaster.RasterXSize != self.openRasters[
-                    0].RasterXSize or openRaster.RasterYSize != self.openRasters[0].RasterYSize:
+        if len(self.opened_images) > 0:
+            if opened_raster.RasterXSize != self.opened_images[
+                    0].RasterXSize or opened_raster.RasterYSize != self.opened_images[0].RasterYSize:
                 sameSize = False
-                pushFeedback("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
-                      Museotoolbox can't add it as an input raster.".format(os.path.basename(inRaster)))
+                push_feedback("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
+                      Museotoolbox can't add it as an input raster.".format(os.path.basename(in_image)))
 
         if sameSize:
-            self.openRasters.append(openRaster)
+            self.opened_images.append(opened_raster)
 
-    def addFunction(
+    def add_function(
             self,
             function,
-            outRaster,
-            outNBand=False,
-            outNumpyDT=False,
-            outNoData=False,
+            out_image,
+            out_n_bands=False,
+            out_np_dt=False,
+            out_nodata=False,
             compress=True,
             **kwargs):
         """
@@ -673,11 +692,11 @@ class rasterMath:
         ----------
         function : def.
             Function to parse with one arguments used to
-        outRaster : str.
+        out_image : str.
             Path of the raster to save the result.
-        outNumpyDT : int, default False.
+        out_np_dt : int, default False.
             If False, will use the datatype of the function result.
-        outNoData : int, default True.
+        out_nodata : int, default True.
             If True or if False (but if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
         compress: boolean, str ('high'),  default True.
@@ -687,60 +706,60 @@ class rasterMath:
 
         """
         if len(kwargs) > 0:
-            randomBlock = function(self.getRandomBlock(), **kwargs)
+            randomBlock = function(self.get_random_block(), **kwargs)
         else:
-            randomBlock = function(self.getRandomBlock())
-        if outNumpyDT is False:
+            randomBlock = function(self.get_random_block())
+        if out_np_dt is False:
             dtypeName = randomBlock.dtype.name
-            outGdalDT = _convertGdalAndNumpyDataType(numpyDT=dtypeName)
-            pushFeedback(
+            out_np_dt = convert_dt(dtypeName)
+            push_feedback(
                 'Using datatype from numpy table : {}.'.format(dtypeName))
         else:
-            dtypeName = np.dtype(outNumpyDT).name
-            outGdalDT = _convertGdalAndNumpyDataType(numpyDT=dtypeName)
+            dtypeName = np.dtype(out_np_dt).name
+            out_np_dt = convert_dt(dtypeName)
 
         # get number of bands
         randomBlock = self.reshape_ndim(randomBlock)
 
-        outNBand = randomBlock.shape[-1]
+        out_n_bands = randomBlock.shape[-1]
         need_s = ''
-        if outNBand > 1:
+        if out_n_bands > 1:
             need_s = 's'
 
         if self.verbose:
-            pushFeedback(
+            push_feedback(
                 'Detected {} band{} for function {}.'.format(
-                    outNBand, need_s, function.__name__))
+                    out_n_bands, need_s, function.__name__))
 
         if self.options == []:
             self.__initRasterParameters(compress=compress)
-        
-        self.__addOutput__(outRaster, outNBand, outGdalDT)
+
+        self.__add_output__(out_image, out_n_bands, out_np_dt)
         self.functions.append(function)
         if len(kwargs) == 0:
             kwargs = False
         self.functionsKwargs.append(kwargs)
 
-        if (outNoData is True) or (self.nodata is not None) or (
+        if (out_nodata is True) or (self.nodata is not None) or (
                 self.mask is not False):
             if np.issubdtype(dtypeName, np.floating):
                 minValue = np.finfo(dtypeName).min
             else:
                 minValue = np.iinfo(dtypeName).min
 
-            if not isinstance(outNoData, bool):
-                if outNoData < minValue:
-                    outNoData = minValue
+            if not isinstance(out_nodata, bool):
+                if out_nodata < minValue:
+                    out_nodata = minValue
             else:
-                outNoData = minValue
+                out_nodata = minValue
 
             if self.verbose:
-                pushFeedback('No data is set to : ' + str(outNoData))
+                push_feedback('No data is set to : ' + str(out_nodata))
 
-        self.outputNoData.append(outNoData)
+        self.outputNoData.append(out_nodata)
 
     def __initRasterParameters(self, compress=True):
-        
+
         self.options = ['TILED=YES']
         if compress is True or compress == 'high':
             n_jobs = os.cpu_count() - 1
@@ -761,7 +780,7 @@ class rasterMath:
         else:
             self.options = ['BIGTIFF=IF_NEEDED']
 
-    def getRasterParameters(self):
+    def get_raster_parameters(self):
         """
         Get raster parameters (compression, block size...)
 
@@ -796,27 +815,28 @@ class rasterMath:
         https://gdal.org/drivers/raster/gtiff.html
         """
         self.options = parameters_list
-    
+
     def __managedRasterOptions(self):
         # remove blockysize or blockxsize if already in options
-        self.options = [val for val in self.options if not val.upper().startswith('BLOCKYSIZE') and not val.upper().startswith('BLOCKXSIZE') and not val.upper().startswith('TILED')]
+        self.options = [val for val in self.options if not val.upper().startswith(
+            'BLOCKYSIZE') and not val.upper().startswith('BLOCKXSIZE') and not val.upper().startswith('TILED')]
         self.options.extend(['BLOCKYSIZE={}'.format(
             self.y_block_size), 'BLOCKXSIZE={}'.format(self.x_block_size)])
         if self.y_block_size == self.x_block_size:
             self.options.extend(['TILED=YES'])
-        
-    def __addOutput__(self, outRaster, outNBand, outGdalDT):
-        if not os.path.exists(os.path.dirname(outRaster)):
-            os.makedirs(os.path.dirname(outRaster))
-        
+
+    def __add_output__(self, out_image, out_n_bands, out_np_dt):
+        if not os.path.exists(os.path.dirname(out_image)):
+            os.makedirs(os.path.dirname(out_image))
+
         self.__managedRasterOptions()
-        
+
         dst_ds = self.driver.Create(
-            outRaster,
+            out_image,
             self.nc,
             self.nl,
-            outNBand,
-            outGdalDT,
+            out_n_bands,
+            out_np_dt,
             options=self.options
         )
         dst_ds.SetGeoTransform(self.GeoTransform)
@@ -858,7 +878,7 @@ class rasterMath:
         height : int.
             the height.
         mask : bool.
-            Use the mask (only if a mask if given in parameter of `rasterMath`.)
+            Use the mask (only if a mask if given in parameter of `RasterMath`.)
 
         Returns
         -------
@@ -866,7 +886,7 @@ class rasterMath:
         """
         arrs = []
         if mask:
-            bandMask = self.openMask.GetRasterBand(1)
+            bandMask = self.opened_mask.GetRasterBand(1)
             arrMask = bandMask.ReadAsArray(
                 col, row, width, height).astype(np.bool)
             if self.return_3d is False:
@@ -874,15 +894,15 @@ class rasterMath:
         else:
             arrMask = None
 
-        for nRaster in range(len(self.openRasters)):
-            nb = self.openRasters[nRaster].RasterCount
+        for nRaster in range(len(self.opened_images)):
+            nb = self.opened_images[nRaster].RasterCount
 
             if self.return_3d:
                 arr = np.empty((height, width, nb), dtype=self.ndtype)
             else:
                 arr = np.empty((height * width, nb), dtype=self.ndtype)
             for ind in range(nb):
-                band = self.openRasters[nRaster].GetRasterBand(int(ind + 1))
+                band = self.opened_images[nRaster].GetRasterBand(int(ind + 1))
 
                 if self.return_3d:
                     arr[..., ind] = band.ReadAsArray(
@@ -928,7 +948,7 @@ class rasterMath:
 
         return outArr
 
-    def getRandomBlock(self, seed=None):
+    def get_random_block(self, seed=None):
         """
         Get Random Block from the raster.
         """
@@ -955,7 +975,7 @@ class rasterMath:
 
             tmp = self.generateBlockArray(
                 lines, cols, width, height, self.mask)
-            if len(self.openRasters) > 1:
+            if len(self.opened_images) > 1:
                 mask = tmp[0].mask
             else:
                 mask = tmp.mask
@@ -986,18 +1006,18 @@ class rasterMath:
                 x = x.reshape(-1, 1)
         return x
 
-    def readBandPerBand(self):
+    def read_band_per_band(self):
         """
         Yields each whole band as np masked array (so with masked data)
         """
-        for nRaster in range(len(self.openRasters)):
-            nb = self.openRasters[nRaster].RasterCount
+        for nRaster in range(len(self.opened_images)):
+            nb = self.opened_images[nRaster].RasterCount
             for n in range(1, nb + 1):
-                band = self.openRasters[nRaster].GetRasterBand(n)
+                band = self.opened_images[nRaster].GetRasterBand(n)
                 band = band.ReadAsArray()
                 if self.mask:
                     mask = np.asarray(
-                        self.openMask.GetRasterBand(1).ReadAsArray(), dtype=bool)
+                        self.opened_mask.GetRasterBand(1).ReadAsArray(), dtype=bool)
                     band = np.ma.MaskedArray(band, mask=~mask)
                 else:
                     band = np.ma.MaskedArray(
@@ -1005,7 +1025,7 @@ class rasterMath:
                             band == self.nodata, True, False))
                 yield band
 
-    def readBlockPerBlock(self, x_block_size=False, y_block_size=False):
+    def read_block_per_block(self, x_block_size=False, y_block_size=False):
         """
         Yield each block.
         """
@@ -1031,14 +1051,14 @@ class rasterMath:
         return X
 
     def _manageMaskFor2D(self, X):
-        if len(self.openRasters) > 1:
+        if len(self.opened_images) > 1:
             X = [self._returnUnmaskedX(x) for x in X]
         else:
             X = self._returnUnmaskedX(X)
 
         return X
 
-    def customBlockSize(self, x_block_size=False, y_block_size=False):
+    def custom_block_size(self, x_block_size=False, y_block_size=False):
         """
         Define custom block size for reading and writing the raster.
 
@@ -1076,7 +1096,7 @@ class rasterMath:
         self.n_block = np.ceil(self.nl / self.y_block_size).astype(int) * np.ceil(self.nc /
                                                                                   self.x_block_size).astype(int)
         if self.verbose:
-            pushFeedback('Total number of blocks : %s' % self.n_block)
+            push_feedback('Total number of blocks : %s' % self.n_block)
 
     def run(self):
         """
@@ -1088,7 +1108,7 @@ class rasterMath:
         """
 
         # TODO : Parallel
-        self.pb = progressBar(self.n_block, message=self.message)
+        self.pb = ProgressBar(self.n_block, message=self.message)
 
         for X, col, line, cols, lines in self.__iterBlock__(
                 getBlock=True):
@@ -1100,7 +1120,7 @@ class rasterMath:
                 X_ = np.ma.copy(X)
 
             if self.verbose:
-                self.pb.addPosition(self.__position)
+                self.pb.add_position(self.__position)
 
             for idx, fun in enumerate(self.functions):
                 maxBands = self.outputs[idx].RasterCount
@@ -1148,7 +1168,6 @@ class rasterMath:
                             tmp[mask.flatten(), ...] = self.outputNoData[idx]
                             tmp[~mask.flatten(), ...] = resFun
                             resFun = tmp
-                
 
                 else:
                     # if all the block is masked
@@ -1162,9 +1181,9 @@ class rasterMath:
                         raise ValueError(
                             'Some blocks are masked and no nodata value was given.\
                             \n Please give a nodata value when adding the function.')
-                if np.__version__>= '1.17' and self.outputNoData[idx] is not False:
-                    resFun = np.nan_to_num(resFun,nan=self.outputNoData[idx])
-                
+                if np.__version__ >= '1.17' and self.outputNoData[idx] is not False:
+                    resFun = np.nan_to_num(resFun, nan=self.outputNoData[idx])
+
                 for ind in range(maxBands):
                     # write result band per band
                     indGdal = ind + 1
@@ -1181,7 +1200,7 @@ class rasterMath:
 
             self.__position += 1
 
-        self.pb.addPosition(self.n_block)
+        self.pb.add_position(self.n_block)
 
         for idx, fun in enumerate(self.functions):
             # set nodata if given
@@ -1191,23 +1210,24 @@ class rasterMath:
                 band.FlushCache()
 
             if self.verbose:
-                pushFeedback(
+                push_feedback(
                     'Saved {} using function {}'.format(
                         self.outputs[idx].GetDescription(), str(
                             fun.__name__)))
             self.outputs[idx] = None
 
+
 class Moran:
-    def __init__(self, inRaster, inMaskRaster=False, transform='r',
+    def __init__(self, in_image, in_image_mask=False, transform='r',
                  lag=1, weights=False, intermediate_lag=True):
         """
         Compute Moran's I for raster.
 
         Parameters
         ----------
-        inRaster        :   str
+        in_image        :   str
                             Path.
-        inMaskRaster    :   str
+        in_image_mask   :   str
                             Path to mask raster, default False.
         transform       :   str
                             default is row-standardized 'r'.
@@ -1224,16 +1244,16 @@ class Moran:
 
         self.scores = dict(I=[], band=[], EI=[])
         self.lags = []
-        if isinstance(inRaster, (np.ma.core.MaskedArray, np.ndarray)):
-            arr = inRaster
+        if isinstance(in_image, (np.ma.core.MaskedArray, np.ndarray)):
+            arr = in_image
         else:
-            rM = rasterMath(
-                inRaster,
-                inMaskRaster=inMaskRaster,
+            rM = RasterMath(
+                in_image,
+                in_image_mask=in_image_mask,
                 return_3d=True,
                 verbose=False)
 
-        for band, arr in enumerate(rM.readBandPerBand()):
+        for band, arr in enumerate(rM.read_band_per_band()):
             if isinstance(lag, int):
                 lag = [lag]
             for l in lag:
@@ -1252,7 +1272,7 @@ class Moran:
                 if transform == 'b' and band == 0:
                     neighbors = generic_filter(
                         arr,
-                        self.getNNeighbors,
+                        self.get_n_neighbors,
                         footprint=footprint,
                         mode='constant',
                         cval=np.nan,
@@ -1297,7 +1317,7 @@ class Moran:
                 self.scores['I'].append(self.I)
                 self.scores['EI'].append(self.EI)
 
-    def getNNeighbors(self, array, footprint, weights):
+    def get_n_neighbors(self, array, footprint, weights):
 
         b = np.reshape(array, (footprint.shape[0], footprint.shape[1]))
         xCenter = int((footprint.shape[0] - 1) / 2)
@@ -1341,80 +1361,32 @@ class Moran:
         return num
 
 
-class sampleExtraction:
-    def __init__(
-            self,
-            inRaster,
-            inVector,
-            outVector,
-            uniqueFID=None,
-            bandPrefix=None,
-            verbose=1):
-        """
-        Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
+def sample_extraction(
+        in_image,
+        in_vector,
+        out_vector,
+        unique_fid=None,
+        band_prefix=None,
+        verbose=1):
+    """
+    Extract centroid from shapefile according to the raster, and extract band value if bandPrefix is given.
 
-        This script is available via terminal by entering : `mtb_sampleExtraction`.
+    This script is available via terminal by entering : `mtb_SampleExtraction`.
 
-        Parameters
-        ----------
-        inRaster : str.
-            Raster path.
-        inVector : str.
-            Vector path.
-        outVector : str.
-            Outvector. Extension will be used to select driver. Please use ['sqlite','shp','netcdf','gpx'].
-        uniqueFID : str, default None.
-            If None, will add a field called 'uniquefid' in the output vector.
-        bandPrefix : str, default None.
-            If bandPrefix (e.g. 'band'), will extract values from raster.
-        """
-        from ..vector_tools import addUniqueIDForVector
-        self.__verbose = verbose
-        if uniqueFID is None:
-            uniqueFID = 'uniquefid'
-            if verbose:
-                pushFeedback("Adding 'uniquefid' field to the original vector.")
-            addUniqueIDForVector(
-                inVector, uniqueFID, verbose=verbose)
-
-        if verbose:
-            pushFeedback("Extract values from raster...")
-        X, Y, coords = getSamplesFromROI(
-            inRaster, inVector, uniqueFID, getCoords=True, verbose=verbose)
-
-        geoTransform = gdal.Open(inRaster).GetGeoTransform()
-
-        centroid = [self.__pixelLocationToCentroidGeom(
-            coord, geoTransform) for coord in coords]
-        # init outLayer
-        if np.issubdtype(X.dtype, np.integer):
-            try:
-                dtype = ogr.OFTInteger64
-            except BaseException:
-                dtype = ogr.OFTInteger
-        else:
-            dtype = ogr.OFTReal
-        outLayer = createPointLayer(
-            inVector, outVector, uniqueFID, dtype=dtype)
-        if self.__verbose:
-            outLayer.addTotalNumberOfPoints(len(centroid))
-
-        if verbose:
-            pushFeedback("Adding each centroid to {}...".format(outVector))
-        for idx, xy in enumerate(centroid):
-            try:
-                curY = Y[idx][0]
-            except BaseException:
-                curY = Y[idx]
-            if curY != 0:
-                if bandPrefix is None:
-                    outLayer.addPointToLayer(xy, curY)
-                else:
-                    outLayer.addPointToLayer(xy, curY, X[idx], bandPrefix)
-
-        outLayer.closeLayers()
-
-    def __pixelLocationToCentroidGeom(self, coords, geoTransform):
+    Parameters
+    ----------
+    in_image : str.
+        Raster path.
+    in_vector : str.
+        Vector path.
+    out_vector : str.
+        Outvector. Extension will be used to select driver. Please use ['sqlite','shp','netcdf','gpx'].
+    unique_fid : str, default None.
+        If None, will add a field called 'uniquefid' in the output vector.
+    band_prefix : str, default None.
+        If band_prefix (e.g. 'band'), will extract values from raster.
+    """
+    def __pixel_location_from_centroid(coords, geoTransform):
         """
         Convert XY coords into the centroid of a pixel
 
@@ -1431,8 +1403,54 @@ class sampleExtraction:
         newY = geoTransform[5] * (coords[1] + 0.5) + geoTransform[3]
         return [newX, newY]
 
+    from ..vector_tools import add_unique_fid
 
-class createPointLayer:
+    if unique_fid is None:
+        unique_fid = 'uniquefid'
+        if verbose:
+            push_feedback("Adding 'uniquefid' field to the original vector.")
+        add_unique_fid(
+            in_vector, unique_fid, verbose=verbose)
+
+    if verbose:
+        push_feedback("Extract values from raster...")
+    X, Y, coords = extract_values(
+        in_image, in_vector, unique_fid, getCoords=True, verbose=verbose)
+
+    geoTransform = gdal.Open(in_image).GetGeoTransform()
+
+    centroid = [__pixel_location_from_centroid(
+        coord, geoTransform) for coord in coords]
+    # init outLayer
+    if np.issubdtype(X.dtype, np.integer):
+        try:
+            dtype = ogr.OFTInteger64
+        except BaseException:
+            dtype = ogr.OFTInteger
+    else:
+        dtype = ogr.OFTReal
+    outLayer = _create_point_layer(
+        in_vector, out_vector, unique_fid, dtype=dtype, verbose=verbose)
+    if verbose:
+        outLayer.add_total_points(len(centroid))
+
+    if verbose:
+        push_feedback("Adding each centroid to {}...".format(out_vector))
+    for idx, xy in enumerate(centroid):
+        try:
+            curY = Y[idx][0]
+        except BaseException:
+            curY = Y[idx]
+        if curY != 0:
+            if band_prefix is None:
+                outLayer.add_point_to_layer(xy, curY)
+            else:
+                outLayer.add_point_to_layer(xy, curY, X[idx], band_prefix)
+
+    outLayer.close_layer()
+
+
+class _create_point_layer:
     def __init__(self, inVector, outVector, uniqueIDField,
                  dtype=ogr.OFTInteger, verbose=1):
         """
@@ -1451,9 +1469,9 @@ class createPointLayer:
 
         Functions
         -------
-        addTotalNumberOfPoints(nSamples): int.
+        add_total_points(nSamples): int.
             Will generate progress bar.
-        addPointToLayer(coords): list,arr.
+        add_point_to_layer(coords): list,arr.
             coords[0] is X, coords[1] is Y.
         closeLayer():
             Close the layer.
@@ -1488,7 +1506,7 @@ class createPointLayer:
         self.uniqueIDandFID = False
         self.addBand = False
 
-    def __addBandsValue(self, bandPrefix, nBands):
+    def __add_band_value(self, bandPrefix, nBands):
         """
         Parameters
         -------
@@ -1504,7 +1522,7 @@ class createPointLayer:
             self.outLyr.CreateField(ogr.FieldDefn(field, self.__dtype))
         self.addBand = True
 
-    def addTotalNumberOfPoints(self, nSamples):
+    def add_total_points(self, nSamples):
         """
         Adding the total number of points will show a progress bar.
 
@@ -1514,9 +1532,9 @@ class createPointLayer:
             The number of points to be added (in order to have a progress bar. Will not affect the processing if bad value is put here.)
         """
         self.nSamples = nSamples
-        self.pb = progressBar(nSamples, 'Adding points... ')
+        self.pb = ProgressBar(nSamples, 'Adding points... ')
 
-    def addPointToLayer(
+    def add_point_to_layer(
             self,
             coords,
             uniqueIDValue,
@@ -1536,11 +1554,11 @@ class createPointLayer:
             if self.nSamples:
                 currentPosition = int(self.idx + 1)
                 if currentPosition != self.lastPosition:
-                    self.pb.addPosition(self.idx + 1)
+                    self.pb.add_position(self.idx + 1)
                     self.lastPosition = currentPosition
 
         if self.uniqueIDandFID is False:
-            self.__updateArrAccordingToVector__()
+            self.__update_arr_according_to_vector()
 
         # add Band to list of fields if needed
         if bandValue is not None:
@@ -1548,7 +1566,7 @@ class createPointLayer:
                 raise Warning(
                     'Please, define a bandPrefix value to save bands value into the vector file.')
             if self.addBand is False:
-                self.__addBandsValue(bandPrefix, bandValue.shape[0])
+                self.__add_band_value(bandPrefix, bandValue.shape[0])
 
         point = ogr.Geometry(ogr.wkbPoint)
         point.SetPoint(0, coords[0], coords[1])
@@ -1562,7 +1580,7 @@ class createPointLayer:
             FID = self.uniqueFIDs[np.where(np.asarray(
                 self.uniqueIDs, dtype=np.int) == int(uniqueIDValue))[0][0]]
         except BaseException:
-            pushFeedback(uniqueIDValue)
+            push_feedback(uniqueIDValue)
 
         featUpdates = self.inLyr.GetFeature(int(FID))
         for f in self.fields:
@@ -1575,7 +1593,7 @@ class createPointLayer:
         self.outLyr.CreateFeature(feature)
         self.idx += 1
 
-    def __updateArrAccordingToVector__(self):
+    def __update_arr_according_to_vector(self):
         """
         Update outVector layer by adding field from inVector.
         Store ID and FIDs to find the same value.
@@ -1601,7 +1619,7 @@ class createPointLayer:
             self.uniqueFIDs.append(uFID)
         self.uniqueIDandFID = True
 
-    def closeLayers(self):
+    def close_layer(self):
         """
         Once work is done, close all layers.
         """

@@ -10,9 +10,9 @@ Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplo
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.learn_tools import learnAndPredict
+from museotoolbox.learn_tools import LearnAndPredict
 from museotoolbox.cross_validation import RandomStratifiedKFold
-from museotoolbox.charts import plotConfusionMatrix
+from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 
@@ -20,7 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 
 ##############################################################################
@@ -40,7 +40,7 @@ classifier = RandomForestClassifier()
 # ---------------------------
 
 
-LAP = learnAndPredict()
+LAP = LearnAndPredict()
 LAP.learnFromRaster(raster,vector,field,cv=RSKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10,100]))
 
@@ -70,10 +70,10 @@ import numpy as np
 labels = ['Forest','Agriculture','Bare soil','Water','Building']
 from matplotlib.pyplot import cm as colorMap
 meanCM = np.mean(cms,axis=0).astype(np.int16)
-pltCM = plotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
-pltCM.addText()
-pltCM.addXlabels(labels,rotation=90)
-pltCM.addYlabels(labels)
-pltCM.colorDiag(diagColor=colorMap.Purples,matrixColor=colorMap.Reds)
-pltCM.addAccuracy()
+pltCM = PlotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
+pltCM.add_text()
+pltCM.add_x_labels(labels,rotation=90)
+pltCM.add_y_labels(labels)
+pltCM.color_diagonal(diagColor=colorMap.Purples,matrixColor=colorMap.Reds)
+pltCM.add_accuracy()
 pltCM.show()

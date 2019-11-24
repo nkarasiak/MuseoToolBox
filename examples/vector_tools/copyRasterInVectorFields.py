@@ -21,7 +21,7 @@ from matplotlib import pyplot as plt
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = mtb.datasets.historicalMap(low_res=True)
+raster,vector = mtb.datasets.load_historical_data(low_res=True)
 outVector='/tmp/vector_withROI.gpkg'
 
 
@@ -30,18 +30,18 @@ outVector='/tmp/vector_withROI.gpkg'
 #    There is no need to specify a bandPrefix. 
 #    If bandPrefix is not specified, scipt will only generate the centroid
 
-mtb.vector_tools.sampleExtraction(raster,vector,
-                                 outVector=outVector,
-                                 uniqueFID='uniquefid',
-                                 bandPrefix='band_',
+mtb.vector_tools.sample_extraction(raster,vector,
+                                 out_vector=outVector,
+                                 unique_fid='uniquefid',
+                                 band_prefix='band_',
                                  verbose=False)
 
 
 #############################################
 # Read values from both vectors
 
-originalY = mtb.vector_tools.readValuesFromVector(vector,'Class')
-X,y = mtb.vector_tools.readValuesFromVector(outVector,'Class',bandPrefix='band_')
+originalY = mtb.vector_tools.read_values(vector,'Class')
+X,y = mtb.vector_tools.read_values(outVector,'Class',band_prefix='band_')
 
 #############################################
 # Original vector is polygon type, each polygons contains multiple pixel

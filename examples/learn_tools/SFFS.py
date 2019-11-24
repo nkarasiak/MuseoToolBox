@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import sequentialFeatureSelection,learnAndPredict
+from museotoolbox.learn_tools import SequentialFeatureSelection,LearnAndPredict
 from museotoolbox.cross_validation import LeavePSubGroupOut
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -22,7 +22,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y,g = datasets.historicalMap(return_X_y_g=True,low_res=True)
+X,y,g = datasets.load_historical_data(return_X_y_g=True,low_res=True)
 
 ##############################################################################
 # Create CV
@@ -43,7 +43,7 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 # Set and fit the Sequentia Feature Selection
 # ---------------------------------------------------------------
 #
-SFFS = sequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[10]),scoring=kappa)
+SFFS = SequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[10]),scoring=kappa)
 
 SFFS.fit(X.astype(np.float),y,g,path_to_save_models='/tmp/SFFS/')
 
@@ -56,7 +56,7 @@ print('Kappa are : '+str(SFFS.best_scores_))
 ##########################################################################
 # In order to predict every classification from the best feature
 
-SFFS.predictBestCombination(datasets.historicalMap()[0],'/tmp/SFFS/best_classification.tif')
+SFFS.predictBestCombination(datasets.load_historical_data()[0],'/tmp/SFFS/best_classification.tif')
 
 ##############################################################################
 # Plot example

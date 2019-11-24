@@ -20,10 +20,10 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-X,y = raster_tools.getSamplesFromROI(raster,vector,field)
-distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
+X,y = raster_tools.extract_values(raster,vector,field)
+distanceMatrix = vector_tools.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV
@@ -48,8 +48,8 @@ for tr,vl in SLOPO.split(X,y):
 # In order to translate polygons into points (each points is a pixel in the raster)
 # we use sampleExtraction from vector_tools to generate a temporary vector.
 
-vector_tools.sampleExtraction(raster,vector,outVector='/tmp/pixels.gpkg',verbose=False)
-trvl = SLOPO.saveVectorFiles('/tmp/pixels.gpkg',field,outVector='/tmp/SLOPO.gpkg')
+vector_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+trvl = SLOPO.save_to_vector('/tmp/pixels.gpkg',field,out_vector='/tmp/SLOPO.gpkg')
 for tr,vl in trvl:
     print(tr,vl)
  

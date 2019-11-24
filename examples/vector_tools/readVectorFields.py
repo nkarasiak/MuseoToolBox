@@ -17,19 +17,22 @@ import museotoolbox as mtb
 # Load HistoricalMap dataset
 # ----------------------------
 
-raster,vector = mtb.datasets.historicalMap(low_res=True)
+raster,vector = mtb.datasets.load_historical_data(low_res=True)
 
 ###############################################################################
 # .. note::
 #    If you have no memories on what the fields name are, simply put the vector path
 
-mtb.vector_tools.readValuesFromVector(vector)
+try : 
+    mtb.vector_tools.read_values(vector)
+except Exception as e:
+    print(e)
 
 #############################################
 # Read values from field 'Class'
 # --------------------------------
 
-Y,Name = mtb.vector_tools.readValuesFromVector(vector,'Class','Type')
+Y,Name = mtb.vector_tools.read_values(vector,'Class','Type')
 print(Y,Name)
 print(Y.shape)
 
@@ -38,7 +41,7 @@ print(Y.shape)
 # -------------------------------------------
 # As multiple fields can begin with C, function returns a column per field
 
-C = mtb.vector_tools.readValuesFromVector(vector,bandPrefix='C')
+C = mtb.vector_tools.read_values(vector,band_prefix='C')
 print(C)
 print(C.shape)
 

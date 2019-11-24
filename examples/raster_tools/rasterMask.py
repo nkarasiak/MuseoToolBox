@@ -12,13 +12,13 @@ Create a raster mask from vector.
 # -------------------------------------------
 
 from museotoolbox import raster_tools
-from museotoolbox.datasets import historicalMap
+from museotoolbox.datasets import load_historical_data
 
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = historicalMap()
+raster,vector = load_historical_data()
 
 ##############################################################################
 # Rasterize vector
@@ -27,11 +27,11 @@ raster,vector = historicalMap()
 
 ##############################################################################
 # Default, invert is False, it means only polygons will be kept (the rest is set to nodata)
-raster_tools.rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
+raster_tools.image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
 
 ##############################################################################
 # If invert is set to True, it means polygons will be set to nodata
-raster_tools.rasterMaskFromVector(vector,raster,'/tmp/maskInvert.tif',invert=True)
+raster_tools.image_mask_from_vector(vector,raster,'/tmp/maskInvert.tif',invert=True)
 
 #######################
 # Plot result

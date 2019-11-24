@@ -18,7 +18,7 @@ from museotoolbox import datasets
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y = datasets.historicalMap(return_X_y=True,low_res=True)
+X,y = datasets.load_historical_data(return_X_y=True,low_res=True)
 
 ##############################################################################
 # Create CV
@@ -42,7 +42,7 @@ for tr,vl in LOOPC.split(X=None,y=y):
 # In order to translate polygons into points (each points is a pixel in the raster)
 # we use sampleExtraction from vector_tools to generate a temporary vector.
 
-trvl = LOOPC.saveVectorFiles(datasets.historicalMap()[1],'Class',outVector='/tmp/LOO.gpkg')
+trvl = LOOPC.save_to_vector(datasets.load_historical_data()[1],'Class',out_vector='/tmp/LOO.gpkg')
 for tr,vl in trvl:
     print(tr,vl)
  

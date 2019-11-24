@@ -11,7 +11,7 @@ This example shows how to make a classification with different cross-validation 
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import learnAndPredict
+from museotoolbox.learn_tools import LearnAndPredict
 from museotoolbox import cross_validation
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -21,7 +21,7 @@ from sklearn.model_selection import StratifiedKFold
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 group = 'uniquefid'
 
@@ -43,7 +43,7 @@ CVs = [cross_validation.RandomStratifiedKFold(n_splits=2),
 
 kappas=[]
 
-LAP = learnAndPredict(n_jobs=1)
+LAP = LearnAndPredict(n_jobs=1)
 
 for cv in CVs : 
         

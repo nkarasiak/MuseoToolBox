@@ -23,7 +23,7 @@ def checkOTB():
         raise ImportError('Please install OTB python binding')
 
 
-def pushFeedback(msg, feedback=None):
+def push_feedback(msg, feedback=None):
 
     if feedback and feedback is not True:
         if feedback == 'gui':
@@ -34,7 +34,7 @@ def pushFeedback(msg, feedback=None):
         print(msg)
 
 
-class progressBar:
+class ProgressBar:
     def __init__(self, total, message='', length=40, feedback=None):
         """
         total : int
@@ -54,7 +54,7 @@ class progressBar:
         self.lastPosition = None
         self.feedback = feedback
 
-    def addPosition(self, value=False):
+    def add_position(self, value=False):
         """
         Add progress to the bar.
 
@@ -94,9 +94,9 @@ class progressBar:
 
 
 if __name__ == '__main__':
-    pb = progressBar(200, length=50)
+    pb = ProgressBar(200, length=50)
     import time
     for i in range(100):
-        pb.addPosition()
+        pb.add_position()
         time.sleep(0.01)
-    pb.addPosition(200)
+    pb.add_position(200)

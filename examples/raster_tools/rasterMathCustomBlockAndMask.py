@@ -15,7 +15,7 @@ to a new raster.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
+from museotoolbox.raster_tools import RasterMath,image_mask_from_vector
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 import numpy as np
@@ -23,7 +23,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.load_historical_data()
 
 ##############################################################################
 # Initialize rasterMath with raster
@@ -32,17 +32,17 @@ raster,vector = datasets.historicalMap()
 # Set return_3d to True to have full block size (not one pixel per row)
 # Create raster mask to only keep pixel inside polygons.
 
-rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
+image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
 
-rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=True)
+rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=True)
 #rM.addInputRaster('/tmp/mask.tif')
-print(rM.getRandomBlock()[0].shape)
+print(rM.get_random_block()[0].shape)
 
 #######################
 # Plot blocks
-x = rM.getRandomBlock()
+x = rM.get_random_block()
 
-rM.addFunction(np.mean,'/tmp/mean.tif',axis=2,outNumpyDT=np.int16)
+rM.add_function(np.mean,'/tmp/mean.tif',axis=2,out_np_dt=np.int16)
 
 rM.run()
 

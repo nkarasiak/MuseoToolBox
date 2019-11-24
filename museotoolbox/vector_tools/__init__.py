@@ -19,12 +19,12 @@ import os
 from osgeo import ogr
 import numpy as np
 
-from ..raster_tools import getSamplesFromROI, sampleExtraction, rasterMaskFromVector
+from ..raster_tools import extract_values, sample_extraction, image_mask_from_vector
 
-from ..internal_tools import progressBar
+from ..internal_tools import ProgressBar
 
 
-def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
+def get_distance_matrix(inRaster, inVector, inLevel=False, verbose=False):
     """
     Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
 
@@ -44,7 +44,7 @@ def getDistanceMatrix(inRaster, inVector, inLevel=False, verbose=False):
     else:
         onlyCoords = True
 
-    coords = getSamplesFromROI(
+    coords = extract_values(
         inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords, verbose=verbose)
     from scipy.spatial import distance
     if inLevel:
@@ -120,7 +120,7 @@ def getDriverAccordingToFileName(fileName):
         return driverName
 
 
-def readValuesFromVector(vector, *args, **kwargs):
+def read_values(vector, *args, **kwargs):
     """
     Read values from vector. Will list all fields beginning with the roiprefix 'band-' for example.
 
@@ -141,15 +141,15 @@ def readValuesFromVector(vector, *args, **kwargs):
 
     See also
     ---------
-    museotoolbox.raster_tools.getSamplesFromROI : extract raster values from vector file.
+    museotoolbox.raster_tools.extract_values: extract raster values from vector file.
 
     Examples
     ---------
-    >>> from museotoolbox.datasets import getHistoricalMap
-    >>> _,vector=getHistoricalMap()
-    >>> Y = readValuesFromVector(vector,'Class')
+    >>> from museotoolbox.datasets import load_historical_data
+    >>> _,vector=load_historical_data()
+    >>> Y = read_values(vector,'Class')
     array([1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 4, 5, 4, 5, 3, 3, 3], dtype=int32)
-    >>> Y,fid = readValuesFromVector(vector,'Class','uniquefid')
+    >>> Y,fid = read_values(vector,'Class','uniquefid')
     (array([1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 4, 5, 4, 5, 3, 3, 3], dtype=int32),
      array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17], dtype=int32))
     """
@@ -169,9 +169,9 @@ def readValuesFromVector(vector, *args, **kwargs):
     getFeatures = False
     if kwargs:
         # check if need to extract bands from vector
-        if 'bandPrefix' in kwargs.keys():
+        if 'band_prefix' in kwargs.keys():
             extractBands = True
-            bandPrefix = kwargs['bandPrefix']
+            band_prefix = kwargs['band_prefix']
         # check if need to extract features from vector
         if 'getFeatures' in kwargs.keys():
             getFeatures = kwargs['getFeatures']
@@ -190,23 +190,23 @@ def readValuesFromVector(vector, *args, **kwargs):
         if fdefn.name is not listFields:
             listFields.append(fdefn.name)
         if extractBands:
-            if fdefn.name.startswith(bandPrefix):
+            if fdefn.name.startswith(band_prefix):
                 bandsFields.append(fdefn.name)
 
     if len(kwargs) == 0 and len(args) == 0:
-        print('These fields are available : {}'.format(listFields))
+        raise ValueError('These fields are available : {}'.format(listFields))
     else:
 
         if extractBands and len(bandsFields) == 0:
             raise ValueError(
                 'Band prefix field "{}" do not exists. These fields are available : {}'.format(
-                    bandPrefix, listFields))
+                    band_prefix, listFields))
 
         # Initialize empty arrays
         if len(args) > 0:  # for single fields
             ROIlevels = [np.zeros(lyr.GetFeatureCount()) for i in args]
 
-        if extractBands:  # for bandPrefix
+        if extractBands:  # for band_prefix
             ROIvalues = np.zeros(
                 [lyr.GetFeatureCount(), len(bandsFields)], dtype=np.int32)
 
@@ -256,7 +256,7 @@ def readValuesFromVector(vector, *args, **kwargs):
         return fieldsToReturn
 
 
-def addUniqueIDForVector(inVector, uniqueField='uniquefid', verbose=True):
+def add_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
     """
     Add a field in the vector with an unique value
     for each of the feature.
@@ -277,7 +277,7 @@ def addUniqueIDForVector(inVector, uniqueField='uniquefid', verbose=True):
     >>> addUniqueIDForVector('myDB.gpkg',uniqueField='polygonid')
     Adding polygonid [########################################]100%
     """
-    pB = progressBar(100, message='Adding ' + uniqueField)
+    pB = ProgressBar(100, message='Adding ' + uniqueField)
 
     inDriverName = getDriverAccordingToFileName(inVector)
     inDriver = ogr.GetDriverByName(inDriverName)

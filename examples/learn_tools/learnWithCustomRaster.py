@@ -12,9 +12,8 @@ learning process to avoi generate a new raster.
 # Import librairies
 # -------------------------------------------
 
-import numpy as np
-from museotoolbox.learn_tools import learnAndPredict
-from museotoolbox.raster_tools import getSamplesFromROI
+from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
@@ -23,7 +22,7 @@ from sklearn import metrics
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 
 ##############################################################################
@@ -41,7 +40,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = learnAndPredict(n_jobs=1,verbose=1)
+LAP = LearnAndPredict(n_jobs=1,verbose=1)
 
 ##############################################################################
 # Create or use custom function
@@ -55,7 +54,7 @@ def reduceBands(X,bandToKeep=[0,2]):
 LAP.customizeX(reduceBands)
 
 # if you learn from vector, refit according to the f1_mean
-X,y = getSamplesFromROI(raster,vector,field)
+X,y = extract_values(raster,vector,field)
 LAP.learnFromVector(X,y,cv=2,classifier=classifier,param_grid=dict(n_estimators=[10]),
                     scoring=scoring,refit='f1_mean')
 

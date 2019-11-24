@@ -24,7 +24,7 @@ import itertools
 np.seterr(divide='ignore', invalid='ignore')
 
 
-class plotConfusionMatrix:
+class PlotConfusionMatrix:
     """
     Plot a confusion matrix with imshow of pyplot.
     Customize color (e.g. diagonal color), add subplots with F1 or Producer/User accuracy.
@@ -32,8 +32,8 @@ class plotConfusionMatrix:
     Examples
     --------
     >>> plot = mtb.charts.plotConfusionMatrix([[5,6],[1,8]])
-    >>> plot.addText()
-    >>> plot.addF1()
+    >>> plot.add_text()
+    >>> plot.add_f1()
     """
 
     def __init__(self, cm, cmap=plt.cm.Greens,
@@ -80,7 +80,7 @@ class plotConfusionMatrix:
         self.subplot = False
         self.axes.append(self.ax)
 
-    def addText(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
+    def add_text(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
         Add value of each case on the matrix image.
 
@@ -94,7 +94,7 @@ class plotConfusionMatrix:
 
         Examples
         --------
-        >>> plot.addText(alpha_zero=0.5)
+        >>> plot.add_text(alpha_zero=0.5)
         """
         self.font_size = font_size
         if thresold is False:
@@ -112,7 +112,7 @@ class plotConfusionMatrix:
                              horizontalalignment="center",
                              color="white" if self.cm2[i, j] > thresold else "black", va='center', fontsize=font_size, )
 
-    def addXlabels(self, labels=None, rotation=90, position='top'):
+    def add_x_labels(self, labels=None, rotation=90, position='top'):
         """
         Add labels for X.
 
@@ -127,7 +127,7 @@ class plotConfusionMatrix:
 
         Examples
         --------
-        >>> plot.addText(labels=['Tofu','Houmous'],alpha_zero=0.5,rotation=45)
+        >>> plot.add_text(labels=['Tofu','Houmous'],alpha_zero=0.5,rotation=45)
         """
         self.xrotation = rotation
         self.xlabels = labels
@@ -152,8 +152,8 @@ class plotConfusionMatrix:
             ha=ha,
             fontsize=self.font_size)
 
-    def addMean(self, xLabel='', yLabel='', hide_ticks=False,
-                thresold=50, vmin=0, vmax=100):
+    def add_mean(self, xLabel='', yLabel='', hide_ticks=False,
+                 thresold=50, vmin=0, vmax=100):
         """
         Add Mean for both axis.
 
@@ -171,7 +171,7 @@ class plotConfusionMatrix:
 
         Examples
         --------
-        >>> plot.addMean(xLabel='all species',yLabel='all years')
+        >>> plot.add_mean(xLabel='all species',yLabel='all years')
         """
         if self.subplot is not False:
             raise Warning(
@@ -253,7 +253,7 @@ class plotConfusionMatrix:
             fontsize=self.font_size)
         self.axes.append([self.ax1v, self.ax1h])
 
-    def addYlabels(self, labels=None, rotation=0):
+    def add_y_labels(self, labels=None, rotation=0):
         """
         Add labels for Y.
 
@@ -266,7 +266,7 @@ class plotConfusionMatrix:
 
         Examples
         --------
-        >>> plot.addYlabels(labels=['Fried','Raw'])
+        >>> plot.add_y_labels(labels=['Fried','Raw'])
         """
         self.yrotation = rotation
         self.ylabels = labels
@@ -276,13 +276,13 @@ class plotConfusionMatrix:
             horizontalalignment='right',
             fontsize=self.font_size)
 
-    def addF1(self):
+    def add_f1(self):
         """
         Add F1 subplot.
 
         Examples
         --------
-        >>> plot.addF1()
+        >>> plot.add_f1()
         """
         if self.subplot is not False:
             raise Warning(
@@ -344,7 +344,7 @@ class plotConfusionMatrix:
                 va='center')
         self.axes.append(self.ax1v)
 
-    def addAccuracy(self, thresold=50):
+    def add_accuracy(self, thresold=50):
         """
         Add user and producer accuracy.
 
@@ -355,7 +355,7 @@ class plotConfusionMatrix:
 
         Examples
         --------
-        >>> plot.addAccuracy()
+        >>> plot.add_accuracy()
         """
         if self.subplot is not False:
             raise Warning(
@@ -423,7 +423,7 @@ class plotConfusionMatrix:
             ha=ha)
         self.axes.append([self.ax1v, self.ax1h])
 
-    def colorDiag(self, diagColor=plt.cm.Greens, matrixColor=plt.cm.Reds):
+    def color_diagonal(self, diagColor=plt.cm.Greens, matrixColor=plt.cm.Reds):
         """
         Add user and producer accuracy.
 
@@ -477,7 +477,7 @@ class plotConfusionMatrix:
 
         plt.show(self.fig)
 
-    def saveTo(self, path, dpi=150):
+    def save_to(self, path, dpi=150):
         """
         Save the plot
 
@@ -493,18 +493,18 @@ class plotConfusionMatrix:
         """
         self.fig.savefig(path, dpi=dpi, bbox_inches='tight')
 
-    def setWhiteBorders(self):
-        def __removeLines(ax):
-            ax.tick_params(which="minor", bottom=False, top=False, left=False)
-
-            for edge, spine in ax.spines.items():
-                spine.set_visible(False)
-
-            ax.grid(which="minor", color="w", linestyle='-', linewidth=2)
-
-            ax.set_xticks(
-                np.arange(len(ax.get_xticks()) + 1) - .49, minor=True)
-            ax.set_yticks(np.arange(len(ax.get_yticks()) + 1) - .5, minor=True)
-
-        for ax in self.axes:
-            __removeLines(ax)
+#    def set_white_borders(self):
+#        def __removeLines(ax):
+#            ax.tick_params(which="minor", bottom=False, top=False, left=False)
+#
+#            for edge, spine in ax.spines.items():
+#                spine.set_visible(False)
+#
+#            ax.grid(which="minor", color="w", linestyle='-', linewidth=2)
+#
+#            ax.set_xticks(
+#                np.arange(len(ax.get_xticks()) + 1) - .49, minor=True)
+#            ax.set_yticks(np.arange(len(ax.get_yticks()) + 1) - .5, minor=True)
+#
+#        for ax in self.axes:
+#            __removeLines(ax)

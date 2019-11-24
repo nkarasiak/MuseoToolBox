@@ -10,7 +10,7 @@ Test notebook to validate code.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.raster_tools import rasterMath,rasterMaskFromVector
+from museotoolbox.raster_tools import RasterMath,image_mask_from_vector
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 import numpy as np
@@ -19,7 +19,7 @@ import numpy as np
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap()
+raster,vector = datasets.load_historical_data()
 
 ##############################################################################
 # Initialize rasterMath with raster
@@ -28,16 +28,16 @@ raster,vector = datasets.historicalMap()
 # Set return_3d to True to have full block size (not one pixel per row)
 # Create raster mask to only keep pixel inside polygons.
 
-rasterMaskFromVector(vector,raster,'/tmp/mask.tif',invert=False)
+image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
 
 for return_3d in [True,False]:
-    rM = rasterMath(raster,inMaskRaster='/tmp/mask.tif',return_3d=return_3d)
+    rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=return_3d)
     
-    rM.customBlockSize(128,128) # block of 200x200pixels
+    rM.custom_block_size(128,128) # block of 200x200pixels
     
-    print(rM.getRandomBlock().shape)
+    print(rM.get_random_block().shape)
     
-    x = rM.getRandomBlock()
+    x = rM.get_random_block()
     
     # Returns with only 1 dimension
     returnFlatten = lambda x : x[...,0]
@@ -46,8 +46,8 @@ for return_3d in [True,False]:
     addOneBand = lambda x : np.repeat(x,3,axis=x.ndim-1)
     
     # Add functions to rasterMath
-    rM.addFunction(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
-    rM.addFunction(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
+    rM.add_function(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
+    rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
     
     rM.run()
     

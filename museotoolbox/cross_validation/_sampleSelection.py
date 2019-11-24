@@ -133,8 +133,7 @@ class _sampleSelection:
         return self.crossvalidation(
             X=X, y=y, groups=groups, verbose=self.verbose, **self.params)
 
-    def saveVectorFiles(self, vector, field, raster=None,
-                        groupsField=None, outVector=None):
+    def save_to_vector(self, vector, field, group=None, out_vector=None):
         """
         Save to vector files each fold from the cross-validation.
 
@@ -144,9 +143,10 @@ class _sampleSelection:
             Path where the vector is stored.
         field : str.
             Name of the field containing the label.
-        groupsField : str, or None.
+        group : str, or None.
             Name of the field containing the group/subgroup (or None
-        outVector : str.
+        out_vector : str.
+            
             Path and filename to save the different results.
 
         Returns
@@ -166,7 +166,7 @@ class _sampleSelection:
         If you want to save every ROI pixels in the vector, please use vector_tools.sampleExtraction before.""")
         del src, srcLyr
 
-        fileName, self.__ext = os.path.splitext(outVector)
+        fileName, self.__ext = os.path.splitext(out_vector)
 
         if self.__ext[1:] not in self.__extensions:
             print(
@@ -174,13 +174,13 @@ class _sampleSelection:
             self.__getSupportedExtensions()
             raise Exception('We recommend you to use sqlite/gpkg extension.')
 
-        if groupsField is None:
+        if group is None:
             groups = None
-            y, fts, srs = vector_tools.readValuesFromVector(
+            y, fts, srs = vector_tools.read_values(
                 vector, field, getFeatures=True, verbose=self.verbose)
         else:
-            y, groups, fts, srs = vector_tools.readValuesFromVector(
-                vector, field, groupsField, getFeatures=True, verbose=self.verbose)
+            y, groups, fts, srs = vector_tools.read_values(
+                vector, field, group, getFeatures=True, verbose=self.verbose)
 
         if self.__alreadyRead:
             self.reinitialize()
@@ -193,13 +193,13 @@ class _sampleSelection:
                 vlFeat = [fts[int(i)] for i in trvl[1]]
                 tr = fileName + '_train_' + str(idx) + self.__ext
                 vl = fileName + '_valid_' + str(idx) + self.__ext
-                self.__saveToShape__(trFeat, srs, tr)
-                self.__saveToShape__(vlFeat, srs, vl)
+                self.__save_to_vector(trFeat, srs, tr)
+                self.__save_to_vector(vlFeat, srs, vl)
                 listOutput.append([tr, vl])
         self.__alreadyRead = True
         return listOutput
 
-    def __saveToShape__(self, array, srs, outShapeFile):
+    def __save_to_vector(self, array, srs, outShapeFile):
         # Parse a delimited text file of volcano data and create a shapefile
         # use a dictionary reader so we can access by field name
         # set up the shapefile driver

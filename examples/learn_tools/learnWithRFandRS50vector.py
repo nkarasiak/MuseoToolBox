@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import learnAndPredict
+from museotoolbox.learn_tools import LearnAndPredict
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -21,7 +21,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y = datasets.historicalMap(return_X_y=True,low_res=True)
+X,y = datasets.load_historical_data(return_X_y=True,low_res=True)
 
 ##############################################################################
 # Create CV
@@ -39,7 +39,7 @@ classifier = RandomForestClassifier(random_state=12)
 # Start learning
 # ---------------------------
 
-LAP = learnAndPredict(n_jobs=1)
+LAP = LearnAndPredict(n_jobs=1)
 LAP.learnFromVector(X,y,cv=SKF,
                     classifier=classifier,param_grid=dict(n_estimators=[10]))
 
@@ -73,7 +73,7 @@ LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
 ##############################################################################
 # Predict map
 # ---------------------------
-raster,_ = datasets.historicalMap(low_res=True)
+raster,_ = datasets.load_historical_data(low_res=True)
 LAP.predictRaster(raster,'/tmp/classification.tif')
 
 ##########################

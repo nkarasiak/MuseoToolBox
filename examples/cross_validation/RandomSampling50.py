@@ -19,9 +19,9 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-y = vector_tools.readValuesFromVector(vector,field)
+y = vector_tools.read_values(vector,field)
 
 ##############################################################################
 # Create CV
@@ -47,7 +47,7 @@ for tr,vl in SKF.split(X=None,y=y):
 #    When learning/predicting, all pixels will be taken in account
 #    TO generate a full X and y labels, extract samples from ROI
 
-X,y=raster_tools.getSamplesFromROI(raster,vector,field)
+X,y=raster_tools.extract_values(raster,vector,field)
 
 for tr,vl in SKF.split(X,y):
     print(tr,vl)

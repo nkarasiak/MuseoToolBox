@@ -17,7 +17,7 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector,centroid = datasets.historicalMap(low_res=True,centroid=True)
+raster,vector,centroid = datasets.load_historical_data(low_res=True,centroid=True)
 
 field = 'Class'
 
@@ -25,8 +25,8 @@ field = 'Class'
 # Extract label ('Class' field) and groups ('uniquefid' field)
 # Compute distanceMatrix with centroid (one point per group)
 
-X,y,groups = raster_tools.getSamplesFromROI(raster,vector,field,'uniquefid')
-distanceMatrix,distanceLabel = vector_tools.getDistanceMatrix(raster,centroid,'uniquefid')
+X,y,groups = raster_tools.extract_values(raster,vector,field,'uniquefid')
+distanceMatrix,distanceLabel = vector_tools.get_distance_matrix(raster,centroid,'uniquefid')
 
 ##############################################################################
 # Create CV

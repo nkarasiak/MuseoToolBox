@@ -14,4 +14,3 @@
 # =============================================================================
 from . import learn_tools, vector_tools, raster_tools, cross_validation, datasets, stats  # , charts
 __version__ = "1.6.7"
-    

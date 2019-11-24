@@ -13,17 +13,17 @@ each fold as a vector file.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import LeaveOneSubGroupOut
-from museotoolbox.raster_tools import getSamplesFromROI
+from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 group = 'uniquefid'
-X,y,s = getSamplesFromROI(raster,vector,field,group)
+X,y,s = extract_values(raster,vector,field,group)
 ##############################################################################
 # Create CV
 # -------------------------------------------
@@ -43,7 +43,7 @@ for tr,vl in LOSGO.split(X,y,s):
 #  Save each train/valid fold to a vector file (here in polygon type)
 #
 
-vectorFiles = LOSGO.saveVectorFiles(vector,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
+vectorFiles = LOSGO.save_to_vector(vector,field,group=group,out_vector='/tmp/LOSGO.gpkg')
 
 for tr,vl in vectorFiles:
     print(tr,vl)
@@ -53,11 +53,11 @@ for tr,vl in vectorFiles:
 #  So you can generate each centroid of a pixel that contains the polygon.
 # 
     
-from museotoolbox.vector_tools import sampleExtraction
+from museotoolbox.vector_tools import sample_extraction
 vectorPointPerPixel = '/tmp/vectorCentroid.gpkg'
-sampleExtraction(raster,vector,vectorPointPerPixel)
+sample_extraction(raster,vector,vectorPointPerPixel)
 
-vectorFiles = LOSGO.saveVectorFiles(vectorPointPerPixel,field,groupsField=group,outVector='/tmp/LOSGO.gpkg')
+vectorFiles = LOSGO.save_to_vector(vectorPointPerPixel,field,group=group,out_vector='/tmp/LOSGO.gpkg')
 
 for tr,vl in LOSGO.split(X,y,s):
     print(tr.shape,vl.shape)

@@ -20,10 +20,10 @@ from museotoolbox import datasets,raster_tools,vector_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.historicalMap(low_res=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-X,y = raster_tools.getSamplesFromROI(raster,vector,field)
-distanceMatrix = vector_tools.getDistanceMatrix(raster,vector)
+X,y = raster_tools.extract_values(raster,vector,field)
+distanceMatrix = vector_tools.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV

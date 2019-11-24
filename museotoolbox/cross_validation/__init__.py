@@ -158,7 +158,6 @@ class SpatialLeaveAsideOut(_sampleSelection):
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        self.samplingType = 'Spatial'
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
@@ -206,7 +205,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        self.samplingType = 'Spatial'
+        
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
@@ -228,7 +227,7 @@ class SpatialLeaveOneOut(_sampleSelection):
     Parameters
     ----------
     distanceMatrix : array.
-        Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+        Array got from function museotoolbox.vector_tools.get_distance_matrix(inRaster,inVector)
     distanceThresold : int.
         In pixels.
     n_splits : default False.
@@ -254,7 +253,6 @@ class SpatialLeaveOneOut(_sampleSelection):
                  verbose=False,
                  **kwargs):
 
-        self.samplingType = 'Spatial'
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
@@ -305,7 +303,7 @@ class RandomStratifiedKFold(_sampleSelection):
                  n_repeats=False,
                  random_state=None,
                  verbose=False):
-        self.samplingType = 'random'
+        
         self.verbose = verbose
 
         valid_size = 1 / n_splits
