@@ -26,26 +26,26 @@ from ..internal_tools import ProgressBar, push_feedback
 from scipy.ndimage.filters import generic_filter  # to compute moran
 
 
-def image_mask_from_vector(in_vector, in_image, out_image, invert=False):
+def image_mask_from_vector(in_vector, in_image, out_image, invert=False,gdt = gdal.GDT_Byte):
     """
     Create a image mask where polygons/points are the pixels to keep.
 
     Parameters
     ----------
-    in_vector : str.
+    in_vector : string.
         Path of the vector file to rasterize.
-    in_image : str.
+    in_image : string.
         Path of the raster file where the vector file will be rasterize.
-    out_image : str.
+    out_image : string.
         Path of the file (.tif) to create.
-    invert : boolean.
-        Default False. USe invert=True make polygons/points with 0 values in out_image.
+    invert : boolean, optional (default=False).
+        invert=True make polygons/points with 0 values in out_image.
+    gdt : integer, optional (default=gdal.GDT_Byte).
+        The gdal datatype of the rasterized vector.
+    
     Returns
     -------
     None
-
-    Examples
-    --------
     """
     rasterize(
         in_image,
@@ -53,31 +53,32 @@ def image_mask_from_vector(in_vector, in_image, out_image, invert=False):
         None,
         out_image,
         invert=invert,
-        gdt=gdal.GDT_Byte)
+        gdt=gdt)
 
 
-def _get_dt_from_minmax_values(max_value, min_value=0):
+def get_gdt_from_minmax_values(max_value, min_value=0):
     """
     Return the Gdal DataType according the minimum or the maximum value.
 
     Parameters
     ----------
-    maxValue : int/float.
+    max_value : integer or float.
         The maximum value needed.
-    minValue : int/float, default 0.
+    min_value : integer or float, optional (default=0).
         The minimum value needed.
 
     Returns
     -------
     gdalDT : integer.
+        gdal datatype.
 
     Examples
     ---------
-    >>> _getGdalDTFromMinMaxValues(260)
+    >>> get_gdt_from_minmax_values(260)
     2
-    >>> _getGdalDTFromMinMaxValues(16)
+    >>> get_gdt_from_minmax_values(16)
     1
-    >>> _getGdalDTFromMinMaxValues(16,-260)
+    >>> get_gdt_from_minmax_values(16,-260)
     3
     """
     max_abs_value = np.amax(np.abs([max_value, min_value]))
@@ -113,14 +114,15 @@ def convert_dt(dt):
 
     Parameters
     -----------
-        gdalDT : int
-            gdal datatype from src_dataset.GetRasterBand(1).DataType.
-        numpyDT : str
-            str from array.dtype.name.
-
+    dt : integer or string
+        gdal datatype from src_dataset.GetRasterBand(1).DataType.
+        numpy datatype from np.array([]).dtype.name
+    
     Returns
     --------
-        dt : the data type (int for Gdal or type for numpy)
+        dt : integer or data type
+            - For gdal, the data type (integer).
+            - For numpy, the date type (type).
 
     Examples
     ---------
@@ -175,13 +177,13 @@ def convert_gdal_to_otb_dt(dt):
 
     Parameters
     ----------
-    gdalDT : int
-        gdal Datatype (integer value)
+    dt : integer
+        gdal datatype from src_dataset.GetRasterBand(1).DataType.
 
     Returns
     ----------
-    str format of OTB datatype
-        availableCode = uint8/uint16/int16/uint32/int32/float/double
+    otb_dt : string.
+        The otb data type.
 
     Examples
     ---------
@@ -209,11 +211,11 @@ def convert_gdal_to_otb_dt(dt):
         'cfloat',
         'cdouble']
     if dt > len(code):
-        otbDT = ('cdouble')
+        otb_dt = ('cdouble')
     else:
-        otbDT = code[dt]
+        otb_dt = code[dt]
 
-    return otbDT
+    return otb_dt
 
 
 def extract_values(in_image, in_vector, *fields, **kwargs):
@@ -224,21 +226,20 @@ def extract_values(in_image, in_vector, *fields, **kwargs):
 
     Parameters
     -----------
-    in_image : str.
+    in_image : string.
         the name or path of the raster file, could be any file that GDAL can open.
-    in_vector : str
+    in_vector : string.
         A filename or path corresponding to a vector file.
         It could be any file that GDAL/OGR can open.
-    *fields : str.
+    *fields : string.
         Each field to extract label/value from.
     **kwargs:
-        These args are accepted:
-            getCoords : bool.
-                If getCoords, will return coords for each point.
-            onlyCoords : bool.
-                If true, with only return coords.
-            verbose : bool, or int.
-                If true or >1, will print progression.
+        getCoords : boolean.
+            If getCoords, will return pixel position in the image for each point.
+        onlyCoords : boolean.
+            If true, with only return pixel position for each point.
+        verbose : boolean, or integer.
+            If true or >1, will print progression.
 
     Returns
     --------
@@ -479,25 +480,25 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
 
     Parameters
     -----------
-    in_image : str
+    in_image : string.
         A filename or path corresponding to a raster image.
-    in_vector : str
+    in_vector : string.
         A filename or path corresponding to a vector file.
-    in_field : str, optional (default=False)
+    in_field : string, optional (default=False).
         Name of the filed to rasteirze.
         If False, will rasterize the polygons or points with >0 value, and set the other values to 0.
-    out_image : str, optional (default = 'MEM')
+    out_image : string, optional (default = 'MEM').
         A filename or path corresponding to a geotiff (.tif) raster image to save.
         'MEM' will store raster in memory.
-    gdt : int, optional (default gdal.GDT_Int16)
-        gdal GDT datatype (default gdal.GDT_Int16 = 3)
+    gdt : integer, optional (default=gdal.GDT_Int16)
+        gdal datatype.
     invert : boolean, optional (default=False).
-        if invert, polygons will have 0 values in the out_image.
+        if invert is True, polygons will have 0 values in the out_image.
         
     Returns
     --------
      dst_ds : gdal object
-         The open data with gdal (essential if out_image is set to 'MEM')
+         The open dataset with gdal (essential if out_image is set to 'MEM')
     """
 
     data_src = gdal.Open(in_image)
@@ -550,27 +551,31 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
 
 class RasterMath:
     """
-    Read one or multiple rasters per block, and perform one or many functions to one or many raster outputs.
-    If you want a sample of your data, just call get_random_block().
+    Read one or multiple rasters per block, and perform one or many functions to one or many geotiff raster outputs.
+    If you want a sample of your data, just call :func:`~museotoolbox.raster_tools.RasterMath.get_random_block`.
 
     The default option of rasterMath will return in 2d the dataset :
         - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
-
+        
     If you want to have the data in 3d (X,Y,Z), masked data will be given too (using numpy.ma).
 
     Parameters
     ----------
-    in_image : str
+    in_image : string
         Path of a gdal extension supported raster.
-    in_image_mask : str or False.
-        If str, path of the raster mask. Value masked are 0, other are considered not masked.
-        Use `invert=True` in :mod:`museotoolbox.raster_tools.rasterMaskFromVector` to mask only what is not in polygons.
-    return_3d : boolean, default False.
+    in_image_mask : string or False, optional (default=False)
+        If string, path of the raster mask. Value masked are 0, other are considered not masked.
+        Use ``invert=True`` in :mod:`museotoolbox.raster_tools.image_mask_from_vector` to mask only what is not in polygons.
+    return_3d : boolean, optional (default=False)
         Default will return a row per pixel (2 dimensions), and axis 2 (bands) are columns.
-        If return_3d is True, will return the block without reshape (not suitable to learn with `sklearn`).
-    message : str.
+        If ``return_3d=True``, will return the block without reshape (not suitable to learn with `sklearn`).
+    block_size : list or False, optional (default=[256,256])
+        Define the reading and writing block size. First element is the number of columns, second element the number of lines per block.
+        If False, will use the block size as defined in in_image.
+        To define later the block_size, use `custom_block_size`.
+    message : string, optional (default='rasterMath...')
         If str, the message will be displayed before the progress bar.
-    verbose : bool or integer.
+    verbose : boolean or integer, optional (default=True)
         The higher is the integer verbose, the more it will returns informations.
 
     Examples
@@ -587,7 +592,7 @@ class RasterMath:
     Saved /tmp/test.tif using function mean
     """
 
-    def __init__(self, in_image, in_image_mask=False, return_3d=False,
+    def __init__(self, in_image, in_image_mask=False, return_3d=False, block_size=[256,256], 
                  message='rasterMath...', verbose=True):
 
         self.verbose = verbose
@@ -599,39 +604,38 @@ class RasterMath:
 
         self.add_image(in_image)
 
-        self.nb = self.opened_images[0].RasterCount
-        self.nc = self.opened_images[0].RasterXSize
-        self.nl = self.opened_images[0].RasterYSize
+        self.n_bands = self.opened_images[0].RasterCount
+        self.n_columns = self.opened_images[0].RasterXSize
+        self.n_lines = self.opened_images[0].RasterYSize
 
         # Get the geoinformation
-        self.GeoTransform = self.opened_images[0].GetGeoTransform()
-        self.Projection = self.opened_images[0].GetProjection()
+        self.geo_transform = self.opened_images[0].GetGeoTransform()
+        self.projection = self.opened_images[0].GetProjection()
 
         # Get block size
         band = self.opened_images[0].GetRasterBand(1)
         self.input_block_sizes = band.GetBlockSize()
-        # input block size, old method
-        # self.x_block_size = self.block_sizes[0]
-        # self.y_block_size = self.block_sizes[1]
-
-        # now define by default block_size of 256x256
-        self.x_block_size = 256
-        self.y_block_size = 256
-        self.block_sizes = [self.x_block_size, self.y_block_size]
-
+        
+        # input block size
+        if block_size is False:
+            self.x_block_size = self.block_sizes[0]
+            self.y_block_size = self.block_sizes[1]
+        else:
+            self.x_block_size = block_size[0]
+            self.y_block_size = block_size[1]
+        self.block_sizes = [self.x_block_size,self.y_block_size]
+        self.custom_block_size() # set block size
+        
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
         self.ndtype = convert_dt(band.DataType)
         self.return_3d = return_3d
 
-        self.custom_block_size()  # get
+        del band # for memory purposes
 
-        del band
-
-        # Load inMask if given
+        # Load in_image_mask if given
         self.mask = in_image_mask
         if self.mask:
-            self.maskNoData = 0
             self.opened_mask = gdal.Open(in_image_mask)
             if self.opened_mask is None:
                 raise ReferenceError(
@@ -646,7 +650,7 @@ class RasterMath:
         self.options = []  # options is raster parameters
 
         # Initalize the run
-        self.__position = 0
+        self._position = 0
 
     def add_image(
             self,
@@ -656,7 +660,7 @@ class RasterMath:
 
         Parameters
         -----------
-        in_image : str
+        in_image : string.
             Path of a gdal extension supported raster.
         """
 
@@ -690,20 +694,28 @@ class RasterMath:
 
         Parameters
         ----------
-        function : def.
-            Function to parse with one arguments used to
-        out_image : str.
-            Path of the raster to save the result.
-        out_np_dt : int, default False.
-            If False, will use the datatype of the function result.
-        out_nodata : int, default True.
-            If True or if False (but if nodata is present in the init raster),
+        function : function.
+            Function to parse where the first argument is a numpy array similar to what :mod:`museotoolbox.raster_tools.RasterMath.get_random_block()` returns.
+        out_image : string.
+            A path to a geotiff extension filename corresponding to a raster image to create.
+        out_n_bands : integer or False, optional (default=False).
+            If False, will run the given function to find the number of bands to define in the out_image.
+        out_np_dt : integer or False, optional (default=False).
+            If False, will run the given function to get the datatype.
+        out_nodata : integer, float or False, optional (default=False).
+            If True or if False (if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compress: boolean, str ('high'),  default True.
+        compress: boolean or string, optional (default=True).
             If True, will use PACKBITS.
             If 'high', will use DEFLATE with ZLEVEL = 9 and PREDICTOR=2.
-        **kwargs
+        **kwargs :
+            kwargs are keyword arguments you need for the given function.
 
+        See also
+        ----------
+        museotoolbox.raster_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block 
+        museotoolbox.raster_tools.convert_dt : To see conversion between numpy datatype to gdal datatype.
+        museotoolbox.raster_tools.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
         """
         if len(kwargs) > 0:
             randomBlock = function(self.get_random_block(), **kwargs)
@@ -732,9 +744,9 @@ class RasterMath:
                     out_n_bands, need_s, function.__name__))
 
         if self.options == []:
-            self.__initRasterParameters(compress=compress)
+            self._init_raster_parameters(compress=compress)
 
-        self.__add_output__(out_image, out_n_bands, out_np_dt)
+        self._add_output(out_image, out_n_bands, out_np_dt)
         self.functions.append(function)
         if len(kwargs) == 0:
             kwargs = False
@@ -758,7 +770,7 @@ class RasterMath:
 
         self.outputNoData.append(out_nodata)
 
-    def __initRasterParameters(self, compress=True):
+    def _init_raster_parameters(self, compress=True):
 
         self.options = ['TILED=YES']
         if compress is True or compress == 'high':
@@ -786,7 +798,8 @@ class RasterMath:
 
         Returns
         --------
-        List of parameters
+        options : list.
+            List of parameters for creating the geotiff raster.
 
         References
         -----------
@@ -794,29 +807,33 @@ class RasterMath:
         https://gdal.org/drivers/raster/gtiff.html
         """
         if self.options == []:
-            self.__initRasterParameters()
+            self._init_raster_parameters()
         return self.options
 
-    def customRasterParameters(self, parameters_list):
+    def custom_raster_parameters(self, parameters_list):
         """
         Parameters to custom raster creation.
 
-        Do not enter here blockXsize and blockYsize parameters as it is directly managed by :mod:`customBlockSize` function.
+        Do not enter here blockXsize and blockYsize parameters as it is directly managed by :mod:`custom_block_size` function.
 
         Parameters
         -----------
         parameters_list : list.
-            - example : ['BIGTIFF='IF_NEEDED','COMPRESS=DEFLATE']
+            - example : ['BIGTIFF=IF_NEEDED','COMPRESS=DEFLATE']
             - example : ['COMPRESS=JPEG','JPEG_QUALITY=80']
 
         References
         -----------
         As MuseoToolBox only saves in geotiff, parameters of gdal drivers for GeoTiff are here :
         https://gdal.org/drivers/raster/gtiff.html
+        
+        See also
+        ---------
+        museotoolbox.raster_tools.RasterMath.custom_block_size : To custom the reading and writing block size.
         """
         self.options = parameters_list
 
-    def __managedRasterOptions(self):
+    def _managed_raster_options(self):
         # remove blockysize or blockxsize if already in options
         self.options = [val for val in self.options if not val.upper().startswith(
             'BLOCKYSIZE') and not val.upper().startswith('BLOCKXSIZE') and not val.upper().startswith('TILED')]
@@ -825,45 +842,45 @@ class RasterMath:
         if self.y_block_size == self.x_block_size:
             self.options.extend(['TILED=YES'])
 
-    def __add_output__(self, out_image, out_n_bands, out_np_dt):
+    def _add_output(self, out_image, out_n_bands, out_np_dt):
         if not os.path.exists(os.path.dirname(out_image)):
             os.makedirs(os.path.dirname(out_image))
 
-        self.__managedRasterOptions()
+        self._managed_raster_options()
 
         dst_ds = self.driver.Create(
             out_image,
-            self.nc,
-            self.nl,
+            self.n_columns,
+            self.n_lines,
             out_n_bands,
             out_np_dt,
             options=self.options
         )
-        dst_ds.SetGeoTransform(self.GeoTransform)
-        dst_ds.SetProjection(self.Projection)
+        dst_ds.SetGeoTransform(self.geo_transform)
+        dst_ds.SetProjection(self.projection)
 
         self.outputs.append(dst_ds)
 
-    def __iterBlock__(self, getBlock=False,
+    def _iter_block(self, getBlock=False,
                       y_block_size=False, x_block_size=False):
         if not y_block_size:
             y_block_size = self.y_block_size
         if not x_block_size:
             x_block_size = self.x_block_size
 
-        for row in range(0, self.nl, y_block_size):
-            for col in range(0, self.nc, x_block_size):
-                width = min(self.nc - col, x_block_size)
-                height = min(self.nl - row, y_block_size)
+        for row in range(0, self.n_lines, y_block_size):
+            for col in range(0, self.n_columns, x_block_size):
+                width = min(self.n_columns - col, x_block_size)
+                height = min(self.n_lines - row, y_block_size)
 
                 if getBlock:
-                    X = self.generateBlockArray(
+                    X = self._generate_block_array(
                         col, row, width, height, self.mask)
                     yield X, col, row, width, height
                 else:
                     yield col, row, width, height
 
-    def generateBlockArray(self, col, row, width, height, mask=False):
+    def _generate_block_array(self, col, row, width, height, mask=False):
         """
         Return block according to position and width/height of the raster.
 
@@ -948,39 +965,45 @@ class RasterMath:
 
         return outArr
 
-    def get_random_block(self, seed=None):
+    def get_random_block(self, random_state=None):
         """
-        Get Random Block from the raster.
+        Get a random block from the raster.
+        
+        Parameters
+        ------------
+        random_state : integer, optional (default=None)
+            If int, random_state is the seed used by the random number generator.
+            If None, the random number generator is the RandomState instance used by numpy np.random.
         """
         mask = np.array([True])
 
         while np.all(mask == True):
             # TODO, stop and warn if no block has valid data (infinite loop...)
-            np.random.seed(seed)
+            np.random.seed(random_state)
             cols = int(
                 np.random.permutation(
                     range(
                         0,
-                        self.nl,
+                        self.n_lines,
                         self.y_block_size))[0])
-            np.random.seed(seed)
+            np.random.seed(random_state)
             lines = int(
                 np.random.permutation(
                     range(
                         0,
-                        self.nc,
+                        self.n_columns,
                         self.x_block_size))[0])
-            width = min(self.nc - lines, self.x_block_size)
-            height = min(self.nl - cols, self.y_block_size)
+            width = min(self.n_columns - lines, self.x_block_size)
+            height = min(self.n_lines - cols, self.y_block_size)
 
-            tmp = self.generateBlockArray(
+            tmp = self._generate_block_array(
                 lines, cols, width, height, self.mask)
             if len(self.opened_images) > 1:
                 mask = tmp[0].mask
             else:
                 mask = tmp.mask
             if self.return_3d is False:
-                tmp = self._manageMaskFor2D(tmp)
+                tmp = self._manage_2d_mask(tmp)
         return tmp
 
     def reshape_ndim(self, x):
@@ -1029,7 +1052,7 @@ class RasterMath:
         """
         Yield each block.
         """
-        for X, col, line, cols, lines in self.__iterBlock__(
+        for X, col, line, cols, lines in self._iter_block(
                 getBlock=True, y_block_size=y_block_size, x_block_size=x_block_size):
             if isinstance(X, list):
                 mask = X[0].mask
@@ -1038,7 +1061,7 @@ class RasterMath:
             if not np.all(mask == 1):
                 yield X
 
-    def _returnUnmaskedX(self, X):
+    def _return_unmasked_X(self, X):
         if isinstance(X.mask, np.bool_):
             if X.mask == False:
                 X = X.data
@@ -1050,11 +1073,11 @@ class RasterMath:
             X = X[~mask, :].data
         return X
 
-    def _manageMaskFor2D(self, X):
+    def _manage_2d_mask(self, X):
         if len(self.opened_images) > 1:
-            X = [self._returnUnmaskedX(x) for x in X]
+            X = [self._return_unmasked_X(x) for x in X]
         else:
-            X = self._returnUnmaskedX(X)
+            X = self._return_unmasked_X(X)
 
         return X
 
@@ -1076,25 +1099,27 @@ class RasterMath:
 
         if y_block_size:
             if y_block_size == -1:
-                self.y_block_size = self.nl
+                self.y_block_size = self.n_lines
             elif isinstance(y_block_size, float):
-                self.y_block_size = int(np.ceil(self.nl * y_block_size))
+                self.y_block_size = int(np.ceil(self.n_lines * y_block_size))
             else:
                 self.y_block_size = y_block_size
         else:
             self.y_block_size = self.block_sizes[1]
         if x_block_size:
             if x_block_size == -1:
-                self.x_block_size = self.nc
+                self.x_block_size = self.n_columns
             elif isinstance(x_block_size, float):
-                self.x_block_size = int(np.ceil(self.nc * x_block_size))
+                self.x_block_size = int(np.ceil(self.n_columns * x_block_size))
             else:
                 self.x_block_size = x_block_size
         else:
             self.x_block_size = self.block_sizes[0]
 
-        self.n_block = np.ceil(self.nl / self.y_block_size).astype(int) * np.ceil(self.nc /
+        self.n_block = np.ceil(self.n_lines / self.y_block_size).astype(int) * np.ceil(self.n_columns /
                                                                                   self.x_block_size).astype(int)
+        self.block_sizes = [self.x_block_size,self.y_block_size]
+        
         if self.verbose:
             push_feedback('Total number of blocks : %s' % self.n_block)
 
@@ -1110,7 +1135,7 @@ class RasterMath:
         # TODO : Parallel
         self.pb = ProgressBar(self.n_block, message=self.message)
 
-        for X, col, line, cols, lines in self.__iterBlock__(
+        for X, col, line, cols, lines in self._iter_block(
                 getBlock=True):
 
             if isinstance(X, list):
@@ -1120,7 +1145,7 @@ class RasterMath:
                 X_ = np.ma.copy(X)
 
             if self.verbose:
-                self.pb.add_position(self.__position)
+                self.pb.add_position(self._position)
 
             for idx, fun in enumerate(self.functions):
                 maxBands = self.outputs[idx].RasterCount
@@ -1198,7 +1223,7 @@ class RasterMath:
                     curBand.WriteArray(resToWrite, col, line)
                     curBand.FlushCache()
 
-            self.__position += 1
+            self._position += 1
 
         self.pb.add_position(self.n_block)
 
@@ -1225,21 +1250,22 @@ class Moran:
 
         Parameters
         ----------
-        in_image        :   str
-                            Path.
-        in_image_mask   :   str
+        in_image : string.
+            A filename or path of a raster file.
+            It could be any file that GDAL can open.
+        in_image_mask   :   string.
                             Path to mask raster, default False.
-        transform       :   str
-                            default is row-standardized 'r'.
-                            orther option is 'b' for binary.
-        lag             :   int
-                            Default 1
-        weights         :   False or array.
-                            Weights (same shape as the square size).
-        intermediate_lag :  boolean, default True.
-                            Use all pixel values inside the specified lag.
-                            If `intermediate_lag` is set to False, only the 
-                            pixels at the specified range will be kept for computing the statistics.
+        transform       :   string, optional (default='r')
+            default optional is row-standardized (transform='r').
+            for binary transfrom (transform='b').
+        lag : integer, optional (default=1)
+            The distance from the cell.
+        weights :False or array-like, optional (default=False).
+            Weights with the same shape as the square size.
+        intermediate_lag :  boolean, optional (default=True).
+            Use all pixel values inside the specified lag.
+            If `intermediate_lag` is set to False, only the 
+            pixels at the specified range will be kept for computing the statistics.
         """
 
         self.scores = dict(I=[], band=[], EI=[])
@@ -1291,7 +1317,7 @@ class Moran:
 
                 num = generic_filter(
                     arr,
-                    self.__computeViewForGlobanMoran,
+                    self._compute_view_for_global_moran,
                     footprint=footprint,
                     mode='constant',
                     cval=np.nan,
@@ -1318,8 +1344,24 @@ class Moran:
                 self.scores['EI'].append(self.EI)
 
     def get_n_neighbors(self, array, footprint, weights):
-
-        b = np.reshape(array, (footprint.shape[0], footprint.shape[1]))
+        """
+        Get number of neighbors according to your array and to a footprint.
+        
+        Parameters
+        -----------
+        array : array-like, shape = [X,Y]
+            The input array.
+        footprint : array-like, shape = [X,Y]
+            The footprint array.
+        weights : array-like, shape = [X,Y]
+            The weight for each cell.
+        
+        Returns
+        ---------
+        w : integer
+            The number of neighbors.         
+        """
+        b = np.reshape(array, (footprint.shape[0], footprint.shape[1])).astype(np.float64)
         xCenter = int((footprint.shape[0] - 1) / 2)
         yCenter = int((footprint.shape[1] - 1) / 2)
         b[xCenter, yCenter] = np.nan
@@ -1332,7 +1374,7 @@ class Moran:
             w = np.nansum(weightsNAN)
         return w
 
-    def __computeViewForGlobanMoran(
+    def _compute_view_for_global_moran(
             self, a, x_, footprint, weights, transform='r'):
         xSize, ySize = footprint.shape
         a = np.reshape(a, (xSize, ySize))
@@ -1386,7 +1428,7 @@ def sample_extraction(
     band_prefix : str, default None.
         If band_prefix (e.g. 'band'), will extract values from raster.
     """
-    def __pixel_location_from_centroid(coords, geoTransform):
+    def _pixel_location_from_centroid(coords, geo_transform):
         """
         Convert XY coords into the centroid of a pixel
 
@@ -1394,13 +1436,13 @@ def sample_extraction(
         --------
         coords : arr or list.
             X is coords[0], Y is coords[1].
-        geoTransform : list.
+        geo_transform : list.
             List got from gdal.Open(inRaster).GetGeoTransform() .
         """
-        newX = geoTransform[1] * (coords[0] + 0.5) + \
-            geoTransform[0]  # (coords[0]+0.5)*geoTransform[1]+geoTransform[0]# (coords[0]+0.5)*geoTransform[1]+geoTransform[0]
-        # (coords[1]+0.5)*geoTransform[5]+geoTransform[3] # (coords[1]+0.5)*geoTransform[5]+geoTransform[3]
-        newY = geoTransform[5] * (coords[1] + 0.5) + geoTransform[3]
+        newX = geo_transform[1] * (coords[0] + 0.5) + \
+            geo_transform[0] 
+        
+        newY = geo_transform[5] * (coords[1] + 0.5) + geo_transform[3]
         return [newX, newY]
 
     from ..vector_tools import add_unique_fid
@@ -1417,10 +1459,10 @@ def sample_extraction(
     X, Y, coords = extract_values(
         in_image, in_vector, unique_fid, getCoords=True, verbose=verbose)
 
-    geoTransform = gdal.Open(in_image).GetGeoTransform()
+    geo_transform = gdal.Open(in_image).GetGeoTransform()
 
-    centroid = [__pixel_location_from_centroid(
-        coord, geoTransform) for coord in coords]
+    centroid = [_pixel_location_from_centroid(
+        coord, geo_transform) for coord in coords]
     # init outLayer
     if np.issubdtype(X.dtype, np.integer):
         try:
@@ -1432,7 +1474,7 @@ def sample_extraction(
     outLayer = _create_point_layer(
         in_vector, out_vector, unique_fid, dtype=dtype, verbose=verbose)
     if verbose:
-        outLayer.add_total_points(len(centroid))
+        outLayer._add_total_points(len(centroid))
 
     if verbose:
         push_feedback("Adding each centroid to {}...".format(out_vector))
@@ -1443,51 +1485,51 @@ def sample_extraction(
             curY = Y[idx]
         if curY != 0:
             if band_prefix is None:
-                outLayer.add_point_to_layer(xy, curY)
+                outLayer._add_point_to_layer(xy, curY)
             else:
-                outLayer.add_point_to_layer(xy, curY, X[idx], band_prefix)
+                outLayer._add_point_to_layer(xy, curY, X[idx], band_prefix)
 
     outLayer.close_layer()
 
 
 class _create_point_layer:
-    def __init__(self, inVector, outVector, uniqueIDField,
+    def __init__(self, in_vector, out_vector, unique_id_field,
                  dtype=ogr.OFTInteger, verbose=1):
         """
         Create a vector layer as point type.
 
         Parameters
-        -------
-        inVector : str.
+        ------------
+        in_vector : string.
             Vector to copy fields and spatial reference.
-        outVector : str.
+        out_vector : string.
             According to the file extension, will found the good driver from OGR.
-        uniqueIDField : str.
+        unique_id_field : str.
             Field containing the unique ID for each feature.
-        bandPrefix : None or str.
-            If str, if the prefix of each value for the number of bands of your image. Used to train models from classifier.
-
-        Functions
-        -------
-        add_total_points(nSamples): int.
+        dtype : integer, optional (default=ogr.OFTInteger)
+            the ogr datatype.
+        
+        Methods
+        ----------
+        _add_total_points(nSamples): int.
             Will generate progress bar.
-        add_point_to_layer(coords): list,arr.
+        _add_point_to_layer(coords): list,arr.
             coords[0] is X, coords[1] is Y.
         closeLayer():
             Close the layer.
         """
         from ..vector_tools import getDriverAccordingToFileName
-        self.__verbose = verbose
-        self.__dtype = dtype
+        self.verbose = verbose
+        self._dtype = dtype
         # load inVector
-        self.inData = ogr.Open(inVector, 0)
+        self.inData = ogr.Open(in_vector, 0)
         self.inLyr = self.inData.GetLayerByIndex(0)
         srs = self.inLyr.GetSpatialRef()
 
         # create outVector
-        self.driverName = getDriverAccordingToFileName(outVector)
-        driver = ogr.GetDriverByName(self.driverName)
-        self.outData = driver.CreateDataSource(outVector)
+        self.driver_name = getDriverAccordingToFileName(out_vector)
+        driver = ogr.GetDriverByName(self.driver_name)
+        self.outData = driver.CreateDataSource(out_vector)
 
         # finish  outVector creation
         self.outLyr = self.outData.CreateLayer('centroid', srs, ogr.wkbPoint)
@@ -1497,16 +1539,16 @@ class _create_point_layer:
         self.idx = 0
         self.lastPosition = 0
         self.nSamples = None
-        if self.driverName == 'SQLITE' or self.driverName == 'GPKG':
+        if self.driver_name == 'SQLITE' or self.driver_name == 'GPKG':
             self.outLyr.StartTransaction()
 
-        self.uniqueIDField = uniqueIDField
+        self.unique_id_field = unique_id_field
 
-        # Will generate uniqueIDandFID when copying vector
-        self.uniqueIDandFID = False
+        # Will generate unique_ID_and_FID when copying vector
+        self.unique_ID_and_FID = False
         self.addBand = False
 
-    def __add_band_value(self, bandPrefix, nBands):
+    def _add_band_value(self, bandPrefix, nBands):
         """
         Parameters
         -------
@@ -1519,10 +1561,10 @@ class _create_point_layer:
         for b in range(nBands):
             field = bandPrefix + str(b)
             self.nBandsFields.append(field)
-            self.outLyr.CreateField(ogr.FieldDefn(field, self.__dtype))
+            self.outLyr.CreateField(ogr.FieldDefn(field, self._dtype))
         self.addBand = True
 
-    def add_total_points(self, nSamples):
+    def _add_total_points(self, nSamples):
         """
         Adding the total number of points will show a progress bar.
 
@@ -1534,7 +1576,7 @@ class _create_point_layer:
         self.nSamples = nSamples
         self.pb = ProgressBar(nSamples, 'Adding points... ')
 
-    def add_point_to_layer(
+    def _add_point_to_layer(
             self,
             coords,
             uniqueIDValue,
@@ -1550,15 +1592,15 @@ class _create_point_layer:
         bandValue : None, or arr.
             If array, should have the same size as the number of bands defined in addBandsValue function.
         """
-        if self.__verbose:
+        if self.verbose:
             if self.nSamples:
                 currentPosition = int(self.idx + 1)
                 if currentPosition != self.lastPosition:
                     self.pb.add_position(self.idx + 1)
                     self.lastPosition = currentPosition
 
-        if self.uniqueIDandFID is False:
-            self.__update_arr_according_to_vector()
+        if self.unique_ID_and_FID is False:
+            self._update_arr_according_to_vector()
 
         # add Band to list of fields if needed
         if bandValue is not None:
@@ -1566,7 +1608,7 @@ class _create_point_layer:
                 raise Warning(
                     'Please, define a bandPrefix value to save bands value into the vector file.')
             if self.addBand is False:
-                self.__add_band_value(bandPrefix, bandValue.shape[0])
+                self._add_band_value(bandPrefix, bandValue.shape[0])
 
         point = ogr.Geometry(ogr.wkbPoint)
         point.SetPoint(0, coords[0], coords[1])
@@ -1593,7 +1635,7 @@ class _create_point_layer:
         self.outLyr.CreateFeature(feature)
         self.idx += 1
 
-    def __update_arr_according_to_vector(self):
+    def _update_arr_according_to_vector(self):
         """
         Update outVector layer by adding field from inVector.
         Store ID and FIDs to find the same value.
@@ -1613,17 +1655,17 @@ class _create_point_layer:
 
         self.inLyr.ResetReading()
         for feat in self.inLyr:
-            uID = feat.GetField(self.uniqueIDField)
+            uID = feat.GetField(self.unique_id_field)
             uFID = feat.GetFID()
             self.uniqueIDs.append(uID)
             self.uniqueFIDs.append(uFID)
-        self.uniqueIDandFID = True
+        self.unique_ID_and_FID = True
 
     def close_layer(self):
         """
         Once work is done, close all layers.
         """
-        if self.driverName == 'SQLITE' or self.driverName == 'GPKG':
+        if self.driver_name == 'SQLITE' or self.driver_name == 'GPKG':
             self.outLyr.CommitTransaction()
         self.inData.Destroy()
         self.outData.Destroy()

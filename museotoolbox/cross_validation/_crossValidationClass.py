@@ -22,8 +22,8 @@ class distanceCV:
             self,
             X=None,
             y=None,
-            distanceMatrix=None,
-            distanceThresold=1000,
+            distance_matrix=None,
+            distance_thresold=1000,
             minTrain=False,
             SLOO=True,
             n_splits=False,
@@ -32,7 +32,7 @@ class distanceCV:
             verbose=False,
             random_state=False,
             groups=None,
-            distanceLabel=False,
+            distance_label=False,
             LOOsameSize=False):
         """Compute train/validation array with Spatial distance analysis.
 
@@ -44,12 +44,12 @@ class distanceCV:
             Matrix of values. As many row as the Y array.
         Y : array-like
             contain class for each ROI. Same effective as distanceArray.
-        distanceMatrix : array
+        distance_matrix : array
             Matrix distance
-        distanceThresold : int or float
+        distance_thresold : int or float
             Distance(same unit of your distanceArray)
         minTrain : int or float
-            if >1 : keep n ROI beyond distanceThresold
+            if >1 : keep n ROI beyond distance_thresold
             if float <1 : minimum percent of samples to use for traning. Use 1 for use only distance Thresold.
             if False keep same size.
         SLOO : Spatial Leave One Out, keep on single validation pixel.
@@ -74,20 +74,20 @@ class distanceCV:
         """
         self.name = 'SLOO'
 
-        self.distanceArray = distanceMatrix
-        self.distanceThresold = distanceThresold
+        self.distanceArray = distance_matrix
+        self.distance_thresold = distance_thresold
         self.y = y
         self.iterPos = 0
         self.minTrain = minTrain
-        self.distanceLabel = distanceLabel
+        self.distance_label = distance_label
         if self.minTrain is None:
             self.minTrain = -1
         self.valid_size = valid_size
         self.LOOsameSize = LOOsameSize
         self.groups = groups
-        if self.groups is not None and self.distanceLabel is False:
+        if self.groups is not None and self.distance_label is False:
             raise Exception(
-                'You need the to set the distanceLabel in order to compute spatial leave-one-out method using a subclass.')
+                'You need the to set the distance_label in order to compute spatial leave-one-out method using a subclass.')
         self.SLOO = SLOO  # Leave One OUT
         self.verbose = verbose
         self.stats = stats
@@ -183,18 +183,18 @@ class distanceCV:
 
                             np.random.seed(self.random_state)
                             self.ROI = np.random.permutation(CT)[0]
-                            # Tstand = self.distanceLabel[np.isin(
-                            #   self.distanceLabel, np.unique(self.groups[CT]))]
-                            #TstandTF = np.isin(self.distanceLabel, Tstand)
+                            # Tstand = self.distance_label[np.isin(
+                            #   self.distance_label, np.unique(self.groups[CT]))]
+                            #TstandTF = np.isin(self.distance_label, Tstand)
                             standPos = np.argwhere(
-                                self.groups[self.ROI] == self.distanceLabel)[0][0]
+                                self.groups[self.ROI] == self.distance_label)[0][0]
                             distanceROI = (self.distanceArray[standPos, :])
                             #distanceROI = distanceROI[TstandTF]
                             tmpValid = np.where(
                                 self.groups == self.groups[self.ROI])[0].astype(np.int64)
-                            #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
+                            #validateTStand = distanceROI[np.where(distanceROI>= self.distance_thresold)[0]]
                             tmpTrainGroup = np.unique(
-                                self.distanceLabel[np.where(distanceROI >= self.distanceThresold)[0]])
+                                self.distance_label[np.where(distanceROI >= self.distance_thresold)[0]])
                             tmpTrainGroup = tmpTrainGroup[np.isin(
                                 tmpTrainGroup, self.groups[CT])]
                             tmpTrain = np.where(np.in1d(self.groups, tmpTrainGroup))[
@@ -211,11 +211,11 @@ class distanceCV:
                                 tmpValid = np.array(
                                     [self.ROI], dtype=np.int64)
                                 tmpTrain = CT[distanceROI >
-                                              self.distanceThresold]
+                                              self.distance_thresold]
                                 if self.LOOsameSize is True:
                                     np.random.seed(self.random_state)
                                     tmpTrain = np.random.permutation(
-                                        CT)[:len(CT[distanceROI > self.distanceThresold])]
+                                        CT)[:len(CT[distanceROI > self.distance_thresold])]
 
                             else:
                                 if self.valid_size >= 1:

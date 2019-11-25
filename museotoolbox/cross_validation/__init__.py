@@ -22,18 +22,29 @@ from . import _crossValidationClass as _cvc
 class LeaveOneOut(_sampleSelection):
     """
     Generate a Cross-Validation using a Stratified Leave One Out.
-    Note : ``LeaveOneOut()`` is equivalent to ``RandomCV(valid_size=1)``.
-
+    Note : :class:`~LeaveOneOut` is equivalent to :class:``~RandomCV(valid_size=1)``
+    
+    :class:`~RandomCV(valid_size=1)`
+    :class:`~LeavePSubGroupOut`
+    `LeavePSubGroupOut:valid_size=1`
+    ``~LeavePSubGroupOut(valid_size=1)``
+    ``~LeavePSubGroupOut(valid_size=1)``
+    :mod:``~LeavePSubGroupOut(valid_size=1)``
+    :mod:``LeavePSubGroupOut(valid_size=1)``
+    :mod:`LeavePSubGroupOut(valid_size=1)`
+    :mod:`~LeavePSubGroupOut(valid_size=1)`
+    
+    
     Parameters
     ----------
-    n_splits : int or False, default False.
+    n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest class.
         If int : will iterate the number of times given in n_splits.
-    random_state : int or None, default=None.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
     """
 
     def __init__(self,
@@ -60,14 +71,14 @@ class LeavePSubGroupOut(_sampleSelection):
     ----------
     valid_size : float, default 0.5.
         From 0 to 1.
-    n_splits : int or False, default False.
+    n_splits : int or bool, optional (default=False).
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
         If int : will iterate the number of times given in n_splits.
-    random_state : int or None, default=None.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
     """
 
     def __init__(self,
@@ -102,14 +113,14 @@ class LeaveOneSubGroupOut(_sampleSelection):
 
     Parameters
     ----------
-    n_splits : default False.
+    n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of times given in n_splits.
-    random_state : int or None, default=None.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
     """
 
     def __init__(self,
@@ -133,18 +144,18 @@ class SpatialLeaveAsideOut(_sampleSelection):
 
     Parameters
     ----------
-    distanceMatrix : array.
-        Array got from function samplingMethods.getDistanceMatrixForDistanceCV(inRaster,inVector)
+    distance_matrix : array.
+        Array got from function samplingMethods.getdistance_matrixForDistanceCV(inRaster,inVector)
     valid_size : float, default 0.5.
         The percentage of validaton to keep : from 0 to 1.
-    n_splits : int or False, default False.
+    n_splits : int or bool, optional (default=False).
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
         If int : will iterate the number of times given in n_splits.
-    random_state : int or None, default=None.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
 
     References
     ----------
@@ -153,7 +164,7 @@ class SpatialLeaveAsideOut(_sampleSelection):
     """
 
     def __init__(self,
-                 distanceMatrix=None,
+                 distance_matrix=None,
                  valid_size=0.5,
                  n_splits=False,
                  random_state=None,
@@ -165,7 +176,7 @@ class SpatialLeaveAsideOut(_sampleSelection):
             n_splits = int(1 / valid_size)
 
         self.params = dict(
-            distanceMatrix=distanceMatrix,
+            distance_matrix=distance_matrix,
             valid_size=valid_size,
             n_splits=n_splits,
             random_state=random_state)
@@ -178,30 +189,30 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
     Parameters
     ----------
-    distanceMatrix : None or array.
-        If array, got from function :mod:`museotoolbox.vectorTools.getDistanceMatrix`
-    distanceThresold : int.
+    distance_matrix : numpy.ndarray, shape [n_samples, n_samples].
+        Array got from function :fun:`museotoolbox.vector_tools.get_distance_matrix`
+    distance_thresold : int.
         In pixels.
-    distanceLabel : None or array.
-        If array, got from function :mod:`museotoolbox.vectorTools.getDistanceMatrix`
-    n_splits : default False.
+    distance_label : None or array.
+        If array, got from function :fun:`museotoolbox.vector_tools.get_distance_matrix`
+    n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
-    random_state : int or None, default=None.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
 
     See also
     --------
-    museotoolbox.vectorTools.getDistanceMatrix : to extract distanceMatrix and distanceLabel.
+    museotoolbox.vector_tools.get_distance_matrix : to get distance matrix and label.
     """
 
     def __init__(self,
-                 distanceThresold=None,
-                 distanceMatrix=None,
-                 distanceLabel=None,
+                 distance_thresold,
+                 distance_matrix,
+                 distance_label,
                  n_splits=False,
                  random_state=None,
                  verbose=False):
@@ -211,9 +222,9 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
         self.crossvalidation = _cvc.distanceCV
 
         self.params = dict(
-            distanceMatrix=distanceMatrix,
-            distanceThresold=distanceThresold,
-            distanceLabel=distanceLabel,
+            distance_matrix=distance_matrix,
+            distance_thresold=distance_thresold,
+            distance_label=distance_label,
             SLOO=True,
             n_splits=n_splits,
             random_state=random_state)
@@ -226,28 +237,33 @@ class SpatialLeaveOneOut(_sampleSelection):
 
     Parameters
     ----------
-    distanceMatrix : array.
+    distance_matrix : array.
         Array got from function museotoolbox.vector_tools.get_distance_matrix(inRaster,inVector)
-    distanceThresold : int.
+    distance_thresold : int.
         In pixels.
-    n_splits : default False.
+    n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
     random_state : int or None, default=None.
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
 
+    See also
+    ---------
+    museotoolbox.vector_tools.get_distance_matrix : to get distance matrix and label.
+    
     References
     ----------
     See "Spatial leave‐one‐out cross‐validation for variable selection in the
     presence of spatial autocorrelation" : https://doi.org/10.1111/geb.12161.
+    
     """
 
     def __init__(self,
-                 distanceThresold=None,
-                 distanceMatrix=None,
+                 distance_thresold=None,
+                 distance_matrix=None,
                  n_splits=False,
                  random_state=None,
                  verbose=False,
@@ -258,9 +274,9 @@ class SpatialLeaveOneOut(_sampleSelection):
         self.crossvalidation = _cvc.distanceCV
 
         self.params = dict(
-            distanceMatrix=distanceMatrix,
-            distanceThresold=distanceThresold,
-            distanceLabel=False,
+            distance_matrix=distance_matrix,
+            distance_thresold=distance_thresold,
+            distance_label=False,
             minTrain=False,
             SLOO=True,
             n_splits=n_splits,
@@ -275,16 +291,15 @@ class RandomStratifiedKFold(_sampleSelection):
 
     Parameters
     ----------
-
-    n_splits : int. Default 2.
+    n_splits : int, optional (default=2).
         Number of splits. 2 means 50% for each class at training and validation.
-    n_repeats : int or False, default False.
-        If False, will repeat n_splits once.
-    random_state : int or None, default=None.
+    n_repeats : integer or False, optional (default=False)
+        If ``False``, will repeat n_splits once.
+    random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
-    verbose : int or False, default False.
-        Controls the verbosity: the higher, the more messages.
+    verbose : integer or False, optional (default=False).
+        Controls the verbosity: the higher the value is, the more the messages are detailed.
 
     Example
     -------

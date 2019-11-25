@@ -26,15 +26,15 @@ field = 'Class'
 # Compute distanceMatrix with centroid (one point per group)
 
 X,y,groups = raster_tools.extract_values(raster,vector,field,'uniquefid')
-distanceMatrix,distanceLabel = vector_tools.get_distance_matrix(raster,centroid,'uniquefid')
+distance_matrix,distance_label = vector_tools.get_distance_matrix(raster,centroid,'uniquefid')
 
 ##############################################################################
 # Create CV
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOSGO = SpatialLeaveOneSubGroupOut(distanceThresold=100,distanceMatrix=distanceMatrix,
-                                   distanceLabel=distanceLabel,random_state=12)
+SLOSGO = SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,
+                                   distance_label=distance_label,random_state=12)
 
 
 ###############################################################################

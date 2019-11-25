@@ -23,14 +23,14 @@ from museotoolbox import datasets,raster_tools,vector_tools
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 X,y = raster_tools.extract_values(raster,vector,field)
-distanceMatrix = vector_tools.get_distance_matrix(raster,vector)
+distance_matrix = vector_tools.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveOneOut(distanceThresold=100,distanceMatrix=distanceMatrix,
+SLOPO = SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,
                                 random_state=12)
 
 

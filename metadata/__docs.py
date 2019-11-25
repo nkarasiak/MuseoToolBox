@@ -1,19 +1,19 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Nov 24 17:38:05 2019
 
 @author: nicolas
 
-in_image : str.
+in_image : string.
     A filename or path of a raster file.
     It could be any file that GDAL can open.
 
-in_vector : str
+in_vector : string.
     A filename or path corresponding to a vector file.
     It could be any file that GDAL/OGR can open.
     
-out_image : str
+out_image : string.
     A geotiff extension filename corresponding to a raster image to create.
     
 X : array-like, shape = [n_samples, n_features]

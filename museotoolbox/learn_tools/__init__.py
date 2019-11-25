@@ -21,7 +21,7 @@ import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
 from sklearn import warnings
-from ..raster_tools import RasterMath, _get_dt_from_minmax_values, convert_dt
+from ..raster_tools import RasterMath, get_gdt_from_minmax_values, convert_dt
 from ..internal_tools import ProgressBar
 
 
@@ -455,7 +455,7 @@ class LearnAndPredict:
         inMaskRaster : str, default False.
             Path of the raster where 0 is mask and value above are no mask.
         outNumpyDT : numpy datatype, default will get the datatype according to your maximum class value.
-            Get numpy datatype throught : convert_dt(_get_dt_from_minmax_values(maximumClassValue)))
+            Get numpy datatype throught : convert_dt(get_gdt_from_minmax_values(maximumClassValue)))
         outNoData : int, default 0.
             Value of no data for the outRaster.
         """
@@ -463,7 +463,7 @@ class LearnAndPredict:
         rM = RasterMath(inRaster, inMaskRaster, message='Prediction...')
 
         numpyDT = convert_dt(
-            _get_dt_from_minmax_values(np.amax(self.model.classes_)))
+            get_gdt_from_minmax_values(np.amax(self.model.classes_)))
 
         rM.add_function(
             self.predictArray,
