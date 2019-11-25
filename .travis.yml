@@ -26,7 +26,7 @@ install:
 
 script:
 - python setup.py develop
-- py.test  --cov-report term --cov=test/
+- pytest -v  --cov=museotoolbox
 
 deploy:
   provider: pypi
@@ -40,3 +40,4 @@ deploy:
 
 after_succes:
  - codecov 
+ - codecov -e 
