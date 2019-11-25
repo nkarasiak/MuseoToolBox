@@ -22,20 +22,24 @@ from sklearn import metrics
 from sklearn.base import clone
 from sklearn import warnings
 from ..raster_tools import RasterMath, get_gdt_from_minmax_values, convert_dt
-from ..internal_tools import ProgressBar
+from ..internal_tools import ProgressBar, push_feedback
 
 
-class LearnAndPredict:
-    def __init__(self, n_jobs=1, verbose=False):
+class SuperLearn:
+    def __init__(self, classifier,param_grid=None, n_jobs=1, verbose=False):
         """
-        learnAndPredict  ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
-        After learning a model via learnFromVector() or learnFromRaster(), you can predict via predictRaster() or predictArray().
+        SuperLearn, shortname for Supervised Learning, ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
+        After learning a model via :func:`learn`, you can predict via :func:`predict_image` or :func:`predict_array`.
 
         Parameters
         ----------
         n_jobs : int, default 1.
             Number of cores to be used by ``sklearn`` in grid-search.
-        verbose : boolean, or int.
+        classifier : algorithm compatible with scikit-learn.
+            For example ``RandomForestClassifier(n_estimators=100)`` from ``from sklearn.ensemble import RandomForestClassifier``
+        param_grid : False or dict, optional (default=False).
+            param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
+        verbose : bool or int, optional (default=False).
 
         Examples
         --------
@@ -45,14 +49,14 @@ class LearnAndPredict:
         >>> RS50 = mtb.cross_validation.RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
         >>> classifier = RandomForestClassifier()
-        >>> LAP = mtb.learn_tools.learnAndPredict(verbose=True)
-        >>> LAP.learnFromRaster(raster,vector,inField='class',cv=RS50,
+        >>> SL = mtb.learn_tools.SuperLearn(verbose=True)
+        >>> SL.learnFromRaster(raster,vector,inField='class',cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
         Reading raster values...  [########################################]100%
         Fitting 10 folds for each of 2 candidates, totalling 20 fits
         best score : 0.966244859222
         best n_estimators : 200
-        >>> for kappa in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        >>> for kappa in SL.getStatsFromCV(confusionMatrix=False,kappa=True):
             print(kappa)
         [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
         {'kappa': 0.94145803865870303}
@@ -65,14 +69,17 @@ class LearnAndPredict:
         {'kappa': 0.9383201352573155}
         {'kappa': 0.93887726891376944}
         {'kappa': 0.94450020549861891}
-        [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    8.7s finished
-        >>> LAP.predictRaster(raster,'/tmp/classification.tif')
+        [Parallel(n_jobs=-1)]: Done  10 out of  10 | eSLsed:    8.7s finished
+        >>> SL.predictRaster(raster,'/tmp/classification.tif')
         Total number of blocks : 15
         Prediction...  [########################################]100%
         Saved /tmp/classification.tif using function predictArray
         """
         self.n_jobs = n_jobs
         self.verbose = verbose
+        self.classifier = classifier
+        self.param_grid = param_grid
+        
         if self.verbose is False:
             warnings.filterwarnings("ignore")
         self.standardize = False
@@ -114,13 +121,11 @@ class LearnAndPredict:
 
             return Xt
 
-    def learnFromVector(
+    def learn(
             self,
             X,
             y,
-            classifier=None,
             group=None,
-            param_grid=None,
             standardize=True,
             cv=None,
             scoring='accuracy',
@@ -135,20 +140,14 @@ class LearnAndPredict:
             Array with values of each label variable.
         y : array.
             Array with labels only.
-        classifier : class from scikit-learn.
-            E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
         group : str or False.
             If you use a cross-validation which needs group-splitting.
-        param_grid : None, else dict.
-            param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
         strandardize : Bool, default True.
             If True, will standardize features by removing the mean and scaling to unit variance.
         cv : Cross-Validation or int or None. Default None.
             if cv, choose one from cross_validation.
             if int, uses :class:`museotoolbox.cross_validation.RandomStratifiedKFold` with K = the int value.
         """
-        self.classifier = classifier
-        self.param_grid = param_grid
         self.y = y
         self.group = group
 
@@ -167,82 +166,8 @@ class LearnAndPredict:
             self.X,
             self.y,
             self.group,
-            classifier,
-            param_grid,
-            cv,
-            scoring,
-            refit,
-            **gridSearchCVParams)
-
-    def learnFromRaster(
-            self,
-            inRaster,
-            inVector,
-            inField,
-            classifier=None,
-            group=None,
-            param_grid=None,
-            standardize=True,
-            cv=None,
-            scoring='accuracy',
-            refit=True,
-            **gridSearchCVParams):
-        """
-        learn Model from raster.
-
-        Parameters
-        ----------
-        inRaster : str.
-            Path of the raster file.
-        inVector : str.
-            Path of the vector file.
-        inField : str.
-            Field name containing the label to predict.
-        classifier : class from scikit-learn.
-            E.g. RandomForestClassifier() got from ``from sklearn.ensemble import RandomForestClassifier``
-        group : str or False.
-            If you use a cross-validation which needs group-splitting.
-        param_grid : None, else dict.
-            param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
-        standardize : Bool, default True.
-            If True, will standardize features by removing the mean and scaling to unit variance.
-        cv : Cross-Validation or int or None. Default 2.
-            if cv, choose one from cross_validation.
-            if int, uses :class:`museotoolbox.cross_validation.RandomStratifiedKFold` with K = the int value.
-        """
-        from ..raster_tools import extract_values
-
-        self.classifier = classifier
-        self.param_grid = param_grid
-
-        if group is False or group is None:
-            group = None
-            X, y = extract_values(
-                inRaster, inVector, inField, verbose=self.verbose)
-        else:
-            X, y, group = extract_values(
-                inRaster, inVector, inField, group, verbose=self.verbose)
-
-        self.y = y
-        self.X = X
-        self.group = group
-
-        if self._x_is_customized is True:
-            self.X = self.xFunction(X, **self.xKwargs)
-            if self.X.ndim == 1:
-                self.X = self.X.reshape(-1, 1)
-        if standardize:
-            self.standardize = True
-            self.standardizeX()
-            self.X = self.standardizeX(self.X, need_transformation=False)
-        self.Xpredict = False
-
-        self.__learn__(
-            self.X,
-            self.y,
-            self.group,
-            classifier,
-            param_grid,
+            self.classifier,
+            self.param_grid,
             cv,
             scoring,
             refit,
@@ -282,18 +207,19 @@ class LearnAndPredict:
             self.cloneModel = clone(self.model.best_estimator_)
             #self.model.fit(X, y, groups)
             if self.verbose:
-                print('best score : ' + str(self.model.best_score_))
+                push_feedback('best score : ' + str(self.model.best_score_))
                 for key in self.param_grid.keys():
                     message = 'best ' + key + ' : ' + \
                         str(self.model.best_params_[key])
-                    print(message)
-
+                    push_feedback(message)
         else:
-            self.model = self.classifier.fit(X=X, y=y)
+            if cv is not False:
+                push_feedback(Warning('Compute model without CV because no param_grid was defined'))
+            self.model = self.classifier.fit(X, y, groups)
 
-    def saveModel(self, path):
+    def save_model(self, path):
         """
-        Save model 'myModel.npz' to be loaded later via learnAndPredict.loadModel(path)
+        Save model 'myModel.npz' to be loaded later via `SuperLearn.load_model(path)`
 
         Parameters
         ----------
@@ -308,13 +234,13 @@ class LearnAndPredict:
         if not path.endswith('npz'):
             path += '.npz'
 
-        np.savez_compressed(path, LAP=self.__dict__)
+        np.savez_compressed(path, SL=self.__dict__)
 
         return path
 
-    def loadModel(self, path, onlySKmodel=False):
+    def load_model(self, path, onlySKmodel=False):
         """
-        Load model previously saved with learnAndPredict.saveModel(path)
+        Load model previously saved with `SuperLearn.save_model(path)`.
 
         Parameters
         ----------
@@ -322,7 +248,7 @@ class LearnAndPredict:
             If path ends with npy, perfects, else will add '.npy' after your fileName.
         """
         if onlySKmodel:
-            print('FutureWarning : From museotoolbox 1.0, loading only SKlearn model will not be available anymore.')
+            push_feedback('FutureWarning : From museotoolbox 1.0, loading only SKlearn model will not be available anymore.')
             if not path.endswith('.npy'):
                 path += '.npy'
 
@@ -338,14 +264,14 @@ class LearnAndPredict:
             if not path.endswith('npz'):
                 path += '.npz'
             model = np.load(path, allow_pickle=True)
-            self.__dict__.update(model['LAP'].tolist())
+            self.__dict__.update(model['SL'].tolist())
             if hasattr(self, 'scale'):
                 if self.scale is True:
                     # for retro-compatibility with museotoolbox < 1.0
                     self.standardize, self.StandardScaler = self.scale, self.scaler
                     del self.scaler, self.scale
 
-    def __convertX(self, X):
+    def _convert_x(self, X):
         if self._x_is_customized is True:
             X = self.xFunction(X, **self.xKwargs)
 
@@ -363,7 +289,7 @@ class LearnAndPredict:
 
         return X
 
-    def predictArray(self, X):
+    def predict_array(self, X):
         """
         Predict label from array.
 
@@ -375,14 +301,14 @@ class LearnAndPredict:
             Xfunction : a custom function to modify directly the array from the raster.
         """
 
-        X = self.__convertX(X)
+        X = self._convert_x(X)
         if X.ndim == 1:
             X = X.reshape(-1, 1)
         self.Xpredict = self.model.predict(X)
 
         return self.Xpredict
 
-    def predictConfidencePerClass(self, X):
+    def predict_confidence_per_class(self, X):
         """
         Predict label from array.
 
@@ -396,7 +322,7 @@ class LearnAndPredict:
         Xpredict : array.
             The probability from 0 to 100.
         """
-        X = self.__convertX(X)
+        X = self._convert_x(X)
 
         Xpredict_proba = self.model.predict_proba(X) * 100
         if Xpredict_proba.ndim == 1:
@@ -406,7 +332,7 @@ class LearnAndPredict:
         self.Xpredict_proba = Xpredict_proba
         return Xpredict_proba
 
-    def predictConfidenceOfPredictedClass(self, X):
+    def predict_higher_confidence(self, X):
         """
         Predict label from array.
 
@@ -425,18 +351,18 @@ class LearnAndPredict:
         else:
             Xpredict_proba = np.amax(
                 self.model.predict_proba(
-                    self.__convertX(
+                    self._convert_x(
                         X)) * 100, axis=1)
         return Xpredict_proba
 
-    def predictRaster(
+    def predict_image(
             self,
-            inRaster,
-            outRaster,
-            confidencePerClass=False,
-            confidence=False,
-            inMaskRaster=False,
-            outNoData=0,
+            in_image,
+            out_image,
+            confidence_per_class=False,
+            higher_confidence=False,
+            in_image_mask=False,
+            out_nodata=0,
             compress=True):
         """
         Predict label from raster using previous learned model.
@@ -444,55 +370,83 @@ class LearnAndPredict:
 
         Parameters
         ----------
-        inRaster : str
-            Path of the raster used for prediction.
-        outRaster : str
-            Path of the prediction raster to save.
-        outConfidence : str
-            Path of the max confidence from all classes raster to save.
-        outConfidencePerClass : str
-            Path of the confidence raster per class to be saved.
-        inMaskRaster : str, default False.
+        in_image : str.
+            A filename or path of a raster file.
+            It could be any file that GDAL can open.
+        out_image : str.
+            A geotiff extension filename corresponding to a raster image to create.
+        confidence_per_class  : str or bool, optional (default=False)
+            A path to a geotiff extension filename to store each confidence per class (one band = one label).
+        higher_confidence: str or bool, optional (default=False).
+            A path to a geotiff extension filename to store the max confidence from all classes.
+        in_image_mask : str or False, optional (default=False).
             Path of the raster where 0 is mask and value above are no mask.
         outNumpyDT : numpy datatype, default will get the datatype according to your maximum class value.
             Get numpy datatype throught : convert_dt(get_gdt_from_minmax_values(maximumClassValue)))
-        outNoData : int, default 0.
-            Value of no data for the outRaster.
+        out_nodata : int, optional (default=0).
+            Value of no data only for the out_image.
         """
 
-        rM = RasterMath(inRaster, inMaskRaster, message='Prediction...')
+        rM = RasterMath(in_image, in_image_mask, message='Prediction...')
 
         numpyDT = convert_dt(
             get_gdt_from_minmax_values(np.amax(self.model.classes_)))
 
         rM.add_function(
-            self.predictArray,
-            outRaster,
+            self.predict_array,
+            out_image,
             out_n_bands=1,
             out_np_dt=numpyDT,
-            out_nodata=outNoData,
+            out_nodata=out_nodata,
             compress=compress)
 
-        if confidencePerClass:
+        if confidence_per_class:
             rM.add_function(
-                self.predictConfidencePerClass,
-                confidencePerClass,
+                self.predict_confidence_per_class,
+                confidence_per_class,
                 out_n_bands=False,
                 out_np_dt=np.int16,
                 out_nodata=np.iinfo(np.int16).min,
                 compress=compress)
 
-        if confidence:
+        if higher_confidence:
             rM.add_function(
-                self.predictConfidenceOfPredictedClass,
-                confidence,
+                self.predict_higher_confidence,
+                higher_confidence,
                 out_n_bands=1,
                 out_np_dt=np.int16,
                 out_nodata=np.iinfo(np.int16).min,
                 compress=compress)
         rM.run()
 
-    def saveCMFromCV(self, savePath, prefix='', header=True, n_jobs=1):
+
+    def _get_stats_from_each_cv(self, statsidx, trvl, confusionMatrix=True,
+                            kappa=False, OA=False, F1=False, nTrain=False):
+        """
+        Compute stats per each fold
+        """
+        X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
+        Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
+
+        self.cloneModel.fit(X_train, Y_train)
+
+        X_pred = self.cloneModel.predict(X_test)
+
+        accuracies = {}
+        if confusionMatrix:
+            accuracies['confusionMatrix'] = metrics.confusion_matrix(
+                Y_test, X_pred)
+        if kappa:
+            accuracies['kappa'] = metrics.cohen_kappa_score(Y_test, X_pred)
+        if OA:
+            accuracies['OA'] = metrics.accuracy_score(Y_test, X_pred)
+        if F1:
+            accuracies['F1'] = metrics.f1_score(Y_test, X_pred, average=None)
+        if nTrain:
+            accuracies['nTrain'] = np.unique(Y_train, return_counts=True)[1]
+
+        return accuracies
+    def save_cm_from_cv(self, savePath, prefix='', header=True, n_jobs=1):
         """
         Save each confusion matrix (csv format) from cross-validation.
 
@@ -539,18 +493,18 @@ class LearnAndPredict:
 
         Examples
         --------
-        After having learned with :mod:`museotoolbox.learn_tools.learnAndPredict` :
+        After having learned with :mod:`museotoolbox.learn_tools.SuperLearn` :
 
-        >>> LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+        >>> SL.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
         [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
-        [Parallel(n_jobs=-1)]: Done  10 out of  10 | elapsed:    3.4s finished
+        [Parallel(n_jobs=-1)]: Done  10 out of  10 | eSLsed:    3.4s finished
         >>> np.loadtxt('/tmp/testMTB/RS50_0.csv')
         array([[85,  5],
         [10, 70]])
         """
-        def __computeStatsPerCV(statsidx, trvl, savePath, prefix, header):
+        def _compute_stats_per_cv(statsidx, trvl, savePath, prefix, header):
             outFile = savePath + '/' + prefix + str(statsidx) + '.csv'
-            dictStats = self.__getStatsFromCVidx(
+            dictStats = self._get_stats_from_each_cv(
                 statsidx, trvl, True, header, header, header, header)
 
             if header:
@@ -572,41 +526,14 @@ class LearnAndPredict:
             os.makedirs(savePath)
 
         Parallel(n_jobs=n_jobs,
-                 verbose=self.verbose + 1)(delayed(__computeStatsPerCV)(statsidx,
+                 verbose=self.verbose + 1)(delayed(_compute_stats_per_cv)(statsidx,
                                                                         trvl,
                                                                         savePath,
                                                                         prefix,
                                                                         header) for statsidx,
                                            trvl in enumerate(self.CV))
 
-    def __getStatsFromCVidx(self, statsidx, trvl, confusionMatrix=True,
-                            kappa=False, OA=False, F1=False, nTrain=False):
-        """
-        Compute stats per each fold
-        """
-        X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
-        Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
-
-        self.cloneModel.fit(X_train, Y_train)
-
-        X_pred = self.cloneModel.predict(X_test)
-
-        accuracies = {}
-        if confusionMatrix:
-            accuracies['confusionMatrix'] = metrics.confusion_matrix(
-                Y_test, X_pred)
-        if kappa:
-            accuracies['kappa'] = metrics.cohen_kappa_score(Y_test, X_pred)
-        if OA:
-            accuracies['OA'] = metrics.accuracy_score(Y_test, X_pred)
-        if F1:
-            accuracies['F1'] = metrics.f1_score(Y_test, X_pred, average=None)
-        if nTrain:
-            accuracies['nTrain'] = np.unique(Y_train, return_counts=True)[1]
-
-        return accuracies
-
-    def getStatsFromCV(
+    def get_stats_from_cv(
             self,
             confusionMatrix=True,
             kappa=False,
@@ -637,9 +564,9 @@ class LearnAndPredict:
 
         Examples
         --------
-        After having learned with :mod:`museotoolbox.learn_tools.learnAndPredict` :
+        After having learned with :mod:`museotoolbox.learn_tools.SuperLearn` :
 
-        >>> for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+        >>> for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
         >>> stats['kappa']
         0.942560083148
         0.94227598585
@@ -647,8 +574,8 @@ class LearnAndPredict:
         ...
         """
 
-        def __computeStatsPerCV(statsidx, trvl, **kwargs):
-            dictStats = self.__getStatsFromCVidx(statsidx, trvl, **kwargs)
+        def _computeStatsPerCV(statsidx, trvl, **kwargs):
+            dictStats = self._get_stats_from_each_cv(statsidx, trvl, **kwargs)
             return dictStats
         if self.CV is False:
             raise Exception(
@@ -657,7 +584,7 @@ class LearnAndPredict:
             statsCV = Parallel(
                 n_jobs=self.n_jobs,
                 verbose=self.verbose)(
-                delayed(__computeStatsPerCV)(
+                delayed(_computeStatsPerCV)(
                     statsidx,
                     trvl,
                     confusionMatrix=confusionMatrix,
@@ -669,7 +596,7 @@ class LearnAndPredict:
                     self.CV))
             return statsCV
 
-    def customizeX(self, xFunction, **kwargs):
+    def customize_array(self, xFunction, **kwargs):
         self._x_is_customized = True
         self.xFunction = xFunction
         self.xKwargs = kwargs
@@ -685,7 +612,8 @@ class SequentialFeatureSelection:
         Classifier from scikit-learn.    
     param_grid : array.
         param_grid for hyperparameters of the classifier.
-    cv : int, default 5.
+    cv : int, or cross_validation method, optional (default=5).
+        Default will use 
     scoring : str or class, optional
         default is 'accuracy'. See sklearn.metrics.make_scorer from scikit-learn.
     n_comp : int, optional
@@ -729,7 +657,7 @@ class SequentialFeatureSelection:
         """
         # for retrocompatibily museotoolbox <1.6.5
         if 'pathToSaveCM' in kwargs and path_to_save_models is False:
-            print('Please use path_to_save_models instead of pathToSaveCM')
+            push_feedback('Please use path_to_save_models instead of pathToSaveCM')
             self.path_to_save_models = kwargs['pathToSaveCM']
         else:
             self.path_to_save_models = path_to_save_models
@@ -766,7 +694,7 @@ class SequentialFeatureSelection:
         for j in range(self.max_features):
             resPerFeatures = list()
             need_learn = True
-            # bestScore,LAPs,bestParams,cvResults,models = [[],[],[],[],[]dd]
+            # bestScore,SLs,bestParams,cvResults,models = [[],[],[],[],[]dd]
             n_features_to_test = int(
                 self.X[:, self.mask].shape[1] / self.n_comp)
             if self.path_to_save_models:
@@ -774,7 +702,7 @@ class SequentialFeatureSelection:
                     'all_scores_{}.csv'.format(j)
                 if os.path.exists(all_scores_file):
                     need_learn = False
-                    print('Feature {} already computed'.format(j))
+                    push_feedback('Feature {} already computed'.format(j))
                     scores = np.loadtxt(all_scores_file, delimiter=',')
 
                     if scores.ndim == 1:
@@ -783,9 +711,9 @@ class SequentialFeatureSelection:
                     else:
                         all_scores = scores[:, 1]
                         best_candidate = np.argmax(scores[:, 1])
-                    LAP = LearnAndPredict(
-                        n_jobs=n_jobs, verbose=self.verbose - 1)
-                    LAP.loadModel(self.path_to_save_models +
+                    SL = SuperLearn(classifier=self.classifier,
+                        param_grid=self.param_grid,n_jobs=n_jobs, verbose=self.verbose - 1)
+                    SL.load_model(self.path_to_save_models +
                                   'model_{}.npz'.format(j))
                     self.models_path_.append(
                         self.path_to_save_models + 'model_{}.npz'.format(j))
@@ -795,7 +723,7 @@ class SequentialFeatureSelection:
                         n_features_to_test):  # at each loop, remove best candidate
                     if self.verbose:
                         pB.add_position()
-                    LAP = LearnAndPredict(
+                    SL = SuperLearn(classifier=self.classifier,param_grid=self.param_grid,
                         n_jobs=n_jobs, verbose=self.verbose - 1)
                     curX = self.__transformInFit(self.X, idx)
                     if standardize is False:
@@ -803,31 +731,29 @@ class SequentialFeatureSelection:
                     else:
                         scale = True
 
-                    LAP.learnFromVector(
+                    SL.learn(
                         curX,
                         y,
                         group=group,
-                        classifier=self.classifier,
-                        param_grid=self.param_grid,
                         standardize=scale,
                         scoring=self.scoring,
                         cv=self.cv)
 
-                    resPerFeatures.append(LAP)
+                    resPerFeatures.append(SL)
 
-                all_scores = [np.amax(LAP.model.best_score_)
-                              for LAP in resPerFeatures]
+                all_scores = [np.amax(SL.model.best_score_)
+                              for SL in resPerFeatures]
                 best_candidate = np.argmax(all_scores)
-                # self.__bestLAPs.append(resPerFeatures[best_candidate])
-                LAP = resPerFeatures[best_candidate]
+                # self.__bestSLs.append(resPerFeatures[best_candidate])
+                SL = resPerFeatures[best_candidate]
 
                 if self.path_to_save_models:
                     if not os.path.exists(os.path.join(self.path_to_save_models, str(j))):
                         os.makedirs(os.path.join(
                             self.path_to_save_models, str(j)))
-                    LAP.saveModel(self.path_to_save_models +
+                    SL.save_model(self.path_to_save_models +
                                   'model_{}.npz'.format(j))
-                    LAP.saveCMFromCV(
+                    SL.save_cm_from_cv(
                         os.path.join(
                             self.path_to_save_models,
                             str(j)),
@@ -858,14 +784,14 @@ class SequentialFeatureSelection:
             self.best_features_.append(best_feature_id)
 
             if self.verbose:
-                print(
+                push_feedback(
                     '\nBest feature with %s feature(s) : %s' %
                     (j + 1, best_feature_id))
-                print('Best mean score : %s' % np.amax(all_scores))
+                push_feedback('Best mean score : %s' % np.amax(all_scores))
 
             self.subsets_[str(j)] = dict(avg_score=np.amax(all_scores),
                                          feature_idx=self.best_features_.copy(),
-                                         cv_score=LAP.model.cv_results_,
+                                         cv_score=SL.model.cv_results_,
                                          best_score_=np.amax(all_scores),
                                          best_feature_=best_feature_id)
 
@@ -886,101 +812,59 @@ class SequentialFeatureSelection:
         self.__resetMask()
 
         if self.path_to_save_models is False:
-            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-            LAP.loadModel(self.models_path_[idx])
+            SL = SuperLearn(classifier=False,param_grid=False,n_jobs=1, verbose=self.verbose)
+            SL.load_model(self.models_path_[idx])
         else:
-            LAP = self.models_[idx]
-        return LAP.predictArray(self.transform(X, idx=idx))
+            SL = self.models_[idx]
+        return SL.predict_array(self.transform(X, idx=idx))
 
     def predictBestCombination(
-            self, inRaster, outRaster, inMaskRaster=False, confidence=False):
+            self, in_image,out_image,in_image_mask=False,higher_confidence=False):
         """
         Predict in raster using the best features.
 
         Parameters
         -----------
-        inRaster : str.
-            Path of the raster to predict.
-        outRaster : str.
-            Path of the image to save (GeoTiff file).
-        inMaskRaster : str.
-            Path of the raster mask where 0 is mask.
-        confidence : False or str. Default False.
-            If str, same as outRasterPrefix.
+        in_image : str.
+            A filename or path of a raster file.
+            It could be any file that GDAL can open.
+        out_image : str.
+            A geotiff extension filename corresponding to a raster image to create.
+        in_image_mask : str or False, optional (default=False).
+            Path to a geotiff extension filename corresponding to a raster image to create.
+        higher_confidence : str or False, optional (default=False).
+            Path to a geotiff extension filename corresponding to a raster image to create.
         """
 
         self.__resetMask()
         self.best_idx_ = np.argmax(self.best_scores_)
 
-        print('Predict with combination ' + str(self.best_idx_))
+        push_feedback('Predict with combination ' + str(self.best_idx_))
 
         if self.path_to_save_models is False:
-            LAP = self.models_[self.best_idx_]
+            SL = self.models_[self.best_idx_]
         else:
-            LAP = LearnAndPredict(n_jobs=1, verbose=self.verbose)
-            LAP.loadModel(self.models_path_[self.best_idx_])
+            SL = SuperLearn(classifier=False,n_jobs=1, verbose=self.verbose)
+            SL.load_model(self.models_path_[self.best_idx_])
 
-        LAP.customizeX(self.transform, idx=self.best_idx_, customizeX=True)
+        SL.customize_array(self.transform, idx=self.best_idx_, customizeX=True)
 
-        LAP.predictRaster(inRaster, outRaster,
-                          confidence=confidence, inMaskRaster=inMaskRaster)
+        SL.predict_image(in_image,out_image,in_image_mask=in_image_mask,higher_confidence=higher_confidence)
 
-    def _relearnBestModelWithBestParams(
-            self, X, y, group=None, standardize=True, n_jobs=1, save_dir=False):
-
-        self.__resetMask()
-        self.best_idx_ = np.argmax(self.best_scores_)
-
-        model = self.models_path_[self.best_idx_]
-        LAP = learnAndPredict(
-            n_jobs=n_jobs, verbose=self.verbose - 1)
-        if self.xFunction is not False:
-            customizeX = True
-        else:
-            customizeX = False
-        curX = self.transform(X, self.best_idx_, customizeX=customizeX)
-        if standardize is False:
-            scale = False
-        else:
-            scale = True
-        LAP.loadModel(model)
-
-        best_params_ = LAP.model.best_params_
-        for key in best_params_.keys():
-            best_params_[key] = [best_params_[key]]
-        LAP.n_jobs = n_jobs
-
-        LAP.learnFromVector(
-            curX,
-            y,
-            group=group,
-            classifier=self.classifier,
-            param_grid=LAP.model.best_params_,
-            standardize=scale,
-            scoring=self.scoring,
-            cv=self.cv)
-
-        modelDir = os.path.join(
-            os.path.dirname(
-                self.models_path_[0]), 'model_{}.npz'.format(
-                self.best_idx_))
-        LAP.saveModel(modelDir)
-        if save_dir:
-            LAP.saveCMFromCV(save_dir)
-
-    def predictRasters(self, inRaster, outRasterPrefix,
-                       inMaskRaster=False, confidence=False, modelPath=False):
+    def predict_images(self, in_image,out_image_prefix, in_image_mask=False, higher_confidence=False):
         """
         Predict each best found features with SFFS.fit(X,y).
 
         Parameters
         ----------
-        inRaster : str.
+        in_image : str.
             Path of the raster to predict.
-        outRasterPrefix : str.
+        out_image_prefix : str.
             Prefix of each raster to save. Will add in suffix the iteration number then .tif.
             E.g. outRasterPrefix = `classification_`, will give `classification_0.tif` for the first prediction.
-        confidence : False or str. Default False.
+        in_image_mask : str or False, optional (default=False).
+            Path to the image mask where 0 values are masked data.
+        higher_confidence : False or str. Default False.
             If str, same as outRasterPrefix.
         """
 
@@ -988,19 +872,19 @@ class SequentialFeatureSelection:
 
         for idx, model in enumerate(self.models_):
             if self.path_to_save_models is False:
-                LAP = self.models_[idx]
+                SL = self.models_[idx]
             else:
-                LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-                LAP.loadModel(model)
+                SL = SuperLearn(n_jobs=1, verbose=self.verbose)
+                SL.load_model(model)
 
-            LAP.customizeX(self.transform, idx=idx, customizeX=True)
+            SL.customize_array(self.transform, idx=idx, customizeX=True)
 
-            outRaster = outRasterPrefix + str(idx) + '.tif'
+            out_image = out_image_prefix + str(idx) + '.tif'
 
-            LAP.predictRaster(inRaster, outRaster,
-                              confidence=confidence, inMaskRaster=inMaskRaster)
+            SL.predict_image(in_image, out_image,
+                              higher_confidence=higher_confidence, in_image_mask = in_image_mask)
 
-    def customizeX(self, xFunction, **kwargs):
+    def customize_array(self, xFunction, **kwargs):
         self.xFunction = xFunction
         self.xKwargs = kwargs
 
@@ -1092,9 +976,9 @@ class SequentialFeatureSelection:
     def getBestModel(self, clone=False):
         self.best_idx_ = np.argmax(self.best_scores_)
         if self.path_to_save_models:
-            LAP = learnAndPredict(n_jobs=1, verbose=self.verbose)
-            LAP.loadModel(self.models_path_[self.best_idx_])
+            SL = SuperLearn(n_jobs=1, verbose=self.verbose)
+            SL.loadModel(self.models_path_[self.best_idx_])
         else:
-            LAP = self.models_[self.best_idx_]
+            SL = self.models_[self.best_idx_]
 
-        return LAP
+        return SL

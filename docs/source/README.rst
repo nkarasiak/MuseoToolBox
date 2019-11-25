@@ -33,7 +33,7 @@
 
 **MuseoToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
-One of the most meaningful contribution is, in my humble opinion, the `rasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath>`_ class which allows you to do any expression/function on a raster in a just few lines : compute the mean in all bands, the modal value, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **rasterMath** manages everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. `Examples to use rasterMath are available on readthedocs <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath>`_.
+One of the most meaningful contribution is, in my humble opinion, the `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.RasterMath.html#museotoolbox.raster_tools.RasterMath>`_ class which allows you to do any expression/function on a raster in a just few lines : compute the mean in all bands, the modal value, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **RasterMath** manages everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. `Examples to use RasterMath are available on readthedocs <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.RasterMath.html#museotoolbox.raster_tools.RasterMath>`_.
 
 Using and citing the toolbox
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -62,12 +62,12 @@ Today, the main usages of MuseoToolBox are :
 
 * `museotoolbox.raster_tools <https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.raster_tools.html>`_
 
-  * Extract bands values from vector ROI (polygons/points) (function : `\ *getSamplesFromROI* <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.getSamplesFromROI.html>`_\ )
-  * `rasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.rasterMath.html#museotoolbox.raster_tools.rasterMath>`_\ , allows you to do some math on your raster and save it. Just load rasterMath, then it will return you the value for each pixel (in all bands) and now you can do whatever you want : predicting a model, smooth signal (whittaker, double logistic...), modal value, mean... rasterMath read and write block per block to avoid loading the full image in memory. It is compatible with every python function (including numpy) as the first and only argument needed is an array.
+  * Extract bands values from vector ROI (polygons/points) (function : `extract_values <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.extract_values.html>`_\ )
+  * `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/raster_tools/museotoolbox.raster_tools.RasterMath.html#museotoolbox.raster_tools.RasterMath>`_\ , allows you to do some math on your raster and save it. Just load RasterMath, then it will return you the value for each pixel (in all bands) and now you can do whatever you want : predicting a model, smooth signal (whittaker, double logistic...), modal value, mean... RasterMath read and write block per block to avoid loading the full image in memory. It is compatible with every python function (including numpy) as the first and only argument needed is an array.
 
 * `museotoolbox.learn_tools <https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.learn_tools.html>`_
 
-  * Based on Scikit-Learn. `learndAndPredict <https://museotoolbox.readthedocs.io/en/latest/modules/learn_tools/museotoolbox.learn_tools.learnAndPredict.html>`_ simplifies the use of cross-validation by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. It also eases the way to predict a raster (just give the raster name and the model).
+  * Based on Scikit-Learn. `SuperLearn <https://museotoolbox.readthedocs.io/en/latest/modules/learn_tools/museotoolbox.learn_tools.SuperLearn.html>`_ simplifies the use of cross-validation by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. It also eases the way to predict a raster (just give the raster name and the model).
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------

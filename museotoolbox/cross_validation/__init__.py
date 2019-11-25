@@ -22,19 +22,8 @@ from . import _crossValidationClass as _cvc
 class LeaveOneOut(_sampleSelection):
     """
     Generate a Cross-Validation using a Stratified Leave One Out.
-    Note : :class:`~LeaveOneOut` is equivalent to :class:``~RandomCV(valid_size=1)``
-    
-    :class:`~RandomCV(valid_size=1)`
-    :class:`~LeavePSubGroupOut`
-    `LeavePSubGroupOut:valid_size=1`
-    ``~LeavePSubGroupOut(valid_size=1)``
-    ``~LeavePSubGroupOut(valid_size=1)``
-    :mod:``~LeavePSubGroupOut(valid_size=1)``
-    :mod:``LeavePSubGroupOut(valid_size=1)``
-    :mod:`LeavePSubGroupOut(valid_size=1)`
-    :mod:`~LeavePSubGroupOut(valid_size=1)`
-    
-    
+    Note : :class:`~LeaveOneOut` is equivalent to :class:`~museotoolbox.cross_validation.RandomStratifiedKFold` with ``valid_size=1`` and ``n_splits=False``.
+
     Parameters
     ----------
     n_splits : int or bool, optional (default=False).
@@ -144,7 +133,7 @@ class SpatialLeaveAsideOut(_sampleSelection):
 
     Parameters
     ----------
-    distance_matrix : array.
+    distance_matrix : numpy.ndarray, shape [n_samples, n_samples].
         Array got from function samplingMethods.getdistance_matrixForDistanceCV(inRaster,inVector)
     valid_size : float, default 0.5.
         The percentage of validaton to keep : from 0 to 1.
@@ -190,11 +179,11 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
     Parameters
     ----------
     distance_matrix : numpy.ndarray, shape [n_samples, n_samples].
-        Array got from function :fun:`museotoolbox.vector_tools.get_distance_matrix`
+        Array got from function :func:`museotoolbox.vector_tools.get_distance_matrix`
     distance_thresold : int.
         In pixels.
     distance_label : None or array.
-        If array, got from function :fun:`museotoolbox.vector_tools.get_distance_matrix`
+        If array, got from function :func:`museotoolbox.vector_tools.get_distance_matrix`
     n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
@@ -237,7 +226,7 @@ class SpatialLeaveOneOut(_sampleSelection):
 
     Parameters
     ----------
-    distance_matrix : array.
+    distance_matrix : numpy.ndarray, shape [n_samples, n_samples].
         Array got from function museotoolbox.vector_tools.get_distance_matrix(inRaster,inVector)
     distance_thresold : int.
         In pixels.
@@ -294,7 +283,9 @@ class RandomStratifiedKFold(_sampleSelection):
     n_splits : int, optional (default=2).
         Number of splits. 2 means 50% for each class at training and validation.
     n_repeats : integer or False, optional (default=False)
-        If ``False``, will repeat n_splits once.
+        If False, will repeat n_splits once.
+    valid_size : int or False, optional (default=False).
+        If False, valid size is ``1 / n_splits``.
     random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -316,12 +307,14 @@ class RandomStratifiedKFold(_sampleSelection):
     def __init__(self,
                  n_splits=2,
                  n_repeats=False,
+                 valid_size=False,
                  random_state=None,
                  verbose=False):
         
         self.verbose = verbose
-
-        valid_size = 1 / n_splits
+        
+        if valid_size is False:
+            valid_size = 1 / n_splits
 
         if n_repeats == False or n_repeats == 0:
             n_repeats = n_splits

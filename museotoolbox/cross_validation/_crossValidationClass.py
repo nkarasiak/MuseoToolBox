@@ -337,12 +337,13 @@ class randomPerClass:
                 raise ValueError('Valid size is too small')
 
         if groups is not None:
-            print("Received groups value, but randomCV don't use it")
+            print("Received groups value, but randomPerClass don't use it")
 
         self.random_state = random_state
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-
+        
+        
     def __iter__(self):
         return self
 

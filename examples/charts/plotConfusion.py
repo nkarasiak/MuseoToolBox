@@ -10,7 +10,7 @@ Plot confusion matrix from Cross-Validation, with F1 as subplot.
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.learn_tools import SuperLearn
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets
@@ -20,8 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.load_historical_data(low_res=True)
-field = 'Class'
+X,y = datasets.load_historical_data(low_res=True,return_X_y=True)
 ##############################################################################
 # Create CV
 # -------------------------------------------
@@ -38,22 +37,20 @@ classifier = RandomForestClassifier()
 # Start learning
 # ---------------------------
 
-LAP = LearnAndPredict()
-LAP.learnFromRaster(raster,vector,field,cv=RSKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[100,200]))
-
+SL = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10,50]))
+SL.learn(X,y,cv=RSKF)
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------
   
-for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
     print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 cms = []
-for stats in LAP.getStatsFromCV(confusionMatrix=True):
+for stats in SL.get_stats_from_cv(confusionMatrix=True):
     cms.append(stats['confusionMatrix'])
     print(stats['confusionMatrix'])
     

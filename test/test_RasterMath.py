@@ -9,26 +9,31 @@ from museotoolbox.raster_tools import extract_values
 from museotoolbox.vector_tools import read_values
 from museotoolbox import learn_tools
 import gdal
-raster,vector = load_historical_data()
 
+
+import os
+from sklearn.tree import DecisionTreeClassifier
+
+raster,vector = load_historical_data()
 rM = RasterMath(raster)
 
-from sklearn.tree import DecisionTreeClassifier
-class TestStringMethods(unittest.TestCase):
+class TestRaster(unittest.TestCase):
+    
     def test_rasterize(self):
         for invert in [True,False]:
             mem = rasterize(raster,vector,'class',out_image='MEM',invert=invert)
             assert(mem.RasterCount == 1)
-            assert(mem.RasterXSize == rM.nc)
-            assert(mem.RasterYSize == rM.nl)
+            assert(mem.RasterXSize == rM.n_columns)
+            assert(mem.RasterYSize == rM.n_lines)
             
     def test_noImg(self)    :    
+        
         self.assertRaises(ReferenceError,RasterMath,'None',verbose=0)
-
+        
     def test_dimension(self)    :    
-        assert(rM.nb == gdal.Open(raster).RasterCount)
-        assert(rM.nl == gdal.Open(raster).RasterYSize)
-        assert(rM.nc == gdal.Open(raster).RasterXSize)
+        assert(rM.n_bands == gdal.Open(raster).RasterCount)
+        assert(rM.n_lines == gdal.Open(raster).RasterYSize)
+        assert(rM.n_columns == gdal.Open(raster).RasterXSize)
         
     
     def test_readPerBand(self):
@@ -36,9 +41,9 @@ class TestStringMethods(unittest.TestCase):
             rM_band = RasterMath(raster,return_3d=is_3d)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
-            self.assertEquals(idx+1,rM_band.nb)
+            assert(idx+1==rM_band.n_bands)
             del rM_band
-
+    
     def test_3d(self)            :
         rM_3d = RasterMath(raster,return_3d=True)
         assert(rM_3d.get_random_block().ndim == 3)
@@ -67,11 +72,11 @@ class TestStringMethods(unittest.TestCase):
             rM_band = RasterMath(raster,return_3d=is_3d)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
-            assert(idx+1 == rM_band.nb)                        
+            assert(idx+1 == rM_band.n_bands)                        
             x = rM_band.get_random_block()
             assert(x.ndim == is_3d+2)
             
-
+    
     def test_XYextraction(self):
         X = extract_values(raster,vector)
         assert(X.ndim == 2)
@@ -88,8 +93,8 @@ class TestStringMethods(unittest.TestCase):
             rM.add_function(np.mean,'/tmp/mean.tif',axis=1)
             rM.run()
             assert(gdal.Open('/tmp/mean.tif').RasterCount == 1)
-            assert(gdal.Open('/tmp/mean.tif').RasterXSize == rM.nc)
-            assert(gdal.Open('/tmp/mean.tif').RasterYSize == rM.nl)
+            assert(gdal.Open('/tmp/mean.tif').RasterXSize == rM.n_columns)
+            assert(gdal.Open('/tmp/mean.tif').RasterYSize == rM.n_lines)
             
             os.remove('/tmp/mean.tif')
             
@@ -98,23 +103,24 @@ class TestStringMethods(unittest.TestCase):
         self.assertRaises(ValueError,read_values,vector)
         
     def test_learn(self):
-        LAP = learn_tools.LearnAndPredict(verbose=0)
-        LAP.learnFromRaster(raster,vector,'class',classifier=DecisionTreeClassifier())
-        assert(LAP.X.ndim == 2)
-        assert(LAP.y.shape[0] == LAP.X.shape[0])
-        assert(np.all(LAP.model.classes_ == np.unique(LAP.y)))
-        assert(LAP.predictArray(LAP.X).shape == LAP.y.shape)
-        LAP.predictRaster(raster,'/tmp/map.tif','/tmp/confClass.tif','/tmp/conf.tif')
+        X,y = load_historical_data(return_X_y=True)
+        SL = learn_tools.SuperLearn(verbose=0,classifier=DecisionTreeClassifier())
+        SL.learn(X,y)
+        assert(SL.X.ndim == 2)
+        assert(SL.y.shape[0] == SL.X.shape[0])
+        assert(np.all(SL.model.classes_ == np.unique(SL.y)))
+        assert(SL.predict_array(SL.X).shape == SL.y.shape)
+        SL.predict_image(raster,'/tmp/map.tif','/tmp/confClass.tif','/tmp/conf.tif')
         assert(gdal.Open('/tmp/map.tif').RasterCount == 1)
         assert(gdal.Open('/tmp/confClass.tif').RasterCount == 5)
         assert(gdal.Open('/tmp/conf.tif').RasterCount == 1)
         
-        LAP = learn_tools.LearnAndPredict()
-        LAP.customizeX(np.mean,axis=1)
-        assert(LAP._x_is_customized == True)
-        LAP.learnFromRaster(raster,vector,'class',classifier=DecisionTreeClassifier())
+        SL = learn_tools.SuperLearn(classifier=DecisionTreeClassifier())
+        SL.customize_array(np.mean,axis=1)
+        assert(SL._x_is_customized == True)
+        SL.learn(X,y)
         
-        assert(LAP.X.shape[1] == 1)
-        
-if __name__ == '__main__':
+        assert(SL.X.shape[1] == 1)
+
+if __name__ == "__main__":
     unittest.main()

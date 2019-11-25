@@ -11,8 +11,9 @@ This example shows how to make a classification with different cross-validation 
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.learn_tools import SuperLearn
 from museotoolbox import cross_validation
+from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
@@ -24,7 +25,7 @@ from sklearn.model_selection import StratifiedKFold
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 group = 'uniquefid'
-
+X,y,g = extract_values(raster,vector,field,group)
 ##############################################################################
 # Initialize Random-Forest
 # ---------------------------
@@ -43,16 +44,15 @@ CVs = [cross_validation.RandomStratifiedKFold(n_splits=2),
 
 kappas=[]
 
-LAP = LearnAndPredict(n_jobs=1)
+
 
 for cv in CVs : 
-        
-    LAP.learnFromRaster(raster,vector,inField=field,group=group,cv=cv,
-                        classifier=classifier,param_grid=dict(n_estimators=[50,100]))
+    SL = SuperLearn( classifier=classifier,param_grid=dict(n_estimators=[50,100]),n_jobs=1)
+    SL.learn(X,y,group=g,cv=cv)
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []
     
-    for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+    for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
         print(stats['kappa'])
         cvKappa.append(stats['kappa'])
     

@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import SequentialFeatureSelection,LearnAndPredict
+from museotoolbox.learn_tools import SequentialFeatureSelection
 from museotoolbox.cross_validation import LeavePSubGroupOut
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier

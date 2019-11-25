@@ -32,20 +32,16 @@ def image_mask_from_vector(in_vector, in_image, out_image, invert=False,gdt = gd
 
     Parameters
     ----------
-    in_vector : string.
+    in_vector : str.
         Path of the vector file to rasterize.
-    in_image : string.
+    in_image : str.
         Path of the raster file where the vector file will be rasterize.
-    out_image : string.
+    out_image : str.
         Path of the file (.tif) to create.
-    invert : boolean, optional (default=False).
+    invert : bool, optional (default=False).
         invert=True make polygons/points with 0 values in out_image.
-    gdt : integer, optional (default=gdal.GDT_Byte).
+    gdt : int, optional (default=gdal.GDT_Byte).
         The gdal datatype of the rasterized vector.
-    
-    Returns
-    -------
-    None
     """
     rasterize(
         in_image,
@@ -62,14 +58,14 @@ def get_gdt_from_minmax_values(max_value, min_value=0):
 
     Parameters
     ----------
-    max_value : integer or float.
+    max_value : int or float.
         The maximum value needed.
-    min_value : integer or float, optional (default=0).
+    min_value : int or float, optional (default=0).
         The minimum value needed.
 
     Returns
     -------
-    gdalDT : integer.
+    gdalDT : int.
         gdal datatype.
 
     Examples
@@ -83,7 +79,7 @@ def get_gdt_from_minmax_values(max_value, min_value=0):
     """
     max_abs_value = np.amax(np.abs([max_value, min_value]))
 
-    # if values are integer
+    # if values are int
     if isinstance(max_abs_value, (int, np.integer)):
         if min_value >= 0:
             if max_value <= 255:
@@ -114,14 +110,14 @@ def convert_dt(dt):
 
     Parameters
     -----------
-    dt : integer or string
+    dt : int or str
         gdal datatype from src_dataset.GetRasterBand(1).DataType.
         numpy datatype from np.array([]).dtype.name
     
     Returns
     --------
-        dt : integer or data type
-            - For gdal, the data type (integer).
+        dt : int or data type
+            - For gdal, the data type (int).
             - For numpy, the date type (type).
 
     Examples
@@ -177,12 +173,12 @@ def convert_gdal_to_otb_dt(dt):
 
     Parameters
     ----------
-    dt : integer
+    dt : int
         gdal datatype from src_dataset.GetRasterBand(1).DataType.
 
     Returns
     ----------
-    otb_dt : string.
+    otb_dt : str.
         The otb data type.
 
     Examples
@@ -226,20 +222,20 @@ def extract_values(in_image, in_vector, *fields, **kwargs):
 
     Parameters
     -----------
-    in_image : string.
+    in_image : str.
         the name or path of the raster file, could be any file that GDAL can open.
-    in_vector : string.
+    in_vector : str.
         A filename or path corresponding to a vector file.
         It could be any file that GDAL/OGR can open.
-    *fields : string.
+    *fields : str.
         Each field to extract label/value from.
     **kwargs:
-        getCoords : boolean.
+        getCoords : bool.
             If getCoords, will return pixel position in the image for each point.
-        onlyCoords : boolean.
+        onlyCoords : bool.
             If true, with only return pixel position for each point.
-        verbose : boolean, or integer.
-            If true or >1, will print progression.
+        verbose : bool or int, optional (default=True).
+            The higher is the int verbose, the more it will returns informations.
 
     Returns
     --------
@@ -480,19 +476,19 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
 
     Parameters
     -----------
-    in_image : string.
+    in_image : str.
         A filename or path corresponding to a raster image.
-    in_vector : string.
+    in_vector : str.
         A filename or path corresponding to a vector file.
-    in_field : string, optional (default=False).
+    in_field : str, optional (default=False).
         Name of the filed to rasteirze.
         If False, will rasterize the polygons or points with >0 value, and set the other values to 0.
-    out_image : string, optional (default = 'MEM').
+    out_image : str, optional (default = 'MEM').
         A filename or path corresponding to a geotiff (.tif) raster image to save.
         'MEM' will store raster in memory.
-    gdt : integer, optional (default=gdal.GDT_Int16)
+    gdt : int, optional (default=gdal.GDT_Int16)
         gdal datatype.
-    invert : boolean, optional (default=False).
+    invert : bool, optional (default=False).
         if invert is True, polygons will have 0 values in the out_image.
         
     Returns
@@ -561,22 +557,22 @@ class RasterMath:
 
     Parameters
     ----------
-    in_image : string
+    in_image : str.
         Path of a gdal extension supported raster.
-    in_image_mask : string or False, optional (default=False)
-        If string, path of the raster mask. Value masked are 0, other are considered not masked.
+    in_image_mask : str or False, optional (default=False).
+        If str, path of the raster mask. Value masked are 0, other are considered not masked.
         Use ``invert=True`` in :mod:`museotoolbox.raster_tools.image_mask_from_vector` to mask only what is not in polygons.
-    return_3d : boolean, optional (default=False)
+    return_3d : bool, optional (default=False).
         Default will return a row per pixel (2 dimensions), and axis 2 (bands) are columns.
         If ``return_3d=True``, will return the block without reshape (not suitable to learn with `sklearn`).
-    block_size : list or False, optional (default=[256,256])
+    block_size : list or False, optional (default=[256,256]).
         Define the reading and writing block size. First element is the number of columns, second element the number of lines per block.
         If False, will use the block size as defined in in_image.
         To define later the block_size, use `custom_block_size`.
-    message : string, optional (default='rasterMath...')
+    message : str, optional (default='rasterMath...').
         If str, the message will be displayed before the progress bar.
-    verbose : boolean or integer, optional (default=True)
-        The higher is the integer verbose, the more it will returns informations.
+    verbose : bool or int, optional (default=True).
+        The higher is the int verbose, the more it will returns informations.
 
     Examples
     ---------
@@ -660,7 +656,7 @@ class RasterMath:
 
         Parameters
         -----------
-        in_image : string.
+        in_image : str.
             Path of a gdal extension supported raster.
         """
 
@@ -696,16 +692,16 @@ class RasterMath:
         ----------
         function : function.
             Function to parse where the first argument is a numpy array similar to what :mod:`museotoolbox.raster_tools.RasterMath.get_random_block()` returns.
-        out_image : string.
+        out_image : str.
             A path to a geotiff extension filename corresponding to a raster image to create.
-        out_n_bands : integer or False, optional (default=False).
+        out_n_bands : int or False, optional (default=False).
             If False, will run the given function to find the number of bands to define in the out_image.
-        out_np_dt : integer or False, optional (default=False).
+        out_np_dt : int or False, optional (default=False).
             If False, will run the given function to get the datatype.
-        out_nodata : integer, float or False, optional (default=False).
+        out_nodata : int, float or False, optional (default=False).
             If True or if False (if nodata is present in the init raster),
             will use the minimum value available for the given or found datatype.
-        compress: boolean or string, optional (default=True).
+        compress: bool or str, optional (default=True).
             If True, will use PACKBITS.
             If 'high', will use DEFLATE with ZLEVEL = 9 and PREDICTOR=2.
         **kwargs :
@@ -971,7 +967,7 @@ class RasterMath:
         
         Parameters
         ------------
-        random_state : integer, optional (default=None)
+        random_state : int, optional (default=None)
             If int, random_state is the seed used by the random number generator.
             If None, the random number generator is the RandomState instance used by numpy np.random.
         """
@@ -1012,11 +1008,11 @@ class RasterMath:
 
         Parameters
         ----------
-        x : array.
+        x : numpy.ndarray, shape [n_pixels, n_features] or shape [n_pixels].
 
         Returns
         -------
-        x : array.
+        x : numpy.ndarray, shape [n_pixels, n_features].
 
         """
         if x.ndim == 0:
@@ -1088,11 +1084,11 @@ class RasterMath:
         Parameters
         ----------
         y_block_size : float or int, default False.
-            IF integer, number of rows per block.
+            IF int, number of rows per block.
             If -1, means all the rows.
             If float, value must be between 0 and 1, such as 1/3.
         x_block_size : float or int, default False.
-            If integer, number of columns per block.
+            If int, number of columns per block.
             If -1, means all the columns.
             If float, value must be between 0 and 1, such as 1/3.
         """
@@ -1250,19 +1246,19 @@ class Moran:
 
         Parameters
         ----------
-        in_image : string.
+        in_image : str.
             A filename or path of a raster file.
             It could be any file that GDAL can open.
-        in_image_mask   :   string.
+        in_image_mask   :   str.
                             Path to mask raster, default False.
-        transform       :   string, optional (default='r')
+        transform       :   str, optional (default='r')
             default optional is row-standardized (transform='r').
             for binary transfrom (transform='b').
-        lag : integer, optional (default=1)
+        lag : int, optional (default=1)
             The distance from the cell.
         weights :False or array-like, optional (default=False).
             Weights with the same shape as the square size.
-        intermediate_lag :  boolean, optional (default=True).
+        intermediate_lag :  bool, optional (default=True).
             Use all pixel values inside the specified lag.
             If `intermediate_lag` is set to False, only the 
             pixels at the specified range will be kept for computing the statistics.
@@ -1358,7 +1354,7 @@ class Moran:
         
         Returns
         ---------
-        w : integer
+        w : int
             The number of neighbors.         
         """
         b = np.reshape(array, (footprint.shape[0], footprint.shape[1])).astype(np.float64)
@@ -1418,16 +1414,19 @@ def sample_extraction(
     Parameters
     ----------
     in_image : str.
-        Raster path.
+        A filename or path of a raster file.
+        It could be any file that GDAL can open.
     in_vector : str.
-        Vector path.
+        A filename or path corresponding to a vector file.
+        It could be any file that GDAL/OGR can open.
     out_vector : str.
-        Outvector. Extension will be used to select driver. Please use ['sqlite','shp','netcdf','gpx'].
-    unique_fid : str, default None.
+        Outvector. Extension will be used to select driver. Please use one of them : ['gpkg','sqlite','shp','netcdf','gpx'].
+    unique_fid : str, optional (default=None).
         If None, will add a field called 'uniquefid' in the output vector.
-    band_prefix : str, default None.
+    band_prefix : str, optional (default=None).
         If band_prefix (e.g. 'band'), will extract values from raster.
     """
+    
     def _pixel_location_from_centroid(coords, geo_transform):
         """
         Convert XY coords into the centroid of a pixel
@@ -1500,15 +1499,18 @@ class _create_point_layer:
 
         Parameters
         ------------
-        in_vector : string.
-            Vector to copy fields and spatial reference.
-        out_vector : string.
-            According to the file extension, will found the good driver from OGR.
-        unique_id_field : str.
-            Field containing the unique ID for each feature.
-        dtype : integer, optional (default=ogr.OFTInteger)
+        in_vector : str.
+            A filename or path corresponding to a vector file.
+            It could be any file that GDAL/OGR can open.
+        out_vector : str.
+            Outvector. Extension will be used to select driver. Please use one of them : ['gpkg','sqlite','shp','netcdf','gpx'].
+        unique_fid : str, optional (default=None).
+            If None, will add a field called 'uniquefid' in the output vector.
+        dtype : int, optional (default=ogr.OFTInteger)
             the ogr datatype.
-        
+        verbose : bool or int, optional (default=True).
+            The higher is the int verbose, the more it will returns informations.
+            
         Methods
         ----------
         _add_total_points(nSamples): int.

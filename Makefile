@@ -60,3 +60,8 @@ autopep8 :
 
 aautopep8 :
 	autopep8 -air museotoolbox --jobs -1
+
+test : 
+	coverage run -m py.test test/
+
+

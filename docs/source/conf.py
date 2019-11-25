@@ -42,15 +42,13 @@ source_parsers = {
 }
 
 extensions = [
+    'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_gallery.gen_gallery',
     'nbsphinx'
-    #'sphinx.ext.linkcode',
-    #'sphinx.ext.doctest',
-    #'sphinx_automodapi.automodapi'
     ]
 
 autosummary_generate = True

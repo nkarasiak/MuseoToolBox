@@ -12,8 +12,9 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.learn_tools import SuperLearn
 from museotoolbox.cross_validation import RandomStratifiedKFold
+from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
@@ -24,7 +25,7 @@ from sklearn import metrics
 
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-
+X,y = extract_values(raster,vector,field)
 ##############################################################################
 # Create CV
 # -------------------------------------------
@@ -48,11 +49,9 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = LearnAndPredict(n_jobs=1,verbose=1)
+LAP = SuperLearn(classifier=classifier,param_grid = dict(n_estimators=[10]),n_jobs=1,verbose=1)
 
-LAP.learnFromRaster(raster,vector,field,cv=SKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=kappa)
+LAP.learn(X,y,cv=SKF,scoring=kappa)
 
 
 ##############################################################################
@@ -66,29 +65,29 @@ print(LAP.model.best_score_)
 # Get F1 for every class from best params
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(confusionMatrix=False,F1=True):
+for stats in LAP.get_stats_from_cv(confusionMatrix=False,F1=True):
     print(stats['F1'])
     
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(confusionMatrix=True):
+for stats in LAP.get_stats_from_cv(confusionMatrix=True):
     print(stats['confusionMatrix'])
     
 ##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+LAP.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
 
 ##############################################################################
 # Predict map
 # ---------------------------
     
-LAP.predictRaster(raster,'/tmp/classification.tif',
-                  confidence='/tmp/confidence.tif',
-                  confidencePerClass='/tmp/confidencePerClass.tif')
+LAP.predict_image(raster,'/tmp/classification.tif',
+                  higher_confidence='/tmp/confidence.tif',
+                  confidence_per_class='/tmp/confidencePerClass.tif')
 
 ##########################
 # Plot example

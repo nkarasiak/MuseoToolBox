@@ -12,7 +12,7 @@ learning process to avoi generate a new raster.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.learn_tools import SuperLearn
 from museotoolbox.raster_tools import extract_values
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -40,7 +40,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = LearnAndPredict(n_jobs=1,verbose=1)
+LAP = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10]),n_jobs=1,verbose=1)
 
 ##############################################################################
 # Create or use custom function
@@ -51,17 +51,11 @@ def reduceBands(X,bandToKeep=[0,2]):
     return X
 
 # add this function to learnAndPredict class
-LAP.customizeX(reduceBands)
+LAP.customize_array(reduceBands)
 
 # if you learn from vector, refit according to the f1_mean
 X,y = extract_values(raster,vector,field)
-LAP.learnFromVector(X,y,cv=2,classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=scoring,refit='f1_mean')
-
-# if you learn from raster
-LAP.learnFromRaster(raster,vector,field,cv=2,classifier=classifier,param_grid=dict(n_estimators=[10]),
-                    scoring=scoring,refit='f1_mean')
-
+LAP.learn(X,y,cv=2,scoring=scoring,refit='f1_mean')
 
 ##############################################################################
 # Read the model
@@ -74,29 +68,29 @@ print(LAP.model.best_score_)
 # Get F1 for every class from best params
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(confusionMatrix=False,F1=True):
+for stats in LAP.get_stats_from_cv(confusionMatrix=False,F1=True):
     print(stats['F1'])
     
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(confusionMatrix=True):
+for stats in LAP.get_stats_from_cv(confusionMatrix=True):
     print(stats['confusionMatrix'])
     
 ##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
+LAP.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
 
 ##############################################################################
 # Predict map
 # ---------------------------
     
-LAP.predictRaster(raster,'/tmp/classification.tif',
-                  confidence='/tmp/confidence.tif',
-                  confidencePerClass='/tmp/confidencePerClass.tif')
+LAP.predict_image(raster,'/tmp/classification.tif',
+                  higher_confidence='/tmp/confidence.tif',
+                  confidence_per_class='/tmp/confidencePerClass.tif')
 ##########################
 # Plot example
 

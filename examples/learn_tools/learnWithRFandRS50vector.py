@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.learn_tools import LearnAndPredict
+from museotoolbox.learn_tools import SuperLearn
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -39,42 +39,41 @@ classifier = RandomForestClassifier(random_state=12)
 # Start learning
 # ---------------------------
 
-LAP = LearnAndPredict(n_jobs=1)
-LAP.learnFromVector(X,y,cv=SKF,
-                    classifier=classifier,param_grid=dict(n_estimators=[10]))
+SL = SuperLearn(n_jobs=1,classifier=classifier,param_grid=dict(n_estimators=[10]))
+SL.learn(X,y,cv=SKF)
 
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------
   
-for stats in LAP.getStatsFromCV(confusionMatrix=False,kappa=True):
+for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
     print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(confusionMatrix=True):
+for stats in SL.get_stats_from_cv(confusionMatrix=True):
     print(stats['confusionMatrix'])
     
 ##############################################################################
 # Only get accuracies score (OA and Kappa)
 # -----------------------------------------------
 
-for stats in LAP.getStatsFromCV(OA=True,kappa=True,confusionMatrix=False,F1=False):
+for stats in SL.get_stats_from_cv(OA=True,kappa=True,confusionMatrix=False,F1=False):
     print(stats)
     
 ##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.saveCMFromCV('/tmp/testMTB/',prefix='SKF_',header=True)
+SL.save_cm_from_cv('/tmp/testMTB/',prefix='SKF_',header=True)
   
 ##############################################################################
 # Predict map
 # ---------------------------
 raster,_ = datasets.load_historical_data(low_res=True)
-LAP.predictRaster(raster,'/tmp/classification.tif')
+SL.predict_image(raster,'/tmp/classification.tif')
 
 ##########################
 # Plot example
