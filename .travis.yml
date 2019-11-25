@@ -1,5 +1,8 @@
 language: python
 os : linux
+addons :
+   apt:
+      - libgdal
 matrix:
   include:
   - os: linux
