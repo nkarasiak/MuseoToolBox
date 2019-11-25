@@ -2,14 +2,13 @@ dist: bionic
 language: python
 os : linux
 
+
 addons:
    apt:
      packages:
      - libgdal-dev
 matrix:
   include:
-  - os: linux
-    python: 3.5
   - os: linux
     python: 3.6
   - os: linux
@@ -23,10 +22,12 @@ install:
   - pip install gdal==`gdal-config --version`
   - pip install -r requirements.txt
   - pip install .
+  - pip install --user codecov
+  - pip install pytest-cov pytest
 
 script:
 - python setup.py develop
-- pytest
+- py.test  --cov-report term --cov=test/
 
 deploy:
   provider: pypi
