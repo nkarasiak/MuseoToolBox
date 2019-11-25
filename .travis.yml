@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 language: python
 os : linux
 
@@ -14,9 +14,16 @@ matrix:
     python: 3.6
   - os: linux
     python: 3.7
+
+before_install:
+  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo apt-get --quiet update
+  - sudo apt-get install --yes libgdal-dev gdal-bin
 install:
-- pip install -r requirements.txt
-- pip install .
+  - pip install gdal==`gdal-config --version`
+  - pip install -r requirements.txt
+  - pip install .
+
 script:
 - python setup.py develop
 - pytest
