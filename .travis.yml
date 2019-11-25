@@ -38,6 +38,5 @@ deploy:
     branch: master
   skip_existing: true
 
-after_succes:
+after_success:
  - codecov 
- - codecov -e 
