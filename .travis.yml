@@ -1,8 +1,12 @@
+dist: xenial
+
 language: python
+
 os : linux
-addons :
+
+addons:
    apt:
-      - libgdal
+      - libgdal-dev
 matrix:
   include:
   - os: linux
@@ -17,6 +21,7 @@ install:
 script:
 - python setup.py develop
 - pytest
+
 deploy:
   provider: pypi
   user: "karasiak"
@@ -26,5 +31,6 @@ deploy:
     tags: true
     branch: master
   skip_existing: true
+
 after_succes:
  - codecov 
