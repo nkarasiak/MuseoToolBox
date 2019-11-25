@@ -1,12 +1,11 @@
 dist: xenial
-
 language: python
-
 os : linux
 
 addons:
    apt:
-      - libgdal-dev
+     packages:
+     - libgdal-dev
 matrix:
   include:
   - os: linux
