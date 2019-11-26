@@ -261,64 +261,28 @@ class ComputeConfusionMatrix:
                 self.F1 = F1
 
 
-class ConfusionMatrixStats:
+def retrieve_y_from_confusion_matrix(confusion_matrix):
     """
-    Get stats from confusion matrix, including retrieve predicted label and real label (self.yp and self.yr).
+    retrive y_predict and y_truth from confusion matrix.
+    
+    Parameters
+    -----------
+    confusion_matrix : nd-array of shape [number of labels, number of labels]
+        The confusion matrix
+        
+    Returns
+    --------
+    yp,yt : two nd-array of shape [sum of confusion matrix,]
     
     """
-
-    def __init__(self, confusion_matrix):
-        self.confusion_matrix = np.asarray(confusion_matrix)
-        self.n = np.sum(self.confusion_matrix)
-        self.OA = self.get_OA()
-        self.kappa = self.get_kappa()
-        self.F1mean = self.get_F1Mean()
-        self.F1 = self.get_F1()
-        
-        self.yp = []
-        for j in range(confusion_matrix.shape[0]):
-            for i in range(confusion_matrix.shape[1]):
-                self.yp.extend([i+1]*confusion_matrix[j,i])
-        self.yp = np.asarray(self.yp)
-        self.yr = [[i+1]*np.sum(confusion_matrix[i,:]) for i in range(confusion_matrix.shape[0])]
-        self.yr = np.asarray([item for sublist in self.yr for item in sublist])
-        
-    def get_OA(self):
-        """
-        Compute overall accuracy
-        """
-        return np.sum(np.diag(self.confusion_matrix)) / float(self.n)
-
-    def get_kappa(self):
-        """
-        Compute Kappa
-        """
-        nl = np.sum(self.confusion_matrix, axis=1)
-        nc = np.sum(self.confusion_matrix, axis=0)
-        OA = np.sum(np.diag(self.confusion_matrix)) / float(self.n)
-        return ((self.n**2) * OA - np.sum(nc * nl)) / \
-            (self.n**2 - np.sum(nc * nl))
-
-    def get_F1Mean(self):
-        """
-        Compute F1 Mean
-        """
-        nl = np.sum(self.confusion_matrix, axis=1, dtype=float)
-        nc = np.sum(self.confusion_matrix, axis=0, dtype=float)
-        return 2 * np.mean(np.divide(np.diag(self.confusion_matrix), (nl + nc)))
-
-    def get_F1(self):
-        """
-        Compute F1 per class
-        """
-        f1 = []
-        for label in range(self.confusion_matrix.shape[0]):
-            TP = self.confusion_matrix[label, label]
-            #TN = np.sum(sp.diag(currentCsv))-currentCsv[label,label]
-            FN = np.sum(self.confusion_matrix[:, label]) - \
-                self.confusion_matrix[label, label]
-            FP = np.sum(self.confusion_matrix[label, :]) - \
-                self.confusion_matrix[label, label]
-
-            f1.append(2 * TP / (2 * TP + FP + FN))
-        return f1
+    confusion_matrix = np.asarray(confusion_matrix)
+    
+    yp = []
+    for j in range(confusion_matrix.shape[0]):
+        for i in range(confusion_matrix.shape[1]):
+            yp.extend([i+1]*confusion_matrix[j,i])
+    yp = np.asarray(yp)
+    yt = [[i+1]*np.sum(confusion_matrix[i,:]) for i in range(confusion_matrix.shape[0])]
+    yt = np.asarray([item for sublist in yr for item in sublist])
+    
+    return yp,yt

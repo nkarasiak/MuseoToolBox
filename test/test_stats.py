@@ -6,12 +6,15 @@ from museotoolbox import stats
 import gdal
 import osr
 import os
+from sklearn.metrics import accuracy_score,cohen_kappa_score
+
 confusion_matrix = np.array([[5,1],[2,2]])
-yp = [1,1,1,1,1,1,2,2,2,2]
-yr = [1,1,1,1,1,2,1,1,2,2]
+# real 
+yp_init= [1,1,1,1,1,1,2,2,2,2]
+yt_init = [1,1,1,1,1,2,1,1,2,2]
 
 
-        
+
 def create_false_image(array,path):
     # from https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
     driver = gdal.GetDriverByName('GTiff')
@@ -56,12 +59,12 @@ class TestStats(unittest.TestCase):
 
     def stats_from_cm(self):
         
-        sts = stats.ConfusionMatrixStats(confusion_matrix)
-        assert(sts.OA  == (np.sum(np.diag(confusion_matrix))/np.sum(confusion_matrix)))
-        assert(sts.n == np.sum(confusion_matrix))
-        
-        sts_from_matrix = stats.ComputeConfusionMatrix(np.asarray(sts.yr),np.asarray(sts.yp),OA=True)
-        assert(sts_from_matrix.OA == sts.OA)
+        yp,yt = stats.retrieve_y_from_confusion_matrix(confusion_matrix)
+        assert(accuracy_score(yp,yt)  == (np.sum(np.diag(confusion_matrix))/np.sum(confusion_matrix)))
+        assert(yp==yp_init)
+        assert(yt==yt_init)
+        sts_from_matrix = stats.ComputeConfusionMatrix(yp,yt,OA=True,kappa=True)
+        assert(sts_from_matrix.Kappa == cohen_kappa_score(yp,yt))
         
 if __name__ == "__main__":
     unittest.main()
