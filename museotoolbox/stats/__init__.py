@@ -225,6 +225,9 @@ class ComputeConfusionMatrix:
             If True, computes F1-Score per class.
         """
         # Initialization
+        if isinstance(yp,list):
+            yp = np.asarray(yp)
+            yr = np.asarray(yr)
         n = yp.size
         C = np.amax((int(yr.max()), int(yp.max())))
         self.confusion_matrix = np.zeros((C, C), dtype=np.int64)
@@ -283,6 +286,6 @@ def retrieve_y_from_confusion_matrix(confusion_matrix):
             yp.extend([i+1]*confusion_matrix[j,i])
     yp = np.asarray(yp)
     yt = [[i+1]*np.sum(confusion_matrix[i,:]) for i in range(confusion_matrix.shape[0])]
-    yt = np.asarray([item for sublist in yr for item in sublist])
+    yt = np.asarray([item for sublist in yt for item in sublist])
     
     return yp,yt

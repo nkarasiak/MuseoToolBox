@@ -10,8 +10,8 @@ from sklearn.metrics import accuracy_score,cohen_kappa_score
 
 confusion_matrix = np.array([[5,1],[2,2]])
 # real 
-yp_init= [1,1,1,1,1,1,2,2,2,2]
-yt_init = [1,1,1,1,1,2,1,1,2,2]
+yt_init= [1,1,1,1,1,1,2,2,2,2]
+yp_init = [1,1,1,1,1,2,1,1,2,2]
 
 
 
@@ -53,16 +53,16 @@ class TestStats(unittest.TestCase):
         assert(comm_om[0] == [confusion_matrix[0,1]/np.sum(confusion_matrix[0,:])*100,confusion_matrix[1,0]/np.sum(confusion_matrix[1,:])*100])
         assert(comm_om[1] == [confusion_matrix[1,0]/np.sum(confusion_matrix[:,0])*100,confusion_matrix[0,1]/np.sum(confusion_matrix[:,1])*100])
             
-        sts = stats.ComputeConfusionMatrix(yp=np.asarray([1,1,1,1,1,1,2,2,2,2]),yr=np.asarray([1,1,1,1,1,2,1,1,2,2]),OA=True,  kappa=  True,F1=True)
+        sts = stats.ComputeConfusionMatrix(yt_init,yp_init,OA=True,  kappa=  True,F1=True)
         assert(np.all(confusion_matrix == sts.confusion_matrix))
         assert(len(sts.F1) == 2)
 
-    def stats_from_cm(self):
+    def test_stats_from_cm(self):
         
         yp,yt = stats.retrieve_y_from_confusion_matrix(confusion_matrix)
         assert(accuracy_score(yp,yt)  == (np.sum(np.diag(confusion_matrix))/np.sum(confusion_matrix)))
-        assert(yp==yp_init)
-        assert(yt==yt_init)
+        assert(np.all(yp==yp_init))
+        assert(np.all(yt==yt_init))
         sts_from_matrix = stats.ComputeConfusionMatrix(yp,yt,OA=True,kappa=True)
         assert(sts_from_matrix.Kappa == cohen_kappa_score(yp,yt))
         
