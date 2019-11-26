@@ -42,12 +42,6 @@ setuptools.setup(
             "Programming Language :: Python :: 3",
             "Intended Audience :: Science/Research"],
     zip_safe=False,
-    entry_points = {
-        'console_scripts': [
-            'mtb_sampleExtraction=museotoolbox._cli.sampleExtraction:main',
-            'mtb_modalClass=museotoolbox._cli.computeClassificationStability:__modalClassCLI'
-        ],
-    },
     package_data={
       'museotoolbox': ['datasets/_historicalmap/map_compress.tif','datasets/_historicalmap/map_lowres.tif','datasets/_historicalmap/train.gpkg','datasets/_historicalmap/train_centroid.gpkg']
    }

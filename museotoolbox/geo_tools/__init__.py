@@ -1797,7 +1797,7 @@ def add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
         ThisID = 1
 
         for idx, FID in enumerate(FIDs):
-            pB.addPosition(idx / len(FIDs) + 1 * 100)
+            pB.add_position(idx / len(FIDs) + 1 * 100)
             feat = inLyr.GetFeature(FID)
             #ThisID = int(feat.GetFGetFeature(feat))
             # Write the FID to the ID field

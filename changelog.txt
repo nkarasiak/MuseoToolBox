@@ -2,7 +2,6 @@
 ----
 Lot of changes to satisfy python conventions.
 
-
 folder and functions names have changed :
     - raster_tools and vector_tools > geo_tools
     - getSamplesFromROI > extract_values
@@ -15,8 +14,8 @@ classes now always begin with a capital case :
     - sampleExtraction > SampleExtraction
     - sequentialFeatureSelection > SequentialFeatureSelection 
 
-Fix bug #7 : getSamplesFromROI (renamed extract_values) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
-
+- Fix bug #7 : getSamplesFromROI (renamed extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
+- Remove cli
 
 1.6.6
 ------

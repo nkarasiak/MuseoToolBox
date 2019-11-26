@@ -263,17 +263,26 @@ class ComputeConfusionMatrix:
 
 class ConfusionMatrixStats:
     """
-    Get stats from confusion matrix
+    Get stats from confusion matrix, including retrieve predicted label and real label (self.yp and self.yr).
+    
     """
 
     def __init__(self, confusion_matrix):
-        self.confusion_matrix = confusion_matrix
+        self.confusion_matrix = np.asarray(confusion_matrix)
         self.n = np.sum(self.confusion_matrix)
         self.OA = self.get_OA()
         self.kappa = self.get_kappa()
         self.F1mean = self.get_F1Mean()
         self.F1 = self.get_F1()
-
+        
+        self.yp = []
+        for j in range(confusion_matrix.shape[0]):
+            for i in range(confusion_matrix.shape[1]):
+                self.yp.extend([i+1]*confusion_matrix[j,i])
+        self.yp = np.asarray(self.yp)
+        self.yr = [[i+1]*np.sum(confusion_matrix[i,:]) for i in range(confusion_matrix.shape[0])]
+        self.yr = np.asarray([item for sublist in self.yr for item in sublist])
+        
     def get_OA(self):
         """
         Compute overall accuracy

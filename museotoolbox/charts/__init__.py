@@ -423,7 +423,7 @@ class PlotConfusionMatrix:
             ha=ha)
         self.axes.append([self.ax1v, self.ax1h])
 
-    def color_diagonal(self, diagColor=plt.cm.Greens, matrixColor=plt.cm.Reds):
+    def color_diagonal(self, diag_color=plt.cm.Greens, matrix_color=plt.cm.Reds):
         """
         Add user and producer accuracy.
 
@@ -447,13 +447,11 @@ class PlotConfusionMatrix:
         self.cm2 = np.ma.masked_array(self.cm, mask=np.logical_not(mask))
         self.cm = np.ma.masked_array(self.cm, mask=mask)
 
-        self.diagColor = diagColor
-
         self.ax.imshow(
             self.cm2,
             interpolation='nearest',
             aspect='equal',
-            cmap=diagColor,
+            cmap=diag_color,
             vmin=np.amin(
                 self.cm_),
             vmax=np.amax(
@@ -463,7 +461,7 @@ class PlotConfusionMatrix:
             self.cm,
             interpolation='nearest',
             aspect='equal',
-            cmap=matrixColor,
+            cmap=matrix_color,
             vmin=np.amin(
                 self.cm_),
             vmax=np.amax(

@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import unittest
-
+from shutil import copyfile
 import numpy as np
 from museotoolbox import geo_tools
 from museotoolbox.datasets import load_historical_data
-from museotoolbox import ai
 import gdal
 
-
 import os
-from sklearn.tree import DecisionTreeClassifier
 
 raster,vector = load_historical_data()
 rM =geo_tools.RasterMath(raster)
@@ -139,7 +136,24 @@ class TestRaster(unittest.TestCase):
     def test_unknow_field(self):
         self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'unknow')
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector)
-            
+    
+    def test_addfid(self):
+        copyfile(vector,'/tmp/test.gpkg')
+        for tf in [True,False]:
+            geo_tools.add_vector_unique_fid('/tmp/test.gpkg',uniqueField='to_create',verbose=tf)
+        geo_tools.sample_extraction(raster,'/tmp/test.gpkg','/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
+        self.assertRaises(Warning,geo_tools.sample_extraction,raster,'/tmp/test.gpkg','/test/vector.ppkg')
+        os.remove('/tmp/test.gpkg')
+        
+        y_ = geo_tools.read_vector_values('/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
+        assert(y_.shape[1] == gdal.Open(raster).RasterCount)
+        os.remove('/tmp/test_roi.gpkg')
+     
+    def test_centroid(self):
+     
+         Xc,yc = load_historical_data(centroid=True,return_X_y=True)
+         assert(Xc.shape[0] == geo_tools.read_vector_values(vector,'Type').shape[0])
+         
 #    def test_moran(self):
 #        # Maybe generate a false raster image to validate Moran's I
 #        im_mask = image_mask_from_vector(vector,raster,'/tmp/mask.tif')

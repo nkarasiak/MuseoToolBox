@@ -72,6 +72,6 @@ pltCM = PlotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = tru
 pltCM.add_text()
 pltCM.add_x_labels(labels,rotation=90)
 pltCM.add_y_labels(labels)
-pltCM.color_diagonal(diagColor=colorMap.Purples,matrixColor=colorMap.Reds)
+pltCM.color_diagonal(diag_color=colorMap.Purples,matrix_color=colorMap.Reds)
 pltCM.add_accuracy()
 pltCM.show()

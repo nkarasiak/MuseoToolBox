@@ -789,6 +789,7 @@ class SequentialFeatureSelection:
                 self.__getFeatureId(best_candidate) / self.n_comp)
             self.best_scores_.append(all_scores[best_candidate])
             self.best_features_.append(best_feature_id)
+            self.best_idx_ = np.argmax(self.best_scores_)
 
             if self.verbose:
                 push_feedback(
@@ -801,7 +802,6 @@ class SequentialFeatureSelection:
                                          cv_score=SL.model.cv_results_,
                                          best_score_=np.amax(all_scores),
                                          best_feature_=best_feature_id)
-
             self.__maskIdx(best_candidate)
 
     def predict(self, X, idx):
@@ -818,7 +818,7 @@ class SequentialFeatureSelection:
 
         self.__resetMask()
         if idx == 'best':
-            idx = np.argmax(self.best_scores_)
+            idx = self.best_idx_
             
         if self.path_to_save_models is False:
             SL = self.models_[idx]
