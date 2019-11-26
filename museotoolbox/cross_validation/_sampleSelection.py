@@ -13,7 +13,7 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 import os
-from .. import raster_tools, vector_tools
+from .. import geo_tools
 from . import _crossValidationClass
 import numpy as np
 from itertools import tee
@@ -146,7 +146,7 @@ class _sampleSelection:
         group : str, or None.
             Name of the field containing the group/subgroup (or None
         out_vector : str.
-            
+
             Path and filename to save the different results.
 
         Returns
@@ -163,7 +163,7 @@ class _sampleSelection:
         if self.wkbType != 1:
             print("""Warning : This function generates vector files according to your vector.
         The number of features may differ from the number of pixels used in classification.
-        If you want to save every ROI pixels in the vector, please use vector_tools.sampleExtraction before.""")
+        If you want to save every ROI pixels in the vector, please use geo_tools.sample_extraction before.""")
         del src, srcLyr
 
         fileName, self.__ext = os.path.splitext(out_vector)
@@ -176,10 +176,10 @@ class _sampleSelection:
 
         if group is None:
             groups = None
-            y, fts, srs = vector_tools.read_values(
+            y, fts, srs = geo_tools.read_vector_values(
                 vector, field, getFeatures=True, verbose=self.verbose)
         else:
-            y, groups, fts, srs = vector_tools.read_values(
+            y, groups, fts, srs = geo_tools.read_vector_values(
                 vector, field, group, getFeatures=True, verbose=self.verbose)
 
         if self.__alreadyRead:

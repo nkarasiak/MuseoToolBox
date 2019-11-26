@@ -342,8 +342,7 @@ class randomPerClass:
         self.random_state = random_state
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        
-        
+
     def __iter__(self):
         return self
 

@@ -73,15 +73,15 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     vector = os.path.join(__pathFile, '_historicalmap/train.gpkg')
 
     if return_X_y or return_X_y_g:
-        from ..raster_tools import extract_values
+        from ..geo_tools import extract_ROI
         if centroid:
             vector = os.path.join(
                 __pathFile, '_historicalmap/train_centroid.gpkg')
         if return_X_y_g:
-            X, y, g = extract_values(raster, vector, 'Class', 'uniquefid')
+            X, y, g = extract_ROI(raster, vector, 'Class', 'uniquefid')
             toReturn = (X, y, g)
         else:
-            X, y = extract_values(raster, vector, 'Class')
+            X, y = extract_ROI(raster, vector, 'Class')
             toReturn = (X, y)
     else:
         toReturn.append(raster)

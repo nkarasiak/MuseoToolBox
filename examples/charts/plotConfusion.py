@@ -10,7 +10,7 @@ Plot confusion matrix from Cross-Validation, with F1 as subplot.
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.learn_tools import SuperLearn
+from museotoolbox.ai import SuperLearn
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets

@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Plot confusion matrix with User/Producer accuracy
-========================================================
+Learn from vector with Random-Forest and Random Sampling 50% (RS50)
+====================================================================
 
-Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.
+This example shows how to make a Random Sampling with 
+50% for each class.
 
 """
 
 ##############################################################################
 # Import librairies
 # -------------------------------------------
+
 from museotoolbox.ai import SuperLearn
 from museotoolbox.cross_validation import RandomStratifiedKFold
-from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 
@@ -20,27 +21,26 @@ from sklearn.ensemble import RandomForestClassifier
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-X,y = datasets.load_historical_data(low_res=True,return_X_y=True)
+X,y = datasets.load_historical_data(return_X_y=True,low_res=True)
 
 ##############################################################################
 # Create CV
 # -------------------------------------------
-RSKF = RandomStratifiedKFold(n_splits=2,
+SKF = RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
 
 ##############################################################################
 # Initialize Random-Forest
 # ---------------------------
 
-classifier = RandomForestClassifier()
+classifier = RandomForestClassifier(random_state=12)
 
 ##############################################################################
 # Start learning
 # ---------------------------
 
-
-SL = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10,100]))
-SL.learn(X,y,cv=RSKF)
+SL = SuperLearn(n_jobs=1,classifier=classifier,param_grid=dict(n_estimators=[10]))
+SL.learn(X,y,cv=SKF)
 
 ##############################################################################
 # Get kappa from each fold
@@ -52,26 +52,35 @@ for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
-cms = []
+
 for stats in SL.get_stats_from_cv(confusionMatrix=True):
-    cms.append(stats['confusionMatrix'])
     print(stats['confusionMatrix'])
     
 ##############################################################################
-# Plot confusion matrix
+# Only get accuracies score (OA and Kappa)
 # -----------------------------------------------
+
+for stats in SL.get_stats_from_cv(OA=True,kappa=True,confusionMatrix=False,F1=False):
+    print(stats)
     
-import numpy as np
+##############################################################################
+# Save each confusion matrix from folds
+# -----------------------------------------------
 
-# a bug in Sphinx doesn't show the whole plot, sorry.
+SL.save_cm_from_cv('/tmp/testMTB/',prefix='SKF_',header=True)
+  
+##############################################################################
+# Predict map
+# ---------------------------
+raster,_ = datasets.load_historical_data(low_res=True)
+SL.predict_image(raster,'/tmp/classification.tif')
 
-labels = ['Forest','Agriculture','Bare soil','Water','Building']
-from matplotlib.pyplot import cm as colorMap
-meanCM = np.mean(cms,axis=0).astype(np.int16)
-pltCM = PlotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = truth
-pltCM.add_text()
-pltCM.add_x_labels(labels,rotation=90)
-pltCM.add_y_labels(labels)
-pltCM.color_diagonal(diagColor=colorMap.Purples,matrixColor=colorMap.Reds)
-pltCM.add_accuracy()
-pltCM.show()
+##########################
+# Plot example
+
+from matplotlib import pyplot as plt
+import gdal
+src=gdal.Open('/tmp/classification.tif')
+plt.imshow(src.GetRasterBand(1).ReadAsArray(),cmap=plt.get_cmap('tab20'))
+plt.axis('off')
+plt.show()

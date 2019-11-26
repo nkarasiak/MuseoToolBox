@@ -12,16 +12,12 @@ import numpy as np
 
 from museotoolbox.datasets import load_historical_data
 from museotoolbox import cross_validation
-from museotoolbox import vector_tools
-from museotoolbox import raster_tools
+from museotoolbox import geo_tools
 
-import gdal
 raster,vector = load_historical_data()
 X,y = load_historical_data(return_X_y=True)
 n_class = len(np.unique(y,return_counts=True)[1])
 smallest_class = np.min(np.unique(y,return_counts=True)[1])
-
-from sklearn.tree import DecisionTreeClassifier
 
 class TestCV(unittest.TestCase):
     
@@ -54,14 +50,18 @@ class TestCV(unittest.TestCase):
             assert(idx+1 == split*split)
             
     def test_distanceSLOO(self):
-        X,y = raster_tools.extract_values(raster,vector,'Class')
-        distance_matrix = vector_tools.get_distance_matrix(raster,vector)
+        X,y = geo_tools.extract_ROI(raster,vector,'Class')
+        distance_matrix = geo_tools.get_distance_matrix(raster,vector)
         assert(distance_matrix.shape[0] == y.size)
         for split in [2]:
     
             cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,random_state=12)
             
-            vector_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+            geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+            y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
+            y_polygons = geo_tools.read_vector_values(vector,'Class')
+            assert(y_.size == y.size)
+            assert(y_polygons.size != y_.size)
             
             list_files=cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/cv.gpkg')
             assert(len(list_files[0]) == 2)
@@ -73,8 +73,8 @@ class TestCV(unittest.TestCase):
                     
     def test_aside(self):
         
-        distance_matrix = vector_tools.get_distance_matrix(raster,vector)
-        X,y = raster_tools.extract_values(raster,vector,'Class')
+        distance_matrix = geo_tools.get_distance_matrix(raster,vector)
+        X,y = geo_tools.extract_ROI(raster,vector,'Class')
         ##############################################################################
         # Create CV
         # -------------------------------------------
@@ -82,8 +82,7 @@ class TestCV(unittest.TestCase):
         
         SLOPO = cross_validation.SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
                                      distance_matrix=distance_matrix,random_state=2)
-        
-        print(SLOPO.get_n_splits(X,y))
+        assert(SLOPO.get_n_splits(X,y) == 2)
         
         ###############################################################################
         # .. note::
@@ -100,7 +99,7 @@ class TestCV(unittest.TestCase):
         # In order to translate polygons into points (each points is a pixel in the raster)
         # we use sampleExtraction from vector_tools to generate a temporary vector.
         
-        vector_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         list_files = SLOPO.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOPO.gpkg')
         for tr,vl in list_files:
             assert(len(list_files[0]) == 2)

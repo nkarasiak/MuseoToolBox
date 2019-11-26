@@ -205,7 +205,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                  n_splits=False,
                  random_state=None,
                  verbose=False):
-        
+
         self.verbose = verbose
 
         self.crossvalidation = _cvc.distanceCV
@@ -242,12 +242,12 @@ class SpatialLeaveOneOut(_sampleSelection):
     See also
     ---------
     museotoolbox.vector_tools.get_distance_matrix : to get distance matrix and label.
-    
+
     References
     ----------
     See "Spatial leave‐one‐out cross‐validation for variable selection in the
     presence of spatial autocorrelation" : https://doi.org/10.1111/geb.12161.
-    
+
     """
 
     def __init__(self,
@@ -310,9 +310,9 @@ class RandomStratifiedKFold(_sampleSelection):
                  valid_size=False,
                  random_state=None,
                  verbose=False):
-        
+
         self.verbose = verbose
-        
+
         if valid_size is False:
             valid_size = 1 / n_splits
 

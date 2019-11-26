@@ -13,7 +13,7 @@ This example shows how to make a Random Sampling with
 # -------------------------------------------
 
 from museotoolbox.cross_validation import RandomStratifiedKFold
-from museotoolbox import datasets,raster_tools,vector_tools
+from museotoolbox import datasets,geo_tools
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -21,7 +21,7 @@ from museotoolbox import datasets,raster_tools,vector_tools
 
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-y = vector_tools.read_values(vector,field)
+y = geo_tools.read_vector_values(vector,field)
 
 ##############################################################################
 # Create CV
@@ -47,7 +47,7 @@ for tr,vl in SKF.split(X=None,y=y):
 #    When learning/predicting, all pixels will be taken in account
 #    TO generate a full X and y labels, extract samples from ROI
 
-X,y=raster_tools.extract_values(raster,vector,field)
+X,y=geo_tools.extract_ROI(raster,vector,field)
 
 for tr,vl in SKF.split(X,y):
     print(tr,vl)

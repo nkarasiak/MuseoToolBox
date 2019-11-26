@@ -11,9 +11,9 @@ The complete Museo ToolBox project is automatically documented for every module.
    :toctree: modules/
    :template: module.rst
    
-   raster_tools
-   vector_tools
-   learn_tools
+   geo_tools
+   ai
    cross_validation
    charts
+   stats
    datasets

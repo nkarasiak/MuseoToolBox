@@ -2,7 +2,9 @@
 ----
 Lot of changes to satisfy python conventions.
 
-functions names have changed :
+
+folder and functions names have changed :
+    - raster_tools and vector_tools > geo_tools
     - getSamplesFromROI > extract_values
     - historicalMap > load_historical_data
     - getDistanceMatrix > get_distance_matrix

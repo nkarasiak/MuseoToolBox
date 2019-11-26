@@ -15,15 +15,15 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import SpatialLeaveOneOut
-from museotoolbox import datasets,raster_tools,vector_tools
+from museotoolbox import datasets,geo_tools
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-X,y = raster_tools.extract_values(raster,vector,field)
-distance_matrix = vector_tools.get_distance_matrix(raster,vector)
+X,y = geo_tools.extract_ROI(raster,vector,field)
+distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV

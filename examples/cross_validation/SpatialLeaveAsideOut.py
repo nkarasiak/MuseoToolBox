@@ -14,7 +14,7 @@ See https://doi.org/10.1016/j.foreco.2013.07.059
 # -------------------------------------------
 
 from museotoolbox.cross_validation import SpatialLeaveAsideOut
-from museotoolbox import datasets,raster_tools,vector_tools
+from museotoolbox import datasets,geo_tools
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -22,8 +22,8 @@ from museotoolbox import datasets,raster_tools,vector_tools
 
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-X,y = raster_tools.extract_values(raster,vector,field)
-distance_matrix = vector_tools.get_distance_matrix(raster,vector)
+X,y = geo_tools.extract_ROI(raster,vector,field)
+distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV
@@ -48,7 +48,7 @@ for tr,vl in SLOPO.split(X,y):
 # In order to translate polygons into points (each points is a pixel in the raster)
 # we use sampleExtraction from vector_tools to generate a temporary vector.
 
-vector_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
 trvl = SLOPO.save_to_vector('/tmp/pixels.gpkg',field,out_vector='/tmp/SLOPO.gpkg')
 for tr,vl in trvl:
     print(tr,vl)
