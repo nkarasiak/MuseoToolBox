@@ -33,10 +33,6 @@ distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 SLOPO = SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,
                                 random_state=12)
 
-
-print(SLOPO.get_n_splits(X,y))
-
-
 ###############################################################################
 # .. note::
 #    Split is made to generate each fold

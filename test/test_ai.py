@@ -5,7 +5,7 @@ import numpy as np
 from museotoolbox import ai
 from museotoolbox.datasets import load_historical_data
 import gdal
-import osr
+
 import os
 
 from sklearn.ensemble import RandomForestClassifier
@@ -17,8 +17,8 @@ classifier = RandomForestClassifier()
 
 
 class TestStats(unittest.TestCase):
-    def test_SuperLearn(self):
-        model = ai.SuperLearn(classifier,param_grid=param_grid,verbose=1,n_jobs=2)
+    def test_SuperLearner(self):
+        model = ai.SuperLearner(classifier,param_grid=param_grid,verbose=1,n_jobs=2)
         
         cv = 2
         for tf in [False]:

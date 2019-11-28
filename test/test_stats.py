@@ -32,11 +32,11 @@ x = np.zeros((100,100),dtype=int)
 # max autocorr
 x[:50,:] = 1
 x[50:,:] = 0
-create_false_image(x,'/tmp/test_moran.tif')
+create_false_image(x,'/tmp/autocorrelated_moran.tif')
         
 class TestStats(unittest.TestCase):
     def test_Moran_param(self):
-        m = stats.Moran('/tmp/test_moran.tif',lag=[1,2])
+        m = stats.Moran('/tmp/autocorrelated_moran.tif',lag=[1,2])
         assert(m.get_n_neighbors(x[:3,:3],x[:3,:3],weights=x[:3,:3]) == 8)
         m.lags == [1,2]
         assert(len(m.scores['I']) == len(m.lags))
@@ -44,7 +44,7 @@ class TestStats(unittest.TestCase):
     def test_Moran(self):
         self.assertRaises(ReferenceError,stats.Moran,in_image='N/A')
 
-        moran = stats.Moran('/tmp/test_moran.tif',lag=1)
+        moran = stats.Moran('/tmp/autocorrelated_moran.tif',lag=1)
         assert(0.95 <= np.round(moran.I,0))
 
     def test_comm_om(self):
@@ -59,7 +59,7 @@ class TestStats(unittest.TestCase):
 
     def test_stats_from_cm(self):
         
-        yp,yt = stats.retrieve_y_from_confusion_matrix(confusion_matrix)
+        yt,yp = stats.retrieve_y_from_confusion_matrix(confusion_matrix)
         assert(accuracy_score(yp,yt)  == (np.sum(np.diag(confusion_matrix))/np.sum(confusion_matrix)))
         assert(np.all(yp==yp_init))
         assert(np.all(yt==yt_init))
@@ -68,6 +68,6 @@ class TestStats(unittest.TestCase):
         
 if __name__ == "__main__":
     unittest.main()
-    os.remove('/tmp/test_moran.tif')
+    os.remove('/tmp/autocorrelated_moran.tif')
 
     

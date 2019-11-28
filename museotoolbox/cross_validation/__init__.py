@@ -15,11 +15,10 @@
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation classes.
 """
-from ._sampleSelection import _sampleSelection
-from . import _crossValidationClass as _cvc
+from . import _sample_selection
 
 
-class LeaveOneOut(_sampleSelection):
+class LeaveOneOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation using a Stratified Leave One Out.
     Note : :class:`~LeaveOneOut` is equivalent to :class:`~museotoolbox.cross_validation.RandomStratifiedKFold` with ``valid_size=1`` and ``n_splits=False``.
@@ -29,7 +28,7 @@ class LeaveOneOut(_sampleSelection):
     n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest class.
         If int : will iterate the number of times given in n_splits.
-    random_state : integer or None, optional (default=None).
+    random_state : integer or None, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
     verbose : integer or False, optional (default=False).
@@ -38,21 +37,14 @@ class LeaveOneOut(_sampleSelection):
 
     def __init__(self,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
-        self.verbose = verbose
 
-        self.crossvalidation = _cvc.randomPerClass
-
-        self.params = dict(
-            valid_size=1,
-            n_splits=n_splits,
-            random_state=random_state)
-
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.randomPerClass, valid_size=1,
+                         n_splits=n_splits, random_state=random_state, verbose=verbose)
 
 
-class LeavePSubGroupOut(_sampleSelection):
+class LeavePSubGroupOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation using subgroup (each group belong to a unique label).
 
@@ -63,7 +55,7 @@ class LeavePSubGroupOut(_sampleSelection):
     n_splits : int or bool, optional (default=False).
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
         If int : will iterate the number of times given in n_splits.
-    random_state : integer or None, optional (default=None).
+    random_state : integer or None, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
     verbose : integer or False, optional (default=False).
@@ -73,11 +65,8 @@ class LeavePSubGroupOut(_sampleSelection):
     def __init__(self,
                  valid_size=0.5,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
-        self.verbose = verbose
-
-        self.crossvalidation = _cvc.groupCV
 
         if isinstance(valid_size, float):
             if valid_size > 1 or valid_size < 0:
@@ -88,15 +77,11 @@ class LeavePSubGroupOut(_sampleSelection):
         if n_splits == False:
             n_splits = int(1 / valid_size)
 
-        self.params = dict(
-            valid_size=valid_size,
-            n_splits=n_splits,
-            random_state=random_state)
-
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.groupCV, valid_size=valid_size,
+                         n_splits=n_splits, random_state=random_state, verbose=verbose)
 
 
-class LeaveOneSubGroupOut(_sampleSelection):
+class LeaveOneSubGroupOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation by subgroup.
 
@@ -105,7 +90,7 @@ class LeaveOneSubGroupOut(_sampleSelection):
     n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of times given in n_splits.
-    random_state : integer or None, optional (default=None).
+    random_state : integer or None, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
     verbose : integer or False, optional (default=False).
@@ -114,20 +99,14 @@ class LeaveOneSubGroupOut(_sampleSelection):
 
     def __init__(self,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
-        self.verbose = verbose
 
-        self.crossvalidation = _cvc.groupCV
-
-        self.params = dict(
-            valid_size=1,
-            n_splits=n_splits,
-            random_state=random_state)
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.groupCV, valid_size=1, n_splits=n_splits,
+                         random_state=random_state, verbose=verbose)
 
 
-class SpatialLeaveAsideOut(_sampleSelection):
+class SpatialLeaveAsideOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation using the farthest distance between the training and validation samples.
 
@@ -156,23 +135,17 @@ class SpatialLeaveAsideOut(_sampleSelection):
                  distance_matrix=None,
                  valid_size=0.5,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
-        self.verbose = verbose
 
-        self.crossvalidation = _cvc.distanceCV
         if n_splits == False:
             n_splits = int(1 / valid_size)
 
-        self.params = dict(
-            distance_matrix=distance_matrix,
-            valid_size=valid_size,
-            n_splits=n_splits,
-            random_state=random_state)
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
+                         valid_size=valid_size, n_splits=n_splits, random_state=random_state, verbose=verbose)
 
 
-class SpatialLeaveOneSubGroupOut(_sampleSelection):
+class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation with Spatial Leave-One-Out method.
 
@@ -195,7 +168,7 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
 
     See also
     --------
-    museotoolbox.vector_tools.get_distance_matrix : to get distance matrix and label.
+    museotoolbox.geo_tools.get_distance_matrix : to get distance matrix and label.
     """
 
     def __init__(self,
@@ -203,24 +176,18 @@ class SpatialLeaveOneSubGroupOut(_sampleSelection):
                  distance_matrix,
                  distance_label,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
 
-        self.verbose = verbose
-
-        self.crossvalidation = _cvc.distanceCV
-
-        self.params = dict(
-            distance_matrix=distance_matrix,
-            distance_thresold=distance_thresold,
-            distance_label=distance_label,
-            SLOO=True,
-            n_splits=n_splits,
-            random_state=random_state)
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
+                         distance_thresold=distance_thresold,
+                         distance_label=distance_label,
+                         SLOO=True,
+                         n_splits=n_splits,
+                         random_state=random_state, verbose=verbose)
 
 
-class SpatialLeaveOneOut(_sampleSelection):
+class SpatialLeaveOneOut(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation with a stratified spatial Leave-One-Out method.
 
@@ -233,7 +200,7 @@ class SpatialLeaveOneOut(_sampleSelection):
     n_splits : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of groups given in maxIter.
-    random_state : int or None, default=None.
+    random_state : int or False, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
     verbose : integer or False, optional (default=False).
@@ -254,27 +221,22 @@ class SpatialLeaveOneOut(_sampleSelection):
                  distance_thresold=None,
                  distance_matrix=None,
                  n_splits=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False,
                  **kwargs):
 
-        self.verbose = verbose
-
-        self.crossvalidation = _cvc.distanceCV
-
-        self.params = dict(
-            distance_matrix=distance_matrix,
-            distance_thresold=distance_thresold,
-            distance_label=False,
-            minTrain=False,
-            SLOO=True,
-            n_splits=n_splits,
-            random_state=random_state,
-            **kwargs)
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
+                         distance_thresold=distance_thresold,
+                         distance_label=False,
+                         minTrain=False,
+                         SLOO=True,
+                         n_splits=n_splits,
+                         random_state=random_state,
+                         verbose=verbose,
+                         **kwargs)
 
 
-class RandomStratifiedKFold(_sampleSelection):
+class RandomStratifiedKFold(_sample_selection._cv_manager):
     """
     Generate a Cross-Validation with full random selection and Stratified K-Fold (same percentange per class).
 
@@ -286,7 +248,7 @@ class RandomStratifiedKFold(_sampleSelection):
         If False, will repeat n_splits once.
     valid_size : int or False, optional (default=False).
         If False, valid size is ``1 / n_splits``.
-    random_state : integer or None, optional (default=None).
+    random_state : integer or None, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
     verbose : integer or False, optional (default=False).
@@ -294,11 +256,11 @@ class RandomStratifiedKFold(_sampleSelection):
 
     Example
     -------
-    >>> from museotoolbox.cross_validation import StratifiedKFold
+    >>> from museotoolbox.cross_validation import RandomStratifiedKFold
     >>> from museotoolbox import datasets
-    >>> X,y = datasets.historicalMap(return_X_y=True)
-    >>> SKF = StratifiedKFold(n_splits=2,random_state=12,verbose=False)
-    >>> for tr,vl in SKF.split(X=X,y=y):
+    >>> X,y = datasets.load_historical_data(return_X_y=True)
+    >>> RSK = RandomStratifiedKFold(n_splits=2,random_state=12,verbose=False)
+    >>> for tr,vl in RSK.split(X=X,y=y):
             print(tr,vl)
     [ 1600  1601  1605 ...,  9509  9561 10322] [ 3632  1988 11480 ..., 10321  9457  9508]
     [ 1599  1602  1603 ...,  9508  9560 10321] [ 3948 10928  3490 ..., 10322  9458  9561]
@@ -308,10 +270,8 @@ class RandomStratifiedKFold(_sampleSelection):
                  n_splits=2,
                  n_repeats=False,
                  valid_size=False,
-                 random_state=None,
+                 random_state=False,
                  verbose=False):
-
-        self.verbose = verbose
 
         if valid_size is False:
             valid_size = 1 / n_splits
@@ -321,11 +281,6 @@ class RandomStratifiedKFold(_sampleSelection):
         else:
             n_repeats = n_splits * n_repeats
 
-        self.crossvalidation = _cvc.randomPerClass
-
-        self.params = dict(
-            valid_size=valid_size,
-            random_state=random_state,
-            n_splits=n_repeats)
-
-        _sampleSelection.__init__(self)
+        super().__init__(_sample_selection.randomPerClass, valid_size=valid_size,
+                         random_state=random_state,
+                         n_splits=n_repeats, verbose=verbose)

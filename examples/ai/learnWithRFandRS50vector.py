@@ -12,7 +12,7 @@ This example shows how to make a Random Sampling with
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.ai import SuperLearn
+from museotoolbox.ai import SuperLearner
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -39,7 +39,7 @@ classifier = RandomForestClassifier(random_state=12)
 # Start learning
 # ---------------------------
 
-SL = SuperLearn(n_jobs=1,classifier=classifier,param_grid=dict(n_estimators=[10]))
+SL = SuperLearner(n_jobs=1,classifier=classifier,param_grid=dict(n_estimators=[10]))
 SL.learn(X,y,cv=SKF)
 
 ##############################################################################

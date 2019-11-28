@@ -12,7 +12,7 @@ learning process to avoi generate a new raster.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.ai import SuperLearn
+from museotoolbox.ai import SuperLearner
 from museotoolbox.geo_tools import extract_ROI
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
@@ -40,7 +40,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10]),n_jobs=1,verbose=1)
+LAP = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10]),n_jobs=1,verbose=1)
 
 ##############################################################################
 # Create or use custom function

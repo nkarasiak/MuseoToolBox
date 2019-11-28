@@ -43,7 +43,7 @@ class Moran:
             Weights with the same shape as the square size.
         intermediate_lag :  bool, optional (default=True).
             Use all pixel values inside the specified lag.
-            If `intermediate_lag` is set to False, only the 
+            If `intermediate_lag` is set to False, only the
             pixels at the specified range will be kept for computing the statistics.
         """
 
@@ -138,7 +138,7 @@ class Moran:
         Returns
         ---------
         w : int
-            The number of neighbors.         
+            The number of neighbors.
         """
         b = np.reshape(
             array, (footprint.shape[0], footprint.shape[1])).astype(np.float64)
@@ -225,7 +225,7 @@ class ComputeConfusionMatrix:
             If True, computes F1-Score per class.
         """
         # Initialization
-        if isinstance(yp,list):
+        if isinstance(yp, list):
             yp = np.asarray(yp)
             yr = np.asarray(yr)
         n = yp.size
@@ -267,25 +267,26 @@ class ComputeConfusionMatrix:
 def retrieve_y_from_confusion_matrix(confusion_matrix):
     """
     retrive y_predict and y_truth from confusion matrix.
-    
+
     Parameters
     -----------
     confusion_matrix : nd-array of shape [number of labels, number of labels]
         The confusion matrix
-        
+
     Returns
     --------
-    yp,yt : two nd-array of shape [sum of confusion matrix,]
-    
+    yt,yp : two nd-array of shape [sum of confusion matrix,]
+
     """
     confusion_matrix = np.asarray(confusion_matrix)
-    
+
     yp = []
     for j in range(confusion_matrix.shape[0]):
         for i in range(confusion_matrix.shape[1]):
-            yp.extend([i+1]*confusion_matrix[j,i])
+            yp.extend([i + 1] * confusion_matrix[j, i])
     yp = np.asarray(yp)
-    yt = [[i+1]*np.sum(confusion_matrix[i,:]) for i in range(confusion_matrix.shape[0])]
+    yt = [[i + 1] * np.sum(confusion_matrix[i, :])
+          for i in range(confusion_matrix.shape[0])]
     yt = np.asarray([item for sublist in yt for item in sublist])
-    
-    return yp,yt
+
+    return yt, yp

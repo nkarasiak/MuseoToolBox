@@ -25,10 +25,10 @@ from ..geo_tools import RasterMath, get_gdt_from_minmax_values, convert_dt
 from ..internal_tools import ProgressBar, push_feedback
 
 
-class SuperLearn:
+class SuperLearner:
     def __init__(self, classifier, param_grid=None, n_jobs=1, verbose=False):
         """
-        SuperLearn, shortname for Supervised Learning, ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
+        SuperLearner, shortname for Supervised Learning, ease the way to learn a model via an array or a raster using Scikit-Learn algorithm.
         After learning a model via :func:`learn`, you can predict via :func:`predict_image` or :func:`predict_array`.
 
         Parameters
@@ -49,7 +49,7 @@ class SuperLearn:
         >>> RS50 = mtb.cross_validation.RandomStratifiedKFold(n_splits=2,n_repeats=5,
                 random_state=12,verbose=False)
         >>> classifier = RandomForestClassifier()
-        >>> SL = mtb.learn_tools.SuperLearn(verbose=True)
+        >>> SL = mtb.learn_tools.SuperLearner(verbose=True)
         >>> SL.learnFromRaster(raster,vector,inField='class',cv=RS50,
                     classifier=classifier,param_grid=dict(n_estimators=[100,200]))
         Reading raster values...  [########################################]100%
@@ -220,7 +220,7 @@ class SuperLearn:
 
     def save_model(self, path):
         """
-        Save model 'myModel.npz' to be loaded later via `SuperLearn.load_model(path)`
+        Save model 'myModel.npz' to be loaded later via `SuperLearner.load_model(path)`
 
         Parameters
         ----------
@@ -241,7 +241,7 @@ class SuperLearn:
 
     def load_model(self, path, onlySKmodel=False):
         """
-        Load model previously saved with `SuperLearn.save_model(path)`.
+        Load model previously saved with `SuperLearner.save_model(path)`.
 
         Parameters
         ----------
@@ -497,7 +497,7 @@ class SuperLearn:
 
         Examples
         --------
-        After having learned with :mod:`museotoolbox.learn_tools.SuperLearn` :
+        After having learned with :mod:`museotoolbox.learn_tools.SuperLearner` :
 
         >>> SL.saveCMFromCV('/tmp/testMTB/',prefix='RS50_')
         [Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
@@ -568,7 +568,7 @@ class SuperLearn:
 
         Examples
         --------
-        After having learned with :mod:`museotoolbox.learn_tools.SuperLearn` :
+        After having learned with :mod:`museotoolbox.learn_tools.SuperLearner` :
 
         >>> for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
         >>> stats['kappa']
@@ -613,11 +613,11 @@ class SequentialFeatureSelection:
     Parameters
     ----------
     classifier : class.
-        Classifier from scikit-learn.    
+        Classifier from scikit-learn.
     param_grid : array.
         param_grid for hyperparameters of the classifier.
     cv : int, or cross_validation method, optional (default=5).
-        Default will use 
+        Default will use
     scoring : str or class, optional
         default is 'accuracy'. See sklearn.metrics.make_scorer from scikit-learn.
     n_comp : int, optional
@@ -677,7 +677,7 @@ class SequentialFeatureSelection:
         if self.xFunction:
             self.X = self.xFunction(X, **self.xKwargs)
             if self.X.ndim == 1:
-                self.X = self.X.reshape(-1,1)
+                self.X = self.X.reshape(-1, 1)
 
         xSize = self.X.shape[1]
         self.n_features = int(xSize / self.n_comp)
@@ -718,8 +718,8 @@ class SequentialFeatureSelection:
                     else:
                         all_scores = scores[:, 1]
                         best_candidate = np.argmax(scores[:, 1])
-                    SL = SuperLearn(classifier=self.classifier,
-                                    param_grid=self.param_grid, n_jobs=n_jobs, verbose=self.verbose - 1)
+                    SL = SuperLearner(classifier=self.classifier,
+                                      param_grid=self.param_grid, n_jobs=n_jobs, verbose=self.verbose - 1)
                     SL.load_model(self.path_to_save_models +
                                   'model_{}.npz'.format(j))
                     self.models_path_.append(
@@ -730,8 +730,8 @@ class SequentialFeatureSelection:
                         n_features_to_test):  # at each loop, remove best candidate
                     if self.verbose:
                         pB.add_position()
-                    SL = SuperLearn(classifier=self.classifier, param_grid=self.param_grid,
-                                    n_jobs=n_jobs, verbose=self.verbose - 1)
+                    SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
+                                      n_jobs=n_jobs, verbose=self.verbose - 1)
                     curX = self.__transformInFit(self.X, idx)
                     if standardize is False:
                         scale = False
@@ -755,7 +755,8 @@ class SequentialFeatureSelection:
                 SL = resPerFeatures[best_candidate]
 
                 if self.path_to_save_models:
-                    if not os.path.exists(os.path.join(self.path_to_save_models, str(j))):
+                    if not os.path.exists(os.path.join(
+                            self.path_to_save_models, str(j))):
                         os.makedirs(os.path.join(
                             self.path_to_save_models, str(j)))
                     SL.save_model(self.path_to_save_models +
@@ -819,14 +820,14 @@ class SequentialFeatureSelection:
         self.__resetMask()
         if idx == 'best':
             idx = self.best_idx_
-            
+
         if self.path_to_save_models is False:
             SL = self.models_[idx]
         else:
-            SL = SuperLearn(classifier=self.classifier, param_grid=self.param_grid,
-                    n_jobs=1, verbose=self.verbose)
+            SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
+                              n_jobs=1, verbose=self.verbose)
             SL.load_model(self.models_[idx])
-            
+
         return SL.predict_array(self.transform(X, idx=idx))
 
     def predict_best_combination(
@@ -854,7 +855,7 @@ class SequentialFeatureSelection:
         if self.path_to_save_models is False:
             SL = self.models_[self.best_idx_]
         else:
-            SL = SuperLearn(classifier=False, n_jobs=1, verbose=self.verbose)
+            SL = SuperLearner(classifier=False, n_jobs=1, verbose=self.verbose)
             SL.load_model(self.models_path_[self.best_idx_])
 
         SL.customize_array(self.transform, idx=self.best_idx_, customizeX=True)
@@ -862,7 +863,8 @@ class SequentialFeatureSelection:
         SL.predict_image(in_image, out_image, in_image_mask=in_image_mask,
                          higher_confidence=higher_confidence)
 
-    def predict_images(self, in_image, out_image_prefix, in_image_mask=False, higher_confidence=False):
+    def predict_images(self, in_image, out_image_prefix,
+                       in_image_mask=False, higher_confidence=False):
         """
         Predict each best found features with SFFS.fit(X,y).
 
@@ -885,7 +887,7 @@ class SequentialFeatureSelection:
             if self.path_to_save_models is False:
                 SL = self.models_[idx]
             else:
-                SL = SuperLearn(n_jobs=1, verbose=self.verbose)
+                SL = SuperLearner(n_jobs=1, verbose=self.verbose)
                 SL.load_model(model)
 
             SL.customize_array(self.transform, idx=idx, customizeX=True)
@@ -987,7 +989,7 @@ class SequentialFeatureSelection:
     def getBestModel(self, clone=False):
         self.best_idx_ = np.argmax(self.best_scores_)
         if self.path_to_save_models:
-            SL = SuperLearn(n_jobs=1, verbose=self.verbose)
+            SL = SuperLearner(n_jobs=1, verbose=self.verbose)
             SL.loadModel(self.models_path_[self.best_idx_])
         else:
             SL = self.models_[self.best_idx_]

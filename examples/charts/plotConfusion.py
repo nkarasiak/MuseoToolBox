@@ -10,7 +10,7 @@ Plot confusion matrix from Cross-Validation, with F1 as subplot.
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.ai import SuperLearn
+from museotoolbox.ai import SuperLearner
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets
@@ -37,7 +37,7 @@ classifier = RandomForestClassifier()
 # Start learning
 # ---------------------------
 
-SL = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10,50]))
+SL = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10,50]))
 SL.learn(X,y,cv=RSKF)
 ##############################################################################
 # Get kappa from each fold

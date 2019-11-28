@@ -423,7 +423,8 @@ class PlotConfusionMatrix:
             ha=ha)
         self.axes.append([self.ax1v, self.ax1h])
 
-    def color_diagonal(self, diag_color=plt.cm.Greens, matrix_color=plt.cm.Reds):
+    def color_diagonal(self, diag_color=plt.cm.Greens,
+                       matrix_color=plt.cm.Reds):
         """
         Add user and producer accuracy.
 

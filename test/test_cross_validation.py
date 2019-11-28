@@ -53,24 +53,34 @@ class TestCV(unittest.TestCase):
         X,y = geo_tools.extract_ROI(raster,vector,'Class')
         distance_matrix = geo_tools.get_distance_matrix(raster,vector)
         assert(distance_matrix.shape[0] == y.size)
-        for split in [2]:
     
-            cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,random_state=12)
-            
-            geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
-            y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
-            y_polygons = geo_tools.read_vector_values(vector,'Class')
-            assert(y_.size == y.size)
-            assert(y_polygons.size != y_.size)
-            
-            list_files=cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/cv.gpkg')
-            assert(len(list_files[0]) == 2)
-            for l in list_files:
-                for f in l:
-                    os.remove(f)
-            os.remove('/tmp/pixels.gpkg')
-            
-                    
+        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,random_state=12,verbose=2)
+        
+        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
+        y_polygons = geo_tools.read_vector_values(vector,'Class')
+        assert(y_.size == y.size)
+        assert(y_polygons.size != y_.size)
+        tr=[]
+        vl=[]
+        for t,v in cv.split(X,y):
+            tr.append(t)
+            vl.append(v)
+            assert(v.size == n_class)
+        list_files=cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/cv.gpkg')
+        assert(len(list_files[0]) == 2)
+        for l in list_files:
+            for f in l:
+                os.remove(f)
+        os.remove('/tmp/pixels.gpkg')
+        # to keep same size of training by a random selection
+
+        cv = cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,distance_thresold=100,distance_matrix=distance_matrix,random_state=12,LOOsameSize=False)
+        for idx,trvl in enumerate(cv.split(X,y)):
+            assert(trvl[0].size == tr[idx].size) # same size between loo and sloo 
+            assert(np.all(trvl[1] == vl[idx])) # using same valid pixel
+        del tr,vl,v,l
+        
     def test_aside(self):
         
         distance_matrix = geo_tools.get_distance_matrix(raster,vector)
@@ -118,6 +128,9 @@ class TestCV(unittest.TestCase):
             assert(np.all(trvl_loo[1]==trvl_kf[1]))
             assert(len(trvl_kf[1]) == n_class)
             assert(np.unique(y[trvl_kf[1]]).size == n_class)
+            
+    
+
 
 if __name__ == "__main__":
     unittest.main()

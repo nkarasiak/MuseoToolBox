@@ -11,7 +11,7 @@ This example shows how to make a classification with different cross-validation 
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.ai import SuperLearn
+from museotoolbox.ai import SuperLearner
 from museotoolbox import cross_validation
 from museotoolbox.geo_tools import extract_ROI
 from museotoolbox import datasets
@@ -47,7 +47,7 @@ kappas=[]
 
 
 for cv in CVs : 
-    SL = SuperLearn( classifier=classifier,param_grid=dict(n_estimators=[50,100]),n_jobs=1)
+    SL = SuperLearner( classifier=classifier,param_grid=dict(n_estimators=[50,100]),n_jobs=1)
     SL.learn(X,y,group=g,cv=cv)
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []

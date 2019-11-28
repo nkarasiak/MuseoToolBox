@@ -10,7 +10,7 @@ Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplo
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-from museotoolbox.ai import SuperLearn
+from museotoolbox.ai import SuperLearner
 from museotoolbox.cross_validation import RandomStratifiedKFold
 from museotoolbox.charts import PlotConfusionMatrix
 from museotoolbox import datasets
@@ -39,7 +39,7 @@ classifier = RandomForestClassifier()
 # ---------------------------
 
 
-SL = SuperLearn(classifier=classifier,param_grid=dict(n_estimators=[10,100]))
+SL = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10,100]))
 SL.learn(X,y,cv=RSKF)
 
 ##############################################################################

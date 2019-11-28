@@ -45,6 +45,7 @@ for tr,vl in LOOPC.split(X=None,y=y):
 trvl = LOOPC.save_to_vector(datasets.load_historical_data()[1],'Class',out_vector='/tmp/LOO.gpkg')
 for tr,vl in trvl:
     print(tr,vl)
+
  
 ###############################################################################
 #    Plot example on how a polygon was splitted

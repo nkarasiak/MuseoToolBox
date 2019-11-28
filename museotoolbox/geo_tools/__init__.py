@@ -29,7 +29,8 @@ import ogr
 from ..internal_tools import ProgressBar, push_feedback
 
 
-def image_mask_from_vector(in_vector, in_image, out_image, invert=False, gdt=gdal.GDT_Byte):
+def image_mask_from_vector(
+        in_vector, in_image, out_image, invert=False, gdt=gdal.GDT_Byte):
     """
     Create a image mask where polygons/points are the pixels to keep.
 
@@ -311,7 +312,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
                 for n in range(ldefn.GetFieldCount()):
                     fdefn = ldefn.GetFieldDefn(n)
                     if fdefn.name is not listFields:
-                        listFields.append('"'+fdefn.name+'"')
+                        listFields.append('"' + fdefn.name + '"')
                 raise ValueError('Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(
                     f, ', '.join(listFields)))
 
@@ -338,7 +339,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
             data_src = rasterize(in_image, in_vector, field,
                                  out_image=image_field, gdt=gdal.GDT_Float64)
 
-        except:
+        except BaseException:
 
             raster_in_mem = False
             image_field = tempfile.mktemp('_roi.tif')
@@ -712,7 +713,7 @@ class RasterMath:
 
         See also
         ----------
-        museotoolbox.raster_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block 
+        museotoolbox.raster_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block
         museotoolbox.raster_tools.convert_dt : To see conversion between numpy datatype to gdal datatype.
         museotoolbox.raster_tools.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
         """

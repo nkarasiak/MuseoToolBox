@@ -19,7 +19,7 @@ def checkOTB():
     try:
         import otbApplication
         return True
-    except:
+    except BaseException:
         raise ImportError('Please install OTB python binding')
 
 

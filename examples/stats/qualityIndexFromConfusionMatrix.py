@@ -12,14 +12,15 @@ from confusion matrix.
 # Import librairies
 # -------------------------------------------
 import numpy as np
-from museotoolbox.stats import ConfusionMatrixStats
+from museotoolbox.stats import retrieve_y_from_confusion_matrix
 from museotoolbox.charts import PlotConfusionMatrix
-
+from sklearn.metrics import accuracy_score,cohen_kappa_score
 ##############################################################################
 # Create a random confusion matrix
 # -------------------------------------------
 
-confusion_matrix = np.random.randint(1,50,size=[6,6])
+confusion_matrix = np.random.randint(1,30,size=[6,6])
+confusion_matrix[range(6),range(6)] += 40
 print('Total number of pixels : '+str(np.sum(confusion_matrix)))
 
 PlotConfusionMatrix(confusion_matrix).add_text()
@@ -27,11 +28,9 @@ PlotConfusionMatrix(confusion_matrix).add_text()
 ##############################################################################
 # Generate index from the confusion matrix
 
-sts = ConfusionMatrixStats(confusion_matrix=confusion_matrix)
+yp,yt = retrieve_y_from_confusion_matrix(confusion_matrix)
 
 ################################
 # show quality
-print('OA  : ' +str(sts.OA))
-print('F1 per class : '+str(sts.F1))
-print('F1mean : '+str(sts.F1mean))
-print('Kappa : '+str(sts.kappa))
+print('OA is : '+str(accuracy_score(yp,yt)))
+print('Kappa is : '+str(cohen_kappa_score(yp,yt)))
