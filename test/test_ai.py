@@ -7,6 +7,7 @@ from museotoolbox.datasets import load_historical_data
 import gdal
 
 import os
+import shutil
 
 from sklearn.ensemble import RandomForestClassifier
 
@@ -17,27 +18,41 @@ classifier = RandomForestClassifier()
 
 
 class TestStats(unittest.TestCase):
-    def test_SuperLearner(self):
-        model = ai.SuperLearner(classifier,param_grid=param_grid,verbose=1,n_jobs=2)
+    def test_superLearner(self):
         
-        cv = 2
-        for tf in [False]:
-            model.learn(X,y,group=g,standardize=tf,cv=cv)
+        n_cv = 2
+        for tf in [True,False]:
+            model = ai.SuperLearner(classifier,param_grid=param_grid,verbose=1,n_jobs=2)
+            model.learn(X,y,group=g,standardize=tf,cv=n_cv)
             assert(model.predict_array(X).shape == y.shape)
-            len(model.CV) == cv
+            len(model.CV) == n_cv
             assert(np.all(model.group == g))
             
-            model.predict_image(raster,'/tmp/class.tif',confidence_per_class='/tmp/confclass.tif',higher_confidence='/tmp/higherconf.tif')
-            assert(model._array_is_customized == False)
+            model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
+            assert(model._is_standardized == tf)
+        
         model.customize_array(np.mean,axis=1)
-        model.learn(X,y,group=g,standardize=tf,cv=cv)
+        assert(model._array_is_customized)
+        assert(model.xFunction)
+        assert(np.all(model.standardize_array(X) != X))
+        model.standardize_array()
+        model.learn(X,y,group=g,standardize=tf,cv=n_cv)
         assert(model._array_is_customized == True)
-        model.predict_image(raster,'/tmp/class.tif',confidence_per_class='/tmp/confclass.tif',higher_confidence='/tmp/higherconf.tif')
-        assert(gdal.Open('/tmp/class.tif').RasterCount == 1)
-        assert(gdal.Open('/tmp/higherconf.tif').RasterCount == 1)
-        assert(gdal.Open('/tmp/confclass.tif').RasterCount == len(np.unique(y)))
-           
-    def test_Sequential(self):
+        model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
+        assert(gdal.Open('/tmp/SuperLearner/class.tif').RasterCount == 1)
+        assert(gdal.Open('/tmp/SuperLearner/higherconf.tif').RasterCount == 1)
+        assert(gdal.Open('/tmp/SuperLearner/confclass.tif').RasterCount == len(np.unique(y)))
+        cms = model.get_stats_from_cv()
+        
+        assert(len(cms) == n_cv)
+        
+        model.save_model('/tmp/SuperLearner/model.npz')
+        assert(os.path.exists('/tmp/SuperLearner/model.npz'))
+        model.load_model('/tmp/SuperLearner/model.npz')
+        shutil.rmtree('/tmp/SuperLearner/')
+
+        
+    def test_sequential(self):
         sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2)
         sfs.fit(X,y,group=g)
         sfs.predict(X,idx=0)
@@ -45,9 +60,17 @@ class TestStats(unittest.TestCase):
         sfs.predict_best_combination(raster,'/tmp/class.tif')
         sfs.predict_images(raster,'/tmp/class')
         
-        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2)
-        sfs.customize_array(np.mean,axis=-1)
-        sfs.fit(X,y,group=g)
+        n_comp = 2
+        max_features = 2
+        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp)
+        def double_columns(x):
+            return np.hstack((x,x))
+        sfs.customize_array(double_columns)
+        sfs.fit(X,y,path_to_save_models='/tmp/sfs_models/',max_features=max_features,standardize=True)
+        assert(sfs.X.shape[1] == X.shape[1]*2)
+        assert(len(sfs.best_features_) == 2)
+        assert(sfs.get_best_model().X.shape[1] == n_comp*max_features        )
+        shutil.rmtree('/tmp/sfs_models/')
         
 if __name__ == "__main__":
     unittest.main()

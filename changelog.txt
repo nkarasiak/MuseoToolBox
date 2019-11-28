@@ -1,9 +1,12 @@
-1.7rc1
+2.0b1
 ----
 Lot of changes to satisfy python conventions.
 
-folder and functions names have changed :
+Some folders have changed name :
     - raster_tools and vector_tools > geo_tools
+    - learn_tools > ai
+
+some functions have changed name : 
     - getSamplesFromROI > extract_values
     - historicalMap > load_historical_data
     - getDistanceMatrix > get_distance_matrix
@@ -16,6 +19,7 @@ classes now always begin with a capital case :
 
 - Fix bug #7 : getSamplesFromROI (renamed extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
 - Remove cli
+
 
 1.6.6
 ------

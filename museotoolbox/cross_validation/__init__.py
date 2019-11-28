@@ -70,9 +70,9 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
 
         if isinstance(valid_size, float):
             if valid_size > 1 or valid_size < 0:
-                raise Exception('Percent must be between 0 and 1')
+                raise ValueError('Percent must be between 0 and 1')
         else:
-            raise Exception(
+            raise ValueError(
                 'Percent must be between 0 and 1 and must be a float')
         if n_splits == False:
             n_splits = int(1 / valid_size)

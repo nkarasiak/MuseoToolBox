@@ -83,13 +83,13 @@ class SuperLearner:
         if self.verbose is False:
             warnings.filterwarnings("ignore")
         self.standardize = False
-        self.standardized = False
+        self._is_standardized = False
         self._array_is_customized = False
         self.xKwargs = {}
         self.CV = False
         self.cloneModel = False
 
-    def standardizeX(self, X=None, need_transformation=False):
+    def standardize_array(self, X=None, need_transformation=False):
         """
         Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
@@ -113,9 +113,9 @@ class SuperLearner:
             if need_transformation:
                 if self._array_is_customized:
                     X = self.xFunction(X, **self.xKwargs)
-            if self.standardized is False:
+            if self._is_standardized is False:
                 self.StandardScaler.fit(X)
-                self.standardized = True
+                self._is_standardized = True
 
             Xt = self.StandardScaler.transform(X)
 
@@ -159,8 +159,8 @@ class SuperLearner:
 
         if standardize:
             self.standardize = True
-            self.standardizeX()
-            self.X = self.standardizeX(X, need_transformation=False)
+            self.standardize_array()
+            self.X = self.standardize_array(X, need_transformation=False)
 
         self.__learn__(
             self.X,
@@ -986,11 +986,11 @@ class SequentialFeatureSelection:
         """
         self.mask[:] = 1
 
-    def getBestModel(self, clone=False):
+    def get_best_model(self, clone=False):
         self.best_idx_ = np.argmax(self.best_scores_)
         if self.path_to_save_models:
-            SL = SuperLearner(n_jobs=1, verbose=self.verbose)
-            SL.loadModel(self.models_path_[self.best_idx_])
+            SL = SuperLearner(classifier=None,n_jobs=1, verbose=self.verbose)
+            SL.load_model(self.models_path_[self.best_idx_])
         else:
             SL = self.models_[self.best_idx_]
 

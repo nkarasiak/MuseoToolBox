@@ -15,7 +15,8 @@ from museotoolbox import cross_validation
 from museotoolbox import geo_tools
 
 raster,vector = load_historical_data()
-X,y = load_historical_data(return_X_y=True)
+X,y,g = load_historical_data(return_X_y_g=True)
+distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 n_class = len(np.unique(y,return_counts=True)[1])
 smallest_class = np.min(np.unique(y,return_counts=True)[1])
 
@@ -48,12 +49,18 @@ class TestCV(unittest.TestCase):
                 assert(np.unique(y[vl],return_counts=True)[0].size == 5)
         
             assert(idx+1 == split*split)
-            
+    def test_LeavePSubGroupOut(self):
+        cv = cross_validation.LeavePSubGroupOut()
+        for tr,vl in cv.split(X,y,g):
+            assert(np.all(np.unique(g[vl]) != np.unique(g[tr])))
+        
+        self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size='ko')
+        self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size=5)
+        
     def test_distanceSLOO(self):
-        X,y = geo_tools.extract_ROI(raster,vector,'Class')
-        distance_matrix = geo_tools.get_distance_matrix(raster,vector)
+        
         assert(distance_matrix.shape[0] == y.size)
-    
+
         cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,random_state=12,verbose=2)
         
         geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
@@ -90,9 +97,9 @@ class TestCV(unittest.TestCase):
         # -------------------------------------------
         # n_splits will be the number  of the least populated class
         
-        SLOPO = cross_validation.SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
+        SLOPO = cross_validation.SpatialLeaveAsideOut(valid_size=1/3,
                                      distance_matrix=distance_matrix,random_state=2)
-        assert(SLOPO.get_n_splits(X,y) == 2)
+        assert(SLOPO.get_n_splits(X,y) == int(1/(1/3)))
         
         ###############################################################################
         # .. note::
@@ -119,7 +126,11 @@ class TestCV(unittest.TestCase):
                         os.remove(f)
                     
         os.remove('/tmp/pixels.gpkg')
-            
+    def test_SLOSGO(self)       :
+        cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g)
+        for tr,vl in cv.split(X,y,g)        :
+            assert(n_class==np.unique(g[vl]).size)
+        
     def test_LOO(self):
         cv_loo = cross_validation.LeaveOneOut(random_state=12)
         cv_kf_as_loo = cross_validation.RandomStratifiedKFold(n_splits=False,valid_size=1,random_state=12)
