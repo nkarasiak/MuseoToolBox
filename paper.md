@@ -1,7 +1,6 @@
 ---
-title: 'Museo ToolBox: A Python package that makes it easier to read and write raster per block and use spatial cross-validation in machine learning applications.' tags:
+title: 'Museo ToolBox: A Python package that makes it easier to read and write raster per block and use spatial cross-validation in machine learning applications for remote sensing.'
 
-for remote sensing'
 tags:
   - Python
   - remote sensing
@@ -22,10 +21,6 @@ date: 29 November 2019
 
 bibliography: paper.bib
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
