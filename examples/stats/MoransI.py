@@ -14,7 +14,7 @@ import numpy as np
 from museotoolbox.stats import Moran
 from matplotlib import pyplot as plt
 import gdal,osr
-quee
+
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
