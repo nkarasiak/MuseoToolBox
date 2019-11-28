@@ -55,7 +55,7 @@ class distanceCV:
             Path where to save csv stat (label, n trains, and mean distance between training per class).
         LOO_same_size : bool, optional (default=False).
             Use the same training size as SLOO but use samples without taking into account the distance.
-            
+
         Returns
         -------
         train : array
@@ -69,18 +69,18 @@ class distanceCV:
         self.distance_thresold = distance_thresold
         self.y = y
         self.iterPos = 0
-        
-        self.y_labels = np.unique(y,return_counts=True)[0]
-        
+
+        self.y_labels = np.unique(y, return_counts=True)[0]
+
         self.distance_label = distance_label
-        
+
         self.valid_size = valid_size
         self.LOO_same_size = LOO_same_size
         self.groups = groups
         if self.groups is not None and self.distance_label is False:
             raise Exception(
                 'You need the to set the distance_label in order to compute spatial leave-one-out method using a subclass.')
-        
+
         self.verbose = verbose
         self.stats = stats
 
@@ -101,8 +101,8 @@ class distanceCV:
                 [len(np.unique(groups[np.where(y == i)[0]])) for i in np.unique(self.y)])
 
         if n_repeats:
-            self.n_repeats = self.minEffectiveClass*n_repeats
-            
+            self.n_repeats = self.minEffectiveClass * n_repeats
+
         else:
             # TODO : run self.__next__() to get real n_repeats as it depends on distance
             # but if running self.__next__() here, iterator will be empty
@@ -192,7 +192,7 @@ class distanceCV:
                                 emptyTrain = True
                         # When doing Leave-One-Out per pixel
                         else:
-                            
+
                             distanceROI = (self.distance_matrix[self.ROI, :])[
                                 CT]  # get line of distance for specific ROI
                             if self.valid_size is False:
@@ -212,24 +212,25 @@ class distanceCV:
                                     nToCut = int(self.valid_size * len(CT))
 
                                 if self.distance_thresold is False:
-                                    distanceToCut = np.sort(distanceROI)[:nToCut][-1]
+                                    distanceToCut = np.sort(distanceROI)[
+                                        :nToCut][-1]
                                     tmpValid = CT[distanceROI <=
                                                   distanceToCut]
-                                    
+
                                     tmpTrain = CT[distanceROI >
                                                   distanceToCut]
-                                    
+
                                 else:
-                                    
+
                                     tmpValid = CT[distanceROI <=
                                                   self.distance_thresold][:nToCut]
-                                    
+
                                     tmpTrain = CT[distanceROI >
                                                   self.distance_thresold]
-                                
+
                                 if self.LOO_same_size is True:
                                     np.random.seed(self.random_state)
-                                    
+
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True
 
@@ -283,6 +284,7 @@ class distanceCV:
                     raise StopIteration()
         else:
             raise StopIteration()
+
 
 class randomPerClass:
     """

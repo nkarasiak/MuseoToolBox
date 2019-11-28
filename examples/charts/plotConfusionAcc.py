@@ -40,22 +40,22 @@ classifier = RandomForestClassifier()
 
 
 SL = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10,100]))
-SL.learn(X,y,cv=RSKF)
+SL.fit(X,y,cv=RSKF)
 
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------
   
-for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
+for stats in SL.get_stats_from_cv(confusion_matrix=False,kappa=True):
     print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 cms = []
-for stats in SL.get_stats_from_cv(confusionMatrix=True):
-    cms.append(stats['confusionMatrix'])
-    print(stats['confusionMatrix'])
+for stats in SL.get_stats_from_cv(confusion_matrix=True):
+    cms.append(stats['confusion_matrix'])
+    print(stats['confusion_matrix'])
     
 ##############################################################################
 # Plot confusion matrix

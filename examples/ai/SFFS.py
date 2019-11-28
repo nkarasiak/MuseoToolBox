@@ -30,7 +30,6 @@ X,y,g = datasets.load_historical_data(return_X_y_g=True,low_res=True)
 
 LSGO = LeavePSubGroupOut(valid_size=0.8,n_splits=2,
                 random_state=12,verbose=False)
-
 ##############################################################################
 # Initialize Random-Forest and metrics
 # --------------------------------------
@@ -43,9 +42,9 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 # Set and fit the Sequentia Feature Selection
 # ---------------------------------------------------------------
 #
-SFFS = SequentialFeatureSelection(classifier,cv=LSGO,param_grid=dict(n_estimators=[10]),scoring=kappa)
+SFFS = SequentialFeatureSelection(classifier=classifier,param_grid=dict(n_estimators=[10,20]),cv=LSGO,verbose=False)
 
-SFFS.fit(X.astype(np.float),y,g,path_to_save_models='/tmp/SFFS/')
+SFFS.fit(X.astype(np.float),y,g)
 
 ##############################################
 # Show best features and score

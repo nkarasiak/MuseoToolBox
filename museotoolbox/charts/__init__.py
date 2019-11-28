@@ -62,7 +62,7 @@ class PlotConfusionMatrix:
         self.font_size = False
 
         self.cmap = cmap
-        self.diagColor = cmap
+        self.diag_color = cmap
         self.ax.set_yticks(range(self.cm.shape[0]))
 
         self.fig = plt.figure(1)
@@ -194,14 +194,14 @@ class PlotConfusionMatrix:
 
         self.ax1v.imshow(
             valV,
-            cmap=self.diagColor,
+            cmap=self.diag_color,
             interpolation='nearest',
             aspect='equal',
             vmin=vmin,
             vmax=vmax)
         self.ax1h.imshow(
             valH,
-            cmap=self.diagColor,
+            cmap=self.diag_color,
             interpolation='nearest',
             aspect='equal',
             vmin=vmin,
@@ -306,7 +306,7 @@ class PlotConfusionMatrix:
         verticalPlot = np.asarray(verticalPlot).reshape(-1, 1)
         self.ax1v.imshow(
             verticalPlot,
-            cmap=self.diagColor,
+            cmap=self.diag_color,
             interpolation='nearest',
             aspect='equal',
             vmin=0,
@@ -371,13 +371,14 @@ class PlotConfusionMatrix:
         self.ax1v.imshow(np.array(np.diag(self.cm_) / np.sum(self.cm_,
                                                              axis=1) * 100).reshape(-1,
                                                                                     1),
-                         cmap=self.diagColor,
+                         cmap=self.diag_color,
                          interpolation='nearest',
                          aspect='equal',
                          vmin=0,
                          vmax=100)
+
         self.ax1h.imshow(np.array(np.diag(self.cm_) / np.sum(self.cm_, axis=0) * 100).reshape(
-            1, -1), cmap=self.diagColor, interpolation='nearest', aspect='equal', vmin=0, vmax=100)
+            1, -1), cmap=self.diag_color, interpolation='nearest', aspect='equal', vmin=0, vmax=100)
 
         self.ax1v.set_yticks(np.arange(self.cm_.shape[0]))
         self.ax1v.set_xticks([])
@@ -430,14 +431,14 @@ class PlotConfusionMatrix:
 
         Parameters
         ----------
-        diagcolor : pyplot colormap, default plt.cm.Greens.
-        matrixColor : pyplot colormap, default plt.cm.Reds
+        diag_color : pyplot colormap, default plt.cm.Greens.
+        matrix_color : pyplot colormap, default plt.cm.Reds
 
         Examples
         --------
         >>> plot.colorDiag()
         """
-
+        self.diag_color = diag_color
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Exception(
                 'Array must have the same number of lines and columns')

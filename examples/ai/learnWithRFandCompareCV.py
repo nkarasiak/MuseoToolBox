@@ -48,11 +48,11 @@ kappas=[]
 
 for cv in CVs : 
     SL = SuperLearner( classifier=classifier,param_grid=dict(n_estimators=[50,100]),n_jobs=1)
-    SL.learn(X,y,group=g,cv=cv)
+    SL.fit(X,y,group=g,cv=cv)
     print('Kappa for '+str(type(cv).__name__))
     cvKappa = []
     
-    for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
+    for stats in SL.get_stats_from_cv(confusion_matrix=False,kappa=True):
         print(stats['kappa'])
         cvKappa.append(stats['kappa'])
     

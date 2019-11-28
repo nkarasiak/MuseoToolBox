@@ -40,7 +40,7 @@ scoring = dict(kappa=kappa,f1_mean=f1_mean,accuracy='accuracy')
 # Start learning
 # ---------------------------
 # sklearn will compute different metrics, but will keep best results from kappa (refit='kappa')
-LAP = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10]),n_jobs=1,verbose=1)
+SL = SuperLearner(classifier=classifier,param_grid=dict(n_estimators=[10]),n_jobs=1,verbose=1)
 
 ##############################################################################
 # Create or use custom function
@@ -51,44 +51,44 @@ def reduceBands(X,bandToKeep=[0,2]):
     return X
 
 # add this function to learnAndPredict class
-LAP.customize_array(reduceBands)
+SL.customize_array(reduceBands)
 
 # if you learn from vector, refit according to the f1_mean
 X,y = extract_ROI(raster,vector,field)
-LAP.learn(X,y,cv=2,scoring=scoring,refit='f1_mean')
+SL.fit(X,y,cv=2,scoring=scoring,refit='f1_mean')
 
 ##############################################################################
 # Read the model
 # -------------------
-print(LAP.model)
-print(LAP.model.cv_results_)
-print(LAP.model.best_score_)
+print(SL.model)
+print(SL.model.cv_results_)
+print(SL.model.best_score_)
 
 ##############################################################################
 # Get F1 for every class from best params
 # -----------------------------------------------
 
-for stats in LAP.get_stats_from_cv(confusionMatrix=False,F1=True):
+for stats in SL.get_stats_from_cv(confusion_matrix=False,F1=True):
     print(stats['F1'])
     
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for stats in LAP.get_stats_from_cv(confusionMatrix=True):
-    print(stats['confusionMatrix'])
+for stats in SL.get_stats_from_cv(confusion_matrix=True):
+    print(stats['confusion_matrix'])
     
 ##############################################################################
 # Save each confusion matrix from folds
 # -----------------------------------------------
 
-LAP.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
+SL.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
 
 ##############################################################################
 # Predict map
 # ---------------------------
     
-LAP.predict_image(raster,'/tmp/classification.tif',
+SL.predict_image(raster,'/tmp/classification.tif',
                   higher_confidence='/tmp/confidence.tif',
                   confidence_per_class='/tmp/confidencePerClass.tif')
 ##########################

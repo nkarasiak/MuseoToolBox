@@ -22,8 +22,8 @@ class TestStats(unittest.TestCase):
         
         n_cv = 2
         for tf in [True,False]:
-            model = ai.SuperLearner(classifier,param_grid=param_grid,verbose=1,n_jobs=2)
-            model.learn(X,y,group=g,standardize=tf,cv=n_cv)
+            model = ai.SuperLearner(classifier,param_grid=param_grid,verbose=tf,n_jobs=2)
+            model.fit(X,y,group=g,standardize=tf,cv=n_cv)
             assert(model.predict_array(X).shape == y.shape)
             len(model.CV) == n_cv
             assert(np.all(model.group == g))
@@ -36,7 +36,7 @@ class TestStats(unittest.TestCase):
         assert(model.xFunction)
         assert(np.all(model.standardize_array(X) != X))
         model.standardize_array()
-        model.learn(X,y,group=g,standardize=tf,cv=n_cv)
+        model.fit(X,y,group=g,standardize=tf,cv=n_cv)
         assert(model._array_is_customized == True)
         model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
         assert(gdal.Open('/tmp/SuperLearner/class.tif').RasterCount == 1)
@@ -54,7 +54,7 @@ class TestStats(unittest.TestCase):
         
     def test_sequential(self):
         sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2)
-        sfs.fit(X,y,group=g)
+        sfs.fit(X,y)
         sfs.predict(X,idx=0)
         assert(not np.all(sfs.predict(X,idx=0) == sfs.predict(X,idx=1)))
         sfs.predict_best_combination(raster,'/tmp/class.tif')
@@ -62,11 +62,11 @@ class TestStats(unittest.TestCase):
         
         n_comp = 2
         max_features = 2
-        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp)
+        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp,path_to_save_models='/tmp/sfs_models/')
         def double_columns(x):
             return np.hstack((x,x))
         sfs.customize_array(double_columns)
-        sfs.fit(X,y,path_to_save_models='/tmp/sfs_models/',max_features=max_features,standardize=True)
+        sfs.fit(X,y,max_features=max_features,standardize=True)
         assert(sfs.X.shape[1] == X.shape[1]*2)
         assert(len(sfs.best_features_) == 2)
         assert(sfs.get_best_model().X.shape[1] == n_comp*max_features        )

@@ -108,7 +108,7 @@ def get_gdt_from_minmax_values(max_value, min_value=0):
     return gdalDT
 
 
-def convert_dt(dt,to_otb_dt=False):
+def convert_dt(dt, to_otb_dt=False):
     """
     Return the datatype from gdal to numpy or from numpy to gdal.
 
@@ -141,22 +141,22 @@ def convert_dt(dt,to_otb_dt=False):
     else:
         is_gdal = False
 
-    if is_gdal is True and to_otb_dt is False:  
+    if is_gdal is True and to_otb_dt is False:
         code = gdal_array.GDALTypeCodeToNumericTypeCode(dt)
     else:
         NP2GDAL_CONVERSION = {
-        "uint8": 1,
-        "int8": 3,
-        "uint16": 2,
-        "int16": 3,
-        "uint32": 4,
-        "int32": 5,
-        "float32": 6,
-        "float64": 7,
-        "complex64": 10,
-        "complex128": 11,
-        "int64": 5,
-        "uint64": 5
+            "uint8": 1,
+            "int8": 3,
+            "uint16": 2,
+            "int16": 3,
+            "uint32": 4,
+            "int32": 5,
+            "float32": 6,
+            "float64": 7,
+            "complex64": 10,
+            "complex128": 11,
+            "int64": 5,
+            "uint64": 5
         }
         try:
             code = NP2GDAL_CONVERSION[dt]

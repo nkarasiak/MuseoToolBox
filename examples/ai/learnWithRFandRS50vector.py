@@ -40,27 +40,27 @@ classifier = RandomForestClassifier(random_state=12)
 # ---------------------------
 
 SL = SuperLearner(n_jobs=1,classifier=classifier,param_grid=dict(n_estimators=[10]))
-SL.learn(X,y,cv=SKF)
+SL.fit(X,y,cv=SKF)
 
 ##############################################################################
 # Get kappa from each fold
 # ---------------------------
   
-for stats in SL.get_stats_from_cv(confusionMatrix=False,kappa=True):
+for stats in SL.get_stats_from_cv(confusion_matrix=False,kappa=True):
     print(stats['kappa'])
 
 ##############################################################################
 # Get each confusion matrix from folds
 # -----------------------------------------------
 
-for stats in SL.get_stats_from_cv(confusionMatrix=True):
-    print(stats['confusionMatrix'])
+for stats in SL.get_stats_from_cv(confusion_matrix=True):
+    print(stats['confusion_matrix'])
     
 ##############################################################################
 # Only get accuracies score (OA and Kappa)
 # -----------------------------------------------
 
-for stats in SL.get_stats_from_cv(OA=True,kappa=True,confusionMatrix=False,F1=False):
+for stats in SL.get_stats_from_cv(OA=True,kappa=True,confusion_matrix=False,F1=False):
     print(stats)
     
 ##############################################################################
