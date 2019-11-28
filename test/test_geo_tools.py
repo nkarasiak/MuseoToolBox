@@ -140,7 +140,7 @@ class TestRaster(unittest.TestCase):
     def test_addfid(self):
         copyfile(vector,'/tmp/test.gpkg')
         for tf in [True,False]:
-            geo_tools.add_vector_unique_fid('/tmp/test.gpkg',uniqueField='to_create',verbose=tf)
+            geo_tools._add_vector_unique_fid('/tmp/test.gpkg',uniqueField='to_create',verbose=tf)
         geo_tools.sample_extraction(raster,'/tmp/test.gpkg','/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
         self.assertRaises(Warning,geo_tools.sample_extraction,raster,'/tmp/test.gpkg','/test/vector.ppkg')
         os.remove('/tmp/test.gpkg')
