@@ -23,36 +23,29 @@ class distanceCV:
             X=None,
             y=None,
             distance_matrix=None,
-            distance_thresold=1000,
-            minTrain=False,
-            SLOO=True,
-            n_splits=False,
+            distance_thresold=False,
             valid_size=False,
+            n_repeats=False,
             stats=False,
             verbose=False,
             random_state=False,
             groups=None,
             distance_label=False,
-            LOOsameSize=False):
+            LOO_same_size=False):
         """Compute train/validation array with Spatial distance analysis.
-
         Object stops when less effective class number is reached (45 loops if your least class contains 45 ROI).
-
         Parameters
         ----------
         X : array-like
             Matrix of values. As many row as the Y array.
         Y : array-like
-            contain class for each ROI. Same effective as distanceArray.
+            contain class for each ROI. Same effective as distance_matrix.
         distance_matrix : array
             Matrix distance
-        distance_thresold : int or float
-            Distance(same unit of your distanceArray)
-        minTrain : int or float
-            if >1 : keep n ROI beyond distance_thresold
-            if float <1 : minimum percent of samples to use for traning. Use 1 for use only distance Thresold.
-            if False keep same size.
-        n_splits :
+        distance_thresold : int, float or False, optional (default=False).
+            Distance(same unit of your distance_matrix).
+            If False, will split spatially the dataset.
+        n_repeats : int or False, optional (default=False).
             False : as loop as min effective class
         valid_size : False or float value.
             If float, value from 0 to 1 (percent).
@@ -60,34 +53,36 @@ class distanceCV:
             contain class (like Y), e.g. able to do a SLOO per Stand if you put your stand number here.
         stat : str.
             Path where to save csv stat (label, n trains, and mean distance between training per class).
-
+        LOO_same_size : bool, optional (default=False).
+            Use the same training size as SLOO but use samples without taking into account the distance.
+            
         Returns
         -------
         train : array
             List of Y selected ROI for train
-
         validation : array
             List of Y selected ROI for validation
-
         """
         self.name = 'SLOO'
 
-        self.distanceArray = distance_matrix
+        self.distance_matrix = distance_matrix
         self.distance_thresold = distance_thresold
         self.y = y
         self.iterPos = 0
-        self.minTrain = minTrain
+        
+        self.y_labels = np.unique(y,return_counts=True)[0]
+        
         self.distance_label = distance_label
-        if self.minTrain is None:
-            self.minTrain = -1
+        
         self.valid_size = valid_size
-        self.LOOsameSize = LOOsameSize
+        self.LOO_same_size = LOO_same_size
         self.groups = groups
         if self.groups is not None and self.distance_label is False:
             raise Exception(
                 'You need the to set the distance_label in order to compute spatial leave-one-out method using a subclass.')
+        
         self.verbose = verbose
-#        self.stats = stats
+        self.stats = stats
 
         self.nTries = 0
 
@@ -95,8 +90,8 @@ class distanceCV:
 
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
 
-#        if self.stats:
-#            self.Cstats = []
+        if self.stats:
+            self.Cstats = []
 
         if self.groups is None:
             self.minEffectiveClass = min(
@@ -105,20 +100,16 @@ class distanceCV:
             self.minEffectiveClass = min(
                 [len(np.unique(groups[np.where(y == i)[0]])) for i in np.unique(self.y)])
 
-        if n_splits:
-            self.n_splits = n_splits
-
-            if self.n_splits > self.minEffectiveClass:
-                if self.verbose:
-                    print(
-                        'Warning : n_splits is superior to the number of unique samples/groups')
+        if n_repeats:
+            self.n_repeats = self.minEffectiveClass*n_repeats
+            
         else:
-            # TODO : run self.__next__() to get real n_splits as it depends on distance
+            # TODO : run self.__next__() to get real n_repeats as it depends on distance
             # but if running self.__next__() here, iterator will be empty
             # after.
-            self.n_splits = self.minEffectiveClass
+            self.n_repeats = self.minEffectiveClass
         if self.verbose:
-            print('n_splits:' + str(self.n_splits))
+            print('n_repeats:' + str(self.n_repeats))
 
     def __iter__(self):
         return self
@@ -131,7 +122,7 @@ class distanceCV:
     def next(self):
         emptyTrain = False
 
-        if self.iterPos < self.n_splits:
+        if self.iterPos < self.n_repeats:
             self.nTries = 0
             completeTrain = False
             while completeTrain is False:
@@ -140,7 +131,7 @@ class distanceCV:
                     if self.verbose:
                         print(53 * '=')
                     validation, train = np.array([[], []], dtype=np.int64)
-                    for C in np.unique(self.y):
+                    for C in self.y_labels:
                         # Y is True, where C is the unique class
                         CT = np.where(self.y == C)[0]
 
@@ -148,7 +139,7 @@ class distanceCV:
 
                         if np.where(currentCT)[
                                 0].shape[0] == 0:  # means no more ROI
-                            if self.minEffectiveClass == self.n_splits:
+                            if self.minEffectiveClass == self.n_repeats:
                                 raise StopIteration()
                             if self.verbose > 1:
                                 print(
@@ -159,7 +150,7 @@ class distanceCV:
 
                         if np.where(currentCT)[
                                 0].shape[0] == 0:  # means no more ROI
-                            if self.minEffectiveClass == self.n_splits:
+                            if self.minEffectiveClass == self.n_repeats:
                                 raise StopIteration()
                             print(
                                 str(C) + ' has no more valid pixel. Reusing samples.')
@@ -180,16 +171,16 @@ class distanceCV:
 
                             np.random.seed(self.random_state)
                             self.ROI = np.random.permutation(CT)[0]
-                            # Tstand = self.distance_label[np.isin(
-                            #   self.distance_label, np.unique(self.groups[CT]))]
-                            #TstandTF = np.isin(self.distance_label, Tstand)
+                            # Tstand = self.distanceLabel[np.isin(
+                            #   self.distanceLabel, np.unique(self.groups[CT]))]
+                            #TstandTF = np.isin(self.distanceLabel, Tstand)
                             standPos = np.argwhere(
                                 self.groups[self.ROI] == self.distance_label)[0][0]
-                            distanceROI = (self.distanceArray[standPos, :])
+                            distanceROI = (self.distance_matrix[standPos, :])
                             #distanceROI = distanceROI[TstandTF]
                             tmpValid = np.where(
                                 self.groups == self.groups[self.ROI])[0].astype(np.int64)
-                            #validateTStand = distanceROI[np.where(distanceROI>= self.distance_thresold)[0]]
+                            #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
                             tmpTrainGroup = np.unique(
                                 self.distance_label[np.where(distanceROI >= self.distance_thresold)[0]])
                             tmpTrainGroup = tmpTrainGroup[np.isin(
@@ -201,18 +192,18 @@ class distanceCV:
                                 emptyTrain = True
                         # When doing Leave-One-Out per pixel
                         else:
-
-                            distanceROI = (self.distanceArray[self.ROI, :])[
+                            
+                            distanceROI = (self.distance_matrix[self.ROI, :])[
                                 CT]  # get line of distance for specific ROI
                             if self.valid_size is False:
                                 tmpValid = np.array(
                                     [self.ROI], dtype=np.int64)
                                 tmpTrain = CT[distanceROI >
                                               self.distance_thresold]
-                                if self.LOOsameSize is True:
+                                if self.LOO_same_size is True:
                                     np.random.seed(self.random_state)
                                     tmpTrain = np.random.permutation(
-                                        CT)[:len(CT[distanceROI > self.distance_thresold])]
+                                        CT)[:len(tmpTrain)]
 
                             else:
                                 if self.valid_size >= 1:
@@ -220,14 +211,25 @@ class distanceCV:
                                 else:
                                     nToCut = int(self.valid_size * len(CT))
 
-                                distanceToCut = np.sort(distanceROI)[
-                                    :nToCut][-1]
-
-                                tmpValid = CT[distanceROI <=
-                                              distanceToCut]
-                                tmpTrain = CT[distanceROI >
-                                              distanceToCut]
-
+                                if self.distance_thresold is False:
+                                    distanceToCut = np.sort(distanceROI)[:nToCut][-1]
+                                    tmpValid = CT[distanceROI <=
+                                                  distanceToCut]
+                                    
+                                    tmpTrain = CT[distanceROI >
+                                                  distanceToCut]
+                                    
+                                else:
+                                    
+                                    tmpValid = CT[distanceROI <=
+                                                  self.distance_thresold][:nToCut]
+                                    
+                                    tmpTrain = CT[distanceROI >
+                                                  self.distance_thresold]
+                                
+                                if self.LOO_same_size is True:
+                                    np.random.seed(self.random_state)
+                                    
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True
 
@@ -249,21 +251,21 @@ class distanceCV:
                             #
                             validation = np.concatenate((validation, tmpValid))
                             train = np.concatenate((train, tmpTrain))
-#                            if self.stats:
-#                                CTdistTrain = np.array(self.distanceArray[tmpTrain])[
-#                                    :, tmpTrain]
-#                                if len(CTdistTrain) > 1:
-#                                    CTdistTrain = np.mean(np.triu(CTdistTrain)[
-#                                                          np.triu(CTdistTrain) != 0])
-#                                self.Cstats.append(
-#                                    [C, tmpTrain.shape[0], CTdistTrain])
+                            if self.stats:
+                                CTdistTrain = np.array(self.distance_matrix[tmpTrain])[
+                                    :, tmpTrain]
+                                if len(CTdistTrain) > 1:
+                                    CTdistTrain = np.mean(np.triu(CTdistTrain)[
+                                                          np.triu(CTdistTrain) != 0])
+                                self.Cstats.append(
+                                    [C, tmpTrain.shape[0], CTdistTrain])
 
                     if self.verbose:
                         print('Validation samples : ' + str(len(validation)))
                         print('Training samples : ' + str(len(train)))
-#                    if self.stats:
-#                        np.savetxt(self.stats, self.Cstats, fmt='%d',
-#                                   header="Label,Ntrain,Mean dist train")
+                    if self.stats:
+                        np.savetxt(self.stats, self.Cstats, fmt='%d',
+                                   header="Label,Ntrain,Mean dist train")
 
                     # Mask selected validation
                     self.random_state += 1
@@ -276,12 +278,11 @@ class distanceCV:
                         self.mask[validation] = 0
                         return train, validation
                 else:
-                    raise AttributeError(
+                    raise ValueError(
                         'Error : Not enough samples using this distance/valid_size.')
                     raise StopIteration()
         else:
             raise StopIteration()
-
 
 class randomPerClass:
     """
@@ -312,8 +313,6 @@ class randomPerClass:
     def __init__(self, X=None, y=None, groups=None,
                  valid_size=0.5, train_size=None, n_splits=False,
                  random_state=None, verbose=False):
-
-        self.name = 'randomPerClass'
         self.y = y
         self.valid_size = valid_size
         self.train_size = 1 - self.valid_size
@@ -368,11 +367,6 @@ class randomPerClass:
                 TF = np.in1d(Cpos, tmpValid, invert=True)
                 tmpTrain = Cpos[TF]
 
-                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
-                    raise IndexError(
-                        'Selected labels do not correspond to selected class, please leave feedback')
-
                 train = np.concatenate((train, tmpTrain))
                 valid = np.concatenate((valid, tmpValid))
 
@@ -416,7 +410,6 @@ class groupCV:
         SLOO :  Bool
             True  or False. If SLOO, keep only one Y per validation stand.
         """
-        self.name = 'standCV'
         self.verbose = verbose
         self.y = y.flatten()
         self.uniqueY = np.unique(self.y)
@@ -501,10 +494,6 @@ class groupCV:
                 train = np.concatenate(
                     (train, tmpTrain))
 
-                if not np.all(self.y[tmpTrain] + 1) or self.y[tmpTrain][0] != C or not np.all(
-                        self.y[tmpValid] + 1) or self.y[tmpValid][0] != C:
-                    raise IndexError(
-                        'Selected labels do not correspond to selected class, please leave feedback')
                 self.mask[tmpValid] = 0
             self.random_state += 1
             self.iterPos += 1

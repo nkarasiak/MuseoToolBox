@@ -30,16 +30,22 @@ distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,
+SLOPO = SpatialLeaveOneOut(n_repeats=2,distance_thresold=100,distance_matrix=distance_matrix,
                                 random_state=12)
-
 ###############################################################################
 # .. note::
 #    Split is made to generate each fold
-
+SLOPO.get_n_splits(X,y)
 for tr,vl in SLOPO.split(X,y):
     print(tr.shape,vl.shape)
 
+####################################################
+# Save each train/valid in a spatial vector file
+  
+from museotoolbox.geo_tools import sample_extraction
+sample_extraction(raster,vector,'/tmp/one_point_per_pixel.gpkg')
+files = SLOPO.save_to_vector('/tmp/one_point_per_pixel.gpkg','Class',out_vector='/tmp/trvl.gpkg')
+print(files)
 #############################################
 # Draw image
 from __drawCVmethods import plotMethod

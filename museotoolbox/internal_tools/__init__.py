@@ -12,30 +12,22 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
-import sys
-
-
-def checkOTB():
-    try:
-        import otbApplication
-        return True
-    except BaseException:
-        raise ImportError('Please install OTB python binding')
-
 
 def push_feedback(msg, feedback=None):
-
-    if feedback and feedback is not True:
-        if feedback == 'gui':
-            QgsMessageLog.logMessage(str(msg))
-        else:
-            feedback.setProgressText(msg)
-    else:
-        print(msg)
+    # in order to convert in Qgis Processing
+    # =============================================================================
+    #     if feedback and feedback is not True:
+    #         if feedback == 'gui':
+    #             QgsMessageLog.logMessage(str(msg))
+    #         else:
+    #             feedback.setProgressText(msg)
+    #     else:
+    # =============================================================================
+    print(msg)
 
 
 class ProgressBar:
-    def __init__(self, total, message='', length=40, feedback=None):
+    def __init__(self, total, message='', length=40):
         """
         total : int
             Total number of samples.
@@ -43,16 +35,12 @@ class ProgressBar:
             Custom message to show before the progress bar.
         length : int.
             Length of the bar.
-        feedback : str, feedback class fro Qgis, or None.
-            if str, only 'gui' to log a message in QgsMessageLog.
-            if feedback, class feedback from Qgis in order to set the progress bar direclty in the processing toolbox.
         """
         self.start = 0
         self.total = total
         self.length = length
         self.message = message
         self.lastPosition = None
-        self.feedback = feedback
 
     def add_position(self, value=False):
         """
@@ -77,10 +65,7 @@ class ProgressBar:
             self.nHash = int(self.length * (value / self.total))
             self.nPoints = int(self.length - int(self.nHash))
 
-            if self.feedback:
-                self.feedback.setProgress(self.lastPosition)
-            else:
-                self.printBar(inPercent)
+            self.printBar(inPercent)
 
     def printBar(self, value):
         if value == 100:
@@ -91,12 +76,3 @@ class ProgressBar:
         # print(self.nHash)
         # print(self.nPoints)
         print('\r' + self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end, flush=True)
-
-
-if __name__ == '__main__':
-    pb = ProgressBar(200, length=50)
-    import time
-    for i in range(100):
-        pb.add_position()
-        time.sleep(0.01)
-    pb.add_position(200)

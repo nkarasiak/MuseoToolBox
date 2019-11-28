@@ -266,7 +266,7 @@ class ComputeConfusionMatrix:
 
 def retrieve_y_from_confusion_matrix(confusion_matrix):
     """
-    retrive y_predict and y_truth from confusion matrix.
+    Retrieve y_predict and y_truth from confusion matrix.
 
     Parameters
     -----------

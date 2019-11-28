@@ -25,20 +25,21 @@ class TestCV(unittest.TestCase):
     def test_loo(self):
         for split in [False,1,2,5]:
             
-            cv = cross_validation.LeaveOneOut(n_splits=split,random_state=split,verbose=split)
-            if split == False:
-                assert(cv.get_n_splits(X,y)==np.min(np.unique(y,return_counts=True)[-1]))
-            else:
-                assert(cv.get_n_splits(X,y)==split)
-            assert(cv.verbose == split)
-            
-            for tr,vl in cv.split(X,y):
-                assert(tr.size == y.size-5)
-                assert(vl.size == 5)
-                assert(len(vl) == 5)
-            
+                cv = cross_validation.LeaveOneOut(n_splits=split,random_state=split,verbose=split)
+                if split == False:
+                    assert(cv.get_n_splits(X,y)==np.min(np.unique(y,return_counts=True)[-1]))
+                else:
+                    assert(cv.get_n_splits(X,y)==split)
+                assert(cv.verbose == split)
+                
+                for tr,vl in cv.split(X,y):
+                    assert(tr.size == y.size-5)
+                    assert(vl.size == 5)
+                    assert(len(vl) == 5)
+                
             
     def test_kfold(self):
+        
         for split in [2,5]:
             cv = cross_validation.RandomStratifiedKFold(n_splits=split,n_repeats=split,verbose=split)
             assert(cv.get_n_splits(X,y)==split*split)
@@ -49,11 +50,12 @@ class TestCV(unittest.TestCase):
                 assert(np.unique(y[vl],return_counts=True)[0].size == 5)
         
             assert(idx+1 == split*split)
+            
     def test_LeavePSubGroupOut(self):
         cv = cross_validation.LeavePSubGroupOut()
         for tr,vl in cv.split(X,y,g):
-            assert(np.all(np.unique(g[vl]) != np.unique(g[tr])))
-        
+            assert(not np.unique(np.in1d([1,2],[3,4]))[0])
+
         self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size='ko')
         self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size=5)
         
@@ -61,19 +63,16 @@ class TestCV(unittest.TestCase):
         
         assert(distance_matrix.shape[0] == y.size)
 
-        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,random_state=12,verbose=2)
+        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,
+                                                 distance_matrix=distance_matrix,
+                                                 random_state=12)
         
         geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
         y_polygons = geo_tools.read_vector_values(vector,'Class')
         assert(y_.size == y.size)
         assert(y_polygons.size != y_.size)
-        tr=[]
-        vl=[]
-        for t,v in cv.split(X,y):
-            tr.append(t)
-            vl.append(v)
-            assert(v.size == n_class)
+        
         list_files=cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/cv.gpkg')
         assert(len(list_files[0]) == 2)
         for l in list_files:
@@ -82,53 +81,51 @@ class TestCV(unittest.TestCase):
         os.remove('/tmp/pixels.gpkg')
         # to keep same size of training by a random selection
 
-        cv = cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,distance_thresold=100,distance_matrix=distance_matrix,random_state=12,LOOsameSize=False)
-        for idx,trvl in enumerate(cv.split(X,y)):
-            assert(trvl[0].size == tr[idx].size) # same size between loo and sloo 
-            assert(np.all(trvl[1] == vl[idx])) # using same valid pixel
-        del tr,vl,v,l
+            
+        as_loo= cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
+                                                            distance_thresold=100,
+                                                            distance_matrix=distance_matrix,
+                                                            random_state=12,
+                                                            LOO_same_size=True,
+                                                            valid_size=1)
+        
+        for sloo_cv,as_loo_cv in zip(cv.split(X,y),as_loo.split(X,y)):
+            assert(sloo_cv[0].size == as_loo_cv[0].size) # same size between loo and sloo 
+            assert(np.all(sloo_cv[1] == as_loo_cv[1])) # using same valid pixel
+            
+
+        # distance too high 
+        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=10000,distance_matrix=distance_matrix,verbose=0)
+        self.assertRaises(ValueError,cv.get_n_splits,X,y)
+            
+        
         
     def test_aside(self):
         
-        distance_matrix = geo_tools.get_distance_matrix(raster,vector)
-        X,y = geo_tools.extract_ROI(raster,vector,'Class')
-        ##############################################################################
-        # Create CV
-        # -------------------------------------------
-        # n_splits will be the number  of the least populated class
-        
         SLOPO = cross_validation.SpatialLeaveAsideOut(valid_size=1/3,
                                      distance_matrix=distance_matrix,random_state=2)
-        assert(SLOPO.get_n_splits(X,y) == int(1/(1/3)))
         
-        ###############################################################################
-        # .. note::
-        #    Split is made to generate each fold
+        assert(SLOPO.get_n_splits(X,y) == int(1/(1/3)))
         
         for tr,vl in SLOPO.split(X,y):
             assert(np.unique(y[vl]).size == 5) 
             assert(np.unique(y[tr]).size == 5) 
-            
-        
-        ###############################################################################
-        #    Save each train/valid fold in a file
-        # -------------------------------------------
-        # In order to translate polygons into points (each points is a pixel in the raster)
-        # we use sampleExtraction from vector_tools to generate a temporary vector.
         
         geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         list_files = SLOPO.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOPO.gpkg')
         for tr,vl in list_files:
             assert(len(list_files[0]) == 2)
             for l in list_files:
-                for f in l:
+                for f in l:                    
                     if os.path.exists(f):
                         os.remove(f)
                     
         os.remove('/tmp/pixels.gpkg')
+        
     def test_SLOSGO(self)       :
         cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g)
         for tr,vl in cv.split(X,y,g)        :
+            print(tr)
             assert(n_class==np.unique(g[vl]).size)
         
     def test_LOO(self):

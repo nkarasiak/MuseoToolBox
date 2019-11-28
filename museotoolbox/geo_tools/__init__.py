@@ -108,7 +108,7 @@ def get_gdt_from_minmax_values(max_value, min_value=0):
     return gdalDT
 
 
-def convert_dt(dt):
+def convert_dt(dt,to_otb_dt=False):
     """
     Return the datatype from gdal to numpy or from numpy to gdal.
 
@@ -140,7 +140,11 @@ def convert_dt(dt):
         is_gdal = True
     else:
         is_gdal = False
-    NP2GDAL_CONVERSION = {
+
+    if is_gdal is True and to_otb_dt is False:  
+        code = gdal_array.GDALTypeCodeToNumericTypeCode(dt)
+    else:
+        NP2GDAL_CONVERSION = {
         "uint8": 1,
         "int8": 3,
         "uint16": 2,
@@ -153,12 +157,7 @@ def convert_dt(dt):
         "complex128": 11,
         "int64": 5,
         "uint64": 5
-    }
-
-    if is_gdal is True:
-        code = gdal_array.GDALTypeCodeToNumericTypeCode(dt)
-    else:
-
+        }
         try:
             code = NP2GDAL_CONVERSION[dt]
             if dt.endswith('int64'):
@@ -168,10 +167,12 @@ def convert_dt(dt):
             code = 7
             push_feedback(
                 'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(dt))
+    if to_otb_dt:
+        code = _convert_gdal_to_otb_dt(code)
     return code
 
 
-def convert_gdal_to_otb_dt(dt):
+def _convert_gdal_to_otb_dt(dt):
     """
     Convert Gdal DataType to OTB str format.
 
@@ -1291,7 +1292,7 @@ def sample_extraction(
         unique_fid = 'uniquefid'
         if verbose:
             push_feedback("Adding 'uniquefid' field to the original vector.")
-        add_vector_unique_fid(
+        _add_vector_unique_fid(
             in_vector, unique_fid, verbose=verbose)
 
     if verbose:
@@ -1745,7 +1746,7 @@ def read_vector_values(vector, *args, **kwargs):
         return fieldsToReturn
 
 
-def add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
+def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
     """
     Add a field in the vector with an unique value
     for each of the feature.
@@ -1763,7 +1764,7 @@ def add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
 
     Examples
     ---------
-    >>> add_vector_unique_fid('myDB.gpkg',uniqueField='polygonid')
+    >>> _add_vector_unique_fid('myDB.gpkg',uniqueField='polygonid')
     Adding polygonid [########################################]100%
     """
     pB = ProgressBar(100, message='Adding ' + uniqueField)

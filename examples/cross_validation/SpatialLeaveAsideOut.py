@@ -20,7 +20,7 @@ from museotoolbox import datasets,geo_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.load_historical_data(low_res=True)
+raster,vector = datasets.load_historical_data()
 field = 'Class'
 X,y = geo_tools.extract_ROI(raster,vector,field)
 distance_matrix = geo_tools.get_distance_matrix(raster,vector)
@@ -30,8 +30,8 @@ distance_matrix = geo_tools.get_distance_matrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOPO = SpatialLeaveAsideOut(valid_size=1/3,n_splits=2,
-                             distance_matrix=distance_matrix,random_state=2)
+SLOPO = SpatialLeaveAsideOut(valid_size=1/3,
+                             distance_matrix=distance_matrix,random_state=4)
 
 print(SLOPO.get_n_splits(X,y))
 

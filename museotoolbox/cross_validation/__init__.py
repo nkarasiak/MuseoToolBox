@@ -116,9 +116,9 @@ class SpatialLeaveAsideOut(_sample_selection._cv_manager):
         Array got from function samplingMethods.getdistance_matrixForDistanceCV(inRaster,inVector)
     valid_size : float, default 0.5.
         The percentage of validaton to keep : from 0 to 1.
-    n_splits : int or bool, optional (default=False).
-        If False, n_splits is 1/valid_size (default : 1/0.5 = 2)
-        If int : will iterate the number of times given in n_splits.
+    n_repeats : int or bool, optional (default=False).
+        If False, n_repeats is 1/valid_size (default : 1/0.5 = 2)
+        If int : will iterate the number of times given in n_repeats.
     random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -132,17 +132,14 @@ class SpatialLeaveAsideOut(_sample_selection._cv_manager):
     """
 
     def __init__(self,
-                 distance_matrix=None,
+                 distance_matrix,
                  valid_size=0.5,
-                 n_splits=False,
+                 n_repeats=False,
                  random_state=False,
                  verbose=False):
 
-        if n_splits == False:
-            n_splits = int(1 / valid_size)
-
         super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
-                         valid_size=valid_size, n_splits=n_splits, random_state=random_state, verbose=verbose)
+                         valid_size=valid_size, n_repeats=n_repeats, random_state=random_state, verbose=verbose)
 
 
 class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
@@ -157,9 +154,6 @@ class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
         In pixels.
     distance_label : None or array.
         If array, got from function :func:`museotoolbox.vector_tools.get_distance_matrix`
-    n_splits : int or bool, optional (default=False).
-        If False : will iterate as many times as the smallest number of groups.
-        If int : will iterate the number of groups given in maxIter.
     random_state : integer or None, optional (default=None).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -175,15 +169,12 @@ class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
                  distance_thresold,
                  distance_matrix,
                  distance_label,
-                 n_splits=False,
                  random_state=False,
                  verbose=False):
 
         super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
                          distance_thresold=distance_thresold,
                          distance_label=distance_label,
-                         SLOO=True,
-                         n_splits=n_splits,
                          random_state=random_state, verbose=verbose)
 
 
@@ -197,9 +188,9 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
         Array got from function museotoolbox.vector_tools.get_distance_matrix(inRaster,inVector)
     distance_thresold : int.
         In pixels.
-    n_splits : int or bool, optional (default=False).
+    n_repeats: int or False, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
-        If int : will iterate the number of groups given in maxIter.
+        If int : will iterate the number of times specified.
     random_state : int or False, optional (default=False).
         If int, random_state is the seed used by the random number generator;
         If None, the random number generator is created with ``time.time()``.
@@ -220,7 +211,7 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
     def __init__(self,
                  distance_thresold=None,
                  distance_matrix=None,
-                 n_splits=False,
+                 n_repeats=False,
                  random_state=False,
                  verbose=False,
                  **kwargs):
@@ -228,9 +219,8 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
         super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
                          distance_thresold=distance_thresold,
                          distance_label=False,
-                         minTrain=False,
-                         SLOO=True,
-                         n_splits=n_splits,
+                         valid_size=1,
+                         n_repeats=n_repeats,
                          random_state=random_state,
                          verbose=verbose,
                          **kwargs)
