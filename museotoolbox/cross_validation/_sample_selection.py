@@ -26,7 +26,6 @@ class distanceCV:
             distance_thresold=False,
             valid_size=False,
             n_repeats=False,
-            stats=False,
             verbose=False,
             random_state=False,
             groups=None,
@@ -77,21 +76,14 @@ class distanceCV:
         self.valid_size = valid_size
         self.LOO_same_size = LOO_same_size
         self.groups = groups
-        if self.groups is not None and self.distance_label is False:
-            raise Exception(
-                'You need the to set the distance_label in order to compute spatial leave-one-out method using a subclass.')
 
         self.verbose = verbose
-        self.stats = stats
-
+        
         self.nTries = 0
 
         self.random_state = random_state
 
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-
-        if self.stats:
-            self.Cstats = []
 
         if self.groups is None:
             self.minEffectiveClass = min(
@@ -245,29 +237,14 @@ class distanceCV:
                             self.mask[tmpValid] = 0
 
                         else:
-                            if not np.all(self.y[tmpTrain]) or self.y[tmpTrain][0] != C or not np.all(
-                                    self.y[tmpValid]) or self.y[tmpValid][0] != C:
-                                raise IndexError(
-                                    'Selected labels do not correspond to selected class, please leave feedback')
                             #
                             validation = np.concatenate((validation, tmpValid))
                             train = np.concatenate((train, tmpTrain))
-                            if self.stats:
-                                CTdistTrain = np.array(self.distance_matrix[tmpTrain])[
-                                    :, tmpTrain]
-                                if len(CTdistTrain) > 1:
-                                    CTdistTrain = np.mean(np.triu(CTdistTrain)[
-                                                          np.triu(CTdistTrain) != 0])
-                                self.Cstats.append(
-                                    [C, tmpTrain.shape[0], CTdistTrain])
-
+                            
                     if self.verbose:
                         print('Validation samples : ' + str(len(validation)))
                         print('Training samples : ' + str(len(train)))
-                    if self.stats:
-                        np.savetxt(self.stats, self.Cstats, fmt='%d',
-                                   header="Label,Ntrain,Mean dist train")
-
+                    
                     # Mask selected validation
                     self.random_state += 1
                     if emptyTrain is True:
@@ -281,7 +258,6 @@ class distanceCV:
                 else:
                     raise ValueError(
                         'Error : Not enough samples using this distance/valid_size.')
-                    raise StopIteration()
         else:
             raise StopIteration()
 
@@ -517,7 +493,7 @@ class _cv_manager:
         saveVectorFiles() : Need default output name (str).
             To save as many vector files (train/valid) as your Cross Validation method outputs.
 
-        __getSupportedExtensions() : Function.
+        __get_supported_extensions() : Function.
             Show you the list of supported vector extensions type when using saveVectorFiles function.
 
         reinitialize() : Function.
@@ -548,8 +524,8 @@ class _cv_manager:
         _cv_manager.__init__(
             self, self.cv_type, self.verbose, **self.params)
 
-    def __getSupportedExtensions(self):
-        print('Museo ToolBox supported extensions are : ')
+    def get_supported_extensions(self):
+        print('Museo ToolBox supported extensions for writing vector files are : ')
         for idx, ext in enumerate(self.__extensions):
             print(3 * ' ' + '- ' + self.__driversName[idx] + ' : ' + ext)
 
@@ -662,8 +638,8 @@ class _cv_manager:
         if self.__ext[1:] not in self.__extensions:
             print(
                 'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
-            self.__getSupportedExtensions()
-            raise Exception('We recommend you to use sqlite/gpkg extension.')
+            self.get_supported_extensions()
+            raise Exception('We recommend you to use gpkg or sqlite extension.')
 
         if group is None:
             groups = None

@@ -141,7 +141,7 @@ def convert_dt(dt, to_otb_dt=False):
     else:
         is_gdal = False
 
-    if is_gdal is True and to_otb_dt is False:
+    if is_gdal is True:
         code = gdal_array.GDALTypeCodeToNumericTypeCode(dt)
     else:
         NP2GDAL_CONVERSION = {
@@ -168,7 +168,10 @@ def convert_dt(dt, to_otb_dt=False):
             push_feedback(
                 'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(dt))
     if to_otb_dt:
-        code = _convert_gdal_to_otb_dt(code)
+        if is_gdal :
+            code = _convert_gdal_to_otb_dt(dt)
+        else:
+            code = _convert_gdal_to_otb_dt(code)
     return code
 
 
@@ -211,6 +214,7 @@ def _convert_gdal_to_otb_dt(dt):
         'cint32',
         'cfloat',
         'cdouble']
+    
     if dt > len(code):
         otb_dt = ('cdouble')
     else:
@@ -235,13 +239,15 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
     *fields : str.
         Each field to extract label/value from.
     **kwargs:
-        getCoords : bool.
-            If getCoords, will return pixel position in the image for each point.
-        onlyCoords : bool.
+        get_pixel_position : bool, optional (default=False).
+            If get_pixel_position, will return pixel position in the image for each point.
+        only_pixel_position : bool, optional (default=False).
             If true, with only return pixel position for each point.
+        prefer_memory : bool, optional (default=True).
+            If False, will write raster on disk to extract ROI values.
         verbose : bool or int, optional (default=True).
             The higher is the int verbose, the more it will returns informations.
-
+        
     Returns
     --------
     X : arr.
@@ -281,14 +287,18 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         verbose = kwargs['verbose']
     else:
         verbose = False
-    if 'getCoords' in kwargs:
-        getCoords = kwargs['getCoords']
+    if 'get_pixel_position' in kwargs:
+        get_pixel_position = kwargs['get_pixel_position']
     else:
-        getCoords = False
-    if 'onlyCoords' in kwargs:
-        onlyCoords = kwargs['onlyCoords']
+        get_pixel_position = False
+    if 'only_pixel_position' in kwargs:
+        only_pixel_position = kwargs['only_pixel_position']
     else:
-        onlyCoords = False
+        only_pixel_position = False
+    if 'prefer_memory' in kwargs:
+        prefer_memory = kwargs['prefer_memory']
+    else:
+        prefer_memory = True
     # Open Raster
     raster = gdal.Open(in_image, gdal.GA_ReadOnly)
     if raster is None:
@@ -334,13 +344,13 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
     rois = []
     temps = []
     for field in fields:
-        try:
+        if prefer_memory:
             raster_in_mem = True
             image_field = 'MEM'
             data_src = rasterize(in_image, in_vector, field,
                                  out_image=image_field, gdt=gdal.GDT_Float64)
 
-        except BaseException:
+        else:
 
             raster_in_mem = False
             image_field = tempfile.mktemp('_roi.tif')
@@ -374,7 +384,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
 
     # ulx, xres, xskew, uly, yskew, yres = raster.GetGeoTransform()
 
-    if getCoords is True or onlyCoords is True:
+    if get_pixel_position is True or only_pixel_position is True:
         coords = np.array([], dtype=np.int64).reshape(0, 2)
 
     xDataType = convert_dt(gdalDT)
@@ -411,7 +421,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
             t = np.nonzero(ROI)
 
             if t[0].size > 0:
-                if getCoords or onlyCoords:
+                if get_pixel_position or only_pixel_position:
                     coordsTp = np.empty((t[0].shape[0], 2))
 
                     coordsTp[:, 0] = t[1] + j
@@ -420,7 +430,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
                     coords = np.concatenate((coords, coordsTp))
 
                 # Load the Variables
-                if not onlyCoords:
+                if not only_pixel_position:
                     # extract values from each field
                     if nFields > 0:
                         Ftemp = np.empty(
@@ -438,12 +448,9 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
                         band = raster.GetRasterBand(
                             k + 1).ReadAsArray(j, i, cols, lines)
                         Xtp[:, k] = band[t]
-                    try:
-                        X = np.concatenate((X, Xtp))
-                    except MemoryError:
-                        raise MemoryError(
-                            'Impossible to allocate memory: ROI file is too big.')
-
+                    
+                    X = np.concatenate((X, Xtp))
+                    
     if verbose:
         pb.add_position(100)
     # Clean/Close variables
@@ -456,8 +463,8 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         for roi in temps:
             os.remove(roi)
 
-    # generate output
-    if onlyCoords:
+    # generate returns
+    if only_pixel_position:
         toReturn = coords
     else:
         if nFields > 0:
@@ -465,7 +472,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         else:
             toReturn = X
 
-        if getCoords:
+        if get_pixel_position:
             if nFields == 0:
                 toReturn = [toReturn] + [coords]
             else:
@@ -619,8 +626,8 @@ class RasterMath:
 
         # input block size
         if block_size is False:
-            self.x_block_size = self.block_sizes[0]
-            self.y_block_size = self.block_sizes[1]
+            self.x_block_size = self.input_block_sizes[0]
+            self.y_block_size = self.input_block_sizes[1]
         else:
             self.x_block_size = block_size[0]
             self.y_block_size = block_size[1]
@@ -1298,7 +1305,7 @@ def sample_extraction(
     if verbose:
         push_feedback("Extract values from raster...")
     X, Y, coords = extract_ROI(
-        in_image, in_vector, unique_fid, getCoords=True, verbose=verbose)
+        in_image, in_vector, unique_fid, get_pixel_position=True, verbose=verbose)
 
     geo_transform = gdal.Open(in_image).GetGeoTransform()
 
@@ -1514,40 +1521,43 @@ class _create_point_layer:
         self.outData.Destroy()
 
 
-def get_distance_matrix(inRaster, inVector, inLevel=False, verbose=False):
+def get_distance_matrix(in_image, in_vector, field=False, verbose=False):
     """
     Return for each pixel, the distance one-to-one to the other pixels listed in the vector.
 
     Parameters
     ----------
-    inRaster : str
-        Path of the raster file.
-    inVector : str
-        Path of the vector file.
+    in_image : str.
+        Path of the raster file where the vector file will be rasterize.
+    in_vector : str.
+        Path of the vector file to rasterize.
+    field : str or False, optional (default=False).
+        Name of the vector field to extract the value (must be float or integer).
 
     Returns
     --------
-    distanceMatrix : array of shape (nSamples,nSamples)
+    distance_matrix : array of shape (nSamples,nSamples)
+    label : array of shape (nSamples)
     """
-    if inLevel is not False:
-        onlyCoords = False
+    if field is not False:
+        only_pixel_position = False
     else:
-        onlyCoords = True
+        only_pixel_position = True
 
     coords = extract_ROI(
-        inRaster, inVector, inLevel, getCoords=True, onlyCoords=onlyCoords, verbose=verbose)
+        in_image, in_vector, field, get_pixel_position=True, only_pixel_position = only_pixel_position, verbose=verbose)
     from scipy.spatial import distance
-    if inLevel:
-        inLabel = coords[1]
+    if field:
+        label = coords[1]
         coords = coords[2]
 
-    distanceMatrix = np.asarray(distance.cdist(
+    distance_matrix = np.asarray(distance.cdist(
         coords, coords, 'euclidean'), dtype=np.uint64)
 
-    if inLevel:
-        return distanceMatrix, inLabel
+    if field:
+        return distance_matrix, label
     else:
-        return distanceMatrix
+        return distance_matrix
 
 
 def _getOgrDataTypeToNumpy(ogrType):

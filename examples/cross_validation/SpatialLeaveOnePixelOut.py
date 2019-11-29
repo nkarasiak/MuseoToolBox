@@ -41,7 +41,6 @@ for tr,vl in SLOPO.split(X,y):
 
 ####################################################
 # Save each train/valid in a spatial vector file
-  
 from museotoolbox.geo_tools import sample_extraction
 sample_extraction(raster,vector,'/tmp/one_point_per_pixel.gpkg')
 files = SLOPO.save_to_vector('/tmp/one_point_per_pixel.gpkg','Class',out_vector='/tmp/trvl.gpkg')

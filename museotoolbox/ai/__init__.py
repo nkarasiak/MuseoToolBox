@@ -86,7 +86,7 @@ class SuperLearner:
         self.classifier = classifier
         self.param_grid = param_grid
         
-        
+        self.xFunction = False
 
         self.standardize = False
         self._is_standardized = False
@@ -170,7 +170,7 @@ class SuperLearner:
             self.standardize_array()
             self.X = self.standardize_array(X, need_transformation=False)
 
-        self.__fit__(
+        self._fit(
             self.X,
             self.y,
             self.group,
@@ -181,7 +181,7 @@ class SuperLearner:
             refit,
             **gridSearchCVParams)
 
-    def __fit__(self, X, y, groups, classifier,
+    def _fit(self, X, y, groups, classifier,
                 param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
 
         if isinstance(cv, int) and cv != False:
@@ -630,6 +630,7 @@ class SequentialFeatureSelection:
         else:
             self.verbose_gridsearch = self.verbose - 1
         self.cv = cv
+        
         self.xFunction = False
         self.xKwargs = False
 
@@ -679,6 +680,7 @@ class SequentialFeatureSelection:
 
         if self.verbose:
             pB = ProgressBar(totalIter, message='SFFS:')
+        
         self.mask = np.ones(xSize, dtype=bool)
 
         self.models_, self.best_scores_, self.best_features_ = [[], [], []]
@@ -720,7 +722,7 @@ class SequentialFeatureSelection:
                         pB.add_position()
                     SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
                                       n_jobs=n_jobs, verbose=self.verbose_gridsearch)
-                    curX = self.__transformInFit(self.X, idx)
+                    curX = self._transform_in_fit(self.X, idx)
                     if standardize is False:
                         scale = False
                     else:
@@ -739,7 +741,7 @@ class SequentialFeatureSelection:
                 all_scores = [np.amax(SL.model.best_score_)
                               for SL in resPerFeatures]
                 best_candidate = np.argmax(all_scores)
-                # self.__bestSLs.append(resPerFeatures[best_candidate])
+                # self._bestSLs.append(resPerFeatures[best_candidate])
                 SL = resPerFeatures[best_candidate]
 
                 if self.path_to_save_models:
@@ -777,7 +779,7 @@ class SequentialFeatureSelection:
 
                 # store results
             best_feature_id = int(
-                self.__getFeatureId(best_candidate) / self.n_comp)
+                self._get_feature_id(best_candidate) / self.n_comp)
             self.best_scores_.append(all_scores[best_candidate])
             self.best_features_.append(best_feature_id)
             self.best_idx_ = np.argmax(self.best_scores_)
@@ -793,7 +795,7 @@ class SequentialFeatureSelection:
                                          cv_score=SL.model.cv_results_,
                                          best_score_=np.amax(all_scores),
                                          best_feature_=best_feature_id)
-            self.__maskIdx(best_candidate)
+            self._maskIdx(best_candidate)
 
     def predict(self, X, idx):
         """
@@ -807,7 +809,7 @@ class SequentialFeatureSelection:
             The combination (from 0).
         """
 
-        self.__resetMask()
+        self._reset_mask()
         if idx == 'best':
             idx = self.best_idx_
 
@@ -816,9 +818,12 @@ class SequentialFeatureSelection:
         else:
             SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
                               n_jobs=1, verbose=self.verbose_gridsearch)
-            SL.load_model(self.models_[idx])
-
-        return SL.predict_array(self.transform(X, idx=idx))
+            SL.load_model(self.models_path_[idx])
+        
+        SL.customize_array(self.transform, idx=idx, customizeX=True)
+        
+        
+        return SL.predict_array(X)
 
     def predict_best_combination(
             self, in_image, out_image, in_image_mask=False, higher_confidence=False):
@@ -838,7 +843,7 @@ class SequentialFeatureSelection:
             Path to a geotiff extension filename corresponding to a raster image to create.
         """
 
-        self.__resetMask()
+        self._reset_mask()
 
         push_feedback('Predict with combination ' + str(self.best_idx_))
 
@@ -871,7 +876,7 @@ class SequentialFeatureSelection:
             If str, same as outRasterPrefix.
         """
 
-        self.__resetMask()
+        self._reset_mask()
 
         for idx, model in enumerate(self.models_):
             if self.path_to_save_models is False:
@@ -891,23 +896,25 @@ class SequentialFeatureSelection:
         self.xFunction = xFunction
         self.xKwargs = kwargs
 
-    def __transformInFit(self, X, idx=0, customizeX=False):
+    def _transform_in_fit(self, X, idx=0, customizeX=False):
         mask = np.copy(self.mask)
+        
+#        if self.xFunction:
+#                X = self.xFunction(X, **self.xKwargs)
+#                
         if customizeX is False:
-            fieldsToKeep = self.__convertIdxToNComp(idx)
+            fieldsToKeep = self._convertIdxToNComp(idx)
             mask[fieldsToKeep] = 0
             X = X[:, ~mask]
+            
         if customizeX is True:
             self.mask[self.best_features_[idx]] = 0
-            if self.xFunction:
-                X = self.xFunction(X, **self.xKwargs)
-            X = X[:, ~self.mask]
 
+            X = X[:, ~self.mask]
         if X.ndim == 1:
             X = X.reshape(-1, 1)
-
         return X
-
+    
     def transform(self, X, idx=0, customizeX=False):
         """
         Parameters
@@ -915,7 +922,7 @@ class SequentialFeatureSelection:
         idx : int, or str with 'best'.
             The idx to return X array
         """
-        self.__resetMask()
+        self._reset_mask()
 
         self.best_idx_ = np.argmax(self.best_scores_)
         if idx == 'best':
@@ -931,7 +938,9 @@ class SequentialFeatureSelection:
                     self.mask[idxToMask] = 0
         else:
             self.mask[self.best_features_[:idx + 1]] = 0
-
+        
+        if self.xFunction:
+                X = self.xFunction(X, **self.xKwargs)
         if customizeX is False:
             #            fieldsToKeep = self.__convertIdxToNComp(idx)
             X = X[:, ~self.mask]
@@ -943,35 +952,34 @@ class SequentialFeatureSelection:
             #                self.mask[idxToMask] = 0
             #            else:
             #                self.mask[self.best_features_[idx]] = 0
-            if self.xFunction:
-                X = self.xFunction(X, **self.xKwargs)
+            
             X = X[:, ~self.mask]
 
         if X.ndim == 1:
             X = X.reshape(-1, 1)
         return X
 
-    def __getFeatureId(self, candidate):
+    def _get_feature_id(self, candidate):
         """
 
         """
         return np.where(self.mask == 1)[0][candidate * self.n_comp]
 
-    def __convertIdxToNComp(self, idx):
+    def _convertIdxToNComp(self, idx):
         """
         """
-        idxUnmask = self.__getFeatureId(idx)
+        idxUnmask = self._get_feature_id(idx)
         n_features_to_get = [idxUnmask + j for j in range(self.n_comp)]
 
         return n_features_to_get
 
-    def __maskIdx(self, idx):
+    def _maskIdx(self, idx):
         """
         Add the idx to the mask
         """
-        self.mask[self.__convertIdxToNComp(idx)] = 0
+        self.mask[self._convertIdxToNComp(idx)] = 0
 
-    def __resetMask(self):
+    def _reset_mask(self):
         """
         """
         self.mask[:] = 1

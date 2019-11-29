@@ -12,7 +12,7 @@ raster,vector = load_historical_data()
 rM =geo_tools.RasterMath(raster)
 
 class TestRaster(unittest.TestCase):
-    def test_np_to_gdt(self):
+    def test_convert_datatype(self):
         
         self._assert_np_gdt(np.dtype('uint8').name,gdal.GDT_Byte)
         self._assert_np_gdt(np.dtype('int16').name,gdal.GDT_Int16)
@@ -34,7 +34,8 @@ class TestRaster(unittest.TestCase):
         self._assert_np_gdt(gdal.GDT_Float32,np.float32)
         
         self._assert_np_gdt(np.dtype('float128').name,gdal.GDT_Float64)
-        
+        assert( geo_tools.convert_dt(gdal.GDT_Int16,to_otb_dt=True) == 'int16')
+        assert(geo_tools.convert_dt(np.dtype('float64').name,to_otb_dt=True) == 'double')
         
     def _assert_np_gdt(self,in_conv,out_dt):
         assert(geo_tools.convert_dt(in_conv)==out_dt)
@@ -74,7 +75,7 @@ class TestRaster(unittest.TestCase):
             del rM_band
     
     def test_3d(self)            :
-        rM_3d = geo_tools.RasterMath(raster,return_3d=True)
+        rM_3d = geo_tools.RasterMath(raster,return_3d=True,block_size = False)
         assert(rM_3d.get_random_block().ndim == 3)
         for block in rM.read_block_per_block():
             pass
@@ -108,6 +109,9 @@ class TestRaster(unittest.TestCase):
     
     def test_XYextraction(self):
         X = geo_tools.extract_ROI(raster,vector)
+        
+        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'Type')
+        
         assert(X.ndim == 2)
         
         X,y = geo_tools.extract_ROI(raster,vector,'Class')
@@ -122,10 +126,10 @@ class TestRaster(unittest.TestCase):
         
         
         
-    def raster_math_mean(self):
+    def test_raster_math_mean(self):
         for is_3d in [True,False]:
             rM = geo_tools.RasterMath(raster,return_3d = is_3d,verbose=is_3d)
-            rM.add_function(np.mean,'/tmp/mean.tif',axis=1)
+            rM.add_function(np.mean,'/tmp/mean.tif',axis=1,compress='high')
             rM.run()
             assert(gdal.Open('/tmp/mean.tif').RasterCount == 1)
             assert(gdal.Open('/tmp/mean.tif').RasterXSize == rM.n_columns)
@@ -154,6 +158,10 @@ class TestRaster(unittest.TestCase):
          Xc,yc = load_historical_data(centroid=True,return_X_y=True)
          assert(Xc.shape[0] == geo_tools.read_vector_values(vector,'Type').shape[0])
          
+    def test_extract_ROI_position(self):
+        X,pixel_position=geo_tools.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=True)
+        assert(pixel_position.shape[0] == X.shape[0])
+        
 #    def test_moran(self):
 #        # Maybe generate a false raster image to validate Moran's I
 #        im_mask = image_mask_from_vector(vector,raster,'/tmp/mask.tif')
@@ -165,7 +173,11 @@ class TestRaster(unittest.TestCase):
 #                    i_moran=Moran(raster,mask,transform=standardisation,lag=2,intermediate_lag=tf_lag)
 #                    res.append(np.mean(i_moran.scores['I']))
 #            assert(np.unique(res).size == len(res)*(tf_lag+1)) # every moran I is different (lag,row standardisation, mask)
-#                
+#   
+    def test_get_parameter(self):
+        assert(isinstance(rM.get_raster_parameters(),list))
+        rM.custom_raster_parameters(['TILED=NO'])
+        assert(rM.get_raster_parameters() == ['TILED=NO'])
 if __name__ == "__main__":
     unittest.main()
     

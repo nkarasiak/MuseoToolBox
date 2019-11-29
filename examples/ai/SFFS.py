@@ -44,7 +44,7 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 #
 SFFS = SequentialFeatureSelection(classifier=classifier,param_grid=dict(n_estimators=[10,20]),cv=LSGO,verbose=False)
 
-SFFS.fit(X.astype(np.float),y,g)
+SFFS.fit(X.astype(np.float),y,g,max_features=2)
 
 ##############################################
 # Show best features and score

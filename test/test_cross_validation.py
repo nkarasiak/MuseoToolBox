@@ -62,10 +62,10 @@ class TestCV(unittest.TestCase):
     def test_distanceSLOO(self):
         
         assert(distance_matrix.shape[0] == y.size)
-
+        
         cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,
                                                  distance_matrix=distance_matrix,
-                                                 random_state=12)
+                                                 random_state=12,verbose=1)
         
         geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
@@ -93,7 +93,15 @@ class TestCV(unittest.TestCase):
             assert(sloo_cv[0].size == as_loo_cv[0].size) # same size between loo and sloo 
             assert(np.all(sloo_cv[1] == as_loo_cv[1])) # using same valid pixel
             
-
+        
+        as_loo= cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
+                                                            distance_thresold=100,
+                                                            distance_matrix=distance_matrix,
+                                                            random_state=12,
+                                                            LOO_same_size=True,valid_size=False)
+        for tr,vl in as_loo.split(X,y):
+            assert(vl.size == n_class)
+            
         # distance too high 
         cv = cross_validation.SpatialLeaveOneOut(distance_thresold=10000,distance_matrix=distance_matrix,verbose=0)
         self.assertRaises(ValueError,cv.get_n_splits,X,y)
@@ -111,22 +119,28 @@ class TestCV(unittest.TestCase):
             assert(np.unique(y[vl]).size == 5) 
             assert(np.unique(y[tr]).size == 5) 
         
-        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
-        list_files = SLOPO.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOPO.gpkg')
-        for tr,vl in list_files:
-            assert(len(list_files[0]) == 2)
-            for l in list_files:
-                for f in l:                    
-                    if os.path.exists(f):
-                        os.remove(f)
-                    
-        os.remove('/tmp/pixels.gpkg')
         
     def test_SLOSGO(self)       :
         cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g)
         for tr,vl in cv.split(X,y,g)        :
-            print(tr)
             assert(n_class==np.unique(g[vl]).size)
+        
+        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        test_extensions = ['wrong','shp','gpkg']
+        for extension in test_extensions:
+            if extension == 'wrong':
+                self.assertRaises(Exception,cv.save_to_vector,'/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
+            else:
+                list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
+                for tr,vl in list_files:
+                    assert(len(list_files[0]) == 2)
+                    for l in list_files:
+                        for f in l:                    
+                            if os.path.exists(f):
+                                os.remove(f)
+                            
+        os.remove('/tmp/pixels.gpkg')
+
         
     def test_LOO(self):
         cv_loo = cross_validation.LeaveOneOut(random_state=12)
@@ -136,7 +150,9 @@ class TestCV(unittest.TestCase):
             assert(np.all(trvl_loo[1]==trvl_kf[1]))
             assert(len(trvl_kf[1]) == n_class)
             assert(np.unique(y[trvl_kf[1]]).size == n_class)
-            
+        
+        #to print extensions
+        cv_loo.get_supported_extensions()
     
 
 

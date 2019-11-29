@@ -62,14 +62,19 @@ class TestStats(unittest.TestCase):
         
         n_comp = 2
         max_features = 2
-        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp,path_to_save_models='/tmp/sfs_models/')
+        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp,path_to_save_models='/tmp/sfs_models/',verbose=1)
         def double_columns(x):
             return np.hstack((x,x))
         sfs.customize_array(double_columns)
         sfs.fit(X,y,max_features=max_features,standardize=True)
+        sfs.fit(X,y,max_features=max_features,standardize=True) # to reload from path
+        assert(sfs.transform(X,idx=1).shape[1] == 2*n_comp)
+        assert(sfs.transform(X,idx=0).shape[1] == n_comp)
         assert(sfs.X.shape[1] == X.shape[1]*2)
         assert(len(sfs.best_features_) == 2)
-        assert(sfs.get_best_model().X.shape[1] == n_comp*max_features        )
+        
+        assert(sfs.get_best_model().X.shape[1] == n_comp*(sfs.best_idx_+1) )
+        sfs.predict(X,0)
         shutil.rmtree('/tmp/sfs_models/')
         
 if __name__ == "__main__":
