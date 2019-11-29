@@ -721,9 +721,9 @@ class RasterMath:
 
         See also
         ----------
-        museotoolbox.raster_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block
-        museotoolbox.raster_tools.convert_dt : To see conversion between numpy datatype to gdal datatype.
-        museotoolbox.raster_tools.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
+        museotoolbox.geo_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block
+        museotoolbox.geo_tools.convert_dt : To see conversion between numpy datatype to gdal datatype.
+        museotoolbox.geo_tools.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
         """
         if len(kwargs) > 0:
             randomBlock = function(self.get_random_block(), **kwargs)

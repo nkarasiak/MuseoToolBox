@@ -36,7 +36,7 @@ image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
 
 rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=True)
 #rM.addInputRaster('/tmp/mask.tif')
-print(rM.get_random_block()[0].shape)
+print(rM.get_random_block().shape)
 
 #######################
 # Plot blocks

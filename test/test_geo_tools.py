@@ -72,6 +72,9 @@ class TestRaster(unittest.TestCase):
             rM_band = geo_tools.RasterMath(raster,return_3d=is_3d,in_image_mask=mask)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
+            for block in rM_band.read_block_per_block():
+                assert(np.ma.isMaskedArray(block))
+                
             assert(idx+1==rM_band.n_bands)
             del rM_band
     
@@ -159,6 +162,7 @@ class TestRaster(unittest.TestCase):
         self.assertRaises(Exception,geo_tools.read_vector_values,'wrong_path')
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector,'wrong_field')
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector,band_prefix='wrong_field')
+        self.assertRaises(ReferenceError,geo_tools.RasterMath,raster,in_image_mask='kiki')
     
     def test_addfid(self):
         copyfile(vector,'/tmp/test.gpkg')
@@ -177,8 +181,8 @@ class TestRaster(unittest.TestCase):
          Xc,yc = load_historical_data(centroid=True,return_X_y=True)
          assert(Xc.shape[0] == geo_tools.read_vector_values(vector,'Type').shape[0])
          
-    def test_extract_ROI_position(self):
-        X,pixel_position=geo_tools.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=True)
+    def test_extract_position(self):
+        X,pixel_position=geo_tools.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=False)
         assert(pixel_position.shape[0] == X.shape[0])
         
 #    def test_moran(self):
