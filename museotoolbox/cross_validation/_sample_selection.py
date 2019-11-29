@@ -644,10 +644,10 @@ class _cv_manager:
         if group is None:
             groups = None
             y, fts, srs = geo_tools.read_vector_values(
-                vector, field, getFeatures=True, verbose=self.verbose)
+                vector, field, get_features=True, verbose=self.verbose)
         else:
             y, groups, fts, srs = geo_tools.read_vector_values(
-                vector, field, group, getFeatures=True, verbose=self.verbose)
+                vector, field, group, get_features=True, verbose=self.verbose)
 
         if self.__alreadyRead:
             self.reinitialize()

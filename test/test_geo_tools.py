@@ -158,6 +158,7 @@ class TestRaster(unittest.TestCase):
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector)
         self.assertRaises(Exception,geo_tools.read_vector_values,'wrong_path')
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector,'wrong_field')
+        self.assertRaises(ValueError,geo_tools.read_vector_values,vector,band_prefix='wrong_field')
     
     def test_addfid(self):
         copyfile(vector,'/tmp/test.gpkg')
@@ -196,6 +197,11 @@ class TestRaster(unittest.TestCase):
         assert(isinstance(rM.get_raster_parameters(),list))
         rM.custom_raster_parameters(['TILED=NO'])
         assert(rM.get_raster_parameters() == ['TILED=NO'])
+    
+    def test_get_distance_matrix(self):
+        distance_matrix,label = geo_tools.get_distance_matrix(raster,vector,'Class')
+        assert(label.size== distance_matrix.shape[0])
+        
 if __name__ == "__main__":
     unittest.main()
     

@@ -1454,11 +1454,7 @@ class _create_point_layer:
             self._update_arr_according_to_vector()
 
         # add Band to list of fields if needed
-        if band_value is not None:
-            if band_prefix is None:
-                raise Warning(
-                    'Please, define a bandPrefix value to save bands value into the vector file.')
-            if self.addBand is False:
+        if band_value is not None and self.addBand is False:
                 self._add_band_value(band_prefix, band_value.shape[0])
 
         point = ogr.Geometry(ogr.wkbPoint)
@@ -1608,13 +1604,13 @@ def read_vector_values(vector, *args, **kwargs):
     *args : str
         Field name containing the field to extract values from (i.e. 'class', str).
     **kwargs : arg
-        - bandPrefix = 'band-' which is the common suffix listing the spectral values (i.e. bandPrefix = 'band-').
-        - getFeatures = True, will return features in one list AND spatial Reference.
+        - band_prefix = 'band-' which is the common suffix listing the spectral values (i.e. band_prefix = 'band-').
+        - get_features = True, will return features in one list AND spatial Reference.
 
     Returns
     -------
     List values, same length as number of parameters.
-    If bandPrefix as parameters, will return one array with n dimension.
+    If band_prefix as parameters, will return one array with n dimension.
 
     See also
     ---------
@@ -1643,21 +1639,21 @@ def read_vector_values(vector, *args, **kwargs):
 
     # add kwargs
     extractBands = False
-    getFeatures = False
+    get_features = False
     if kwargs:
         # check if need to extract bands from vector
         if 'band_prefix' in kwargs.keys():
             extractBands = True
             band_prefix = kwargs['band_prefix']
         # check if need to extract features from vector
-        if 'getFeatures' in kwargs.keys():
-            getFeatures = kwargs['getFeatures']
+        if 'get_features' in kwargs.keys():
+            get_features = kwargs['get_features']
 
     if extractBands:
         bandsFields = []
 
-    # if getFeatures, save Spatial Reference and Features
-    if getFeatures:
+    # if get_features, save Spatial Reference and Features
+    if get_features:
         srs = lyr.GetSpatialRef()
         features = []
 
@@ -1707,7 +1703,7 @@ def read_vector_values(vector, *args, **kwargs):
                     raise ValueError(
                         "Field \"{}\" do not exists. These fields are available : {}".format(
                             args[a], listFields))
-            if getFeatures:
+            if get_features:
                 features.append(feature)
 
         # Initialize return
@@ -1723,7 +1719,7 @@ def read_vector_values(vector, *args, **kwargs):
                 fieldsToReturn.append(ROIlevels[i])
 
         # if features
-        if getFeatures:
+        if get_features:
             fieldsToReturn.append(features)
             fieldsToReturn.append(srs)
         # if 1d, to turn single array
@@ -1756,13 +1752,13 @@ def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
     """
     pB = ProgressBar(100, message='Adding ' + uniqueField)
 
-    inDriverName = get_ogr_driver_from_filename(inVector)
-    inDriver = ogr.GetDriverByName(inDriverName)
+    driver_name = get_ogr_driver_from_filename(inVector)
+    inDriver = ogr.GetDriverByName(driver_name)
     inSrc = inDriver.Open(inVector, 1)  # 1 for writable
     inLyr = inSrc.GetLayer()       # get the layer for this datasource
     inLyrDefn = inLyr.GetLayerDefn()
 
-    if inDriverName == 'SQLITE':
+    if driver_name == 'SQLITE' or driver_name == 'GPKG':
         inLyr.StartTransaction()
 
     listFields = []
@@ -1795,6 +1791,6 @@ def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
             # inLyr.CreateFeature(feat)
             ThisID += 1
 
-        if inDriverName == 'SQLITE':
+        if driver_name == 'SQLITE' or driver_name == 'GPKG':
             inLyr.CommitTransaction()
         inSrc.Destroy()
