@@ -9,7 +9,8 @@ import gdal
 import os
 
 raster,vector = load_historical_data()
-rM =geo_tools.RasterMath(raster)
+rM = geo_tools.RasterMath(raster)
+mask = geo_tools.image_mask_from_vector(vector,raster,'/tmp/mask.tif')
 
 class TestRaster(unittest.TestCase):
     def test_convert_datatype(self):
@@ -68,7 +69,7 @@ class TestRaster(unittest.TestCase):
     
     def test_readPerBand(self):
         for is_3d in [True, False]:
-            rM_band = geo_tools.RasterMath(raster,return_3d=is_3d)
+            rM_band = geo_tools.RasterMath(raster,return_3d=is_3d,in_image_mask=mask)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
             assert(idx+1==rM_band.n_bands)
@@ -84,6 +85,14 @@ class TestRaster(unittest.TestCase):
         rM.custom_block_size(128,256)
         assert(rM.y_block_size==256)
         assert(rM.x_block_size==128)
+        
+        rM.custom_block_size(-1,-1)
+        assert(rM.x_block_size == rM.n_columns)
+        assert(rM.y_block_size == rM.n_lines)
+        rM.custom_block_size(1/2,1/3)
+        assert(rM.x_block_size == np.ceil(1/2*rM.n_columns))
+        assert(rM.y_block_size == np.ceil(1/3*rM.n_lines))
+        
         rM.add_image(raster)
         
         assert(np.all(rM.get_random_block(12))== np.all(rM.get_random_block(12)))
@@ -128,9 +137,16 @@ class TestRaster(unittest.TestCase):
         
     def test_raster_math_mean(self):
         for is_3d in [True,False]:
-            rM = geo_tools.RasterMath(raster,return_3d = is_3d,verbose=is_3d)
-            rM.add_function(np.mean,'/tmp/mean.tif',axis=1,compress='high')
-            rM.run()
+            rM = geo_tools.RasterMath(raster,return_3d = is_3d,verbose=is_3d,in_image_mask=mask)
+            if is_3d is False:
+                # test without compression with reading/writing pixel per pixel, very slow...
+                rM.custom_block_size(10,10) # to have full masked block
+                rM.add_function(np.mean,'/tmp/mean.tif',axis=1,dtype=np.int16)
+                rM.run()
+            else:
+                # test using default block size and high compressio of raster
+                rM.add_function(np.mean,'/tmp/mean.tif',axis=1,dtype=np.int16,compress='high')
+                rM.run()                
             assert(gdal.Open('/tmp/mean.tif').RasterCount == 1)
             assert(gdal.Open('/tmp/mean.tif').RasterXSize == rM.n_columns)
             assert(gdal.Open('/tmp/mean.tif').RasterYSize == rM.n_lines)
@@ -138,8 +154,10 @@ class TestRaster(unittest.TestCase):
             os.remove('/tmp/mean.tif')
             
     def test_unknow_field(self):
-        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'unknow')
+        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'wrong_field')
         self.assertRaises(ValueError,geo_tools.read_vector_values,vector)
+        self.assertRaises(Exception,geo_tools.read_vector_values,'wrong_path')
+        self.assertRaises(ValueError,geo_tools.read_vector_values,vector,'wrong_field')
     
     def test_addfid(self):
         copyfile(vector,'/tmp/test.gpkg')

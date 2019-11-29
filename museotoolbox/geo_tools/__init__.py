@@ -848,7 +848,8 @@ class RasterMath:
         self.options.extend(['BLOCKYSIZE={}'.format(
             self.y_block_size), 'BLOCKXSIZE={}'.format(self.x_block_size)])
         if self.y_block_size == self.x_block_size:
-            self.options.extend(['TILED=YES'])
+            if self.y_block_size in [64,128,256,512,1024,2048,4096]:
+                self.options.extend(['TILED=YES'])
 
     def _add_output(self, out_image, out_n_bands, out_np_dt):
         if not os.path.exists(os.path.dirname(out_image)):
@@ -1468,11 +1469,9 @@ class _create_point_layer:
         feature.SetFID(featureIndex)
 
         # Retrieve inVector FID
-        try:
-            FID = self.uniqueFIDs[np.where(np.asarray(
-                self.uniqueIDs, dtype=np.int) == int(uniqueIDValue))[0][0]]
-        except BaseException:
-            push_feedback(uniqueIDValue)
+        FID = self.uniqueFIDs[np.where(np.asarray(
+            self.uniqueIDs, dtype=np.int) == int(uniqueIDValue))[0][0]]
+    
 
         featUpdates = self.inLyr.GetFeature(int(FID))
         for f in self.fields:
@@ -1558,28 +1557,6 @@ def get_distance_matrix(in_image, in_vector, field=False, verbose=False):
         return distance_matrix, label
     else:
         return distance_matrix
-
-
-def _getOgrDataTypeToNumpy(ogrType):
-    FIELD_TYPES = [
-        np.int32,          # OFTInteger, Simple 32bit integer
-        None,           # OFTIntegerList, List of 32bit integers
-        np.float64,       # OFTReal, Double Precision floating point
-        None,           # OFTRealList, List of doubles
-        np.str,          # OFTString, String of ASCII chars
-        None,           # OFTStringList, Array of strings
-        None,           # OFTWideString, deprecated
-        None,           # OFTWideStringList, deprecated
-        None,           # OFTBinary, Raw Binary data
-        None,           # OFTDate, Date
-        None,           # OFTTime, Time
-        None,           # OFTDateTime, Date and Time
-    ]
-    numpyDT = FIELD_TYPES(ogrType)
-    if numpyDT is None and ogrType > 4:
-        numpyDT = np.str
-
-    return numpyDT
 
 
 def get_ogr_driver_from_filename(fileName):
