@@ -187,20 +187,16 @@ class SuperLearner:
         if isinstance(cv, int) and cv != False:
             from ..cross_validation import RandomStratifiedKFold
             cv = RandomStratifiedKFold(n_splits=cv)
-        if cv is False or cv is None and isinstance(param_grid, dict):
-            raise ValueError(
-                'You need to select a cross-validation method to use the param_grid for the gridSearchCV.')
+        
         if cv is not None and cv is not False:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
-        elif cv is not False:
-            self.CV = cv
-
+        
         from sklearn.model_selection import GridSearchCV
 
-        if isinstance(param_grid, dict):
+        if isinstance(param_grid, dict) and cv is not False:
             self.model = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
@@ -221,9 +217,9 @@ class SuperLearner:
                         str(self.model.best_params_[key])
                     push_feedback(message)
         else:
-            if cv is not False:
-                push_feedback(
-                    Warning('Compute model without CV because no param_grid was defined'))
+            if cv is not False or param_grid is not False:
+                raise ValueError('Cannot fit model because a CV or a param_grid is given and and no param_grid was defined?\
+                              If you want to fit your mode with no param_grid, please set cv=False and param_grid=False.')
             self.model = self.classifier.fit(X, y, groups)
 
     def save_model(self, path):
@@ -247,7 +243,7 @@ class SuperLearner:
 
         return path
 
-    def load_model(self, path, onlySKmodel=False):
+    def load_model(self, path):
         """
         Load model previously saved with `SuperLearner.save_model(path)`.
 
@@ -569,24 +565,21 @@ class SuperLearner:
         def _computeStatsPerCV(statsidx, trvl, **kwargs):
             dictStats = self._get_stats_from_each_cv(statsidx, trvl, **kwargs)
             return dictStats
-        if self.CV is False:
-            raise Exception(
-                'You must have learnt with a Cross-Validation')
-        else:
-            statsCV = Parallel(
-                n_jobs=self.n_jobs,
-                verbose=self.verbose)(
-                delayed(_computeStatsPerCV)(
-                    statsidx,
-                    trvl,
-                    confusion_matrix=confusion_matrix,
-                    kappa=kappa,
-                    OA=OA,
-                    F1=F1,
-                    nTrain=nTrain) for statsidx,
-                trvl in enumerate(
-                    self.CV))
-            return statsCV
+    
+        statsCV = Parallel(
+            n_jobs=self.n_jobs,
+            verbose=self.verbose)(
+            delayed(_computeStatsPerCV)(
+                statsidx,
+                trvl,
+                confusion_matrix=confusion_matrix,
+                kappa=kappa,
+                OA=OA,
+                F1=F1,
+                nTrain=nTrain) for statsidx,
+            trvl in enumerate(
+                self.CV))
+        return statsCV
 
     def customize_array(self, xFunction, **kwargs):
         self._array_is_customized = True

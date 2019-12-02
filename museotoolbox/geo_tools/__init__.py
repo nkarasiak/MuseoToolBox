@@ -22,8 +22,8 @@ import tempfile
 
 # spatial libraries
 from osgeo import __version__ as osgeo_version
-import gdal
-import ogr
+from osgeo import gdal
+from osgeo import ogr
 
 
 from ..internal_tools import ProgressBar, push_feedback
@@ -870,7 +870,7 @@ class RasterMath:
 
         self.outputs.append(dst_ds)
 
-    def _iter_block(self, getBlock=False,
+    def _iter_block(self, get_block=False,
                     y_block_size=False, x_block_size=False):
         if not y_block_size:
             y_block_size = self.y_block_size
@@ -882,7 +882,7 @@ class RasterMath:
                 width = min(self.n_columns - col, x_block_size)
                 height = min(self.n_lines - row, y_block_size)
 
-                if getBlock:
+                if get_block:
                     X = self._generate_block_array(
                         col, row, width, height, self.mask)
                     yield X, col, row, width, height
@@ -1062,7 +1062,7 @@ class RasterMath:
         Yield each block.
         """
         for X, col, line, cols, lines in self._iter_block(
-                getBlock=True, y_block_size=y_block_size, x_block_size=x_block_size):
+                get_block=True, y_block_size=y_block_size, x_block_size=x_block_size):
             if isinstance(X, list):
                 mask = X[0].mask
             else:
@@ -1145,7 +1145,7 @@ class RasterMath:
         self.pb = ProgressBar(self.n_block, message=self.message)
 
         for X, col, line, cols, lines in self._iter_block(
-                getBlock=True):
+                get_block=True):
 
             if isinstance(X, list):
                 X_ = [np.ma.copy(arr) for arr in X]

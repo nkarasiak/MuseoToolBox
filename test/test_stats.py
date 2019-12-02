@@ -13,8 +13,6 @@ confusion_matrix = np.array([[5,1],[2,2]])
 yt_init= [1,1,1,1,1,1,2,2,2,2]
 yp_init = [1,1,1,1,1,2,1,1,2,2]
 
-
-
 def create_false_image(array,path):
     # from https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
     driver = gdal.GetDriverByName('GTiff')

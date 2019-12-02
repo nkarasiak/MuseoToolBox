@@ -287,10 +287,10 @@ class PlotConfusionMatrix:
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
-        elif self.cm.shape[0] != self.cm.shape[1]:
+        if self.cm.shape[0] != self.cm.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-        else:
-            self.subplot = 'F1'
+        
+        self.subplot = 'F1'
         self.ax1v = plt.subplot(self.gs[0, 1])
 
         verticalPlot = []
@@ -360,10 +360,10 @@ class PlotConfusionMatrix:
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
-        elif self.cm_.shape[0] != self.cm_.shape[1]:
+        if self.cm_.shape[0] != self.cm_.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-        else:
-            self.subplot = 'F1'
+        
+        self.subplot = 'F1'
 
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
@@ -492,19 +492,3 @@ class PlotConfusionMatrix:
         >>> plot.saveTo('/tmp/contofu.pdf',dpi=300)
         """
         self.fig.savefig(path, dpi=dpi, bbox_inches='tight')
-
-#    def set_white_borders(self):
-#        def __removeLines(ax):
-#            ax.tick_params(which="minor", bottom=False, top=False, left=False)
-#
-#            for edge, spine in ax.spines.items():
-#                spine.set_visible(False)
-#
-#            ax.grid(which="minor", color="w", linestyle='-', linewidth=2)
-#
-#            ax.set_xticks(
-#                np.arange(len(ax.get_xticks()) + 1) - .49, minor=True)
-#            ax.set_yticks(np.arange(len(ax.get_yticks()) + 1) - .5, minor=True)
-#
-#        for ax in self.axes:
-#            __removeLines(ax)
