@@ -4,7 +4,7 @@ from shutil import copyfile
 import numpy as np
 from museotoolbox import geo_tools
 from museotoolbox.datasets import load_historical_data
-import gdal
+from osgeo import gdal
 
 import os
 
@@ -35,7 +35,7 @@ class TestRaster(unittest.TestCase):
         self._assert_np_gdt(gdal.GDT_Float32,np.float32)
         
         self._assert_np_gdt(np.dtype('float128').name,gdal.GDT_Float64)
-        assert( geo_tools.convert_dt(gdal.GDT_Int16,to_otb_dt=True) == 'int16')
+        assert(geo_tools.convert_dt(gdal.GDT_Int16,to_otb_dt=True) == 'int16')
         assert(geo_tools.convert_dt(np.dtype('float64').name,to_otb_dt=True) == 'double')
         
     def _assert_np_gdt(self,in_conv,out_dt):
@@ -80,6 +80,7 @@ class TestRaster(unittest.TestCase):
     
     def test_3d(self)            :
         rM_3d = geo_tools.RasterMath(raster,return_3d=True,block_size = False)
+        self.assertRaises(ValueError,rM_3d.get_block,100)
         assert(rM_3d.get_random_block().ndim == 3)
         for block in rM.read_block_per_block():
             pass
@@ -185,18 +186,6 @@ class TestRaster(unittest.TestCase):
         X,pixel_position=geo_tools.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=False)
         assert(pixel_position.shape[0] == X.shape[0])
         
-#    def test_moran(self):
-#        # Maybe generate a false raster image to validate Moran's I
-#        im_mask = image_mask_from_vector(vector,raster,'/tmp/mask.tif')
-#        
-#        for mask in [im_mask,False]:
-#            res = []
-#            for tf_lag in [True,False]:
-#                for standardisation in ['b','r']:
-#                    i_moran=Moran(raster,mask,transform=standardisation,lag=2,intermediate_lag=tf_lag)
-#                    res.append(np.mean(i_moran.scores['I']))
-#            assert(np.unique(res).size == len(res)*(tf_lag+1)) # every moran I is different (lag,row standardisation, mask)
-#   
     def test_get_parameter(self):
         assert(isinstance(rM.get_raster_parameters(),list))
         rM.custom_raster_parameters(['TILED=NO'])

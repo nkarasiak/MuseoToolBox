@@ -13,12 +13,13 @@ Compute Moran's I with different lags, support mask.
 import numpy as np
 from museotoolbox.stats import Moran
 from matplotlib import pyplot as plt
-import gdal,osr
+from osgeo import gdal,osr
 
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 raster = '/tmp/autocorrelated_moran.tif'
+mask = '/tmp/mask.tif'
 def create_false_image(array,path):
     # from https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
     driver = gdal.GetDriverByName('GTiff')
@@ -35,24 +36,26 @@ def create_false_image(array,path):
 x = np.zeros((100,100),dtype=int)
 # max autocorr
 x[:50,:] = 1
-x[50:,:] = 0
 create_false_image(x,raster)
-plt.imshow(x)
+x_mask = np.random.randint(0,2,[100,100])
+create_false_image(x_mask,mask)
+
+plt.imshow(x,cmap='gray', aspect='equal',interpolation='none')
+plt.imshow(x_mask,cmap='gray', aspect='equal',interpolation='none')
 
 ################################
 # Compute Moran's I for lag 1
 lags =  [1,3,5]
-Is = []
-for lag in lags:
-    MoransI = Moran(raster,lag=lag)
-    Is.append(MoransI.scores['I'])
+
+MoransI = Moran(raster,lag=lags,in_image_mask=mask)
+print(MoransI.scores)
 
 #######################
 # Plot result
 # -----------------------------------
 from matplotlib import pyplot as plt 
 plt.title('Evolution of Moran\'s I')
-plt.plot(lags,np.mean(Is,axis=1),'-o')
+plt.plot(MoransI.scores['lag'],MoransI.scores['I'],'-o')
 plt.xlabel('Spatial lag')
 plt.xticks(lags)
 plt.ylabel('Moran\'s I')

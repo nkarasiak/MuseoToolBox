@@ -20,7 +20,6 @@ import os
 import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
-from sklearn import warnings
 from ..geo_tools import RasterMath, get_gdt_from_minmax_values, convert_dt
 from ..internal_tools import ProgressBar, push_feedback
 
@@ -166,7 +165,6 @@ class SuperLearner:
         if standardize:
             self.standardize = True
             # in order to remove warnings due to datatype conversion
-            warnings.filterwarnings("ignore") 
             self.standardize_array()
             self.X = self.standardize_array(X, need_transformation=False)
 

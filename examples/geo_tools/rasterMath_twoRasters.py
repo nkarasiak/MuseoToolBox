@@ -26,8 +26,8 @@ raster,vector = datasets.load_historical_data()
 ##############################################################################
 # If invert is set to True, it means polygons will be set to nodata
 
-image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=True)
-rM = RasterMath(in_image = raster,in_image_mask='/tmp/mask.tif',return_3d=False)
+image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
+rM = RasterMath(in_image = raster,in_image_mask='/tmp/mask.tif',return_3d=True)
 
 rM.add_image(raster)
 
@@ -55,7 +55,7 @@ rM.run()
 #######################
 # Plot result
 
-import gdal
+from osgeo import gdal
 from matplotlib import pyplot as plt 
 
 src = gdal.Open('/tmp/sub_2inputs.tif')

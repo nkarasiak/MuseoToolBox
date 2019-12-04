@@ -22,8 +22,7 @@ import tempfile
 
 # spatial libraries
 from osgeo import __version__ as osgeo_version
-from osgeo import gdal
-from osgeo import ogr
+from osgeo import gdal,ogr
 
 
 from ..internal_tools import ProgressBar, push_feedback
@@ -510,7 +509,6 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
     """
 
     data_src = gdal.Open(in_image)
-    import ogr
     shp = ogr.Open(in_vector)
 
     lyr = shp.GetLayer()
@@ -633,7 +631,8 @@ class RasterMath:
             self.y_block_size = block_size[1]
         self.block_sizes = [self.x_block_size, self.y_block_size]
         self.custom_block_size()  # set block size
-
+        
+        
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
         self.ndtype = convert_dt(band.DataType)
@@ -753,6 +752,15 @@ class RasterMath:
 
         if self.options == []:
             self._init_raster_parameters(compress=compress)
+        else:
+            params = self.get_raster_parameters()
+            params = self.get_raster_parameters()
+            arg_pos = next((x for x in params if x.startswith('compress')), None)
+            if arg_pos:
+                # remove old compress arg
+                params.pop(params.index(arg_pos))
+            self.custom_raster_parameters(params)
+            self._init_raster_parameters(compress=compress)
 
         self._add_output(out_image, out_n_bands, out_np_dt)
         self.functions.append(function)
@@ -780,8 +788,9 @@ class RasterMath:
 
     def _init_raster_parameters(self, compress=True):
 
-        self.options = ['TILED=YES']
-        if compress is True or compress == 'high':
+        self.options = []
+        
+        if compress :
             n_jobs = os.cpu_count() - 1
             if n_jobs < 1:
                 n_jobs = 1
@@ -841,7 +850,7 @@ class RasterMath:
         """
         self.options = parameters_list
 
-    def _managed_raster_options(self):
+    def _managed_raster_parameters(self):
         # remove blockysize or blockxsize if already in options
         self.options = [val for val in self.options if not val.upper().startswith(
             'BLOCKYSIZE') and not val.upper().startswith('BLOCKXSIZE') and not val.upper().startswith('TILED')]
@@ -855,7 +864,7 @@ class RasterMath:
         if not os.path.exists(os.path.dirname(out_image)):
             os.makedirs(os.path.dirname(out_image))
 
-        self._managed_raster_options()
+        self._managed_raster_parameters()
 
         dst_ds = self.driver.Create(
             out_image,
@@ -937,7 +946,7 @@ class RasterMath:
                     arr[..., ind] = band.ReadAsArray(
                         col, row, width, height).reshape(width * height)
 
-            arr = self._filterNoData(arr, arrMask)
+            arr = self._filter_nodata(arr, arrMask)
             arrs.append(arr)
 
         if len(arrs) == 1:
@@ -945,7 +954,7 @@ class RasterMath:
 
         return arrs
 
-    def _filterNoData(self, arr, mask=None):
+    def _filter_nodata(self, arr, mask=None):
         """
         Filter no data according to a mask and to nodata value set in the raster.
         """
@@ -973,7 +982,43 @@ class RasterMath:
             outArr = np.ma.masked_array(arr, tmpMask)
 
         return outArr
-
+    
+    def get_block(self, block_number=0):
+        """
+        Get a block by its position, ordered as follow :       
+        
+        +-----------+-----------+
+        |  block 0  |  block 1  |
+        +-----------+-----------+
+        |  block 2  |  block 3  |
+        +-----------+-----------+
+        
+        Parameters
+        -----------
+        block_number, int, optional (default=0).
+            Position of the desired block.
+            
+        Returns
+        --------
+        Block : np.ndarray
+        
+        """
+        if block_number > self.n_blocks:
+            raise ValueError('There are only {} blocks in your image.'.format(self.n_blocks))
+        else:
+            line = int(block_number/self.n_x_blocks)
+            col = int(block_number % self.n_x_blocks)
+            
+            height = min(self.n_columns - col, self.x_block_size)
+            width = min(self.n_lines - line, self.y_block_size)
+            
+            tmp = self._generate_block_array(
+                col, line, height, width, self.mask)
+            if self.return_3d is False:
+                tmp = self._manage_2d_mask(tmp)
+                tmp = np.ma.copy(tmp)
+            return tmp
+    
     def get_random_block(self, random_state=None):
         """
         Get a random block from the raster.
@@ -985,34 +1030,47 @@ class RasterMath:
             If None, the random number generator is the RandomState instance used by numpy np.random.
         """
         mask = np.array([True])
-
+        
+        np.random.seed(random_state)
+        rdm = np.random.permutation(np.arange(self.n_blocks))
+        idx = 0
+        
         while np.all(mask == True):
-            # TODO, stop and warn if no block has valid data (infinite loop...)
-            np.random.seed(random_state)
-            cols = int(
-                np.random.permutation(
-                    range(
-                        0,
-                        self.n_lines,
-                        self.y_block_size))[0])
-            np.random.seed(random_state)
-            lines = int(
-                np.random.permutation(
-                    range(
-                        0,
-                        self.n_columns,
-                        self.x_block_size))[0])
-            width = min(self.n_columns - lines, self.x_block_size)
-            height = min(self.n_lines - cols, self.y_block_size)
-
-            tmp = self._generate_block_array(
-                lines, cols, width, height, self.mask)
+#            np.random.seed(random_state)
+#
+#            lines = int(
+#                np.random.permutation(
+#                    range(
+#                        0,
+#                        self.n_lines,
+#                        self.y_block_size))[0])
+#            np.random.seed(random_state)
+#            cols = int(
+#                np.random.permutation(
+#                    range(
+#                        0,
+#                        self.n_columns,
+#                        self.x_block_size))[0])
+#            
+#            height = min(self.n_columns - cols, self.x_block_size)
+#            width = min(self.n_lines - lines, self.y_block_size)
+#            
+#            tmp = self._generate_block_array(
+#                cols, lines, height, width, self.mask)
+#            if len(self.opened_images) > 1:
+#                mask = tmp[0].mask
+#            else:
+#                mask = tmp.mask
+#            if self.return_3d is False:
+#                tmp = self._manage_2d_mask(tmp)
+            
+            tmp = self.get_block(block_number=rdm[idx])
             if len(self.opened_images) > 1:
                 mask = tmp[0].mask
             else:
                 mask = tmp.mask
-            if self.return_3d is False:
-                tmp = self._manage_2d_mask(tmp)
+                
+            idx += 1
         return tmp
 
     def reshape_ndim(self, x):
@@ -1125,12 +1183,15 @@ class RasterMath:
         else:
             self.x_block_size = self.block_sizes[0]
 
-        self.n_block = np.ceil(self.n_lines / self.y_block_size).astype(int) * np.ceil(self.n_columns /
+        self.n_blocks = np.ceil(self.n_lines / self.y_block_size).astype(int) * np.ceil(self.n_columns /
                                                                                        self.x_block_size).astype(int)
         self.block_sizes = [self.x_block_size, self.y_block_size]
-
+        
+        self.n_y_blocks = len([i for i in range(0, self.n_lines, self.y_block_size)])
+        self.n_x_blocks = len([i for i in range(0, self.n_columns, self.x_block_size)])
+        
         if self.verbose:
-            push_feedback('Total number of blocks : %s' % self.n_block)
+            push_feedback('Total number of blocks : %s' % self.n_blocks)
 
     def run(self):
         """
@@ -1142,7 +1203,7 @@ class RasterMath:
         """
 
         # TODO : Parallel
-        self.pb = ProgressBar(self.n_block, message=self.message)
+        self.pb = ProgressBar(self.n_blocks, message=self.message)
 
         for X, col, line, cols, lines in self._iter_block(
                 get_block=True):
@@ -1234,7 +1295,7 @@ class RasterMath:
 
             self._position += 1
 
-        self.pb.add_position(self.n_block)
+        self.pb.add_position(self.n_blocks)
 
         for idx, fun in enumerate(self.functions):
             # set nodata if given

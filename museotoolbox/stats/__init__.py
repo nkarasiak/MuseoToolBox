@@ -22,8 +22,8 @@ from scipy.ndimage.filters import generic_filter  # to compute moran
 
 
 class Moran:
-    def __init__(self, in_image, in_image_mask=False, transform='r',
-                 lag=1, weights=False, intermediate_lag=True):
+    def __init__(self, in_image, in_image_mask=False,
+                 lag=1, weights=False):
         """
         Compute Moran's I for raster.
 
@@ -32,31 +32,20 @@ class Moran:
         in_image : str.
             A filename or path of a raster file.
             It could be any file that GDAL can open.
-        in_image_mask   :   str.
-                            Path to mask raster, default False.
-        transform       :   str, optional (default='r')
-            default optional is row-standardized (transform='r').
-            for binary transfrom (transform='b').
         lag : int, optional (default=1)
             The distance from the cell.
         weights :False or array-like, optional (default=False).
             Weights with the same shape as the square size.
-        intermediate_lag :  bool, optional (default=True).
-            Use all pixel values inside the specified lag.
-            If `intermediate_lag` is set to False, only the
-            pixels at the specified range will be kept for computing the statistics.
         """
 
-        self.scores = dict(I=[], band=[], EI=[])
+        self.scores = dict(lag=[], I=[], band=[], EI=[])
         self.lags = []
-        if isinstance(in_image, (np.ma.core.MaskedArray, np.ndarray)):
-            arr = in_image
-        else:
-            rM = RasterMath(
-                in_image,
-                in_image_mask=in_image_mask,
-                return_3d=True,
-                verbose=False)
+        
+        rM = RasterMath(
+            in_image,
+            in_image_mask=in_image_mask,
+            return_3d=True,
+            verbose=False)
 
         for band, arr in enumerate(rM.read_band_per_band()):
             if isinstance(lag, int):
@@ -66,32 +55,18 @@ class Moran:
                 footprint = np.ones((squareSize, squareSize))
                 weights = np.zeros((footprint.shape[0], footprint.shape[1]))
 
-                if not intermediate_lag:
-                    weights[:, 0] = 1
-                    weights[0, :] = 1
-                    weights[-1, :] = 1
-                    weights[:, -1] = 1
-                else:
-                    weights[:, :] = 1
-
-                if transform == 'b' and band == 0:
-                    neighbors = generic_filter(
-                        arr,
-                        self.get_n_neighbors,
-                        footprint=footprint,
-                        mode='constant',
-                        cval=np.nan,
-                        extra_keywords=dict(
-                            footprint=footprint,
-                            weights=weights))
-                    if not np.all(arr.mask == False):
-                        neighbors[arr.mask] = np.nan
-
+                weights[:, 0] = 1
+                weights[0, :] = 1
+                weights[-1, :] = 1
+                weights[:, -1] = 1
+            
+                    
                 n = arr.count()
                 arr = arr.astype(np.float64)
                 # convert masked to nan for generic_filter
-                arr.data[arr.mask] = np.nan
-
+                np.where(arr.mask==True,np.nan,arr.data)
+            
+                
                 x_ = np.nanmean(arr)
 
                 num = generic_filter(
@@ -104,20 +79,23 @@ class Moran:
                         x_=x_,
                         footprint=footprint,
                         weights=weights,
-                        transform=transform))
+                        transform='r'))
 
                 den = (arr - x_)**2
                 self.z = arr - x_
 
                 # need to mask z/den/num/neighbors
                 den[arr.mask] = np.nan
-                local = np.nansum(num) / np.nansum(den)
-                if transform == 'b':
-                    self.I = (n / np.nansum(neighbors)) * local
-                else:
-                    self.I = local
+#                local = np.nansum(num) / np.nansum(den)
+                l1 = np.where(arr.mask,np.nan,num)
+                l2 = np.where(arr.mask,np.nan,den)
+                local = np.nansum(l1) / np.nansum(l2)
+                
+                self.I = local
+                
                 self.EI = -1 / (n - 1)
                 self.lags.append(l)
+                self.scores['lag'].append(l)
                 self.scores['band'].append(band + 1)
                 self.scores['I'].append(self.I)
                 self.scores['EI'].append(self.EI)
@@ -176,7 +154,7 @@ class Moran:
                 else:
                     w = np.copy(weights)
                 if transform == 'r':
-                    w /= np.count_nonzero(~np.isnan(a))
+                    w = 1/np.count_nonzero(~np.isnan(a))
 
                 num = np.nansum(w * (a - x_) * (xi - x_))
 

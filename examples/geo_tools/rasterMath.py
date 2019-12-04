@@ -35,11 +35,10 @@ print(rM.get_random_block())
 X = rM.get_random_block()
 
  
-sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int64) 
+sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int16) 
 
 
-rM.add_function(sub,out_image='/tmp/sub.tif')
-
+rM.add_function(sub,out_image='/tmp/sub_lambda.tif')
 ###########################################################
 # Use a python function to use arguments
 # ----------------------------------------
@@ -53,7 +52,7 @@ def sub(X,band1=0,band2=1):
 # This function is going to substract band2 from band 1 
 
 rM = RasterMath(raster)
-rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0)
+rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0,compress='high')
 
 #####################
 # Run the script
@@ -63,7 +62,7 @@ rM.run()
 #######################
 # Plot result
 
-import gdal
+from osgeo import gdal
 from matplotlib import pyplot as plt 
 src = gdal.Open('/tmp/sub.tif')
 plt.imshow(src.ReadAsArray())

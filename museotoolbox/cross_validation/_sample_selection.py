@@ -14,6 +14,7 @@
 # =============================================================================
 import os
 import numpy as np
+from osgeo import ogr
 from .. import geo_tools
 
 
@@ -623,7 +624,6 @@ class _cv_manager:
             train + validation for each fold.
 
         """
-        import ogr
         src = ogr.Open(vector)
         srcLyr = src.GetLayerByIndex()
         self.wkbType = srcLyr.GetGeomType()
@@ -670,7 +670,6 @@ class _cv_manager:
         # Parse a delimited text file of volcano data and create a shapefile
         # use a dictionary reader so we can access by field name
         # set up the shapefile driver
-        import ogr
 
         driverIdx = [x for x, i in enumerate(
             self.__extensions) if i == self.__ext[1:]][0]

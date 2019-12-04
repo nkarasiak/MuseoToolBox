@@ -46,7 +46,7 @@ rM.add_function(np.mean,'/tmp/mean.tif',axis=2,out_np_dt=np.int16)
 
 rM.run()
 
-import gdal
+from osgeo import gdal
 dst = gdal.Open('/tmp/mean.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()
 plt.imshow(np.ma.masked_where(arr == rM.outputNoData[0], arr))

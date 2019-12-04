@@ -55,8 +55,10 @@ rM.run()
 #######################
 # Plot result
 
-import gdal
+from osgeo import gdal
 from matplotlib import pyplot as plt 
 
 src = gdal.Open('/tmp/modal.tif')
-plt.imshow(src.ReadAsArray()[0,:,:])
+data = src.ReadAsArray()[0,:,:]
+data = np.where(data== 0,np.nan,data)
+plt.imshow(data)

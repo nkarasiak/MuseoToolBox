@@ -95,7 +95,7 @@ SL.predict_image(raster,'/tmp/classification.tif',
 # Plot example
 
 from matplotlib import pyplot as plt
-import gdal
+from osgeo import gdal
 src=gdal.Open('/tmp/classification.tif')
 plt.imshow(src.GetRasterBand(1).ReadAsArray(),cmap=plt.get_cmap('tab20'))
 plt.axis('off')

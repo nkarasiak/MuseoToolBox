@@ -33,7 +33,7 @@ class TestStats(unittest.TestCase):
             model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
             assert(model._is_standardized == tf)
         
-        model = ai.SuperLearner(classifier,param_grid=param_grid,n_jobs=1,verbose=verbose)
+#        model = ai.SuperLearner(classifier,param_grid=param_grid,n_jobs=1,verbose=verbose)
         
         
     def test_superLearn_pred(self):

@@ -3,11 +3,11 @@ import unittest
 
 import numpy as np
 from museotoolbox import stats
-import gdal
-import osr
+from osgeo import gdal,osr
 import os
 from sklearn.metrics import accuracy_score,cohen_kappa_score
 
+###    
 confusion_matrix = np.array([[5,1],[2,2]])
 # real 
 yt_init= [1,1,1,1,1,1,2,2,2,2]
@@ -29,10 +29,15 @@ def create_false_image(array,path):
 x = np.zeros((100,100),dtype=int)
 # max autocorr
 x[:50,:] = 1
-x[50:,:] = 0
+x[50:,:] = 2
+
+x_mask = np.random.randint(0,2,[100,100])
 create_false_image(x,'/tmp/autocorrelated_moran.tif')
-        
+create_false_image(x_mask,'/tmp/mask_moran.tif')
+
+###
 class TestStats(unittest.TestCase):
+    
     def test_Moran_param(self):
         m = stats.Moran('/tmp/autocorrelated_moran.tif',lag=[1,2])
         assert(m.get_n_neighbors(x[:3,:3],x[:3,:3],weights=x[:3,:3]) == 8)
@@ -42,9 +47,20 @@ class TestStats(unittest.TestCase):
     def test_Moran(self):
         self.assertRaises(ReferenceError,stats.Moran,in_image='N/A')
 
+        # full autocorrelation
         moran = stats.Moran('/tmp/autocorrelated_moran.tif',lag=1)
-        assert(0.95 <= np.round(moran.I,0))
-
+        assert(np.round(moran.I,2) >= 0.95)
+        
+        #perfect random
+        moran = stats.Moran('/tmp/mask_moran.tif',lag=1)
+        assert(0 >= np.abs(np.round(moran.I,1)))
+        
+        # with mask
+        moran_intermediate = stats.Moran('/tmp/autocorrelated_moran.tif',in_image_mask='/tmp/mask_moran.tif',lag=[1,2])
+        assert(moran_intermediate.scores['lag'] == [1,2])
+        assert(moran_intermediate.scores['I'][0] != moran.I)
+        
+        
     def test_comm_om(self):
         comm_om = stats.commission_omission(confusion_matrix)
 
@@ -66,6 +82,8 @@ class TestStats(unittest.TestCase):
         
 if __name__ == "__main__":
     unittest.main()
-    os.remove('/tmp/autocorrelated_moran.tif')
+    
+#    os.remove('/tmp/autocorrelated_moran.tif')
+#    os.remove('/tmp/mask_moran.tif')
 
     

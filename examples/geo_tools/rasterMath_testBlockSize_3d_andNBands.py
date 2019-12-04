@@ -51,7 +51,7 @@ for return_3d in [True,False]:
     
     rM.run()
     
-import gdal
+from osgeo import gdal
 dst = gdal.Open('/tmp/x_flatten_False.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()
 plt.imshow(np.ma.masked_where(arr == np.min(arr), arr))

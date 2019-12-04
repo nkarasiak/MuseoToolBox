@@ -37,7 +37,7 @@ image_mask_from_vector(vector,raster,'/tmp/maskInvert.tif',invert=True)
 # Plot result
 # -----------------------------------
 
-import gdal
+from osgeo import gdal
 from matplotlib import pyplot as plt 
 
 ##############################################
