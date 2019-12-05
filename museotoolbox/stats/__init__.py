@@ -16,9 +16,73 @@
 The :mod:`museotoolbox.stats` module gathers stats functions and classes.
 """
 import numpy as np
-from museotoolbox.geo_tools import RasterMath
+from museotoolbox.geo_tools import RasterMath, extract_ROI, _add_vector_unique_fid
 
 from scipy.ndimage.filters import generic_filter  # to compute moran
+
+
+def zonal_stats(in_image, in_vector, unique_id, stats=[
+                'mean', 'median', 'std'], verbose=False):
+    """
+    Extract zonal stats according to an predifined id.
+
+    Parameters
+    -----------
+    in_image : str.
+        Path of the raster file where the vector file will be rasterize.
+    in_vector : str.
+        Path of the vector file to rasterize.
+    unique_id : str or False.
+        If False, MuseoToolBox will create a field called 'uniquefid' using  thefunction :func:`_add_vector_unique_fid`.
+    stats : list, optional (default=['mean','median','std']).
+        str in list must be a function available from numpy.
+        For example ['var'] will output the variance per band and per unique id.
+    verbose : bool or int, optional (default=True).
+        The higher is the int verbose, the more it will returns informations.
+
+
+    Returns
+    --------
+    stats : np.ndarray
+        Returns as many np.ndarray  as number of stats asked.
+        Stats ordered by bands.
+
+        For example (each line correspond to the unique_id ordered asc) :
+
+        +-------------+---------------+-------------+
+        | mean band_1 +  mean band_2  | mean band_3 |
+        +-------------+---------------+-------------+
+        | mean band_1 +  mean band_2  | mean band_3 |
+        +-------------+---------------+-------------+
+
+    Examples
+    ---------
+    >>> raster,vector = mtb.datasets.load_historical_data()
+    >>> mean,var = mtb.stats.zonal_stats(raster,vector,'uniquefid',stats=['mean','var'])
+    >>> mean.shape
+    (17, 3)
+    >>> mean[0,:] # mean of the first unique_id
+    array([117.75219446, 109.80958812,  79.64213369])
+    >>> var[0,:]
+    array([1302.29983482, 1250.59980003, 1015.76659747])
+    """
+    if unique_id is False:
+        _add_vector_unique_fid(in_vector, 'unique_id', verbose=verbose)
+        unique_id = 'unique_id'
+
+    X, y = extract_ROI(in_image, in_vector, unique_id)
+    n_unique_id = len(np.unique(y))
+    n_bands = X.shape[1]
+
+    out_stats = [np.zeros([n_unique_id, n_bands]) for n in range(len(stats))]
+
+    for idx_stat, stat in enumerate(stats):
+        stat_function = getattr(__import__('numpy'), stat)
+        for pos, label in enumerate(np.unique(y)):
+            res = stat_function(X[np.where(y == label)], axis=0)
+            out_stats[idx_stat][pos, :] = res
+
+    return out_stats
 
 
 class Moran:
@@ -40,7 +104,7 @@ class Moran:
 
         self.scores = dict(lag=[], I=[], band=[], EI=[])
         self.lags = []
-        
+
         rM = RasterMath(
             in_image,
             in_image_mask=in_image_mask,
@@ -59,14 +123,12 @@ class Moran:
                 weights[0, :] = 1
                 weights[-1, :] = 1
                 weights[:, -1] = 1
-            
-                    
+
                 n = arr.count()
                 arr = arr.astype(np.float64)
                 # convert masked to nan for generic_filter
-                np.where(arr.mask==True,np.nan,arr.data)
-            
-                
+                np.where(arr.mask == True, np.nan, arr.data)
+
                 x_ = np.nanmean(arr)
 
                 num = generic_filter(
@@ -87,12 +149,12 @@ class Moran:
                 # need to mask z/den/num/neighbors
                 den[arr.mask] = np.nan
 #                local = np.nansum(num) / np.nansum(den)
-                l1 = np.where(arr.mask,np.nan,num)
-                l2 = np.where(arr.mask,np.nan,den)
+                l1 = np.where(arr.mask, np.nan, num)
+                l2 = np.where(arr.mask, np.nan, den)
                 local = np.nansum(l1) / np.nansum(l2)
-                
+
                 self.I = local
-                
+
                 self.EI = -1 / (n - 1)
                 self.lags.append(l)
                 self.scores['lag'].append(l)
@@ -154,7 +216,7 @@ class Moran:
                 else:
                     w = np.copy(weights)
                 if transform == 'r':
-                    w = 1/np.count_nonzero(~np.isnan(a))
+                    w = 1 / np.count_nonzero(~np.isnan(a))
 
                 num = np.nansum(w * (a - x_) * (xi - x_))
 

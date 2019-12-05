@@ -25,11 +25,11 @@ bibliography: paper.bib
 
 # Summary
 
-``Museo ToolBox`` is a python library directly built open the famous raster library GDAL.
-In remote sensing, especially in machine learning, the majority of the work require efficience and use always the same base code (e.g., for reading and writing the raster block per block).
-As in our field a recurrent usage is to fit a model and predict or to use some functions to compute for example spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to follow state-of-the-art methods, such as spatial cross-validation, or learning methods with grid search and latest algorithms from scikit-learn.
+`Museo ToolBox` is a python library directly built open the famous raster library GDAL.
+In remote sensing, especially in machine learning, the majority of the work require knowledge on how to transform your data and it uses a lot of repeated lines of codes on various projects but for the same usage (e.g., for reading and writing the raster block per block, compute a spectral index, fit a model...).
+As in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute for example a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to follow state-of-the-art methods, such as spatial cross-validation, or learning methods with grid search and latest algorithms from scikit-learn.
 
- Here are some main usages of ``Museo ToolBox`` :
+ Here are some main usages of `Museo ToolBox` :
  1. [Read and write a raster block per block using your own function](RasterMathLink).
  2. [Generate a cross-validation, including spatial cross-validation](CrossValLink).
  3. [Save the cross-validation in spatial vector files (shp, gpkg, sqlite...)](SaveToVectorLink).

@@ -289,7 +289,7 @@ class PlotConfusionMatrix:
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-        
+
         self.subplot = 'F1'
         self.ax1v = plt.subplot(self.gs[0, 1])
 
@@ -362,7 +362,7 @@ class PlotConfusionMatrix:
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
         if self.cm_.shape[0] != self.cm_.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-        
+
         self.subplot = 'F1'
 
         self.ax1v = plt.subplot(self.gs[0, 1])

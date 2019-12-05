@@ -79,7 +79,7 @@ class distanceCV:
         self.groups = groups
 
         self.verbose = verbose
-        
+
         self.nTries = 0
 
         self.random_state = random_state
@@ -241,11 +241,11 @@ class distanceCV:
                             #
                             validation = np.concatenate((validation, tmpValid))
                             train = np.concatenate((train, tmpTrain))
-                            
+
                     if self.verbose:
                         print('Validation samples : ' + str(len(validation)))
                         print('Training samples : ' + str(len(train)))
-                    
+
                     # Mask selected validation
                     self.random_state += 1
                     if emptyTrain is True:
@@ -639,7 +639,8 @@ class _cv_manager:
             print(
                 'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
             self.get_supported_extensions()
-            raise Exception('We recommend you to use gpkg or sqlite extension.')
+            raise Exception(
+                'We recommend you to use gpkg or sqlite extension.')
 
         if group is None:
             groups = None

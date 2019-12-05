@@ -22,7 +22,7 @@ import tempfile
 
 # spatial libraries
 from osgeo import __version__ as osgeo_version
-from osgeo import gdal,ogr
+from osgeo import gdal, ogr
 
 
 from ..internal_tools import ProgressBar, push_feedback
@@ -167,7 +167,7 @@ def convert_dt(dt, to_otb_dt=False):
             push_feedback(
                 'Warning : Numpy type {} is not recognized by gdal. Will use float64 instead'.format(dt))
     if to_otb_dt:
-        if is_gdal :
+        if is_gdal:
             code = _convert_gdal_to_otb_dt(dt)
         else:
             code = _convert_gdal_to_otb_dt(code)
@@ -213,7 +213,7 @@ def _convert_gdal_to_otb_dt(dt):
         'cint32',
         'cfloat',
         'cdouble']
-    
+
     if dt > len(code):
         otb_dt = ('cdouble')
     else:
@@ -246,7 +246,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
             If False, will write raster on disk to extract ROI values.
         verbose : bool or int, optional (default=True).
             The higher is the int verbose, the more it will returns informations.
-        
+
     Returns
     --------
     X : arr.
@@ -447,9 +447,9 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
                         band = raster.GetRasterBand(
                             k + 1).ReadAsArray(j, i, cols, lines)
                         Xtp[:, k] = band[t]
-                    
+
                     X = np.concatenate((X, Xtp))
-                    
+
     if verbose:
         pb.add_position(100)
     # Clean/Close variables
@@ -631,8 +631,7 @@ class RasterMath:
             self.y_block_size = block_size[1]
         self.block_sizes = [self.x_block_size, self.y_block_size]
         self.custom_block_size()  # set block size
-        
-        
+
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
         self.ndtype = convert_dt(band.DataType)
@@ -755,7 +754,8 @@ class RasterMath:
         else:
             params = self.get_raster_parameters()
             params = self.get_raster_parameters()
-            arg_pos = next((x for x in params if x.startswith('compress')), None)
+            arg_pos = next(
+                (x for x in params if x.startswith('compress')), None)
             if arg_pos:
                 # remove old compress arg
                 params.pop(params.index(arg_pos))
@@ -789,8 +789,8 @@ class RasterMath:
     def _init_raster_parameters(self, compress=True):
 
         self.options = []
-        
-        if compress :
+
+        if compress:
             n_jobs = os.cpu_count() - 1
             if n_jobs < 1:
                 n_jobs = 1
@@ -857,7 +857,7 @@ class RasterMath:
         self.options.extend(['BLOCKYSIZE={}'.format(
             self.y_block_size), 'BLOCKXSIZE={}'.format(self.x_block_size)])
         if self.y_block_size == self.x_block_size:
-            if self.y_block_size in [64,128,256,512,1024,2048,4096]:
+            if self.y_block_size in [64, 128, 256, 512, 1024, 2048, 4096]:
                 self.options.extend(['TILED=YES'])
 
     def _add_output(self, out_image, out_n_bands, out_np_dt):
@@ -982,43 +982,45 @@ class RasterMath:
             outArr = np.ma.masked_array(arr, tmpMask)
 
         return outArr
-    
+
     def get_block(self, block_number=0):
         """
-        Get a block by its position, ordered as follow :       
-        
+        Get a block by its position, ordered as follow :
+
         +-----------+-----------+
         |  block 0  |  block 1  |
         +-----------+-----------+
         |  block 2  |  block 3  |
         +-----------+-----------+
-        
+
         Parameters
         -----------
         block_number, int, optional (default=0).
             Position of the desired block.
-            
+
         Returns
         --------
         Block : np.ndarray
-        
+
         """
         if block_number > self.n_blocks:
-            raise ValueError('There are only {} blocks in your image.'.format(self.n_blocks))
+            raise ValueError(
+                'There are only {} blocks in your image.'.format(
+                    self.n_blocks))
         else:
-            line = int(block_number/self.n_x_blocks)
+            line = int(block_number / self.n_x_blocks)
             col = int(block_number % self.n_x_blocks)
-            
+
             height = min(self.n_columns - col, self.x_block_size)
             width = min(self.n_lines - line, self.y_block_size)
-            
+
             tmp = self._generate_block_array(
                 col, line, height, width, self.mask)
             if self.return_3d is False:
                 tmp = self._manage_2d_mask(tmp)
                 tmp = np.ma.copy(tmp)
             return tmp
-    
+
     def get_random_block(self, random_state=None):
         """
         Get a random block from the raster.
@@ -1030,46 +1032,46 @@ class RasterMath:
             If None, the random number generator is the RandomState instance used by numpy np.random.
         """
         mask = np.array([True])
-        
+
         np.random.seed(random_state)
         rdm = np.random.permutation(np.arange(self.n_blocks))
         idx = 0
-        
+
         while np.all(mask == True):
-#            np.random.seed(random_state)
-#
-#            lines = int(
-#                np.random.permutation(
-#                    range(
-#                        0,
-#                        self.n_lines,
-#                        self.y_block_size))[0])
-#            np.random.seed(random_state)
-#            cols = int(
-#                np.random.permutation(
-#                    range(
-#                        0,
-#                        self.n_columns,
-#                        self.x_block_size))[0])
-#            
-#            height = min(self.n_columns - cols, self.x_block_size)
-#            width = min(self.n_lines - lines, self.y_block_size)
-#            
-#            tmp = self._generate_block_array(
-#                cols, lines, height, width, self.mask)
-#            if len(self.opened_images) > 1:
-#                mask = tmp[0].mask
-#            else:
-#                mask = tmp.mask
-#            if self.return_3d is False:
-#                tmp = self._manage_2d_mask(tmp)
-            
+            #            np.random.seed(random_state)
+            #
+            #            lines = int(
+            #                np.random.permutation(
+            #                    range(
+            #                        0,
+            #                        self.n_lines,
+            #                        self.y_block_size))[0])
+            #            np.random.seed(random_state)
+            #            cols = int(
+            #                np.random.permutation(
+            #                    range(
+            #                        0,
+            #                        self.n_columns,
+            #                        self.x_block_size))[0])
+            #
+            #            height = min(self.n_columns - cols, self.x_block_size)
+            #            width = min(self.n_lines - lines, self.y_block_size)
+            #
+            #            tmp = self._generate_block_array(
+            #                cols, lines, height, width, self.mask)
+            #            if len(self.opened_images) > 1:
+            #                mask = tmp[0].mask
+            #            else:
+            #                mask = tmp.mask
+            #            if self.return_3d is False:
+            #                tmp = self._manage_2d_mask(tmp)
+
             tmp = self.get_block(block_number=rdm[idx])
             if len(self.opened_images) > 1:
                 mask = tmp[0].mask
             else:
                 mask = tmp.mask
-                
+
             idx += 1
         return tmp
 
@@ -1184,12 +1186,14 @@ class RasterMath:
             self.x_block_size = self.block_sizes[0]
 
         self.n_blocks = np.ceil(self.n_lines / self.y_block_size).astype(int) * np.ceil(self.n_columns /
-                                                                                       self.x_block_size).astype(int)
+                                                                                        self.x_block_size).astype(int)
         self.block_sizes = [self.x_block_size, self.y_block_size]
-        
-        self.n_y_blocks = len([i for i in range(0, self.n_lines, self.y_block_size)])
-        self.n_x_blocks = len([i for i in range(0, self.n_columns, self.x_block_size)])
-        
+
+        self.n_y_blocks = len(
+            [i for i in range(0, self.n_lines, self.y_block_size)])
+        self.n_x_blocks = len(
+            [i for i in range(0, self.n_columns, self.x_block_size)])
+
         if self.verbose:
             push_feedback('Total number of blocks : %s' % self.n_blocks)
 
@@ -1516,7 +1520,7 @@ class _create_point_layer:
 
         # add Band to list of fields if needed
         if band_value is not None and self.addBand is False:
-                self._add_band_value(band_prefix, band_value.shape[0])
+            self._add_band_value(band_prefix, band_value.shape[0])
 
         point = ogr.Geometry(ogr.wkbPoint)
         point.SetPoint(0, coords[0], coords[1])
@@ -1528,7 +1532,6 @@ class _create_point_layer:
         # Retrieve inVector FID
         FID = self.uniqueFIDs[np.where(np.asarray(
             self.uniqueIDs, dtype=np.int) == int(uniqueIDValue))[0][0]]
-    
 
         featUpdates = self.inLyr.GetFeature(int(FID))
         for f in self.fields:
@@ -1601,7 +1604,7 @@ def get_distance_matrix(in_image, in_vector, field=False, verbose=False):
         only_pixel_position = True
 
     coords = extract_ROI(
-        in_image, in_vector, field, get_pixel_position=True, only_pixel_position = only_pixel_position, verbose=verbose)
+        in_image, in_vector, field, get_pixel_position=True, only_pixel_position=only_pixel_position, verbose=verbose)
     from scipy.spatial import distance
     if field:
         label = coords[1]
@@ -1790,7 +1793,7 @@ def read_vector_values(vector, *args, **kwargs):
         return fieldsToReturn
 
 
-def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
+def _add_vector_unique_fid(in_vector, unique_field='uniquefid', verbose=True):
     """
     Add a field in the vector with an unique value
     for each of the feature.
@@ -1811,11 +1814,12 @@ def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
     >>> _add_vector_unique_fid('myDB.gpkg',uniqueField='polygonid')
     Adding polygonid [########################################]100%
     """
-    pB = ProgressBar(100, message='Adding ' + uniqueField)
+    if verbose:
+        pB = ProgressBar(100, message='Adding ' + unique_field)
 
-    driver_name = get_ogr_driver_from_filename(inVector)
+    driver_name = get_ogr_driver_from_filename(in_vector)
     inDriver = ogr.GetDriverByName(driver_name)
-    inSrc = inDriver.Open(inVector, 1)  # 1 for writable
+    inSrc = inDriver.Open(in_vector, 1)  # 1 for writable
     inLyr = inSrc.GetLayer()       # get the layer for this datasource
     inLyrDefn = inLyr.GetLayerDefn()
 
@@ -1827,14 +1831,14 @@ def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
         fdefn = inLyrDefn.GetFieldDefn(n)
         if fdefn.name is not listFields:
             listFields.append(fdefn.name)
-    if uniqueField in listFields:
+    if unique_field in listFields:
         if verbose > 0:
             print(
                 'Field \'{}\' is already in {}'.format(
-                    uniqueField, inVector))
+                    unique_field, in_vector))
         inSrc.Destroy()
     else:
-        newField = ogr.FieldDefn(uniqueField, ogr.OFTInteger)
+        newField = ogr.FieldDefn(unique_field, ogr.OFTInteger)
         newField.SetWidth(20)
         inLyr.CreateField(newField)
 
@@ -1843,11 +1847,12 @@ def _add_vector_unique_fid(inVector, uniqueField='uniquefid', verbose=True):
         ThisID = 1
 
         for idx, FID in enumerate(FIDs):
-            pB.add_position(idx / len(FIDs) + 1 * 100)
+            if verbose:
+                pB.add_position(idx / len(FIDs) + 1 * 100)
             feat = inLyr.GetFeature(FID)
             #ThisID = int(feat.GetFGetFeature(feat))
             # Write the FID to the ID field
-            feat.SetField(uniqueField, int(ThisID))
+            feat.SetField(unique_field, int(ThisID))
             inLyr.SetFeature(feat)              # update the feature
             # inLyr.CreateFeature(feat)
             ThisID += 1

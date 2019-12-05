@@ -84,7 +84,7 @@ class SuperLearner:
 
         self.classifier = classifier
         self.param_grid = param_grid
-        
+
         self.xFunction = False
 
         self.standardize = False
@@ -180,18 +180,18 @@ class SuperLearner:
             **gridSearchCVParams)
 
     def _fit(self, X, y, groups, classifier,
-                param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
+             param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
 
         if isinstance(cv, int) and cv != False:
             from ..cross_validation import RandomStratifiedKFold
             cv = RandomStratifiedKFold(n_splits=cv)
-        
+
         if cv is not None and cv is not False:
             self.CV = []
             for tr, vl in (cv for cv in cv.split(
                     X, y, groups) if cv is not None):
                 self.CV.append((tr, vl))
-        
+
         from sklearn.model_selection import GridSearchCV
 
         if isinstance(param_grid, dict) and cv is not False:
@@ -563,7 +563,7 @@ class SuperLearner:
         def _computeStatsPerCV(statsidx, trvl, **kwargs):
             dictStats = self._get_stats_from_each_cv(statsidx, trvl, **kwargs)
             return dictStats
-    
+
         statsCV = Parallel(
             n_jobs=self.n_jobs,
             verbose=self.verbose)(
@@ -621,7 +621,7 @@ class SequentialFeatureSelection:
         else:
             self.verbose_gridsearch = self.verbose - 1
         self.cv = cv
-        
+
         self.xFunction = False
         self.xKwargs = False
 
@@ -671,7 +671,7 @@ class SequentialFeatureSelection:
 
         if self.verbose:
             pB = ProgressBar(totalIter, message='SFFS:')
-        
+
         self.mask = np.ones(xSize, dtype=bool)
 
         self.models_, self.best_scores_, self.best_features_ = [[], [], []]
@@ -810,10 +810,9 @@ class SequentialFeatureSelection:
             SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
                               n_jobs=1, verbose=self.verbose_gridsearch)
             SL.load_model(self.models_path_[idx])
-        
+
         SL.customize_array(self.transform, idx=idx, customizeX=True)
-        
-        
+
         return SL.predict_array(X)
 
     def predict_best_combination(
@@ -889,15 +888,15 @@ class SequentialFeatureSelection:
 
     def _transform_in_fit(self, X, idx=0, customizeX=False):
         mask = np.copy(self.mask)
-        
+
 #        if self.xFunction:
 #                X = self.xFunction(X, **self.xKwargs)
-#                
+#
         if customizeX is False:
             fieldsToKeep = self._convertIdxToNComp(idx)
             mask[fieldsToKeep] = 0
             X = X[:, ~mask]
-            
+
         if customizeX is True:
             self.mask[self.best_features_[idx]] = 0
 
@@ -905,7 +904,7 @@ class SequentialFeatureSelection:
         if X.ndim == 1:
             X = X.reshape(-1, 1)
         return X
-    
+
     def transform(self, X, idx=0, customizeX=False):
         """
         Parameters
@@ -929,9 +928,9 @@ class SequentialFeatureSelection:
                     self.mask[idxToMask] = 0
         else:
             self.mask[self.best_features_[:idx + 1]] = 0
-        
+
         if self.xFunction:
-                X = self.xFunction(X, **self.xKwargs)
+            X = self.xFunction(X, **self.xKwargs)
         if customizeX is False:
             #            fieldsToKeep = self.__convertIdxToNComp(idx)
             X = X[:, ~self.mask]
@@ -943,7 +942,7 @@ class SequentialFeatureSelection:
             #                self.mask[idxToMask] = 0
             #            else:
             #                self.mask[self.best_features_[idx]] = 0
-            
+
             X = X[:, ~self.mask]
 
         if X.ndim == 1:

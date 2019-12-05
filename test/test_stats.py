@@ -2,11 +2,11 @@
 import unittest
 
 import numpy as np
+from museotoolbox import datasets
 from museotoolbox import stats
 from osgeo import gdal,osr
-import os
 from sklearn.metrics import accuracy_score,cohen_kappa_score
-
+from shutil import copyfile
 ###    
 confusion_matrix = np.array([[5,1],[2,2]])
 # real 
@@ -79,6 +79,14 @@ class TestStats(unittest.TestCase):
         assert(np.all(yt==yt_init))
         sts_from_matrix = stats.ComputeConfusionMatrix(yp,yt,OA=True,kappa=True)
         assert(sts_from_matrix.Kappa == cohen_kappa_score(yp,yt))
+        
+    def test_zonal_stats(self):
+        raster,vector = datasets.load_historical_data()
+        copyfile(vector,'/tmp/train.gpkg')
+        
+        median,amax,std = stats.zonal_stats(raster,'/tmp/train.gpkg',False)
+        assert(median.shape == amax.shape == std.shape)
+        assert(np.sum(std)<np.sum(median)< np.sum(amax))
         
 if __name__ == "__main__":
     unittest.main()
