@@ -24,7 +24,7 @@ raster,vector = mtb.datasets.load_historical_data(low_res=True)
 #    If you have no memories on what the fields name are, simply put the vector path
 
 try : 
-    mtb.geo_tools.read_vector_values(vector)
+    mtb.processing.read_vector_values(vector)
 except Exception as e:
     print(e)
 
@@ -32,7 +32,7 @@ except Exception as e:
 # Read values from field 'Class'
 # --------------------------------
 
-Y,Name = mtb.geo_tools.read_vector_values(vector,'Class','Type')
+Y,Name = mtb.processing.read_vector_values(vector,'Class','Type')
 print(Y,Name)
 print(Y.shape)
 
@@ -41,7 +41,7 @@ print(Y.shape)
 # -------------------------------------------
 # As multiple fields can begin with C, function returns a column per field
 
-C = mtb.geo_tools.read_vector_values(vector,band_prefix='C')
+C = mtb.processing.read_vector_values(vector,band_prefix='C')
 print(C)
 print(C.shape)
 

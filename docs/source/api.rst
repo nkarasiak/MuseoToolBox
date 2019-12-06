@@ -11,7 +11,7 @@ The complete Museo ToolBox project is automatically documented for every module.
    :toctree: modules/
    :template: module.rst
    
-   geo_tools
+   processing
    ai
    cross_validation
    charts

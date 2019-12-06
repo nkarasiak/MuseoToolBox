@@ -10,7 +10,7 @@ Compute substract and addition between two raster bands.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.geo_tools import RasterMath,image_mask_from_vector
+from museotoolbox.processing import RasterMath,image_mask_from_vector
 from museotoolbox import datasets
 import numpy as np
 ##############################################################################

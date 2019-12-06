@@ -2,15 +2,15 @@
 import unittest
 from shutil import copyfile
 import numpy as np
-from museotoolbox import geo_tools
+from museotoolbox import processing
 from museotoolbox.datasets import load_historical_data
 from osgeo import gdal
 
 import os
 
 raster,vector = load_historical_data()
-rM = geo_tools.RasterMath(raster)
-mask = geo_tools.image_mask_from_vector(vector,raster,'/tmp/mask.tif')
+rM = processing.RasterMath(raster)
+mask = processing.image_mask_from_vector(vector,raster,'/tmp/mask.tif')
 
 class TestRaster(unittest.TestCase):
     def test_convert_datatype(self):
@@ -35,31 +35,31 @@ class TestRaster(unittest.TestCase):
         self._assert_np_gdt(gdal.GDT_Float32,np.float32)
         
         self._assert_np_gdt(np.dtype('float128').name,gdal.GDT_Float64)
-        assert(geo_tools.convert_dt(gdal.GDT_Int16,to_otb_dt=True) == 'int16')
-        assert(geo_tools.convert_dt(np.dtype('float64').name,to_otb_dt=True) == 'double')
+        assert(processing.convert_dt(gdal.GDT_Int16,to_otb_dt=True) == 'int16')
+        assert(processing.convert_dt(np.dtype('float64').name,to_otb_dt=True) == 'double')
         
     def _assert_np_gdt(self,in_conv,out_dt):
-        assert(geo_tools.convert_dt(in_conv)==out_dt)
+        assert(processing.convert_dt(in_conv)==out_dt)
         
     def test_gdt_minmax_values(self):
-        assert(gdal.GDT_UInt16 == geo_tools.get_gdt_from_minmax_values(500))
-        assert(gdal.GDT_Int16 == geo_tools.get_gdt_from_minmax_values(max_value=1,min_value=-5))
-        assert(gdal.GDT_Float32 == geo_tools.get_gdt_from_minmax_values(max_value=2,min_value=-55.55))
-        assert(gdal.GDT_Byte == geo_tools.get_gdt_from_minmax_values(max_value=222))
-        assert(gdal.GDT_Float64 == geo_tools.get_gdt_from_minmax_values(max_value =888E+40))
-        assert(gdal.GDT_Float64 == geo_tools.get_gdt_from_minmax_values(max_value=5,min_value = -888E+40))
+        assert(gdal.GDT_UInt16 == processing.get_gdt_from_minmax_values(500))
+        assert(gdal.GDT_Int16 == processing.get_gdt_from_minmax_values(max_value=1,min_value=-5))
+        assert(gdal.GDT_Float32 == processing.get_gdt_from_minmax_values(max_value=2,min_value=-55.55))
+        assert(gdal.GDT_Byte == processing.get_gdt_from_minmax_values(max_value=222))
+        assert(gdal.GDT_Float64 == processing.get_gdt_from_minmax_values(max_value =888E+40))
+        assert(gdal.GDT_Float64 == processing.get_gdt_from_minmax_values(max_value=5,min_value = -888E+40))
         
     def test_rasterize(self):
         for invert in [True,False]:
             for field in ['class',False]:
-                mem = geo_tools.rasterize(raster,vector,field,out_image='MEM',invert=invert)
+                mem = processing.rasterize(raster,vector,field,out_image='MEM',invert=invert)
                 assert(mem.RasterCount == 1)
                 assert(mem.RasterXSize == rM.n_columns)
                 assert(mem.RasterYSize == rM.n_lines)
             
     def test_noImg(self)    :    
         
-        self.assertRaises(ReferenceError,geo_tools.RasterMath,'None',verbose=0)
+        self.assertRaises(ReferenceError,processing.RasterMath,'None',verbose=0)
         
     def test_dimension(self)    :    
         assert(rM.n_bands == gdal.Open(raster).RasterCount)
@@ -69,7 +69,7 @@ class TestRaster(unittest.TestCase):
     
     def test_readPerBand(self):
         for is_3d in [True, False]:
-            rM_band = geo_tools.RasterMath(raster,return_3d=is_3d,in_image_mask=mask)
+            rM_band = processing.RasterMath(raster,return_3d=is_3d,in_image_mask=mask)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
             for block in rM_band.read_block_per_block():
@@ -79,7 +79,7 @@ class TestRaster(unittest.TestCase):
             del rM_band
     
     def test_3d(self)            :
-        rM_3d = geo_tools.RasterMath(raster,return_3d=True,block_size = False)
+        rM_3d = processing.RasterMath(raster,return_3d=True,block_size = False)
         self.assertRaises(ValueError,rM_3d.get_block,100)
         assert(rM_3d.get_random_block().ndim == 3)
         for block in rM.read_block_per_block():
@@ -105,14 +105,14 @@ class TestRaster(unittest.TestCase):
     def test_mask(self)            :
         for is_3d in [True, False]:
             mask = '/tmp/mask.tif'
-            geo_tools.image_mask_from_vector(vector,raster,mask)
+            processing.image_mask_from_vector(vector,raster,mask)
             mask_src = gdal.Open(mask)
             raster_src = gdal.Open(raster)
             assert(mask_src.GetProjection() == raster_src.GetProjection())
             assert(mask_src.RasterCount == 1)
             assert(mask_src.RasterXSize == raster_src.RasterXSize)
             assert(mask_src.RasterYSize == raster_src.RasterYSize)
-            rM_band = geo_tools.RasterMath(raster,return_3d=is_3d)
+            rM_band = processing.RasterMath(raster,return_3d=is_3d)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
             assert(idx+1 == rM_band.n_bands)                        
@@ -121,27 +121,27 @@ class TestRaster(unittest.TestCase):
             
     
     def test_XYextraction(self):
-        X = geo_tools.extract_ROI(raster,vector)
+        X = processing.extract_ROI(raster,vector)
         
-        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'Type')
+        self.assertRaises(ValueError,processing.extract_ROI,raster,vector,'Type')
         
         assert(X.ndim == 2)
         
-        X,y = geo_tools.extract_ROI(raster,vector,'Class')
+        X,y = processing.extract_ROI(raster,vector,'Class')
         assert(X.shape[0] == y.shape[0])
         
-        X,y,g = geo_tools.extract_ROI(raster,vector,'Class','uniquefid')
+        X,y,g = processing.extract_ROI(raster,vector,'Class','uniquefid')
         assert(X.shape[0] == y.shape[0] == g.shape[0])
     
-        self.assertRaises(ValueError,geo_tools.extract_ROI,'wrong/path','wrong/path/too')
-        assert(geo_tools.extract_ROI(raster,vector).shape[1] == gdal.Open(raster).RasterCount)
-        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'kodidk')
+        self.assertRaises(ValueError,processing.extract_ROI,'wrong/path','wrong/path/too')
+        assert(processing.extract_ROI(raster,vector).shape[1] == gdal.Open(raster).RasterCount)
+        self.assertRaises(ValueError,processing.extract_ROI,raster,vector,'kodidk')
         
         
         
     def test_raster_math_mean(self):
         for is_3d in [True,False]:
-            rM = geo_tools.RasterMath(raster,return_3d = is_3d,verbose=is_3d,in_image_mask=mask)
+            rM = processing.RasterMath(raster,return_3d = is_3d,verbose=is_3d,in_image_mask=mask)
             if is_3d is False:
                 # test without compression with reading/writing pixel per pixel, very slow...
                 rM.custom_block_size(10,10) # to have full masked block
@@ -158,22 +158,22 @@ class TestRaster(unittest.TestCase):
             os.remove('/tmp/mean.tif')
             
     def test_unknow_field(self):
-        self.assertRaises(ValueError,geo_tools.extract_ROI,raster,vector,'wrong_field')
-        self.assertRaises(ValueError,geo_tools.read_vector_values,vector)
-        self.assertRaises(Exception,geo_tools.read_vector_values,'wrong_path')
-        self.assertRaises(ValueError,geo_tools.read_vector_values,vector,'wrong_field')
-        self.assertRaises(ValueError,geo_tools.read_vector_values,vector,band_prefix='wrong_field')
-        self.assertRaises(ReferenceError,geo_tools.RasterMath,raster,in_image_mask='kiki')
+        self.assertRaises(ValueError,processing.extract_ROI,raster,vector,'wrong_field')
+        self.assertRaises(ValueError,processing.read_vector_values,vector)
+        self.assertRaises(Exception,processing.read_vector_values,'wrong_path')
+        self.assertRaises(ValueError,processing.read_vector_values,vector,'wrong_field')
+        self.assertRaises(ValueError,processing.read_vector_values,vector,band_prefix='wrong_field')
+        self.assertRaises(ReferenceError,processing.RasterMath,raster,in_image_mask='kiki')
     
     def test_addfid(self):
         copyfile(vector,'/tmp/test.gpkg')
         for tf in [True,False]:
-            geo_tools._add_vector_unique_fid('/tmp/test.gpkg',unique_field='to_create',verbose=tf)
-        geo_tools.sample_extraction(raster,'/tmp/test.gpkg','/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
-        self.assertRaises(Warning,geo_tools.sample_extraction,raster,'/tmp/test.gpkg','/test/vector.ppkg')
+            processing._add_vector_unique_fid('/tmp/test.gpkg',unique_field='to_create',verbose=tf)
+        processing.sample_extraction(raster,'/tmp/test.gpkg','/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
+        self.assertRaises(Warning,processing.sample_extraction,raster,'/tmp/test.gpkg','/test/vector.ppkg')
         os.remove('/tmp/test.gpkg')
         
-        y_ = geo_tools.read_vector_values('/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
+        y_ = processing.read_vector_values('/tmp/test_roi.gpkg',band_prefix='band',verbose=1)
         assert(y_.shape[1] == gdal.Open(raster).RasterCount)
         os.remove('/tmp/test_roi.gpkg')
      
@@ -183,10 +183,10 @@ class TestRaster(unittest.TestCase):
          Xc_file, yc_file= load_historical_data(centroid=True)
          assert(os.path.exists(Xc_file))
          assert(os.path.exists(yc_file))
-         assert(Xc.shape[0] == geo_tools.read_vector_values(vector,'Type').shape[0])
+         assert(Xc.shape[0] == processing.read_vector_values(vector,'Type').shape[0])
          
     def test_extract_position(self):
-        X,pixel_position=geo_tools.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=False)
+        X,pixel_position=processing.extract_ROI(raster,vector,get_pixel_position=True,prefer_memory=False)
         assert(pixel_position.shape[0] == X.shape[0])
         
     def test_get_parameter(self):
@@ -195,7 +195,7 @@ class TestRaster(unittest.TestCase):
         assert(rM.get_raster_parameters() == ['TILED=NO'])
     
     def test_get_distance_matrix(self):
-        distance_matrix,label = geo_tools.get_distance_matrix(raster,vector,'Class')
+        distance_matrix,label = processing.get_distance_matrix(raster,vector,'Class')
         assert(label.size== distance_matrix.shape[0])
         
 if __name__ == "__main__":

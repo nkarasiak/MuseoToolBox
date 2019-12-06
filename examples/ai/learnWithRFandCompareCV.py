@@ -13,7 +13,7 @@ This example shows how to make a classification with different cross-validation 
 
 from museotoolbox.ai import SuperLearner
 from museotoolbox import cross_validation
-from museotoolbox.geo_tools import extract_ROI
+from museotoolbox.processing import extract_ROI
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold

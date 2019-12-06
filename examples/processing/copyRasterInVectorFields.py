@@ -30,7 +30,7 @@ out_vector='/tmp/vector_withROI.gpkg'
 #    There is no need to specify a bandPrefix. 
 #    If bandPrefix is not specified, scipt will only generate the centroid
 
-mtb.geo_tools.sample_extraction(raster,vector,
+mtb.processing.sample_extraction(raster,vector,
                                  out_vector=out_vector,
                                  unique_fid='uniquefid',
                                  band_prefix='band_',
@@ -40,8 +40,8 @@ mtb.geo_tools.sample_extraction(raster,vector,
 #############################################
 # Read values from both vectors
 
-originalY = mtb.geo_tools.read_vector_values(vector,'Class')
-X,y = mtb.geo_tools.read_vector_values(out_vector,'Class',band_prefix='band_')
+originalY = mtb.processing.read_vector_values(vector,'Class')
+X,y = mtb.processing.read_vector_values(out_vector,'Class',band_prefix='band_')
 
 #############################################
 # Original vector is polygon type, each polygons contains multiple pixel

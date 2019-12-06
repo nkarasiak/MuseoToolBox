@@ -12,7 +12,7 @@ This example shows how to make a Leave-Percent-SubGroup-Out.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import LeavePSubGroupOut
-from museotoolbox import datasets,geo_tools
+from museotoolbox import datasets,processing
 import numpy as np
 
 ##############################################################################
@@ -34,7 +34,7 @@ LPSGO = LeavePSubGroupOut(valid_size = 0.5,
 # Extract X,y and group.
 # -------------------------------------------
 
-X,y,g= geo_tools.extract_ROI(raster,vector,field,group)
+X,y,g= processing.extract_ROI(raster,vector,field,group)
 
 ###############################################################################
 # .. note::

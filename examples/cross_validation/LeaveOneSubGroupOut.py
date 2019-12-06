@@ -12,7 +12,7 @@ This example shows how to make a Leave-One-SubGroup-Out.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import LeaveOneSubGroupOut
-from museotoolbox.geo_tools import extract_ROI
+from museotoolbox.processing import extract_ROI
 from museotoolbox import datasets
 
 ##############################################################################

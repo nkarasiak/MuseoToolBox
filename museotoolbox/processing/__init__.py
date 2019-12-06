@@ -13,7 +13,7 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 """
-The :mod:`museotoolbox.geo_tools` module gathers geographic tools for raster and vector.
+The :mod:`museotoolbox.processing` module gathers raster and vector tools.
 """
 # general libraries
 import os

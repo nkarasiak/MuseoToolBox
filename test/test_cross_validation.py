@@ -12,11 +12,11 @@ import numpy as np
 
 from museotoolbox.datasets import load_historical_data
 from museotoolbox import cross_validation
-from museotoolbox import geo_tools
+from museotoolbox import processing
 
 raster,vector = load_historical_data()
 X,y,g = load_historical_data(return_X_y_g=True)
-distance_matrix = geo_tools.get_distance_matrix(raster,vector)
+distance_matrix = processing.get_distance_matrix(raster,vector)
 n_class = len(np.unique(y,return_counts=True)[1])
 smallest_class = np.min(np.unique(y,return_counts=True)[1])
 
@@ -68,7 +68,7 @@ class TestCV(unittest.TestCase):
         cv = cross_validation.LeaveOneSubGroupOut()
         for tr,vl in cv.split(X,y,g):
             assert(not np.unique(np.in1d([1,2],[3,4]))[0])
-        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
 
         list_files =cv.save_to_vector('/tmp/pixels.gpkg','Class',group='uniquefid',out_vector='/tmp/cv_g.gpkg')
         assert(len(list_files)==cv.get_n_splits(X,y,g))
@@ -81,9 +81,9 @@ class TestCV(unittest.TestCase):
                                                  distance_matrix=distance_matrix,
                                                  random_state=12,verbose=1)
         
-        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
-        y_ = geo_tools.read_vector_values('/tmp/pixels.gpkg','Class')
-        y_polygons = geo_tools.read_vector_values(vector,'Class')
+        processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        y_ = processing.read_vector_values('/tmp/pixels.gpkg','Class')
+        y_polygons = processing.read_vector_values(vector,'Class')
         assert(y_.size == y.size)
         assert(y_polygons.size != y_.size)
         
@@ -139,7 +139,7 @@ class TestCV(unittest.TestCase):
         for tr,vl in cv.split(X,y,g)        :
             assert(n_class==np.unique(g[vl]).size)
         
-        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+        processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         test_extensions = ['wrong','shp','gpkg']
         for extension in test_extensions:
             if extension == 'wrong':

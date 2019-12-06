@@ -26,7 +26,7 @@ bibliography: paper.bib
 # Summary
 
 `Museo ToolBox` is a remote sensing python library.
-Based on the fact that the majority of work in machine learning requires knowledge on how to transform your data and since it uses a lot of repeated lines of codes on various projects but for the same usage (e.g., for reading and writing the raster block per block, computing a spectral index, fitting a model...), we offer with this library a new approach to compute very easily functions on a raster.
+Based on the fact that a majority of the needs in machine learning requires knowledge on how to transform your data and since it uses a lot of similar lines of codes on various projects but for the same usage (e.g., for reading and writing the raster block per block, computing a spectral index, fitting a model...), we offer with this library a new approach to compute very easily functions on a raster.
 For example, as in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute for example a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to follow state-of-the-art methods, such as spatial cross-validation, or learning methods with grid search and latest algorithms from scikit-learn.
 
 Museo ToolBox's goal is to make working with raster data very easier for scientists or students to promote the use of spatial cross-validation.

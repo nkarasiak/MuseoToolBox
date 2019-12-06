@@ -15,15 +15,15 @@ For more information see : https://onlinelibrary.wiley.com/doi/full/10.1111/geb.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import SpatialLeaveOneOut
-from museotoolbox import datasets,geo_tools
+from museotoolbox import datasets,processing
 ##############################################################################
 # Load HistoricalMap dataset
 # -------------------------------------------
 
 raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
-X,y = geo_tools.extract_ROI(raster,vector,field)
-distance_matrix = geo_tools.get_distance_matrix(raster,vector)
+X,y = processing.extract_ROI(raster,vector,field)
+distance_matrix = processing.get_distance_matrix(raster,vector)
 
 ##############################################################################
 # Create CV
@@ -41,7 +41,7 @@ for tr,vl in SLOPO.split(X,y):
 
 ####################################################
 # Save each train/valid in a spatial vector file
-from museotoolbox.geo_tools import sample_extraction
+from museotoolbox.processing import sample_extraction
 sample_extraction(raster,vector,'/tmp/one_point_per_pixel.gpkg')
 files = SLOPO.save_to_vector('/tmp/one_point_per_pixel.gpkg','Class',out_vector='/tmp/trvl.gpkg')
 print(files)

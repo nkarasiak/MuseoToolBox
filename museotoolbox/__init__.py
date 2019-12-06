@@ -12,6 +12,6 @@
 # @site:    www.karasiak.net
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
-from . import ai, geo_tools, cross_validation, datasets, stats  # , charts
+from . import ai, processing, cross_validation, datasets, stats  # , charts
 
 __version__ = "2.0-beta.1"

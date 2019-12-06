@@ -10,7 +10,7 @@ Test notebook to validate code.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.geo_tools import RasterMath,image_mask_from_vector
+from museotoolbox.processing import RasterMath,image_mask_from_vector
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 import numpy as np

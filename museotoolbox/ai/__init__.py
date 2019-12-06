@@ -20,7 +20,7 @@ import os
 import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
-from ..geo_tools import RasterMath, get_gdt_from_minmax_values, convert_dt
+from ..processing import RasterMath, get_gdt_from_minmax_values, convert_dt
 from ..internal_tools import ProgressBar, push_feedback
 
 

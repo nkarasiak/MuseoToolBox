@@ -14,7 +14,7 @@ This example shows how to make a Random Sampling with
 
 from museotoolbox.ai import SuperLearner
 from museotoolbox.cross_validation import RandomStratifiedKFold
-from museotoolbox.geo_tools import extract_ROI
+from museotoolbox.processing import extract_ROI
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics

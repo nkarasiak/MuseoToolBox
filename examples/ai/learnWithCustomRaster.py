@@ -13,7 +13,7 @@ learning process to avoi generate a new raster.
 # -------------------------------------------
 
 from museotoolbox.ai import SuperLearner
-from museotoolbox.geo_tools import extract_ROI
+from museotoolbox.processing import extract_ROI
 from museotoolbox import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics

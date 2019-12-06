@@ -73,7 +73,7 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     vector = os.path.join(__pathFile, '_historicalmap/train.gpkg')
 
     if return_X_y or return_X_y_g:
-        from ..geo_tools import extract_ROI
+        from ..processing import extract_ROI
         if centroid:
             vector = os.path.join(
                 __pathFile, '_historicalmap/train_centroid.gpkg')

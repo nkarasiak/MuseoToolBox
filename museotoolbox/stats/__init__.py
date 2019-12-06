@@ -16,7 +16,7 @@
 The :mod:`museotoolbox.stats` module gathers stats functions and classes.
 """
 import numpy as np
-from museotoolbox.geo_tools import RasterMath, extract_ROI, _add_vector_unique_fid
+from museotoolbox.processing import RasterMath, extract_ROI, _add_vector_unique_fid
 
 from scipy.ndimage.filters import generic_filter  # to compute moran
 

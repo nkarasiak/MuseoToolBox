@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 from museotoolbox import ai
 from museotoolbox.datasets import load_historical_data
-from museotoolbox.geo_tools import image_mask_from_vector
+from museotoolbox.processing import image_mask_from_vector
 from osgeo import gdal
 
 import os

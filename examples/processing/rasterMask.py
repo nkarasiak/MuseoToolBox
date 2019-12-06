@@ -11,7 +11,7 @@ Create a raster mask from vector.
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.geo_tools import image_mask_from_vector
+from museotoolbox.processing import image_mask_from_vector
 from museotoolbox.datasets import load_historical_data
 
 ##############################################################################

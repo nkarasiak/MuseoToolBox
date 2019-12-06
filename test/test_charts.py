@@ -6,6 +6,7 @@ import numpy as np
 from museotoolbox import charts
 confusion_matrix = np.random.randint(5,20,[5,5])
 confusion_matrix[-1,-1] = 0
+confusion_matrix[-1,:] = 0
 class TestCharts(unittest.TestCase):
     def test_Plot(self):
         for hide_ticks in [True,False]:

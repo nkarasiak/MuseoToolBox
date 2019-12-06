@@ -12,7 +12,7 @@ a full block (not a array with one pixel per row.)
 # Import librairies
 # -------------------------------------------
 
-from museotoolbox.geo_tools import RasterMath
+from museotoolbox.processing import RasterMath
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 

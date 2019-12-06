@@ -13,7 +13,7 @@ each fold as a vector file.
 # -------------------------------------------
 
 from museotoolbox.cross_validation import LeaveOneSubGroupOut
-from museotoolbox.geo_tools import extract_ROI
+from museotoolbox.processing import extract_ROI
 from museotoolbox import datasets
 
 ##############################################################################
@@ -53,7 +53,7 @@ for tr,vl in vectorFiles:
 #  So you can generate each centroid of a pixel that contains the polygon.
 # 
     
-from museotoolbox.geo_tools import sample_extraction
+from museotoolbox.processing import sample_extraction
 vectorPointPerPixel = '/tmp/vectorCentroid.gpkg'
 sample_extraction(raster,vector,vectorPointPerPixel)
 

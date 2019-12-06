@@ -15,7 +15,7 @@
 import os
 import numpy as np
 from osgeo import ogr
-from .. import geo_tools
+from .. import processing
 
 
 class distanceCV:
@@ -635,7 +635,7 @@ class _cv_manager:
         if self.wkbType != 1:
             print("""Warning : This function generates vector files according to your vector.
         The number of features may differ from the number of pixels used in classification.
-        If you want to save every ROI pixels in the vector, please use geo_tools.sample_extraction before.""")
+        If you want to save every ROI pixels in the vector, please use processing.sample_extraction before.""")
         del src, srcLyr
 
         fileName, self.__ext = os.path.splitext(out_vector)
@@ -649,10 +649,10 @@ class _cv_manager:
 
         if group is None:
             groups = None
-            y, fts, srs = geo_tools.read_vector_values(
+            y, fts, srs = processing.read_vector_values(
                 vector, field, get_features=True, verbose=self.verbose)
         else:
-            y, groups, fts, srs = geo_tools.read_vector_values(
+            y, groups, fts, srs = processing.read_vector_values(
                 vector, field, group, get_features=True, verbose=self.verbose)
 
         if self.__alreadyRead:

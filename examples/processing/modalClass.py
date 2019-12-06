@@ -28,9 +28,9 @@ raster,vector = mtb.datasets.load_historical_data(low_res=True)
 # In case you want to add a mask
 mask = '/tmp/maskFromPolygons.tif'
 
-mtb.geo_tools.image_mask_from_vector(vector,raster,out_image = mask)
+mtb.processing.image_mask_from_vector(vector,raster,out_image = mask)
 
-rM = mtb.geo_tools.RasterMath(raster,in_image_mask=mask)
+rM = mtb.processing.RasterMath(raster,in_image_mask=mask)
 
 print(rM.get_random_block())
 ##########################
