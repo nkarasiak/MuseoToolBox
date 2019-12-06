@@ -37,9 +37,9 @@ import sys
 
 autoclass_content = 'both'
 
-source_parsers = {
-   '.md': 'recommonmark.parser.CommonMarkParser',
-}
+#source_parsers = {
+#   '.md': 'recommonmark.parser.CommonMarkParser',
+#}
 
 extensions = [
     'sphinx.ext.doctest',
@@ -63,10 +63,7 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ['.rst']
 
-# The master toctree document.
-master_doc = 'index'
 
 
 # General information about the project.
@@ -99,6 +96,10 @@ sys.path.insert(0, os.path.abspath("../.."))
 __version__ = re.search(
     r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]',  # It excludes inline comment too
     open('../../museotoolbox/__init__.py').read()).group(1)
+
+source_suffix = ['.rst']
+
+# The master toctree document.
 
 version = __version__
 # The full version, including alpha/beta/rc tags.
@@ -181,14 +182,16 @@ latex_elements = {
     # 'figure_align': 'htbp',
 }
 
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'MuseoToolBox.tex', 'Museo ToolBox Documentation',
-     'Nicolas Karasiak', 'manual'),
-]
 
+
+
+# -- Options for Texinfo output -------------------------------------------
+
+# Grouping the document tree into Texinfo files. List of tuples
+# (source start file, target name, title, author,
+#  dir menu entry, description, category)
+
+master_doc = 'index'
 
 # -- Options for manual page output ---------------------------------------
 
@@ -198,10 +201,7 @@ man_pages = [
     (master_doc, 'museotoolbox', 'MuseoToolBox Documentation',
      [author], 1)
 ]
+def setup(app):
+    app.add_stylesheet('style.css')  # may also be an URL
 
 
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)

@@ -289,8 +289,8 @@ class PlotConfusionMatrix:
         for label in range(self.cm.shape[0]):
             TP = self.cm_[label, label]
             #TN = np.sum(sp.diag(currentCsv))-currentCsv[label,label]
-            FN = np.sum(self.cm_[:, label]) - TP
-            FP = np.sum(self.cm_[label, :]) - TP
+            FN = np.nansum(self.cm_[:, label]) - TP
+            FP = np.nansum(self.cm_[label, :]) - TP
 
             verticalPlot.append(2 * TP / (2 * TP + FP + FN) * 100)
 
@@ -321,7 +321,7 @@ class PlotConfusionMatrix:
         self.ax1v.set_yticks([])
 
         for i in range(self.cm.shape[0]):
-            txt = str(int(verticalPlot[i]))
+            txt = str(int(np.nan_to_num(verticalPlot[i])))
         
             self.ax1v.text(
                 0,
@@ -356,7 +356,7 @@ class PlotConfusionMatrix:
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
 
-        self.ax1v.imshow(np.array(np.diag(self.cm_) / np.sum(self.cm_,
+        self.ax1v.imshow(np.array(np.diag(self.cm_) / np.nansum(self.cm_,
                                                              axis=1) * 100).reshape(-1,
                                                                                     1),
                          cmap=self.diag_color,
@@ -365,7 +365,7 @@ class PlotConfusionMatrix:
                          vmin=0,
                          vmax=100)
 
-        self.ax1h.imshow(np.array(np.diag(self.cm_) / np.sum(self.cm_, axis=0) * 100).reshape(
+        self.ax1h.imshow(np.array(np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(
             1, -1), cmap=self.diag_color, interpolation='nearest', aspect='equal', vmin=0, vmax=100)
 
         self.ax1v.set_yticks(np.arange(self.cm_.shape[0]))
@@ -375,16 +375,16 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            iVal = np.int(np.array(
-                    np.diag(self.cm_) / np.sum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0])
+            iVal = np.int(np.nan_to_num(np.array(
+                    np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0],nan=0))
             
             self.ax1v.text(0, i, iVal, color="white" if iVal >
                            thresold else 'black', ha='center', va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
-            jVal = np.int(np.array(
-                    np.diag(self.cm_) / np.sum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0])
+            jVal = np.int(np.nan_to_num(np.array(
+                    np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0],nan=0))
                 
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black', ha='center', va='center')

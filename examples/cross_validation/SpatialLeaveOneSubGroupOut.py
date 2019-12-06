@@ -17,7 +17,8 @@ from museotoolbox import datasets,geo_tools
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector,centroid = datasets.load_historical_data(low_res=True,centroid=True)
+_,centroid = datasets.load_historical_data(low_res=True,centroid=True)
+raster,vector = datasets.load_historical_data(low_res=True)
 
 field = 'Class'
 

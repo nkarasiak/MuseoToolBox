@@ -1,10 +1,10 @@
+![MuseoToolBox logo](https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
+
 [![Documentation status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/museotoolbox.svg)](https://badge.fury.io/py/museotoolbox)
 [![Build status](https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master)](https://travis-ci.org/nkarasiak/MuseoToolBox)
 [![Downloads](https://pepy.tech/badge/museotoolbox)](https://pepy.tech/project/museotoolbox)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg)](https://doi.org/10.5281/zenodo.3404728)
-
-![MuseoToolBox logo](https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
 **MuseoToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
@@ -13,7 +13,8 @@ One of the most meaningful contribution is, in my humble opinion, the [RasterMat
 ### Using and citing the toolbox
 
 If you use MuseoToolBox in your research and find it useful, please cite this library using the following bibtex reference:
-```
+
+```bib
 @misc{karasiak2019mtb,
 title={MuseoToolBox, a remote sensing python library},
 author={Karasiak Nicolas},

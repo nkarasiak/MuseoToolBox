@@ -78,7 +78,7 @@ from the ``scikit-learn`` using state of the art methods and good pratices (such
 For example the Leave-One-Out method will keep one sample of validation per class. As stated by [@fassnacht_2016] *"validation strategies that consider the location of the reference data
 during the data-splitting are recommended"*.
 
-- Spatial Leave-One-Out Method [@le_rest_2013,@karasiak_2019]
+- Spatial Leave-One-Out Method [@le_rest_2013; @karasiak_2019]
 - Spatial Leave-Aside-Out [@engler_2013]
 - Spatial Leave-One-SubGroup-Out (using centroids to select one and remove other polygons inside a specified distance buffer)
 

@@ -313,7 +313,7 @@ class randomPerClass:
             if test_n_splits == 0:
                 raise ValueError('Valid size is too small')
 
-        if groups is not None:
+        if groups is not None and verbose :
             print("Received groups value, but randomPerClass don't use it")
 
         self.n_splits = self.n_repeats
@@ -558,8 +558,7 @@ class _cv_manager:
 
         if X is not None:
             X = np.empty(y.reshape(-1,1).shape,dtype=np.int16)
-
-        print(self.cv_type.__name__)
+            
         if self.cv_type.__name__ == 'distanceCV':
             # TODO : Find a better way to get n_splits for distanceCV
             # As distance may differ from real n_splits, hard to not run the
@@ -568,7 +567,6 @@ class _cv_manager:
             for tr, vl in self.cv_type(
                     X=X, y=y, groups=groups, verbose=self.verbose, **self.params):
                 n_splits += 1
-            print('ici')
         else:
             n_splits = self.cv_type(
                 X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits

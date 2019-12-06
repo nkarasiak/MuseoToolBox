@@ -67,4 +67,3 @@ pltCM = PlotConfusionMatrix(meanCM.T) # Translate for Y = prediction and X = tru
 pltCM.add_text()
 pltCM.add_f1()
 pltCM.color_diagonal()
-pltCM.show()
