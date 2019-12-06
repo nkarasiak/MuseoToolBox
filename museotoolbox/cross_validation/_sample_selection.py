@@ -95,12 +95,13 @@ class distanceCV:
 
         if n_repeats:
             self.n_repeats = self.minEffectiveClass * n_repeats
-
+    
         else:
             # TODO : run self.__next__() to get real n_repeats as it depends on distance
             # but if running self.__next__() here, iterator will be empty
             # after.
             self.n_repeats = self.minEffectiveClass
+
         if self.verbose:
             print('n_repeats:' + str(self.n_repeats))
 
@@ -259,6 +260,7 @@ class distanceCV:
                 else:
                     raise ValueError(
                         'Error : Not enough samples using this distance/valid_size.')
+                
         else:
             raise StopIteration()
 
@@ -290,7 +292,7 @@ class randomPerClass:
     """
 
     def __init__(self, X=None, y=None, groups=None,
-                 valid_size=0.5, train_size=None, n_splits=False,
+                 valid_size=0.5, train_size=None, n_repeats=False,
                  random_state=None, verbose=False):
         self.y = y
         self.valid_size = valid_size
@@ -298,14 +300,14 @@ class randomPerClass:
 
         smallestClass = np.min(np.unique(y, return_counts=True)[1])
 
-        if n_splits is False:
+        if n_repeats is False:
             if self.valid_size >= 1:
-                self.n_splits = smallestClass
+                self.n_repeats = smallestClass
             else:
-                self.n_splits = int(1 / self.valid_size)
+                self.n_repeats = int(1 / self.valid_size)
         else:
-            self.n_splits = n_splits
-
+            self.n_repeats = n_repeats
+        
         if self.valid_size < 1:
             test_n_splits = int(valid_size * smallestClass)
             if test_n_splits == 0:
@@ -314,6 +316,8 @@ class randomPerClass:
         if groups is not None:
             print("Received groups value, but randomPerClass don't use it")
 
+        self.n_splits = self.n_repeats
+        
         self.random_state = random_state
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
@@ -326,7 +330,7 @@ class randomPerClass:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits + 1:
+        if self.iterPos < self.n_repeats + 1:
 
             train, valid = [np.asarray(
                 [], dtype=int), np.asarray([], dtype=int)]
@@ -367,9 +371,8 @@ class randomPerClass:
         else:
             raise StopIteration()
 
-
 class groupCV:
-    def __init__(self, X=None, y=None, groups=None, n_splits=False,
+    def __init__(self, X=None, y=None, groups=None, n_repeats=False,
                  valid_size=1, random_state=False, verbose=False):
         """Compute train/validation per group.
 
@@ -409,21 +412,23 @@ class groupCV:
             smallestGroup.append(standNumber.shape[0])
         smallestGroup = np.min(smallestGroup)
 
-        if n_splits:
-            self.n_splits = n_splits
+        if n_repeats:
+            self.n_repeats = n_repeats
         else:
-            self.n_splits = smallestGroup
-            if self.n_splits == 1:
+            self.n_repeats = smallestGroup
+            if self.n_repeats == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-
+            
         test_n_splits = np.amax(
             (int(valid_size * smallestGroup), int((1 - valid_size) * smallestGroup)))
         if test_n_splits == 0:
             raise ValueError('Valid size is too small')
-
+        
         self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
-
+        
+        self.n_splits = self.n_repeats
+        
     def __iter__(self):
         return self
 
@@ -432,7 +437,7 @@ class groupCV:
         return self.next()
 
     def next(self):
-        if self.iterPos < self.n_splits + 1:
+        if self.iterPos < self.n_repeats + 1:
             if self.verbose:
                 print(53 * '=')
             train = np.array([], dtype=int)
@@ -551,9 +556,10 @@ class _cv_manager:
             The number of splits.
         """
 
-        if y is not None:
-            self.y = y
+        if X is not None:
+            X = np.random.randint([y.shape])
 
+        print(self.cv_type.__name__)
         if self.cv_type.__name__ == 'distanceCV':
             # TODO : Find a better way to get n_splits for distanceCV
             # As distance may differ from real n_splits, hard to not run the
@@ -562,6 +568,7 @@ class _cv_manager:
             for tr, vl in self.cv_type(
                     X=X, y=y, groups=groups, verbose=self.verbose, **self.params):
                 n_splits += 1
+            print('ici')
         else:
             n_splits = self.cv_type(
                 X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits

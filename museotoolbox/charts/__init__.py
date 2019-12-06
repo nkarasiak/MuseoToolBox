@@ -182,15 +182,9 @@ class PlotConfusionMatrix:
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
 
-        try:
-            valV = np.mean(self.cm_, axis=1).reshape(-1, 1).astype(int)
-        except BaseException:
-            valV = 0
+        valV = np.mean(self.cm_, axis=1).reshape(-1, 1).astype(int)
 
-        try:
-            valH = np.mean(self.cm_, axis=0).reshape(1, -1).astype(int)
-        except BaseException:
-            valH = 0
+        valH = np.mean(self.cm_, axis=0).reshape(1, -1).astype(int)
 
         self.ax1v.imshow(
             valV,
@@ -217,19 +211,16 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            try:
-                iVal = np.int(np.mean(self.cm_, axis=1)[i])
-            except BaseException:
-                iVal = 0
+            
+            iVal = np.int(np.mean(self.cm_, axis=1)[i])
+            
             self.ax1v.text(0, i, iVal, color="white" if iVal >
                            thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
         self.ax1v.set_yticklabels([])
-        for j in range(self.cm.shape[1]):
-            try:
-                jVal = np.int(np.mean(self.cm_, axis=0)[j])
-            except BaseException:
-                jVal = 0
+        for j in range(self.cm.shape[1]):           
+            jVal = np.int(np.mean(self.cm_, axis=0)[j])
+            
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
@@ -330,11 +321,8 @@ class PlotConfusionMatrix:
         self.ax1v.set_yticks([])
 
         for i in range(self.cm.shape[0]):
-            try:
-                txt = str(int(verticalPlot[i]))
-            except BaseException:
-                txt = '0'
-
+            txt = str(int(verticalPlot[i]))
+        
             self.ax1v.text(
                 0,
                 i,
@@ -387,21 +375,17 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            try:
-                iVal = np.int(np.array(
+            iVal = np.int(np.array(
                     np.diag(self.cm_) / np.sum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0])
-            except BaseException:
-                iVal = 0
+            
             self.ax1v.text(0, i, iVal, color="white" if iVal >
                            thresold else 'black', ha='center', va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
-            try:
-                jVal = np.int(np.array(
+            jVal = np.int(np.array(
                     np.diag(self.cm_) / np.sum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0])
-            except BaseException:
-                jVal = 0
+                
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black', ha='center', va='center')
 
@@ -440,7 +424,7 @@ class PlotConfusionMatrix:
         """
         self.diag_color = diag_color
         if self.cm.shape[0] != self.cm.shape[1]:
-            raise Exception(
+            raise Warning(
                 'Array must have the same number of lines and columns')
 
         mask = np.zeros(self.cm.shape)
@@ -469,13 +453,6 @@ class PlotConfusionMatrix:
             vmax=np.amax(
                 self.cm_),
             alpha=1)
-
-    def show(self):
-        """
-        To force plotting the graph
-        """
-
-        plt.show(self.fig)
 
     def save_to(self, path, dpi=150):
         """

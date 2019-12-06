@@ -85,10 +85,11 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
             toReturn = (X, y)
     else:
         toReturn.append(raster)
-        toReturn.append(vector)
         if centroid:
             vectorCentroid = os.path.join(
                 __pathFile, '_historicalmap/train_centroid.gpkg')
             toReturn.append(vectorCentroid)
+        else:
+            toReturn.append(vector)
 
     return toReturn

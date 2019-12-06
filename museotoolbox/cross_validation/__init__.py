@@ -25,7 +25,7 @@ class LeaveOneOut(_sample_selection._cv_manager):
 
     Parameters
     ----------
-    n_splits : int or bool, optional (default=False).
+    n_repeats : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest class.
         If int : will iterate the number of times given in n_splits.
     random_state : integer or None, optional (default=False).
@@ -36,12 +36,12 @@ class LeaveOneOut(_sample_selection._cv_manager):
     """
 
     def __init__(self,
-                 n_splits=False,
+                 n_repeats=False,
                  random_state=False,
                  verbose=False):
 
         super().__init__(_sample_selection.randomPerClass, valid_size=1,
-                         n_splits=n_splits, random_state=random_state, verbose=verbose)
+                         n_repeats=n_repeats, random_state=random_state, verbose=verbose)
 
 
 class LeavePSubGroupOut(_sample_selection._cv_manager):
@@ -52,7 +52,7 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
     ----------
     valid_size : float, default 0.5.
         From 0 to 1.
-    n_splits : int or bool, optional (default=False).
+    n_repeats : int or bool, optional (default=False).
         If False, n_splits is 1/valid_size (default : 1/0.5 = 2).
         If int : will iterate the number of times given in n_splits.
     random_state : integer or None, optional (default=False).
@@ -64,7 +64,7 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
 
     def __init__(self,
                  valid_size=0.5,
-                 n_splits=False,
+                 n_repeats=False,
                  random_state=False,
                  verbose=False):
 
@@ -74,11 +74,11 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
         else:
             raise ValueError(
                 'Percent must be between 0 and 1 and must be a float')
-        if n_splits == False:
-            n_splits = int(1 / valid_size)
+        if n_repeats == False:
+            n_repeats = int(1 / valid_size)
 
         super().__init__(_sample_selection.groupCV, valid_size=valid_size,
-                         n_splits=n_splits, random_state=random_state, verbose=verbose)
+                         n_repeats=n_repeats, random_state=random_state, verbose=verbose)
 
 
 class LeaveOneSubGroupOut(_sample_selection._cv_manager):
@@ -87,7 +87,7 @@ class LeaveOneSubGroupOut(_sample_selection._cv_manager):
 
     Parameters
     ----------
-    n_splits : int or bool, optional (default=False).
+    n_repeats : int or bool, optional (default=False).
         If False : will iterate as many times as the smallest number of groups.
         If int : will iterate the number of times given in n_splits.
     random_state : integer or None, optional (default=False).
@@ -98,11 +98,11 @@ class LeaveOneSubGroupOut(_sample_selection._cv_manager):
     """
 
     def __init__(self,
-                 n_splits=False,
+                 n_repeats=False,
                  random_state=False,
                  verbose=False):
 
-        super().__init__(_sample_selection.groupCV, valid_size=1, n_splits=n_splits,
+        super().__init__(_sample_selection.groupCV, valid_size=1, n_repeats=n_repeats,
                          random_state=random_state, verbose=verbose)
 
 
@@ -273,4 +273,4 @@ class RandomStratifiedKFold(_sample_selection._cv_manager):
 
         super().__init__(_sample_selection.randomPerClass, valid_size=valid_size,
                          random_state=random_state,
-                         n_splits=n_repeats, verbose=verbose)
+                         n_repeats=n_repeats, verbose=verbose)

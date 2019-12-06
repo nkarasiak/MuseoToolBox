@@ -180,6 +180,9 @@ class TestRaster(unittest.TestCase):
     def test_centroid(self):
      
          Xc,yc = load_historical_data(centroid=True,return_X_y=True)
+         Xc_file, yc_file= load_historical_data(centroid=True)
+         assert(os.path.exists(Xc_file))
+         assert(os.path.exists(yc_file))
          assert(Xc.shape[0] == geo_tools.read_vector_values(vector,'Type').shape[0])
          
     def test_extract_position(self):

@@ -25,7 +25,7 @@ class TestCV(unittest.TestCase):
     def test_loo(self):
         for split in [False,1,2,5]:
             
-                cv = cross_validation.LeaveOneOut(n_splits=split,random_state=split,verbose=split)
+                cv = cross_validation.LeaveOneOut(n_repeats=split,random_state=split,verbose=split)
                 if split == False:
                     assert(cv.get_n_splits(X,y)==np.min(np.unique(y,return_counts=True)[-1]))
                 else:
@@ -39,25 +39,39 @@ class TestCV(unittest.TestCase):
                 
             
     def test_kfold(self):
+        cv = cross_validation.RandomStratifiedKFold(valid_size=1/50)        
         
-        for split in [2,5]:
-            cv = cross_validation.RandomStratifiedKFold(n_splits=split,n_repeats=split,verbose=split)
-            assert(cv.get_n_splits(X,y)==split*split)
+        self.assertRaises(ValueError,cv.get_n_splits,X,y)
+        
+        for split in [1,2,5]:
+            cv = cross_validation.RandomStratifiedKFold(n_splits=1+split,n_repeats=split,verbose=split)
+            assert(cv.get_n_splits(X,y)==split*split+split)
             assert(cv.verbose == split)
             
             for idx,[tr,vl] in enumerate(cv.split(X,y)):
-                assert(int(tr.size/vl.size) == split-1)
+                assert(int(tr.size/vl.size) == split)
                 assert(np.unique(y[vl],return_counts=True)[0].size == 5)
         
-            assert(idx+1 == split*split)
+            assert(idx+1 == split*split+split)
             
     def test_LeavePSubGroupOut(self):
+        
         cv = cross_validation.LeavePSubGroupOut()
         for tr,vl in cv.split(X,y,g):
             assert(not np.unique(np.in1d([1,2],[3,4]))[0])
 
         self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size='ko')
-        self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size=5)
+        self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size=5.1)
+        
+    def test_LeaveOneSubGroupOut(self):
+        
+        cv = cross_validation.LeaveOneSubGroupOut()
+        for tr,vl in cv.split(X,y,g):
+            assert(not np.unique(np.in1d([1,2],[3,4]))[0])
+        geo_tools.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
+
+        list_files =cv.save_to_vector('/tmp/pixels.gpkg','Class',group='uniquefid',out_vector='/tmp/cv_g.gpkg')
+        assert(len(list_files)==cv.get_n_splits(X,y,g))
         
     def test_distanceSLOO(self):
         
@@ -142,7 +156,7 @@ class TestCV(unittest.TestCase):
         os.remove('/tmp/pixels.gpkg')
 
         
-    def test_LOO(self):
+    def test_compare_loo_kf(self):
         cv_loo = cross_validation.LeaveOneOut(random_state=12)
         cv_kf_as_loo = cross_validation.RandomStratifiedKFold(n_splits=False,valid_size=1,random_state=12)
         for trvl_loo,trvl_kf in zip(cv_loo.split(X,y),cv_kf_as_loo.split(X,y)):
