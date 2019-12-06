@@ -23,7 +23,9 @@ import itertools
 
 np.seterr(divide='ignore', invalid='ignore')
 
-
+# for numpy version < 1.17
+def _nan_to_num(array,nan=0):
+    return np.where(np.isnan(array),nan,array)
 class PlotConfusionMatrix:
     """
     Plot a confusion matrix with imshow of pyplot.
@@ -321,7 +323,7 @@ class PlotConfusionMatrix:
         self.ax1v.set_yticks([])
 
         for i in range(self.cm.shape[0]):
-            txt = str(int(np.nan_to_num(verticalPlot[i])))
+            txt = str(int(_nan_to_num(verticalPlot[i])))
         
             self.ax1v.text(
                 0,
@@ -375,7 +377,7 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            iVal = np.int(np.nan_to_num(np.array(
+            iVal = np.int(_nan_to_num(np.array(
                     np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0],nan=0))
             
             self.ax1v.text(0, i, iVal, color="white" if iVal >
@@ -383,7 +385,7 @@ class PlotConfusionMatrix:
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
-            jVal = np.int(np.nan_to_num(np.array(
+            jVal = np.int(_nan_to_num(np.array(
                     np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0],nan=0))
                 
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
