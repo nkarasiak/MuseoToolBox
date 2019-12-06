@@ -1,7 +1,7 @@
 -r requirements.txt
 
 # development specific requirements
-recommonmark
+recommonmark==0.6.0
 sphinx>=1.4
 numpydoc
 sphinx-rtd-theme
