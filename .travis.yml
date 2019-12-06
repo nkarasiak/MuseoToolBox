@@ -1,17 +1,15 @@
 dist: bionic
 language: python
 os : linux
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
 
 addons:
    apt:
      packages:
      - libgdal-dev
-matrix:
-  include:
-  - os: linux
-    python: 3.6
-  - os: linux
-    python: 3.7
 
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
