@@ -40,7 +40,7 @@ class TestCV(unittest.TestCase):
             
     def test_kfold(self):
         cv = cross_validation.RandomStratifiedKFold(valid_size=1/50)        
-        cv.get_n_splits(X,y)        
+
         self.assertRaises(ValueError,cv.get_n_splits,X,y)
         
         for split in [1,2,5]:
