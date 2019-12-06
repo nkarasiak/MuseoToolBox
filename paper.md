@@ -33,7 +33,7 @@ Museo ToolBox's goal is to make working with raster data very easier for scienti
 
 A [full documentation is available online on read the docs](http://museotoolbox.readthedocs.io/).
 
-# Museo ToolBox Functionnalities
+# Museo ToolBox functionnalities
 
 `Museo ToolBox` is organized into several modules :
 
@@ -61,7 +61,7 @@ So, what does ``RasterMath`` really do ? The answer is as simple as the question
 
 The objective of RasterMath is to let the user only focus on its array-compatible function, and to let RasterMath manage the raster part.
 
-[Go to documentation about RasterMath](RasterMathLink)
+[Go to RasterMath documentation and examples](RasterMathLink)
 
 
 
@@ -70,7 +70,7 @@ The objective of RasterMath is to let the user only focus on its array-compatibl
 The machine learning module is natively built to manage algorithm
 from the ``scikit-learn`` using state of the art methods and good pratices (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process by a grid search. There is also a Sequential Feature Selection protocol which supports number of components (e.g. a date is composed of 4 features, and you want to select the 4 features at once).
 
-[Go to documentation about SuperLearner](SuperLearnerLink)
+[Go to SuperLearner documentation and examples](SuperLearnerLink)
 
 ## Spatial cross-validation
 
@@ -82,7 +82,7 @@ during the data-splitting are recommended"*.
 - Spatial Leave-Aside-Out [@engler_2013]
 - Spatial Leave-One-SubGroup-Out (using centroids to select one and remove other polygons inside a specified distance buffer)
 
-[Go to documentation about cross-validation](crossVal)
+[Go to cross-validation documentation and examples](crossVal)
 
 # Figures
 
