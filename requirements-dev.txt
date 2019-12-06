@@ -4,7 +4,7 @@
 recommonmark==0.6.0
 sphinx>=1.4
 numpydoc==0.9.1
-sphinx-rtd-theme
+sphinx-rtd-theme==0.4.3
 ipykernel
 nbsphinx
 sphinx-gallery
