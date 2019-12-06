@@ -557,7 +557,7 @@ class _cv_manager:
         """
 
         if X is not None:
-            X = np.random.randint([y.shape])
+            X = np.empty(y.reshape(-1,1).shape,dtype=np.int16)
 
         print(self.cv_type.__name__)
         if self.cv_type.__name__ == 'distanceCV':
