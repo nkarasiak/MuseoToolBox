@@ -10,7 +10,7 @@ This example shows how to make a Spatial Leave-One-SubGroup-Out.
 ##############################################################################
 # Import librairies
 # -------------------------------------------
-
+import numpy as np
 from museotoolbox.cross_validation import SpatialLeaveOneSubGroupOut
 from museotoolbox import datasets,processing
 ##############################################################################
@@ -43,8 +43,10 @@ SLOSGO = SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distan
 #    Split is made to generate each fold
 SLOSGO.get_n_splits(X,y,groups)
 for tr,vl in SLOSGO.split(X,y,groups):
-    print(tr.shape,vl.shape)
+    print(np.unique(groups[vl]))
+    print(np.unique(groups[tr]))
     
+SLOSGO.save_to_vector(vector,'Class','uniquefid','/tmp/slosgo.gpkg')
 #############################################
 # Draw image
 from __drawCVmethods import plotMethod

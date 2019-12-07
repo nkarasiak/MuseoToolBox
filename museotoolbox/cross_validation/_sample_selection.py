@@ -17,15 +17,14 @@ import numpy as np
 from osgeo import ogr
 from .. import processing
 
-
 class distanceCV:
     def __init__(
             self,
-            X=None,
-            y=None,
-            distance_matrix=None,
+            X,
+            y,
+            distance_matrix,
             distance_thresold=False,
-            valid_size=False,
+            valid_size=1,
             n_repeats=False,
             verbose=False,
             random_state=False,
@@ -85,7 +84,8 @@ class distanceCV:
         self.random_state = random_state
 
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-
+        
+        
         if self.groups is None:
             self.minEffectiveClass = min(
                 [len(self.y[self.y == i]) for i in np.unique(self.y)])
@@ -93,14 +93,17 @@ class distanceCV:
             self.minEffectiveClass = min(
                 [len(np.unique(groups[np.where(y == i)[0]])) for i in np.unique(self.y)])
 
-        if n_repeats:
+        if n_repeats and self.valid_size >= 1:
             self.n_repeats = self.minEffectiveClass * n_repeats
     
-        else:
+        elif self.valid_size >= 1:
             # TODO : run self.__next__() to get real n_repeats as it depends on distance
             # but if running self.__next__() here, iterator will be empty
             # after.
             self.n_repeats = self.minEffectiveClass
+        else :
+            self.n_repeats = int(1/(self.valid_size))
+            
 
         if self.verbose:
             print('n_repeats:' + str(self.n_repeats))
@@ -151,7 +154,7 @@ class distanceCV:
                             self.mask[self.y == C] = 1
                             currentCT = np.logical_and(
                                 self.y == C, self.mask == 1)
-
+                            
                         np.random.seed(self.random_state)
                         self.ROI = np.random.permutation(
                             np.where(currentCT)[0])[0]
@@ -163,8 +166,6 @@ class distanceCV:
                                       ' for label ' +
                                       str(C))
 
-                            np.random.seed(self.random_state)
-                            self.ROI = np.random.permutation(CT)[0]
                             # Tstand = self.distanceLabel[np.isin(
                             #   self.distanceLabel, np.unique(self.groups[CT]))]
                             #TstandTF = np.isin(self.distanceLabel, Tstand)
@@ -174,6 +175,7 @@ class distanceCV:
                             #distanceROI = distanceROI[TstandTF]
                             tmpValid = np.where(
                                 self.groups == self.groups[self.ROI])[0].astype(np.int64)
+                            
                             #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
                             tmpTrainGroup = np.unique(
                                 self.distance_label[np.where(distanceROI >= self.distance_thresold)[0]])
@@ -184,11 +186,11 @@ class distanceCV:
 
                             if tmpTrain.shape[0] == 0:
                                 emptyTrain = True
-                        # When doing Leave-One-Out per pixel
+                        # When doing Leave-One-Out
                         else:
-
-                            distanceROI = (self.distance_matrix[self.ROI, :])[
-                                CT]  # get line of distance for specific ROI
+                            
+                            # get line of distance for specific ROI
+                            distanceROI = (self.distance_matrix[self.ROI, :])[CT]
                             if self.valid_size is False:
                                 tmpValid = np.array(
                                     [self.ROI], dtype=np.int64)
@@ -215,9 +217,12 @@ class distanceCV:
                                                   distanceToCut]
 
                                 else:
-
-                                    tmpValid = CT[distanceROI <=
-                                                  self.distance_thresold][:nToCut]
+#                                    tmpValid = np.argmin(distanceROI)
+                                    
+#                                    np.argsort(distanceROI)
+                                    
+                                    tmpValid = np.asarray([self.ROI]) #np.asarray(self.ROI).reshape(1,-1)
+#                                    CT[distanceROI <= self.distance_thresold][:nToCut]
 
                                     tmpTrain = CT[distanceROI >
                                                   self.distance_thresold]
@@ -567,10 +572,14 @@ class _cv_manager:
             for tr, vl in self.cv_type(
                     X=X, y=y, groups=groups, verbose=self.verbose, **self.params):
                 n_splits += 1
+            
         else:
             n_splits = self.cv_type(
                 X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits
-
+        
+        if n_splits == 0:
+            raise ValueError('Sorry but due to your dataset or your distance thresold, no cross-validation has been generated.')
+        
         return n_splits
 
     def split(self, X=None, y=None, groups=None):
@@ -692,7 +701,7 @@ class _cv_manager:
         # create the spatial reference, WGS84
 
         lyrout = ds.CreateLayer(
-            'cross_validation',
+            'cv',
             srs=srs,
             geom_type=self.wkbType)
         fields = [

@@ -20,6 +20,8 @@ distance_matrix = processing.get_distance_matrix(raster,vector)
 n_class = len(np.unique(y,return_counts=True)[1])
 smallest_class = np.min(np.unique(y,return_counts=True)[1])
 
+
+
 class TestCV(unittest.TestCase):
     
     def test_loo(self):
@@ -66,20 +68,25 @@ class TestCV(unittest.TestCase):
     def test_LeaveOneSubGroupOut(self):
         
         cv = cross_validation.LeaveOneSubGroupOut()
+        y_vl = np.array([])
         for tr,vl in cv.split(X,y,g):
+            y_vl = np.concatenate((y_vl,vl))
             assert(not np.unique(np.in1d([1,2],[3,4]))[0])
+        assert(np.all(np.unique(np.asarray(y_vl),return_counts=True)[1]==1))
         processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
 
         list_files =cv.save_to_vector('/tmp/pixels.gpkg','Class',group='uniquefid',out_vector='/tmp/cv_g.gpkg')
+
         assert(len(list_files)==cv.get_n_splits(X,y,g))
         
-    def test_distanceSLOO(self):
+    def test_SLOO(self):
         
         assert(distance_matrix.shape[0] == y.size)
         
         cv = cross_validation.SpatialLeaveOneOut(distance_thresold=100,
                                                  distance_matrix=distance_matrix,
                                                  random_state=12,verbose=1)
+        
         
         processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         y_ = processing.read_vector_values('/tmp/pixels.gpkg','Class')
@@ -102,24 +109,29 @@ class TestCV(unittest.TestCase):
                                                             random_state=12,
                                                             LOO_same_size=True,
                                                             valid_size=1)
-        
+        y_vl = []
+        y_asloo_vl = []
         for sloo_cv,as_loo_cv in zip(cv.split(X,y),as_loo.split(X,y)):
+            y_vl.append(sloo_cv[1])
+            y_asloo_vl.append(as_loo_cv[1])
+            assert(n_class == len(y[sloo_cv[1]]))
             assert(sloo_cv[0].size == as_loo_cv[0].size) # same size between loo and sloo 
             assert(np.all(sloo_cv[1] == as_loo_cv[1])) # using same valid pixel
-            
+        
+        assert(np.all(np.unique(np.asarray(y_vl),return_counts=True)[1]==1))
+        assert(np.all(np.unique(np.asarray(y_asloo_vl),return_counts=True)[1]==1))
         
         as_loo= cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
                                                             distance_thresold=100,
                                                             distance_matrix=distance_matrix,
                                                             random_state=12,
-                                                            LOO_same_size=True,valid_size=False)
+                                                            LOO_same_size=True,valid_size=1)
         for tr,vl in as_loo.split(X,y):
             assert(vl.size == n_class)
             
         # distance too high 
         cv = cross_validation.SpatialLeaveOneOut(distance_thresold=10000,distance_matrix=distance_matrix,verbose=0)
-        self.assertRaises(ValueError,cv.get_n_splits,X,y)
-            
+        self.assertRaises(ValueError,cv.get_n_splits,X,y)            
         
         
     def test_aside(self):
@@ -128,16 +140,20 @@ class TestCV(unittest.TestCase):
                                      distance_matrix=distance_matrix,random_state=2)
         
         assert(SLOPO.get_n_splits(X,y) == int(1/(1/3)))
-        
+            
         for tr,vl in SLOPO.split(X,y):
             assert(np.unique(y[vl]).size == 5) 
             assert(np.unique(y[tr]).size == 5) 
         
         
-    def test_SLOSGO(self)       :
+    def test_slosgo(self)       :
         cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g)
+        
+        y_vl = np.array([])
         for tr,vl in cv.split(X,y,g)        :
+            print(np.unique(g[vl]))
             assert(n_class==np.unique(g[vl]).size)
+        assert(np.all(np.unique(np.asarray(y_vl),return_counts=True)[1]==1))
         
         processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
         test_extensions = ['wrong','shp','gpkg']
