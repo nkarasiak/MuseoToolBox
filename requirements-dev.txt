@@ -7,4 +7,4 @@ numpydoc
 sphinx-rtd-theme
 ipykernel
 nbsphinx
-sphinx-gallery
+sphinx-gallery==0.5.0
