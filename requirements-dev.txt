@@ -3,7 +3,7 @@
 # development specific requirements
 recommonmark
 sphinx>=1.4
-numpydoc
+numpydoc==0.9.1
 sphinx-rtd-theme
 ipykernel
 nbsphinx
