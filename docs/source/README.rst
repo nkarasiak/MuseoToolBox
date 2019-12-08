@@ -31,35 +31,7 @@
    :alt: DOI
 
 
-<<<<<<< HEAD
-
 **MuseoToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
-===============================================================================================================================================================================================================================================================================
-
-
-.. image:: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
-   :target: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
-   :alt: MuseoToolBox logo
-
-
-**MuseoToolBox** or Museo Toolbox is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
-
-..
-
-   ..
-
-      ..
-
-         ..
-
-            ..
-
-               ..
-
-                  ..
-
-                     > 5b5231f5b3a95eaeaee911acd6400de7f7de444d
-
 
 One of the most meaningful contribution is, in my humble opinion, the `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/geo_tools/museotoolbox.geo_tools.RasterMath.html#museotoolbox.geo_tools.RasterMath>`_ class which allows you to do any expression/function on a raster in a just few lines : compute the mean in all bands, the modal value, smooth a signal, compute the ndvi... all you have to do is to give your own function to MuseoToolBox, and **RasterMath** manages everything : the nodata value, reading the raster block per block, saving the result to a new raster with a fast compression. `Examples to use RasterMath are available on readthedocs <https://museotoolbox.readthedocs.io/en/latest/modules/geo_tools/museotoolbox.geo_tools.RasterMath.html#museotoolbox.geo_tools.RasterMath>`_.
 
