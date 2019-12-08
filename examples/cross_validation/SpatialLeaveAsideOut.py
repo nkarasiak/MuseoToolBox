@@ -20,7 +20,7 @@ from museotoolbox import datasets,processing
 # Load HistoricalMap dataset
 # -------------------------------------------
 
-raster,vector = datasets.load_historical_data()
+raster,vector = datasets.load_historical_data(low_res=True)
 field = 'Class'
 X,y = processing.extract_ROI(raster,vector,field)
 distance_matrix = processing.get_distance_matrix(raster,vector)

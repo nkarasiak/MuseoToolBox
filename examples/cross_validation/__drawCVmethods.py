@@ -90,7 +90,6 @@ def plotMethod(cvType='SKF-pixel'):
     
     from scipy.spatial import ConvexHull
     import matplotlib.path as mpath
-    import matplotlib.patches as mpatches
     
     codes += [mpath.Path.MOVETO] + \
                      (len(X)-1)*[mpath.Path.LINETO]
