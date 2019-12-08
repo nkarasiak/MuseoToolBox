@@ -3,7 +3,7 @@
 Lot of changes to satisfy python conventions.
 
 Some folders have changed name :
-    - raster_tools and vector_tools > geo_tools
+    - raster_tools and vector_tools > processing
     - learn_tools > ai
 
 some functions have changed name : 
@@ -12,14 +12,12 @@ some functions have changed name :
     - getDistanceMatrix > get_distance_matrix
 
 classes now always begin with a capital case : 
-    - learnAndPredict > SuperLearn
+    - learnAndPredict > SuperLearner
     - rasterMath > RasterMath
-    - sampleExtraction > SampleExtraction
     - sequentialFeatureSelection > SequentialFeatureSelection 
 
-- Fix bug #7 : getSamplesFromROI (renamed extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
+- Fix bug #7 : getSamplesFromROI (nowd extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
 - Remove cli
-
 
 1.6.6
 ------
