@@ -17,6 +17,7 @@ import numpy as np
 from osgeo import ogr
 from .. import processing
 
+
 class distanceCV:
     def __init__(
             self,
@@ -26,6 +27,7 @@ class distanceCV:
             distance_thresold=False,
             valid_size=1,
             n_repeats=False,
+            n_splits=False,
             verbose=False,
             random_state=False,
             groups=None,
@@ -46,6 +48,8 @@ class distanceCV:
             If False, will split spatially the dataset.
         n_repeats : int or False, optional (default=False).
             False : as loop as min effective class
+        n_splits : int or False, optional (default=False).
+            Number of split per CV. Default is the size of the smallest class.
         valid_size : False or float value.
             If float, value from 0 to 1 (percent).
         groups : array
@@ -79,13 +83,10 @@ class distanceCV:
 
         self.verbose = verbose
 
-        self.nTries = 0
-
         self.random_state = random_state
 
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
-        
-        
+
         if self.groups is None:
             self.minEffectiveClass = min(
                 [len(self.y[self.y == i]) for i in np.unique(self.y)])
@@ -93,20 +94,21 @@ class distanceCV:
             self.minEffectiveClass = min(
                 [len(np.unique(groups[np.where(y == i)[0]])) for i in np.unique(self.y)])
 
+        if n_splits:
+            self.minEffectiveClass = n_splits
+
         if n_repeats and self.valid_size >= 1:
             self.n_repeats = self.minEffectiveClass * n_repeats
-    
+
         elif self.valid_size >= 1:
             # TODO : run self.__next__() to get real n_repeats as it depends on distance
             # but if running self.__next__() here, iterator will be empty
             # after.
             self.n_repeats = self.minEffectiveClass
-        else :
-            self.n_repeats = int(1/(self.valid_size))
-            
-
-        if self.verbose:
-            print('n_repeats:' + str(self.n_repeats))
+        elif isinstance(self.valid_size, float):
+            self.n_repeats = int(1 / (self.valid_size))
+        else:
+            self.n_repeats = self.minEffectiveClass
 
     def __iter__(self):
         return self
@@ -136,8 +138,6 @@ class distanceCV:
 
                         if np.where(currentCT)[
                                 0].shape[0] == 0:  # means no more ROI
-                            if self.minEffectiveClass == self.n_repeats:
-                                raise StopIteration()
                             if self.verbose > 1:
                                 print(
                                     str(C) + ' has no more valid pixel.\nResetting label mask.')
@@ -147,14 +147,13 @@ class distanceCV:
 
                         if np.where(currentCT)[
                                 0].shape[0] == 0:  # means no more ROI
-                            if self.minEffectiveClass == self.n_repeats:
-                                raise StopIteration()
-                            print(
-                                str(C) + ' has no more valid pixel. Reusing samples.')
+                            if self.verbose > 1:
+                                print(
+                                    str(C) + ' has no more valid pixel. Reusing samples.')
                             self.mask[self.y == C] = 1
                             currentCT = np.logical_and(
                                 self.y == C, self.mask == 1)
-                            
+
                         np.random.seed(self.random_state)
                         self.ROI = np.random.permutation(
                             np.where(currentCT)[0])[0]
@@ -165,18 +164,12 @@ class distanceCV:
                                       str(self.groups[self.ROI]) +
                                       ' for label ' +
                                       str(C))
-
-                            # Tstand = self.distanceLabel[np.isin(
-                            #   self.distanceLabel, np.unique(self.groups[CT]))]
-                            #TstandTF = np.isin(self.distanceLabel, Tstand)
                             standPos = np.argwhere(
                                 self.groups[self.ROI] == self.distance_label)[0][0]
                             distanceROI = (self.distance_matrix[standPos, :])
-                            #distanceROI = distanceROI[TstandTF]
                             tmpValid = np.where(
                                 self.groups == self.groups[self.ROI])[0].astype(np.int64)
-                            
-                            #validateTStand = distanceROI[np.where(distanceROI>= self.distanceThresold)[0]]
+
                             tmpTrainGroup = np.unique(
                                 self.distance_label[np.where(distanceROI >= self.distance_thresold)[0]])
                             tmpTrainGroup = tmpTrainGroup[np.isin(
@@ -188,9 +181,10 @@ class distanceCV:
                                 emptyTrain = True
                         # When doing Leave-One-Out
                         else:
-                            
+
                             # get line of distance for specific ROI
-                            distanceROI = (self.distance_matrix[self.ROI, :])[CT]
+                            distanceROI = (
+                                self.distance_matrix[self.ROI, :])[CT]
                             if self.valid_size is False:
                                 tmpValid = np.array(
                                     [self.ROI], dtype=np.int64)
@@ -217,12 +211,7 @@ class distanceCV:
                                                   distanceToCut]
 
                                 else:
-#                                    tmpValid = np.argmin(distanceROI)
-                                    
-#                                    np.argsort(distanceROI)
-                                    
-                                    tmpValid = np.asarray([self.ROI]) #np.asarray(self.ROI).reshape(1,-1)
-#                                    CT[distanceROI <= self.distance_thresold][:nToCut]
+                                    tmpValid = np.asarray([self.ROI])
 
                                     tmpTrain = CT[distanceROI >
                                                   self.distance_thresold]
@@ -265,7 +254,7 @@ class distanceCV:
                 else:
                     raise ValueError(
                         'Error : Not enough samples using this distance/valid_size.')
-                
+
         else:
             raise StopIteration()
 
@@ -312,17 +301,17 @@ class randomPerClass:
                 self.n_repeats = int(1 / self.valid_size)
         else:
             self.n_repeats = n_repeats
-        
+
         if self.valid_size < 1:
             test_n_splits = int(valid_size * smallestClass)
             if test_n_splits == 0:
                 raise ValueError('Valid size is too small')
 
-        if groups is not None and verbose :
+        if groups is not None and verbose:
             print("Received groups value, but randomPerClass don't use it")
 
         self.n_splits = self.n_repeats
-        
+
         self.random_state = random_state
         self.iterPos = 1
         self.mask = np.ones(np.asarray(self.y).shape, dtype=bool)
@@ -376,6 +365,7 @@ class randomPerClass:
         else:
             raise StopIteration()
 
+
 class groupCV:
     def __init__(self, X=None, y=None, groups=None, n_repeats=False,
                  valid_size=1, random_state=False, verbose=False):
@@ -424,16 +414,16 @@ class groupCV:
             if self.n_repeats == 1:
                 raise Exception(
                     'You need to have at least two subgroups per label')
-            
+
         test_n_splits = np.amax(
             (int(valid_size * smallestGroup), int((1 - valid_size) * smallestGroup)))
         if test_n_splits == 0:
             raise ValueError('Valid size is too small')
-        
+
         self.mask = np.ones(np.asarray(groups).shape, dtype=bool)
-        
+
         self.n_splits = self.n_repeats
-        
+
     def __iter__(self):
         return self
 
@@ -562,8 +552,8 @@ class _cv_manager:
         """
 
         if X is not None:
-            X = np.empty(y.reshape(-1,1).shape,dtype=np.int16)
-            
+            X = np.empty(y.reshape(-1, 1).shape, dtype=np.int16)
+
         if self.cv_type.__name__ == 'distanceCV':
             # TODO : Find a better way to get n_splits for distanceCV
             # As distance may differ from real n_splits, hard to not run the
@@ -572,17 +562,18 @@ class _cv_manager:
             for tr, vl in self.cv_type(
                     X=X, y=y, groups=groups, verbose=self.verbose, **self.params):
                 n_splits += 1
-            
+
         else:
             n_splits = self.cv_type(
                 X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits
-        
+
         if n_splits == 0:
-            raise ValueError('Sorry but due to your dataset or your distance thresold, no cross-validation has been generated.')
-        
+            raise ValueError(
+                'Sorry but due to your dataset or your distance thresold, no cross-validation has been generated.')
+
         return n_splits
 
-    def split(self, X=None, y=None, groups=None):
+    def split(self, X, y, groups=None):
         """
         Split the vector/array according to y and groups.
 
@@ -605,8 +596,6 @@ class _cv_manager:
             The testing set indices for that split.
 
         """
-        if y is None:
-            y = self.Y
         y = y.reshape(-1, 1)
         if self.__alreadyRead:
             self.reinitialize()
@@ -690,16 +679,14 @@ class _cv_manager:
             self.__extensions) if i == self.__ext[1:]][0]
         outDriver = ogr.GetDriverByName(self.__driversName[driverIdx])
 
-        # create the data source
         if os.path.exists(outShapeFile):
+            # Remove output shapefile if it already exists
             outDriver.DeleteDataSource(outShapeFile)
-        # Remove output shapefile if it already exists
 
-        # options = ['SPATIALITE=YES'])
+        # create the data source
         ds = outDriver.CreateDataSource(outShapeFile)
 
         # create the spatial reference, WGS84
-
         lyrout = ds.CreateLayer(
             'cv',
             srs=srs,
@@ -707,8 +694,6 @@ class _cv_manager:
         fields = [
             array[1].GetFieldDefnRef(i).GetName() for i in range(
                 array[1].GetFieldCount())]
-        if lyrout is None:
-            raise Exception('Failed to create file ' + str(outShapeFile))
 
         if self.__ext[1:] != 'shp':
             isShp = False

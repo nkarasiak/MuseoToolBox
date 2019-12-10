@@ -50,7 +50,8 @@ def sub(X,band1=0,band2=1):
 #################################################################
 # We can add keyword argument in the addFunction.
 # This function is going to substract band2 from band 1 
-
+import time
+t=time.time()
 rM = RasterMath(raster)
 rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0,compress='high')
 
@@ -58,11 +59,11 @@ rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0,compress='high')
 # Run the script
 
 rM.run()
-
+print(time.time()-t)
 #######################
 # Plot result
 
-from osgeo import gdal
-from matplotlib import pyplot as plt 
-src = gdal.Open('/tmp/sub.tif')
-plt.imshow(src.ReadAsArray())
+#from osgeo import gdal
+#from matplotlib import pyplot as plt 
+#src = gdal.Open('/tmp/sub.tif')
+#plt.imshow(src.ReadAsArray())

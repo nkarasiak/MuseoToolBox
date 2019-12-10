@@ -58,7 +58,7 @@ class TestCV(unittest.TestCase):
             
     def test_LeavePSubGroupOut(self):
         
-        cv = cross_validation.LeavePSubGroupOut()
+        cv = cross_validation.LeavePSubGroupOut(verbose=2)
         for tr,vl in cv.split(X,y,g):
             assert(not np.unique(np.in1d([1,2],[3,4]))[0])
 
@@ -66,16 +66,21 @@ class TestCV(unittest.TestCase):
         self.assertRaises(ValueError,cross_validation.LeavePSubGroupOut,valid_size=5.1)
         
     def test_LeaveOneSubGroupOut(self):
-        
-        cv = cross_validation.LeaveOneSubGroupOut()
+        cv = cross_validation.LeaveOneSubGroupOut(verbose=2)
+        # if only one subgroup
+        tempG = np.copy(g)
+        tempG[np.where(y==5)] = 1
+        self.assertRaises(Exception,cv.get_n_splits,X,y,tempG)
+            
+        # if all is ok
+        cv = cross_validation.LeaveOneSubGroupOut(verbose=2)
         y_vl = np.array([])
         for tr,vl in cv.split(X,y,g):
             y_vl = np.concatenate((y_vl,vl))
             assert(not np.unique(np.in1d([1,2],[3,4]))[0])
         assert(np.all(np.unique(np.asarray(y_vl),return_counts=True)[1]==1))
-        processing.sample_extraction(raster,vector,out_vector='/tmp/pixels.gpkg',verbose=False)
 
-        list_files =cv.save_to_vector('/tmp/pixels.gpkg','Class',group='uniquefid',out_vector='/tmp/cv_g.gpkg')
+        list_files =cv.save_to_vector(vector,'Class',group='uniquefid',out_vector='/tmp/cv_g.gpkg')
 
         assert(len(list_files)==cv.get_n_splits(X,y,g))
         
@@ -121,23 +126,31 @@ class TestCV(unittest.TestCase):
         assert(np.all(np.unique(np.asarray(y_vl),return_counts=True)[1]==1))
         assert(np.all(np.unique(np.asarray(y_asloo_vl),return_counts=True)[1]==1))
         
-        as_loo= cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
-                                                            distance_thresold=100,
+        as_loo = cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
+                                                            distance_thresold=300,
                                                             distance_matrix=distance_matrix,
                                                             random_state=12,
-                                                            LOO_same_size=True,valid_size=1)
+                                                            LOO_same_size=True,valid_size=2,n_repeats=1,n_splits=5,verbose=1)
         for tr,vl in as_loo.split(X,y):
             assert(vl.size == n_class)
             
+        
+        as_loo = cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
+                                                            distance_thresold=100,
+                                                            distance_matrix=distance_matrix,
+                                                            random_state=12,
+                                                            LOO_same_size=True,valid_size=False,n_repeats=1,n_splits=5,verbose=1)
+        as_loo.get_n_splits(X,y)
         # distance too high 
-        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=10000,distance_matrix=distance_matrix,verbose=0)
+        cv = cross_validation.SpatialLeaveOneOut(distance_thresold=10000,distance_matrix=distance_matrix,verbose=2)
+
         self.assertRaises(ValueError,cv.get_n_splits,X,y)            
         
         
     def test_aside(self):
         
         SLOPO = cross_validation.SpatialLeaveAsideOut(valid_size=1/3,
-                                     distance_matrix=distance_matrix,random_state=2)
+                                     distance_matrix=distance_matrix,random_state=2,verbose=2)
         
         assert(SLOPO.get_n_splits(X,y) == int(1/(1/3)))
             
@@ -147,7 +160,8 @@ class TestCV(unittest.TestCase):
         
         
     def test_slosgo(self)       :
-        cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g)
+        
+        cv = cross_validation.SpatialLeaveOneSubGroupOut(distance_thresold=100,distance_matrix=distance_matrix,distance_label=g,verbose=2)
         
         y_vl = np.array([])
         for tr,vl in cv.split(X,y,g)        :
@@ -159,22 +173,24 @@ class TestCV(unittest.TestCase):
         test_extensions = ['wrong','shp','gpkg']
         for extension in test_extensions:
             if extension == 'wrong':
+
                 self.assertRaises(Exception,cv.save_to_vector,'/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
             else:
                 list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
+                list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension) # to overwrite previous files
                 for tr,vl in list_files:
                     assert(len(list_files[0]) == 2)
                     for l in list_files:
-                        for f in l:                    
+                        for f in l:     
+                            print(f)
                             if os.path.exists(f):
                                 os.remove(f)
                             
-        os.remove('/tmp/pixels.gpkg')
 
         
     def test_compare_loo_kf(self):
-        cv_loo = cross_validation.LeaveOneOut(random_state=12)
-        cv_kf_as_loo = cross_validation.RandomStratifiedKFold(n_splits=False,valid_size=1,random_state=12)
+        cv_loo = cross_validation.LeaveOneOut(random_state=12,verbose=2)
+        cv_kf_as_loo = cross_validation.RandomStratifiedKFold(n_splits=False,valid_size=1,random_state=12,verbose=2)
         for trvl_loo,trvl_kf in zip(cv_loo.split(X,y),cv_kf_as_loo.split(X,y)):
             assert(np.all(trvl_loo[0]==trvl_kf[0]))
             assert(np.all(trvl_loo[1]==trvl_kf[1]))

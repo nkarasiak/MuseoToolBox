@@ -24,8 +24,12 @@ import itertools
 np.seterr(divide='ignore', invalid='ignore')
 
 # for numpy version < 1.17
-def _nan_to_num(array,nan=0):
-    return np.where(np.isnan(array),nan,array)
+
+
+def _nan_to_num(array, nan=0):
+    return np.where(np.isnan(array), nan, array)
+
+
 class PlotConfusionMatrix:
     """
     Plot a confusion matrix with imshow of pyplot.
@@ -213,16 +217,16 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            
+
             iVal = np.int(np.mean(self.cm_, axis=1)[i])
-            
+
             self.ax1v.text(0, i, iVal, color="white" if iVal >
                            thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
         self.ax1v.set_yticklabels([])
-        for j in range(self.cm.shape[1]):           
+        for j in range(self.cm.shape[1]):
             jVal = np.int(np.mean(self.cm_, axis=0)[j])
-            
+
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black', ha='center', va='center', fontsize=self.font_size)
 
@@ -324,7 +328,7 @@ class PlotConfusionMatrix:
 
         for i in range(self.cm.shape[0]):
             txt = str(int(_nan_to_num(verticalPlot[i])))
-        
+
             self.ax1v.text(
                 0,
                 i,
@@ -359,8 +363,8 @@ class PlotConfusionMatrix:
         self.ax1h = plt.subplot(self.gs[1, 0])
 
         self.ax1v.imshow(np.array(np.diag(self.cm_) / np.nansum(self.cm_,
-                                                             axis=1) * 100).reshape(-1,
-                                                                                    1),
+                                                                axis=1) * 100).reshape(-1,
+                                                                                       1),
                          cmap=self.diag_color,
                          interpolation='nearest',
                          aspect='equal',
@@ -378,16 +382,16 @@ class PlotConfusionMatrix:
 
         for i in range(self.cm.shape[0]):
             iVal = np.int(_nan_to_num(np.array(
-                    np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0],nan=0))
-            
+                np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0], nan=0))
+
             self.ax1v.text(0, i, iVal, color="white" if iVal >
                            thresold else 'black', ha='center', va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
             jVal = np.int(_nan_to_num(np.array(
-                    np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0],nan=0))
-                
+                np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0], nan=0))
+
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black', ha='center', va='center')
 

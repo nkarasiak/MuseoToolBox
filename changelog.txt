@@ -1,5 +1,9 @@
+2.0b2
+-----
+
+
 2.0b1
-----
+-----
 Lot of changes to satisfy python conventions.
 
 Some folders have changed name :

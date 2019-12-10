@@ -936,15 +936,13 @@ class RasterMath:
                 arr = np.empty((height, width, nb), dtype=self.ndtype)
             else:
                 arr = np.empty((height * width, nb), dtype=self.ndtype)
-            for ind in range(nb):
-                band = self.opened_images[nRaster].GetRasterBand(int(ind + 1))
-
-                if self.return_3d:
-                    arr[..., ind] = band.ReadAsArray(
-                        col, row, width, height)
-                else:
-                    arr[..., ind] = band.ReadAsArray(
-                        col, row, width, height).reshape(width * height)
+#            for ind in range(nb):
+            arr = self.opened_images[nRaster].ReadAsArray(
+                col, row, width, height)
+            if arr.ndim > 2:
+                arr = np.moveaxis(arr, 0, -1)
+            if not self.return_3d:
+                arr = arr.reshape(-1, arr.shape[-1])
 
             arr = self._filter_nodata(arr, arrMask)
             arrs.append(arr)

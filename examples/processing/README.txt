@@ -1,6 +1,6 @@
-.. _geo_tools:
+.. _processing:
 
-Geographics tools
+Processing
 ------------------------
 
-Examples related to the :mod:`museotoolbox.geo_tools` module.
+Examples related to the dedicated raster and vector :mod:`museotoolbox.processing` module.

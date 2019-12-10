@@ -30,7 +30,7 @@ distance_matrix = processing.get_distance_matrix(raster,vector)
 # -------------------------------------------
 # n_splits will be the number  of the least populated class
 
-SLOO = SpatialLeaveOneOut(n_repeats=2,distance_thresold=100,distance_matrix=distance_matrix,
+SLOO = SpatialLeaveOneOut(distance_thresold=100,distance_matrix=distance_matrix,
                                 random_state=12)
 ###############################################################################
 # .. note::

@@ -212,6 +212,7 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
                  distance_thresold=None,
                  distance_matrix=None,
                  n_repeats=False,
+                 n_splits=False,
                  random_state=False,
                  verbose=False,
                  **kwargs):
@@ -221,6 +222,7 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
                          distance_label=False,
                          valid_size=1,
                          n_repeats=n_repeats,
+                         n_splits=n_splits,
                          random_state=random_state,
                          verbose=verbose,
                          **kwargs)
