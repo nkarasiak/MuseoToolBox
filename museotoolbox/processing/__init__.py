@@ -237,15 +237,18 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         It could be any file that GDAL/OGR can open.
     *fields : str.
         Each field to extract label/value from.
-    **kwargs:
-        get_pixel_position : bool, optional (default=False).
-            If get_pixel_position, will return pixel position in the image for each point.
-        only_pixel_position : bool, optional (default=False).
-            If true, with only return pixel position for each point.
-        prefer_memory : bool, optional (default=True).
-            If False, will write raster on disk to extract ROI values.
-        verbose : bool or int, optional (default=True).
-            The higher is the int verbose, the more it will returns informations.
+    
+        **kwargs
+            For optional arguments, see below :
+        
+    get_pixel_position : bool, optional (default=False).
+        If get_pixel_position, will return pixel position in the image for each point.
+    only_pixel_position : bool, optional (default=False).
+        If true, with only return pixel position for each point.
+    prefer_memory : bool, optional (default=True).
+        If False, will write raster on disk to extract ROI values.
+    verbose : bool or int, optional (default=True).
+        The higher is the int verbose, the more it will returns informations.
 
     Returns
     --------
