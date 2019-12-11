@@ -14,4 +14,4 @@
 # =============================================================================
 from . import ai, processing, cross_validation, datasets, stats  # , charts
 
-__version__ = "2.0-beta.2"
+__version__ = "2.0"

@@ -6,19 +6,24 @@
 
 
 
+.. image:: https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master
+   :target: https://travis-ci.org/nkarasiak/MuseoToolBox
+   :alt: Build status
+
+
 .. image:: https://readthedocs.org/projects/museotoolbox/badge/?version=latest
    :target: https://museotoolbox.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
 
 
+.. image:: https://codecov.io/gh/nkarasiak/MuseoToolBox/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/nkarasiak/MuseoToolBox
+   :alt: codecov
+
+
 .. image:: https://badge.fury.io/py/museotoolbox.svg
    :target: https://badge.fury.io/py/museotoolbox
    :alt: PyPI version
-
-
-.. image:: https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master
-   :target: https://travis-ci.org/nkarasiak/MuseoToolBox
-   :alt: Build status
 
 
 .. image:: https://pepy.tech/badge/museotoolbox

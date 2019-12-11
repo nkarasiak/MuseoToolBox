@@ -659,7 +659,7 @@ class SequentialFeatureSelection:
 
         xSize = self.X.shape[1]
         self.n_features = int(xSize / self.n_comp)
-
+        
         self.max_features = self.n_features
 
         if max_features is not False:

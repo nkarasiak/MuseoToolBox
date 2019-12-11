@@ -1,6 +1,6 @@
-2.0b2
+2.0
 -----
-
+Update RasterMath and readme file.
 
 2.0b1
 -----
