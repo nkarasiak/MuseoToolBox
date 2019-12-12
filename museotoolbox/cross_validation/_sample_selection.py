@@ -484,21 +484,8 @@ class groupCV:
 class _cv_manager:
     def __init__(self, cv_type, verbose=False, **params):
         """
-        Manage cross-validartion methods to generate the duo valid/train samples.
+        Manage cross-validation methods to generate the duo valid/train samples.
 
-        Methods
-        ---------
-        split(X,y,g) : Function.
-            Get a memory cross validation to use directly in Scikit-Learn.
-
-        saveVectorFiles() : Need default output name (str).
-            To save as many vector files (train/valid) as your Cross Validation method outputs.
-
-        __get_supported_extensions() : Function.
-            Show you the list of supported vector extensions type when using saveVectorFiles function.
-
-        reinitialize() : Function.
-            If you need to regenerate the cross validation, you need to reinitialize it.
         """
         self.cv_type = cv_type
         self.verbose = verbose
@@ -622,8 +609,9 @@ class _cv_manager:
 
         Returns
         ----------
-        listOfOutput : list
-            List containing the number of folds * 2
+        list_of_output : list
+            List containing the number of folds * 2.
+            
             train + validation for each fold.
 
         """

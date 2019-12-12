@@ -59,8 +59,11 @@ class TestStats(unittest.TestCase):
         moran_intermediate = stats.Moran('/tmp/autocorrelated_moran.tif',in_image_mask='/tmp/mask_moran.tif',lag=[1,2])
         assert(moran_intermediate.scores['lag'] == [1,2])
         assert(moran_intermediate.scores['I'][0] != moran.I)
-        
-        
+   
+    def test_Moran_fullMask(self):        # full autocorrelation
+        moran = stats.Moran('/tmp/mask_moran.tif',in_image_mask='/tmp/mask_moran.tif',lag=1)
+        assert(np.isnan(moran.I))
+
     def test_comm_om(self):
         comm_om = stats.commission_omission(confusion_matrix)
 

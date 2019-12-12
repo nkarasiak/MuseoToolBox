@@ -20,7 +20,7 @@ import os
 import numpy as np
 from sklearn import metrics
 from sklearn.base import clone
-from ..processing import RasterMath, get_gdt_from_minmax_values, convert_dt
+from ..processing import RasterMath, get_gdt_from_minmax_values, convert_dt, _reshape_ndim
 from ..internal_tools import ProgressBar, push_feedback
 
 
@@ -155,8 +155,7 @@ class SuperLearner:
 
         if self._array_is_customized:
             X = self.xFunction(X, **self.xKwargs)
-            if X.ndim == 1:
-                X = X.reshape(-1, 1)
+            X = _reshape_ndim(X)
         self.X = X
 
         self.standardize= standardize
@@ -259,16 +258,15 @@ class SuperLearner:
         if self.standardize:
             if np.ma.is_masked(X):
                 tmpMask = X.mask[:, 0]
-            if X.ndim == 1:
-                X = X.reshape(-1, 1)
+            X = _reshape_ndim(X)
             X = self.StandardScaler.transform(X)
 
             if np.ma.is_masked(X):
                 tmpMask = np.repeat(tmpMask.reshape(-1, 1),
                                     X.shape[-1], axis=1)
                 X = np.ma.masked_array(X, tmpMask)
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
+        
+        X = _reshape_ndim(X)
 
         return X
 
@@ -285,8 +283,7 @@ class SuperLearner:
         """
 
         X = self._convert_array(X)
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
+        
         self.Xpredict = self.model.predict(X)
 
         return self.Xpredict
@@ -308,8 +305,7 @@ class SuperLearner:
         X = self._convert_array(X)
 
         Xpredict_proba = self.model.predict_proba(X) * 100
-        if Xpredict_proba.ndim == 1:
-            Xpredict_proba = Xpredict_proba.reshape(-1, 1)
+        
         # share prediction in class in case of confidence for only predicted
         # class
         self.Xpredict_proba = Xpredict_proba
@@ -652,8 +648,8 @@ class SequentialFeatureSelection:
 
         if self.xFunction:
             self.X = self.xFunction(X, **self.xKwargs)
-            if self.X.ndim == 1:
-                self.X = self.X.reshape(-1, 1)
+            self.X = _reshape_ndim(self.X)
+                
 
         xSize = self.X.shape[1]
         self.n_features = int(xSize / self.n_comp)
@@ -899,8 +895,9 @@ class SequentialFeatureSelection:
             self.mask[self.best_features_[idx]] = 0
 
             X = X[:, ~self.mask]
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
+        
+        X = _reshape_ndim(X)
+        
         return X
 
     def transform(self, X, idx=0, customizeX=False):
@@ -943,8 +940,8 @@ class SequentialFeatureSelection:
 
             X = X[:, ~self.mask]
 
-        if X.ndim == 1:
-            X = X.reshape(-1, 1)
+        X = _reshape_ndim(X)
+        
         return X
 
     def _get_feature_id(self, candidate):

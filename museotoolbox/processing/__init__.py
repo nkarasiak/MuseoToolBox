@@ -1861,3 +1861,29 @@ def _add_vector_unique_fid(in_vector, unique_field='uniquefid', verbose=True):
         if driver_name == 'SQLITE' or driver_name == 'GPKG':
             inLyr.CommitTransaction()
         inSrc.Destroy()
+
+def _reshape_ndim(X):
+    """ 
+    Reshape ndim of X to have at least 2 dimensions
+    
+    Parameters
+    -----------
+    X : np.ndarray
+        array.
+        
+    Returns
+    --------
+    X : np.ndarray
+        Returns array with a least 2 dimensions.
+        
+    Examples
+    ---------
+    >>> X = np.arange(5,50)
+    >>> X.shape
+    (45,)
+    >>> _reshape_ndim(X).shape
+    (45, 1)
+    """
+    if X.ndim == 1:
+        X=X.reshape(-1,1)
+    return X

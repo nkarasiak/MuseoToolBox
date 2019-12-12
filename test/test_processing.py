@@ -118,7 +118,7 @@ class TestRaster(unittest.TestCase):
             assert(idx+1 == rM_band.n_bands)                        
             x = rM_band.get_random_block()
             assert(x.ndim == is_3d+2)
-            
+        
     
     def test_XYextraction(self):
         X = processing.extract_ROI(raster,vector)

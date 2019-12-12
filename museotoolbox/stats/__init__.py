@@ -211,10 +211,7 @@ class Moran:
             if w == 0:
                 num = np.nan
             else:
-                if weights is False:
-                    w = np.copy(footprint)
-                else:
-                    w = np.copy(weights)
+                w = np.copy(weights)
                 if transform == 'r':
                     w = 1 / np.count_nonzero(~np.isnan(a))
 

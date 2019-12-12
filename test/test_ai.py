@@ -33,8 +33,13 @@ class TestStats(unittest.TestCase):
             model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
             assert(model._is_standardized == tf)
         
-#        model = ai.SuperLearner(classifier,param_grid=param_grid,n_jobs=1,verbose=verbose)
+        # test masked return if X is totally masked
+        X_masked = np.ma.copy(X)
+        X_masked.mask=True
+        X_masked_return = model._convert_array(X_masked)
+        assert(np.ma.is_masked(X_masked_return))
         
+
         
     def test_superLearn_pred(self):
         model = ai.SuperLearner(classifier,param_grid=param_grid,n_jobs=1,verbose=0)
