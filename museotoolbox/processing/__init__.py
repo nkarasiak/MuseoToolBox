@@ -237,36 +237,41 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         It could be any file that GDAL/OGR can open.
     *fields : str.
         Each field to extract label/value from.
-
-        **kwargs
-            For optional arguments, see below :
-
-    get_pixel_position : bool, optional (default=False).
-        If get_pixel_position, will return pixel position in the image for each point.
-    only_pixel_position : bool, optional (default=False).
-        If true, with only return pixel position for each point.
-    prefer_memory : bool, optional (default=True).
-        If False, will write raster on disk to extract ROI values.
-    verbose : bool or int, optional (default=True).
+    
+    **kwargs : list of kwargs.
+        - get_pixel_position : bool, optional (default=False).
+        
+        If `get_pixel_position=True`, will return pixel position in the image for each point.
+        
+        - only_pixel_position : bool, optional (default=False).
+        
+        If `only_pixel_position=True`, with only return pixel position for each point.
+                
+        - prefer_memory : bool, optional (default=True).
+        
+        If `prefer_memory=False`, will write temporary raster on disk to extract ROI values.
+                
+        - verbose : bool or int, optional (default=True).
+        
         The higher is the int verbose, the more it will returns informations.
 
     Returns
     --------
-    X : arr.
+    X : np.ndarray, size of (n_samples,n_features).
         The sample matrix.
         A n*d matrix, where n is the number of referenced pixels and d is the number of features.
         Each line of the matrix is a pixel.
-    y : arr.
+    y : np.ndarray, size of (n_samples,).
         The label of each pixel.
 
     See also
     ---------
-    museotoolbox.ge_tools.read_vector_values : read field values from vector file.
+    museotoolbox.processing.read_vector_values : read field values from vector file.
 
     Examples
     ---------
     >>> from museotoolbox.datasets import load_historical_data
-    >>> from museotoolbox.geo_tools import extract_ROI
+    >>> from museotoolbox.processing import extract_ROI
     >>> raster,vector= load_historical_data()
     >>> X,Y = extract_ROI(raster,vector,'Class')
     >>> X
@@ -561,7 +566,7 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
 class RasterMath:
     """
     Read one or multiple rasters per block, and perform one or many functions to one or many geotiff raster outputs.
-    If you want a sample of your data, just call :func:`~museotoolbox.raster_tools.RasterMath.get_random_block`.
+    If you want a sample of your data, just call :func:`~museotoolbox.processing.RasterMath.get_random_block`.
 
     The default option of rasterMath will return in 2d the dataset :
         - each line is a pixel with in columns its differents values in bands so masked data will not be given to this user.
@@ -574,7 +579,7 @@ class RasterMath:
         Path of a gdal extension supported raster.
     in_image_mask : str or False, optional (default=False).
         If str, path of the raster mask. Value masked are 0, other are considered not masked.
-        Use ``invert=True`` in :mod:`museotoolbox.raster_tools.image_mask_from_vector` to mask only what is not in polygons.
+        Use ``invert=True`` in :mod:`museotoolbox.processing.image_mask_from_vector` to mask only what is not in polygons.
     return_3d : bool, optional (default=False).
         Default will return a row per pixel (2 dimensions), and axis 2 (bands) are columns.
         If ``return_3d=True``, will return the block without reshape (not suitable to learn with `sklearn`).
@@ -591,7 +596,7 @@ class RasterMath:
     ---------
     >>> import museotoolbox as mtb
     >>> raster,_= mtb.datasets.load_historical_data()
-    >>> rM = mtb.geo_tools.RasterMath(raster)
+    >>> rM = mtb.processing.RasterMath(raster)
     Total number of blocks : 15
     >>> rM.add_function(np.mean,out_image='/tmp/test.tif',axis=1,dtype=np.int16)
     Using datatype from numpy table : int16.
@@ -704,7 +709,7 @@ class RasterMath:
         Parameters
         ----------
         function : function.
-            Function to parse where the first argument is a numpy array similar to what :mod:`museotoolbox.raster_tools.RasterMath.get_random_block()` returns.
+            Function to parse where the first argument is a numpy array similar to what :mod:`museotoolbox.processing.RasterMath.get_random_block()` returns.
         out_image : str.
             A path to a geotiff extension filename corresponding to a raster image to create.
         out_n_bands : int or False, optional (default=False).
@@ -722,9 +727,9 @@ class RasterMath:
 
         See also
         ----------
-        museotoolbox.geo_tools.RasterMath.get_random_block : To test your function, parse the first argument with a random block
-        museotoolbox.geo_tools.convert_dt : To see conversion between numpy datatype to gdal datatype.
-        museotoolbox.geo_tools.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
+        museotoolbox.processing.RasterMath.get_random_block : To test your function, parse the first argument with a random block
+        museotoolbox.processing.convert_dt : To see conversion between numpy datatype to gdal datatype.
+        museotoolbox.processing.get_dt_from_minmax_values : To get the gdal datatype according to a min/max value.
         """
         if len(kwargs) > 0:
             randomBlock = function(self.get_random_block(), **kwargs)
@@ -849,7 +854,7 @@ class RasterMath:
 
         See also
         ---------
-        museotoolbox.raster_tools.RasterMath.custom_block_size : To custom the reading and writing block size.
+        museotoolbox.processing.RasterMath.custom_block_size : To custom the reading and writing block size.
         """
         self.options = parameters_list
 
@@ -1636,9 +1641,9 @@ def get_ogr_driver_from_filename(fileName):
 
     Examples
     --------
-    >>> mtb.geo_tools.get_ogr_driver_from_filename('goVegan.gpkg')
+    >>> mtb.processing.get_ogr_driver_from_filename('goVegan.gpkg')
     'GPKG'
-    >>> mtb.geo_tools.get_ogr_driver_from_filename('stopEatingAnimals.shp')
+    >>> mtb.processing.get_ogr_driver_from_filename('stopEatingAnimals.shp')
     'ESRI Shapefile'
     """
     extensions = ['sqlite', 'shp', 'netcdf', 'gpx', 'gpkg']
@@ -1679,7 +1684,7 @@ def read_vector_values(vector, *args, **kwargs):
 
     See also
     ---------
-    museotoolbox.raster_tools.extract_ROI: extract raster values from vector file.
+    museotoolbox.processing.extract_ROI: extract raster values from vector file.
 
     Examples
     ---------

@@ -80,6 +80,11 @@ That seems cool, but is there some help to use this ?
 
 I imagined MuseoToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
+I want to improve Museo ToolBox, how can I contribute ?
+-------------------------------------------------------
+
+To contribute to this package, please read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
+
 How do I install it ?
 ---------------------
 

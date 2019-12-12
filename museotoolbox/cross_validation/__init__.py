@@ -162,7 +162,7 @@ class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
 
     See also
     --------
-    museotoolbox.geo_tools.get_distance_matrix : to get distance matrix and label.
+    museotoolbox.processing.get_distance_matrix : to get distance matrix and label.
     """
 
     def __init__(self,
