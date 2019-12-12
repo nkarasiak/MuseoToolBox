@@ -1,5 +1,5 @@
 ---
-title: 'Museo ToolBox: a python library for remote sensing including a new way to handle rasters.'
+title: 'Museo ToolBox : a python library for remote sensing including a new way to handle rasters.'
 
 tags:
   - Python
