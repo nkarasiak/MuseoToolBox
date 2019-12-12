@@ -1,3 +1,6 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
+
 
 
 .. image:: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
@@ -48,7 +51,7 @@ If you use MuseoToolBox in your research and find it useful, please cite this li
 .. code-block:: bib
 
    @misc{karasiak2019mtb,
-   title={MuseoToolBox, a remote sensing python library},
+   title={Museo ToolBox : a python library for remote sensing},
    author={Karasiak Nicolas},
    url={https://github.com/nkarasiak/museotoolbox},
    year={2019},
@@ -67,9 +70,10 @@ Today, the main usages of MuseoToolBox are :
 
 * `museotoolbox.processing <https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.processing.html>`_
 
-  * Extract bands values from vector ROI (polygons/points) (function : `extract_ROI <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.extract_ROI.html#museotoolbox.processing.extract_ROI>`_\ )
-  * `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html>`_\ , allows you to do some math on your raster and save it. Just load RasterMath, then it will return you the value for each pixel (in all bands) and now you can do whatever you want : predicting a model, smooth signal (whittaker, double logistic...), modal value, mean... RasterMath read and write block per block to avoid loading the full image in memory. It is compatible with every python function (including numpy) as the first and only argument needed is an array.
-  * AI based on Scikit-Learn. `SuperLearner <https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html#museotoolbox.ai.SuperLearner>`_ simplifies the use of cross-validation by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. It also eases the way to predict a raster (just give the raster name and the model).
+  * `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html>`_\ , allows you to apply any of your array-compatible function on your raster and save it. Just load RasterMath, then it will return you the value for each pixel (in all bands) and now you can do whatever you want : predicting a model, smooth signal (whittaker, double logistic...), compute modal value... RasterMath reads and writes a raster block per block to avoid loading the full image in memory. It is compatible with every python function (including numpy) as the first and only argument RasterMath needs on your function is an array.
+  * Extract bands values from vector ROI (polygons/points) (function : `extract_ROI <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.extract_ROI.html#museotoolbox.processing.extract_ROI>`_\ )  
+
+* AI based on Scikit-Learn. `SuperLearner <https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html#museotoolbox.ai.SuperLearner>`_ simplifies the use of cross-validation by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. It also eases the way to predict a raster (just give the raster name and the model).
 
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
@@ -95,4 +99,4 @@ I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor L
 Why this name ?
 ---------------
 
-As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, `Museo is the son and disciple of Orfeo <https://it.wikipedia.org/wiki/Museo_(autore_mitico>`_\ ). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.
+As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, :raw-html-m2r:`<a href="https://it.wikipedia.org/wiki/Museo_(autore_mitico)">Museo is the son and disciple of Orfeo</a>`. If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.

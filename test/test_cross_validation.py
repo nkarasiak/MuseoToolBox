@@ -177,7 +177,8 @@ class TestCV(unittest.TestCase):
                 self.assertRaises(Exception,cv.save_to_vector,'/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
             else:
                 list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension)
-                list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension) # to overwrite previous files
+                # test overwriting of previous files
+                list_files = cv.save_to_vector('/tmp/pixels.gpkg','Class',out_vector='/tmp/SLOSGO.'+extension) 
                 for tr,vl in list_files:
                     assert(len(list_files[0]) == 2)
                     for l in list_files:

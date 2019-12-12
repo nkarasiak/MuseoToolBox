@@ -87,7 +87,7 @@ class SuperLearner:
 
         self.xFunction = False
         self.standardize = False
-        
+
         self._is_standardized = False
         self._array_is_customized = False
         self.xKwargs = {}
@@ -158,7 +158,7 @@ class SuperLearner:
             X = _reshape_ndim(X)
         self.X = X
 
-        self.standardize= standardize
+        self.standardize = standardize
 
         if standardize:
             self.standardize_array()
@@ -265,7 +265,7 @@ class SuperLearner:
                 tmpMask = np.repeat(tmpMask.reshape(-1, 1),
                                     X.shape[-1], axis=1)
                 X = np.ma.masked_array(X, tmpMask)
-        
+
         X = _reshape_ndim(X)
 
         return X
@@ -283,7 +283,7 @@ class SuperLearner:
         """
 
         X = self._convert_array(X)
-        
+
         self.Xpredict = self.model.predict(X)
 
         return self.Xpredict
@@ -305,7 +305,7 @@ class SuperLearner:
         X = self._convert_array(X)
 
         Xpredict_proba = self.model.predict_proba(X) * 100
-        
+
         # share prediction in class in case of confidence for only predicted
         # class
         self.Xpredict_proba = Xpredict_proba
@@ -601,8 +601,8 @@ class SequentialFeatureSelection:
         The higher it is the more sequential will show progression.
     """
 
-    def __init__(self, classifier, param_grid, path_to_save_models=False, 
-                n_comp=1, verbose=False):
+    def __init__(self, classifier, param_grid, path_to_save_models=False,
+                 n_comp=1, verbose=False):
         # share args
         self.n_comp = n_comp
         self.classifier = classifier
@@ -618,7 +618,7 @@ class SequentialFeatureSelection:
 
         self.path_to_save_models = path_to_save_models
 
-    def fit(self, X, y, group=None, cv=5, standardize=True,  scoring='accuracy', 
+    def fit(self, X, y, group=None, cv=5, standardize=True, scoring='accuracy',
             max_features=False, n_jobs=1, **kwargs):
         """
         Parameters
@@ -643,17 +643,15 @@ class SequentialFeatureSelection:
         self.cv = cv
         self.scoring = scoring
 
-
         self.models_path_ = []
 
         if self.xFunction:
             self.X = self.xFunction(X, **self.xKwargs)
             self.X = _reshape_ndim(self.X)
-                
 
         xSize = self.X.shape[1]
         self.n_features = int(xSize / self.n_comp)
-        
+
         self.max_features = self.n_features
 
         if max_features is not False:
@@ -895,9 +893,9 @@ class SequentialFeatureSelection:
             self.mask[self.best_features_[idx]] = 0
 
             X = X[:, ~self.mask]
-        
+
         X = _reshape_ndim(X)
-        
+
         return X
 
     def transform(self, X, idx=0, customizeX=False):
@@ -941,7 +939,7 @@ class SequentialFeatureSelection:
             X = X[:, ~self.mask]
 
         X = _reshape_ndim(X)
-        
+
         return X
 
     def _get_feature_id(self, candidate):

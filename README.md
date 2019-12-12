@@ -38,6 +38,10 @@ Today, the main usages of MuseoToolBox are :
 ## That seems cool, but is there some help to use this ?
 I imagined MuseoToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
 
+## I want to improve Museo ToolBox, how can I contribute ?
+
+To contribute to this package, please read the instructions in [CONTRIBUTING.rst](CONTRIBUTING.rst).
+
 ## How do I install it ?
 A package is available on pip :
 `python3 -m pip install museotoolbox --user`
@@ -52,4 +56,4 @@ Feel free to remove the `--user` if you like to install the library for every us
 I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work tree species mapping from space throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who initiated me to the beautiful world of the open-source.
 
 ## Why this name ?
-As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, [Museo is the son and disciple of Orfeo](https://it.wikipedia.org/wiki/Museo_(autore_mitico)). If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.
+As Orfeo ToolBox is one my favorite and most useful library to work with raster data, I choose to name my work as Museo because in ancient Greek religion and myth, <a href="https://it.wikipedia.org/wiki/Museo_(autore_mitico)">Museo is the son and disciple of Orfeo</a>. If you want an acronym, let's say MUSEO means 'Multiple Useful Services for Earth Observation'.

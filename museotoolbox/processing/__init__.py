@@ -237,10 +237,10 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         It could be any file that GDAL/OGR can open.
     *fields : str.
         Each field to extract label/value from.
-    
+
         **kwargs
             For optional arguments, see below :
-        
+
     get_pixel_position : bool, optional (default=False).
         If get_pixel_position, will return pixel position in the image for each point.
     only_pixel_position : bool, optional (default=False).
@@ -1862,20 +1862,21 @@ def _add_vector_unique_fid(in_vector, unique_field='uniquefid', verbose=True):
             inLyr.CommitTransaction()
         inSrc.Destroy()
 
+
 def _reshape_ndim(X):
-    """ 
+    """
     Reshape ndim of X to have at least 2 dimensions
-    
+
     Parameters
     -----------
     X : np.ndarray
         array.
-        
+
     Returns
     --------
     X : np.ndarray
         Returns array with a least 2 dimensions.
-        
+
     Examples
     ---------
     >>> X = np.arange(5,50)
@@ -1885,5 +1886,5 @@ def _reshape_ndim(X):
     (45, 1)
     """
     if X.ndim == 1:
-        X=X.reshape(-1,1)
+        X = X.reshape(-1, 1)
     return X

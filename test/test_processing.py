@@ -115,9 +115,12 @@ class TestRaster(unittest.TestCase):
             rM_band = processing.RasterMath(raster,return_3d=is_3d)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
+            rM_band.add_function(np.mean,axis=1,out_image='/tmp/mean.tif')
+            rM_band.run()
             assert(idx+1 == rM_band.n_bands)                        
             x = rM_band.get_random_block()
             assert(x.ndim == is_3d+2)
+            os.remove('/tmp/mean.tif')
         
     
     def test_XYextraction(self):

@@ -611,7 +611,7 @@ class _cv_manager:
         ----------
         list_of_output : list
             List containing the number of folds * 2.
-            
+
             train + validation for each fold.
 
         """
