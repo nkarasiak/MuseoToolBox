@@ -44,6 +44,7 @@ A [full documentation is available online on read the docs](http://museotoolbox.
 - [stats](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.stats.html) : compute stats (like Moran's Index, confusion matrix, commision/omission) or extract truth and predicted label from confusion matrix.
 
 Here are some main usages of `Museo ToolBox` :
+
 1. [Read and write a raster block per block using your own function](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 2. [Generate a cross-validation, including spatial cross-validation](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation).
 3. [Save the cross-validation in spatial vector files (shp, gpkg, sqlite...)](SaveToVectorLink).
@@ -102,8 +103,12 @@ We acknowledge contributions from Mathieu Fauvel and beta-testers of this projec
 
 # Figures
 
-A short figure presents how ``Museo ToolBox`` is organized per module.
+A figure presents how ``Museo ToolBox`` is organized per module.
+
 ![Museo ToolBox schema.](metadata/schema.png)
 
-A short figure explains how ``RasterMath`` manages reading and writing rasters.
+A figure explains how ``RasterMath`` manages reading and writing rasters.
+
 ![Museo ToolBox schema.](metadata/RasterMath_schema.png)
+
+# References
