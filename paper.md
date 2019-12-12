@@ -63,7 +63,7 @@ The objective of RasterMath is to **let the user only focus on his array-compati
 
 [Go to RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html)
 
-![Museo ToolBox schema.](metadata/RasterMath_schema.png)
+
 
 ## ai
 
@@ -80,20 +80,30 @@ basic accuracy assessment objectives and most of the desirable design
 criteria"*. For spatial cross-validation, see [@roberts_2017].
 
 ``Museo ToolBox`` offerts two differents types of cross-validation :
+
 ### Spatial-agnostic cross-validation
+
 - Leave-One-Out.
 - Leave-One-SubGroup-Out.
 - Leave-P-SubGroup-Out (Percentage of subgroup per class).
 - Random Stratified K-Fold.
 
 ### Spatial cross-validation
+
 - Spatial Leave-One-Out [@karasiak_2019].
 - Spatial Leave-Aside-Out.
 - Spatial Leave-One-SubGroup-Out (using centroids to select one subgroup and remove other subgroups for the same class inside a specified distance buffer).
 
 [Go to cross-validation documentation and examples](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation)
 
+# Acknowledgements
+
+We acknowledge contributions from Mathieu Fauvel and beta-testers of this project.
+
 # Figures
 
 A short figure presents how ``Museo ToolBox`` is organized per module.
 ![Museo ToolBox schema.](metadata/schema.png)
+
+A short figure explains how ``RasterMath`` manages reading and writing rasters.
+![Museo ToolBox schema.](metadata/RasterMath_schema.png)
