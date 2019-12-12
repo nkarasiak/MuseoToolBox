@@ -47,10 +47,9 @@ Here are some main usages of `Museo ToolBox` :
 
 1. [Read and write a raster block per block using your own function](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 2. [Generate a cross-validation, including spatial cross-validation](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation).
-3. [Save the cross-validation in spatial vector files (shp, gpkg, sqlite...)](SaveToVectorLink).
-4. [Learn with scikit-learn algorithms and extract accuracy from each cross-validation fold](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html).
-5. [Plot confusion matrix and add f1 score or producer/user accuracy](https://museotoolbox.readthedocs.io/en/latest/modules/charts/museotoolbox.charts.PlotConfusionMatrix.html#museotoolbox.charts.PlotConfusionMatrix).
-6. [Get the y_true and and y_predicted labels from a confusion matrix](https://museotoolbox.readthedocs.io/en/latest/modules/stats/museotoolbox.stats.retrieve_y_from_confusion_matrix.html).
+3. [Fit models with scikit-learn, extract accuracy from each cross-validation fold, and predict raster](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html).
+4. [Plot confusion matrix and add f1 score or producer/user accuracy](https://museotoolbox.readthedocs.io/en/latest/modules/charts/museotoolbox.charts.PlotConfusionMatrix.html#museotoolbox.charts.PlotConfusionMatrix).
+5. [Get the y_true and and y_predicted labels from a confusion matrix](https://museotoolbox.readthedocs.io/en/latest/modules/stats/museotoolbox.stats.retrieve_y_from_confusion_matrix.html).
 
 ## RasterMath
 
@@ -63,8 +62,6 @@ So, what does ``RasterMath`` really do ? The answer is as simple as the question
 The objective of RasterMath is to **let the user only focus on his array-compatible function**, and to let RasterMath manage the raster part.
 
 [Go to RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html)
-
-
 
 ## ai
 
@@ -109,6 +106,6 @@ A figure presents how ``Museo ToolBox`` is organized per module.
 
 A figure explains how ``RasterMath`` manages reading and writing rasters.
 
-![Museo ToolBox schema.](metadata/RasterMath_schema.png)
+![RasterMath under the hood](metadata/RasterMath_schema.png)
 
 # References
