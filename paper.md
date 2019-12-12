@@ -25,9 +25,9 @@ bibliography: paper.bib
 
 # Summary
 
-`Museo ToolBox` is a python library dedicated to remote sensing.
+`Museo ToolBox` is a python library dedicated to the processing of images in remote sensing.
 Based on the fact that a majority of the needs in machine learning requires knowledge on how to transform your data and since it uses a lot of similar lines of codes on various projects but for the same usage (e.g., for reading and writing the raster block per block, computing a spectral index, fitting a model...), we offer with this library a new approach to compute functions on a raster.
-For example, as in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute for example a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to follow state-of-the-art methods, such as spatial cross-validation, or learning methods with grid search and latest algorithms from scikit-learn.
+For example, as in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute for example a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to g generate stratified spatial or non-spatial cross-validation, or state-of-the-art learning methods with a automatic grid search and standardized data using algorithms from scikit-learn.
 
 Museo ToolBox's goal is to make working with raster data very easier for scientists or students and to promote the use of spatial cross-validation.
 
@@ -66,7 +66,7 @@ The objective of RasterMath is to **let the user only focus on his array-compati
 ## ai
 
 The machine learning module is natively built to manage algorithm
-from the ``scikit-learn`` using state of the art methods and good pratices (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process by a grid search. There is also a Sequential Feature Selection protocol which supports number of components (e.g. a date is composed of 4 features, and you want to select the 4 features at once).
+from the ``scikit-learn`` using state of the art methods and good pratices (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process by a grid search. There is also a Sequential Feature Selection protocol which supports number of components (e.g.  a single-date image is composed of four bands, i.e. 4 features, so you want to select the 4 features at once).
 
 [Go to SuperLearner documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html)
 
@@ -75,11 +75,11 @@ from the ``scikit-learn`` using state of the art methods and good pratices (such
 ``Museo ToolBox`` produces only stratified cross-validation, which means the split is made by respecting the size per class and not for the whole dataset.
 For example the Leave-One-Out method will keep one sample of validation per class. As stated by [@olofsson_good_2014] *"stratified random sampling is a practical design that satisfies the
 basic accuracy assessment objectives and most of the desirable design
-criteria"*. For spatial cross-validation, see [@roberts_2017].
+criteria"*. For spatial cross-validation, see [@karasiak_2019] inspired from [@roberts_2017].
 
-``Museo ToolBox`` offerts two differents types of cross-validation :
+``Museo ToolBox`` offers two differents types of cross-validation :
 
-### Spatial-agnostic cross-validation
+### Non-spatial cross-validation
 
 - Leave-One-Out.
 - Leave-One-SubGroup-Out.
@@ -96,7 +96,7 @@ criteria"*. For spatial cross-validation, see [@roberts_2017].
 
 # Acknowledgements
 
-We acknowledge contributions from Mathieu Fauvel and beta-testers of this project.
+I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (🙋‍♂️ Yousra Hamrouni) and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/).
 
 # Figures
 
