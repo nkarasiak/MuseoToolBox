@@ -27,8 +27,6 @@ If you aren't sure about pull requests:
 Tests and documentation
 +++++++++++++++++++++++
 You should document your code clearly with `numpy style documentation`_.
-You may also want to write sphinx_ documentation / examples in docs_ or the notebooks_ to demonstrate large-scale functionality.
-
 You should add tests.
 For simple things, these can be `doctests <https://docs.python.org/3/library/doctest.html>`_ in the code.
 For more elaborate functionality, put unit tests in test.
@@ -64,7 +62,7 @@ Running the tests locally
 ++++++++++++++++++++++++++
 After you make changes, you should run two sets of tests.
 To run the tests, go to the top-level package directory.
-Then make sure that you have installed the packages listed in `requirements_dev.txt <requirements_dev.txt>`_.
+Then make sure that you have installed the packages listed in `requirements-dev.txt <requirements-dev.txt>`_.
 If these are not installed, install them with::
 
     pip install -r requirements-dev.txt
@@ -107,6 +105,6 @@ Note that this requires you to have registered the package on PyPI_ if this is t
 .. _docs: docs
 .. _notebooks: notebooks
 .. _`Jupyter notebooks`: https://jupyter.org/
-.. _`__init__.py`: alignparse/__init__.py
+.. _`__init__.py`: museotoolbox/__init__.py
 .. _CHANGELOG: CHANGELOG.md
 .. _`numpy style documentation`: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html

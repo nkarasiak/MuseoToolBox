@@ -96,7 +96,7 @@ criteria"*. For spatial cross-validation, see [@karasiak_2019] inspired from [@r
 
 # Acknowledgements
 
-I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (🙋‍♂️ Yousra Hamrouni) and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/).
+I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hy Yousra Hamrouni !) and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/).
 
 # Figures
 
