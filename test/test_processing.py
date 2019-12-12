@@ -157,7 +157,7 @@ class TestRaster(unittest.TestCase):
             
             os.remove('/tmp/mean.tif')
             
-    def test_unknow_field(self):
+    def test_unknow_fields(self):
         self.assertRaises(ValueError,processing.extract_ROI,raster,vector,'wrong_field')
         self.assertRaises(ValueError,processing.read_vector_values,vector)
         self.assertRaises(Exception,processing.read_vector_values,'wrong_path')

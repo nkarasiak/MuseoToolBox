@@ -86,22 +86,22 @@ class SuperLearner:
         self.param_grid = param_grid
 
         self.xFunction = False
-
         self.standardize = False
+        
         self._is_standardized = False
         self._array_is_customized = False
         self.xKwargs = {}
         self.CV = False
         self.cloneModel = False
 
-    def standardize_array(self, X=None, need_transformation=False):
+    def standardize_array(self, X=None):
         """
         Scale X data using StandardScaler from ``sklearn``.
         If X is None, initialize StandardScaler.
 
         Parameters
         ----------
-         X : arr, or None.
+         X : np.ndarray, or None, optional (default=None).
              The array to scale the data from.
         need_transformation : bool, default True
             If you used function to transform your array.
@@ -115,9 +115,6 @@ class SuperLearner:
             self.StandardScaler = StandardScaler()
 
         if X is not None:
-            if need_transformation:
-                if self._array_is_customized:
-                    X = self.xFunction(X, **self.xKwargs)
             if self._is_standardized is False:
                 self.StandardScaler.fit(X)
                 self._is_standardized = True
@@ -141,9 +138,9 @@ class SuperLearner:
 
         Parameters
         ----------
-        X : array.
+        X : np.ndarray.
             Array with values of each label variable.
-        y : array.
+        y : np.ndarray.
             Array with labels only.
         group : str or False.
             If you use a cross-validation which needs group-splitting.
@@ -162,11 +159,11 @@ class SuperLearner:
                 X = X.reshape(-1, 1)
         self.X = X
 
+        self.standardize= standardize
+
         if standardize:
-            self.standardize = True
-            # in order to remove warnings due to datatype conversion
             self.standardize_array()
-            self.X = self.standardize_array(X, need_transformation=False)
+            self.X = self.standardize_array(X)
 
         self._fit(
             self.X,
@@ -281,7 +278,7 @@ class SuperLearner:
 
         Parameters
         ----------
-        X : array.
+        X : np.ndarray (n_size,).
             The array to predict. Must have the same number of bands of the initial array/raster.
         **kwargs :
             Xfunction : a custom function to modify directly the array from the raster.
@@ -296,16 +293,16 @@ class SuperLearner:
 
     def predict_confidence_per_class(self, X):
         """
-        Predict label from array.
+        Predict confidence for each class.
 
         Parameters
         ----------
-        X : array.
+        X : np.ndarray.
             The array to predict proba. Must have the same number of bands of the initial array/raster.
 
         Returns
         ----------
-        Xpredict : array.
+        Xpredict : np.ndarray (n_size,n_class).
             The probability from 0 to 100.
         """
         X = self._convert_array(X)
@@ -320,16 +317,16 @@ class SuperLearner:
 
     def predict_higher_confidence(self, X):
         """
-        Predict label from array.
+        Get confidence of the predicted label.
 
         Parameters
         ----------
-        X : array.
+        X : np.ndarray.
             The array to predict proba. Must have the same number of bands of the initial array/raster.
 
         Returns
         ----------
-        Xpredict : array.
+        Xpredict : np.ndarray (n_size,).
             The probability from 0 to 100.
         """
         if hasattr(self, 'Xpredict_proba'):
@@ -593,7 +590,7 @@ class SequentialFeatureSelection:
     ----------
     classifier : class.
         Classifier from scikit-learn.
-    param_grid : array.
+    param_grid : np.ndarray.
         param_grid for hyperparameters of the classifier.
     path_to_save_models : False or str, optional (default=False).
         If False, will store best model per combination in memory.
@@ -608,33 +605,31 @@ class SequentialFeatureSelection:
         The higher it is the more sequential will show progression.
     """
 
-    def __init__(self, classifier, param_grid, path_to_save_models=False, cv=5,
-                 scoring='accuracy', n_comp=1, verbose=False):
+    def __init__(self, classifier, param_grid, path_to_save_models=False, 
+                n_comp=1, verbose=False):
         # share args
         self.n_comp = n_comp
         self.classifier = classifier
         self.param_grid = param_grid
-        self.scoring = scoring
         self.verbose = verbose
         if self.verbose < 1:
             self.verbose_gridsearch = 0
         else:
             self.verbose_gridsearch = self.verbose - 1
-        self.cv = cv
 
         self.xFunction = False
         self.xKwargs = False
 
         self.path_to_save_models = path_to_save_models
 
-    def fit(self, X, y, group=None, standardize=True,
+    def fit(self, X, y, group=None, cv=5, standardize=True,  scoring='accuracy', 
             max_features=False, n_jobs=1, **kwargs):
         """
         Parameters
         ----------
-        X : arr
-            arr
-        y : arr
+        X : np.ndarray
+            shape of np.ndarray is (n_size,n_bands).
+        y : np.ndarray
             Size of X.shape[0].
         group : None, optional
             group for cross-validation
@@ -649,6 +644,9 @@ class SequentialFeatureSelection:
         self.X_ = np.copy(X)
         self.y = y
         self.group = group
+        self.cv = cv
+        self.scoring = scoring
+
 
         self.models_path_ = []
 
@@ -794,7 +792,7 @@ class SequentialFeatureSelection:
 
         Parameters
         -----------
-        X : array.
+        X : np.ndarray.
             The array to predict. Must have the same number of bands of the initial array/raster.
         idx : int.
             The combination (from 0).

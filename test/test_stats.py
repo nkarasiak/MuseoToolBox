@@ -31,7 +31,7 @@ x = np.zeros((100,100),dtype=int)
 x[:50,:] = 1
 x[50:,:] = 2
 
-x_mask = np.random.randint(0,2,[100,100])
+x_mask = np.random.randint(0,2,[100,100]) # random mask
 create_false_image(x,'/tmp/autocorrelated_moran.tif')
 create_false_image(x_mask,'/tmp/mask_moran.tif')
 

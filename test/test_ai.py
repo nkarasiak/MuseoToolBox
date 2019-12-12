@@ -64,8 +64,9 @@ class TestStats(unittest.TestCase):
             model.fit(X,y,cv=False)
         
     def test_sequential(self):
-        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2)
-        sfs.fit(X,y)
+        
+        sfs = ai.SequentialFeatureSelection(classifier,param_grid)
+        sfs.fit(X,y,cv=2)
         sfs.predict(X,idx=0)
         assert(not np.all(sfs.predict(X,idx=0) == sfs.predict(X,idx=1)))
         sfs.predict_best_combination(raster,'/tmp/class.tif')
@@ -75,17 +76,18 @@ class TestStats(unittest.TestCase):
 
         n_comp = 2
         max_features = 2
-        sfs = ai.SequentialFeatureSelection(classifier,param_grid,cv=2,n_comp=n_comp,path_to_save_models='/tmp/sfs_models/',verbose=1)
+        sfs = ai.SequentialFeatureSelection(classifier,param_grid,n_comp=n_comp,path_to_save_models='/tmp/sfs_models/',verbose=1)
         def double_columns(x):
             return np.hstack((x,x))
         sfs.customize_array(double_columns)
-        sfs.fit(X,y,max_features=max_features,standardize=True)
-        sfs.fit(X,y,max_features=max_features,standardize=True) # to reload from path
+        sfs.fit(X,y,max_features=max_features,standardize=True,cv=2)
+        sfs.fit(X,y,max_features=max_features,standardize=True,cv=2) # to reload from path
         assert(sfs.transform(X,idx=1).shape[1] == 2*n_comp)
         assert(sfs.transform(X,idx=0).shape[1] == n_comp)
         assert(sfs.X.shape[1] == X.shape[1]*2)
         assert(len(sfs.best_features_) == 2)
-        
+        sfs.predict_images(raster,'/tmp/sfs_models/')
+        sfs.predict_best_combination(raster,'/tmp/sfs_models/best.tif')
         assert(sfs.get_best_model().X.shape[1] == n_comp*(sfs.best_idx_+1) )
         sfs.predict(X,0)
         shutil.rmtree('/tmp/sfs_models/')

@@ -42,9 +42,9 @@ kappa = metrics.make_scorer(metrics.cohen_kappa_score)
 # Set and fit the Sequentia Feature Selection
 # ---------------------------------------------------------------
 #
-SFFS = SequentialFeatureSelection(classifier=classifier,param_grid=dict(n_estimators=[10,20]),cv=LSGO,verbose=False)
+SFFS = SequentialFeatureSelection(classifier=classifier,param_grid=dict(n_estimators=[10,20]),verbose=False)
 
-SFFS.fit(X.astype(np.float),y,g,max_features=2)
+SFFS.fit(X.astype(np.float),y,g,cv=LSGO,max_features=2)
 
 ##############################################
 # Show best features and score
