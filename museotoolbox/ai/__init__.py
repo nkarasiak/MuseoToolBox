@@ -32,12 +32,12 @@ class SuperLearner:
 
         Parameters
         -----------
-        n_jobs : int, default 1.
-            Number of cores to be used by ``sklearn`` in grid-search.
         classifier : algorithm compatible with scikit-learn.
             For example ``RandomForestClassifier(n_estimators=100)`` from ``from sklearn.ensemble import RandomForestClassifier``
         param_grid : False or dict, optional (default=False).
             param_grid for the grid_search. E.g. for RandomForestClassifier : ``param_grid=dict(n_estimators=[10,100],max_features=[1,3])``
+        n_jobs : int, default 1.
+            Number of cores to be used by ``sklearn`` in grid-search.
         verbose : bool or int, optional (default=False)
             The higher it is the more sequential will show progression.
 
@@ -591,10 +591,6 @@ class SequentialFeatureSelection:
     path_to_save_models : False or str, optional (default=False).
         If False, will store best model per combination in memory.
         If str, must be path to save each model and accuracy per feature.
-    cv : int, or cross_validation method, optional (default=5).
-        Default will use
-    scoring : str or class, optional (default='accuracy').
-        default is 'accuracy'. See sklearn.metrics.make_scorer from scikit-learn.
     n_comp : int, optional (default=1).
         The number of component per feature. If 4, each feature has 4 columns.
     verbose : bool or int, optional (default=False)
@@ -618,7 +614,7 @@ class SequentialFeatureSelection:
 
         self.path_to_save_models = path_to_save_models
 
-    def fit(self, X, y, group=None, cv=5, standardize=True, scoring='accuracy',
+    def fit(self, X, y, group=None, cv=5, scoring='accuracy', standardize=True,
             max_features=False, n_jobs=1, **kwargs):
         """
         Parameters
@@ -629,6 +625,10 @@ class SequentialFeatureSelection:
             Size of X.shape[0].
         group : None, optional
             group for cross-validation
+        cv : int, or cross_validation method, optional (default=5).
+            Default will use
+        scoring : str or class, optional (default='accuracy').
+            default is 'accuracy'. See sklearn.metrics.make_scorer from scikit-learn.
         standardize : optional
             Default True.
         max_features : int or bool.
