@@ -1,4 +1,4 @@
-![MuseoToolBox logo](https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
+![Museo ToolBox logo](https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
 [![Build status](https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master)](https://travis-ci.org/nkarasiak/MuseoToolBox)
 [![Documentation status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest)
@@ -7,13 +7,13 @@
 [![Downloads](https://pepy.tech/badge/museotoolbox)](https://pepy.tech/project/museotoolbox)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg)](https://doi.org/10.5281/zenodo.3404728)
 
-**MuseoToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
+**Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
 One of the most meaningful contribution is, in my humble opinion, the [RasterMath](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 
 ### Using and citing the toolbox
 
-If you use MuseoToolBox in your research and find it useful, please cite this library using the following bibtex reference:
+If you use Museo ToolBox in your research and find it useful, please cite this library using the following bibtex reference:
 
 ```bib
 @misc{karasiak2019mtb,
@@ -27,7 +27,7 @@ doi={10.5281/zenodo.3404728}
 
 ## What's the point ?
 
-Today, the main usages of MuseoToolBox are :
+Today, the main usages of Museo ToolBox are :
 -  [museotoolbox.cross_validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html#module-museotoolbox.cross_validation)
     - Create validation/training sets from vector, and cross-validation compatible with Scikit-Learn GridSearchCV. The aim is here to **promote the spatial cross-validation** in order to better estimate a model (with a lower spatial auto-correlation overestimation).
 - [museotoolbox.processing](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.processing.html)
@@ -36,7 +36,7 @@ Today, the main usages of MuseoToolBox are :
 - AI based on Scikit-Learn. [SuperLearner](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html#museotoolbox.ai.SuperLearner) simplifies the use of cross-validation by extracting each accuracy (kappa,F1,OA, and above all confusion matrix) from each fold. It also eases the way to predict a raster (just give the raster name and the model).
 
 ## That seems cool, but is there some help to use this ?
-I imagined MuseoToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
+I imagined Museo ToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : [a complete documentation with a lot of examples is available on readthedocs](https://museotoolbox.readthedocs.org/).
 
 ## I want to improve Museo ToolBox, how can I contribute ?
 
@@ -51,7 +51,7 @@ Alternatively, you can install **museotoolbox** directly from the git :
 
 Feel free to remove the `--user` if you like to install the library for every user on the machine.
 
-## Who built MuseoToolBox ?
+## Who built Museo ToolBox ?
 
 I am [Nicolas Karasiak](http://www.karasiak.net), a Phd student at Dynafor Lab. I work tree species mapping from space throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to [Mathieu Fauvel](http://fauvel.mathieu.free.fr/) who initiated me to the beautiful world of the open-source.
 
