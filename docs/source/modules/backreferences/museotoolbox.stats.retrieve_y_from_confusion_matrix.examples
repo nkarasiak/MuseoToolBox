@@ -1,0 +1,22 @@
+
+
+Examples using ``museotoolbox.stats.retrieve_y_from_confusion_matrix``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute different quality index  (OA, Kappa and F1) directly from confusion matrix.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/stats/images/thumb/sphx_glr_qualityIndexFromConfusionMatrix_thumb.png
+
+        :ref:`sphx_glr_auto_examples_stats_qualityIndexFromConfusionMatrix.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_stats_qualityIndexFromConfusionMatrix.py`

@@ -1,0 +1,22 @@
+
+
+Examples using ``museotoolbox.stats.zonal_stats``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute different quality index  (OA, Kappa and F1) directly from confusion matrix.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/stats/images/thumb/sphx_glr_zonal_stats_thumb.png
+
+        :ref:`sphx_glr_auto_examples_stats_zonal_stats.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_stats_zonal_stats.py`

@@ -1,0 +1,76 @@
+
+
+Examples using ``museotoolbox.charts.PlotConfusionMatrix``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusion_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusion.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with F1 as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionF1_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionF1.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot confusion matrix from Cross-Validation, with accuracy (user/prod) as subplot.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/charts/images/thumb/sphx_glr_plotConfusionAcc_thumb.png
+
+        :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_charts_plotConfusionAcc.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute different quality index  (OA, Kappa and F1) directly from confusion matrix.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/stats/images/thumb/sphx_glr_qualityIndexFromConfusionMatrix_thumb.png
+
+        :ref:`sphx_glr_auto_examples_stats_qualityIndexFromConfusionMatrix.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_stats_qualityIndexFromConfusionMatrix.py`

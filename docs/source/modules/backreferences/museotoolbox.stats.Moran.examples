@@ -1,0 +1,22 @@
+
+
+Examples using ``museotoolbox.stats.Moran``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute Moran&#x27;s I with different lags, support mask.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/stats/images/thumb/sphx_glr_MoransI_thumb.png
+
+        :ref:`sphx_glr_auto_examples_stats_MoransI.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_stats_MoransI.py`

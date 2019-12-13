@@ -1,0 +1,58 @@
+
+
+Examples using ``museotoolbox.cross_validation.LeavePSubGroupOut``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Random Sampling with  50% for each class.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/ai/images/thumb/sphx_glr_SFFS_thumb.png
+
+        :ref:`sphx_glr_auto_examples_ai_SFFS.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_ai_SFFS.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a classification with different cross-validation methods.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/ai/images/thumb/sphx_glr_learnWithRFandCompareCV_thumb.png
+
+        :ref:`sphx_glr_auto_examples_ai_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_ai_learnWithRFandCompareCV.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to make a Leave-Percent-SubGroup-Out.">
+
+.. only:: html
+
+    .. figure:: /auto_examples/cross_validation/images/thumb/sphx_glr_LeavePSubGroupOut_thumb.png
+
+        :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+    * :ref:`sphx_glr_auto_examples_cross_validation_LeavePSubGroupOut.py`
