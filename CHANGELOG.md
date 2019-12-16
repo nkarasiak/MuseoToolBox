@@ -33,14 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove command lines (cli)
 
-## [0.11.5] - 2019-11-11
+## [0.12rc5] - 2019-11-11
 	
 ### Changed
 
 - getSamplesFromROI return list of available fields if wrong field given.
 - rasterMath convert np.nan value to nodata value (if numpy >= 1.17)
 
-## [0.11.4] - 2019-11-01
+## [0.12rc4] - 2019-11-01
 
 ### Changed
 
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add an option to use SFS without writing each best model on the disk.
 
-## [0.11.3] - 2019-10-29
+## [0.12rc3] - 2019-10-29
 
 ### Added
 
@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance blocksize management for rasterMath
 - Move command line code in _cli folder
 
-## [0.11.2] - 2019-10-14
+## [0.12rc2] - 2019-10-14
 
 ### Changed
 
@@ -73,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- add seed parameter (to set a random generator) in getRandomBlock()
 	- add getRasterParameters() and customRasterParameters() function.
 
-## [0.11.1] - 2019-10-12
+## [0.12rc1] - 2019-10-12
 
 ### Changed
 
