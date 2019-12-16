@@ -13,5 +13,5 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 from . import learn_tools, vector_tools, raster_tools, cross_validation, datasets, stats  # , charts
-__version__ = "0.11.05"
+__version__ = "0.11.5"
     
