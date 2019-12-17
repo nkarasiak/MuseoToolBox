@@ -5,7 +5,7 @@
 
 .. image:: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
    :target: https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png
-   :alt: MuseoToolBox logo
+   :alt: Museo ToolBox logo
 
 
 
@@ -39,14 +39,14 @@
    :alt: DOI
 
 
-**MuseoToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
+**Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
 One of the most meaningful contribution is, in my humble opinion, the `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html>`_.
 
 Using and citing the toolbox
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you use MuseoToolBox in your research and find it useful, please cite this library using the following bibtex reference:
+If you use Museo ToolBox in your research and find it useful, please cite this library using the following bibtex reference:
 
 .. code-block:: bib
 
@@ -61,7 +61,7 @@ If you use MuseoToolBox in your research and find it useful, please cite this li
 What's the point ?
 ------------------
 
-Today, the main usages of MuseoToolBox are :
+Today, the main usages of Museo ToolBox are :
 
 
 * `museotoolbox.cross_validation <https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html#module-museotoolbox.cross_validation>`_
@@ -78,7 +78,7 @@ Today, the main usages of MuseoToolBox are :
 That seems cool, but is there some help to use this ?
 -----------------------------------------------------
 
-I imagined MuseoToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
+I imagined Museo ToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
 I want to improve Museo ToolBox, how can I contribute ?
 -------------------------------------------------------
@@ -96,8 +96,8 @@ Alternatively, you can install **museotoolbox** directly from the git :
 
 Feel free to remove the ``--user`` if you like to install the library for every user on the machine.
 
-Who built MuseoToolBox ?
-------------------------
+Who built Museo ToolBox ?
+-------------------------
 
 I am `Nicolas Karasiak <http://www.karasiak.net>`_\ , a Phd student at Dynafor Lab. I work tree species mapping from space throught dense satellite image time series, especially with Sentinel-2. A special thanks goes to `Mathieu Fauvel <http://fauvel.mathieu.free.fr/>`_ who initiated me to the beautiful world of the open-source.
 

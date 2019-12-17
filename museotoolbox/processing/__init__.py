@@ -1051,19 +1051,24 @@ class RasterMath:
             If int, random_state is the seed used by the random number generator.
             If None, the random number generator is the RandomState instance used by numpy np.random.
         """
-        mask = np.array([True])
+#        mask = np.array([True])
 
         np.random.seed(random_state)
         rdm = np.random.permutation(np.arange(self.n_blocks))
         idx = 0
-
-        while np.all(mask == True):
+        
+        size = 0
+        while size == 0:
             tmp = self.get_block(block_number=rdm[idx])
             if len(self.opened_images) > 1:
                 mask = tmp[0].mask
+                size = tmp[0].size
             else:
                 mask = tmp.mask
-
+                size = tmp.size
+            
+            if np.all(mask == True):
+                size = 0
             idx += 1
         return tmp
 

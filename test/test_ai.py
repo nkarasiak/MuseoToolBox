@@ -50,7 +50,6 @@ class TestStats(unittest.TestCase):
         assert(model._array_is_customized)
         assert(model.xFunction)
         assert(np.all(model.standardize_array(X) != X))
-        model.standardize_array()
         model.predict_image(raster,out_image='/tmp/SuperLearner/class.tif',in_image_mask='/tmp/mask.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
         assert(gdal.Open('/tmp/SuperLearner/class.tif').RasterCount == 1)
         assert(gdal.Open('/tmp/SuperLearner/higherconf.tif').RasterCount == 1)
