@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - SequentialFeatureSelection parameters order Changed. *scoring* is now before *standardize*.
+- Fix bug in get_block() and get_random_block() which returned the same block each time due to new method.
 
 ## [0.12] - 2019-12-13
 

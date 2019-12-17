@@ -35,9 +35,9 @@ for return_3d in [True,False]:
     
     rM.custom_block_size(128,128) # block of 200x200pixels
     
-    print(rM.get_random_block().shape)
+#    print(rM.get_random_block().shape)
     
-    x = rM.get_random_block()
+    x = rM.get_block()
     
     # Returns with only 1 dimension
     returnFlatten = lambda x : x[...,0]

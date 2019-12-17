@@ -1014,14 +1014,28 @@ class RasterMath:
                 'There are only {} blocks in your image.'.format(
                     self.n_blocks))
         else:
-            line = int(block_number / self.n_x_blocks)
-            col = int(block_number % self.n_x_blocks)
+            
+#            for col in range(0, self.n_columns, x_block_size):
+#                width = min(self.n_columns - col, x_block_size)
+#                height = min(self.n_lines - row, y_block_size)
 
-            height = min(self.n_columns - col, self.x_block_size)
-            width = min(self.n_lines - line, self.y_block_size)
+#            if get_block:
+#                X = self._generate_block_array(
+#                    col, row, width, height, self.mask)
 
+
+            row = [l for l in range(0, self.n_lines, self.y_block_size)]
+            col = [c for c in range(0, self.n_columns, self.x_block_size)]
+            
+            row_number = int(block_number / self.n_x_blocks)
+            col_number = int(block_number % self.n_x_blocks)
+            
+            width = min(self.n_columns - col[col_number], self.x_block_size)
+            height = min(self.n_lines - row[row_number], self.y_block_size)
+                        
             tmp = self._generate_block_array(
-                col, line, height, width, self.mask)
+                col[col_number], row[row_number], width, height, self.mask)
+            
             if self.return_3d is False:
                 tmp = self._manage_2d_mask(tmp)
                 tmp = np.ma.copy(tmp)
@@ -1044,34 +1058,6 @@ class RasterMath:
         idx = 0
 
         while np.all(mask == True):
-            #            np.random.seed(random_state)
-            #
-            #            lines = int(
-            #                np.random.permutation(
-            #                    range(
-            #                        0,
-            #                        self.n_lines,
-            #                        self.y_block_size))[0])
-            #            np.random.seed(random_state)
-            #            cols = int(
-            #                np.random.permutation(
-            #                    range(
-            #                        0,
-            #                        self.n_columns,
-            #                        self.x_block_size))[0])
-            #
-            #            height = min(self.n_columns - cols, self.x_block_size)
-            #            width = min(self.n_lines - lines, self.y_block_size)
-            #
-            #            tmp = self._generate_block_array(
-            #                cols, lines, height, width, self.mask)
-            #            if len(self.opened_images) > 1:
-            #                mask = tmp[0].mask
-            #            else:
-            #                mask = tmp.mask
-            #            if self.return_3d is False:
-            #                tmp = self._manage_2d_mask(tmp)
-
             tmp = self.get_block(block_number=rdm[idx])
             if len(self.opened_images) > 1:
                 mask = tmp[0].mask
