@@ -44,10 +44,14 @@ To contribute to this package, please read the instructions in [CONTRIBUTING.rst
 
 ## How do I install it ?
 A package is available on pip :
-`python3 -m pip install museotoolbox --user`
+```python3
+python3 -m pip install museotoolbox --user
+```
 
-Alternatively, you can install **museotoolbox** directly from the git :
-`python3 -m pip install git+https://github.com/nkarasiak/MuseoToolBox.git --user`
+For early-adopters, you can install the latest development version directly from git :
+```python3
+python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user
+```
 
 Feel free to remove the `--user` if you like to install the library for every user on the machine.
 

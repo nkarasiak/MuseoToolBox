@@ -39,16 +39,21 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
 
     Parameters
     -----------
-    return_X_y : boolean, default=False.
+    return_X_y : boolean, optional (default=False).
         If True, returns ``(data, target)`` instead of a path of files.
-    centroid : boolean, default=False.
+    return_X_y_g : boolean, optional (default=False).
+        If True, returns the polygon id for each feature.
+    centroid : boolean, optional (default=False).
         If True, return the path of the centroid for each feature.
+    low_res : boolean, optinal (default=False).
+        If True returns a low resolution of the raster, so you will have also less features.
 
     Returns
     -------
     raster,vector : list of str.
-        Return path of raster and vector files.
+        Return path of raster and vector files if 
     (data, target) : tuple if ``return_X_y`` is True
+    (data, target, group) : tuple if ``return_X_y_g`` is True
 
     References
     -----------

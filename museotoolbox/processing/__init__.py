@@ -779,7 +779,7 @@ class RasterMath:
         if (out_nodata is True) or (self.nodata is not None) or (
                 self.mask is not False):
             if np.issubdtype(dtypeName, np.floating):
-                minValue = np.finfo(dtypeName).min
+                minValue = float(np.finfo(dtypeName).min)
             else:
                 minValue = np.iinfo(dtypeName).min
 

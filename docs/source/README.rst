@@ -89,10 +89,16 @@ How do I install it ?
 ---------------------
 
 A package is available on pip :
-``python3 -m pip install museotoolbox --user``
 
-Alternatively, you can install **museotoolbox** directly from the git :
-``python3 -m pip install git+https://github.com/nkarasiak/MuseoToolBox.git --user``
+.. code-block:: python3
+
+   python3 -m pip install museotoolbox --user
+
+For early-adopters, you can install the latest development version directly from git :
+
+.. code-block:: python3
+
+   python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user
 
 Feel free to remove the ``--user`` if you like to install the library for every user on the machine.
 
