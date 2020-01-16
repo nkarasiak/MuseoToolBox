@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased : 0.12.1-beta.1] - 
 
+### Added
+- new branch spatial added 
+
 ### Changed
 
 - SequentialFeatureSelection parameters order Changed. *scoring* is now before *standardize*.
@@ -85,5 +88,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - prevent bug when in rasterMath if processor has only 1 core.
 - minor fixes and doc update
 
-### Added
-- new branch spatial added 
