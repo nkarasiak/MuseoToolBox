@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased : 0.12.1-beta.2]
 
+### Changed
+
+- Fix bug when in RasterMath when input is only one band
+
 ### Added
 
 - n_jobs for RasterMath
