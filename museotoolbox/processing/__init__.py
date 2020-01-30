@@ -1245,9 +1245,11 @@ class RasterMath:
 
                     if not np.all(X.mask == 0):
                         # if all the block is not unmasked add the nodata value
-
+    
                         resFun = self.reshape_ndim(resFun)
-                        mask = self.reshape_ndim(X.mask[..., 0])
+                        # double reshape_ndim to be sure to keep only first band
+                        mask = self.reshape_ndim(self.reshape_ndim(X.mask)[...,0] )
+                        
                         tmp = np.repeat(
                             mask,
                             maxBands,
