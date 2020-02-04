@@ -342,7 +342,8 @@ class SuperLearner:
             higher_confidence=False,
             in_image_mask=False,
             out_nodata=0,
-            compress=True):
+            compress=True,
+            n_jobs = 1):
         """
         Predict label from raster using previous learned model.
         This function will call self.predictArray(X).
