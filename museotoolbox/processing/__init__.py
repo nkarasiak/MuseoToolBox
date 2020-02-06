@@ -1046,7 +1046,7 @@ class RasterMath:
     
     
     
-    def get_coord_block(self, block_number=0):
+    def get_block_coords(self, block_number=0):
         """
         Get position of a block :
 
@@ -1374,93 +1374,85 @@ class RasterMath:
             self.outputs[idx] = None
 
 
-        
-    def run_Parallel (self, n_jobs = 1, verbose_Parallel = 0):
-        """
-        Process writing with outside function with parallel mode using joblib.
-        
-        
-        Parameters
-        ----------
-        n_jobs : int, optional
-            Numbers of workers or process that will work in parallel.
-        verbose_Parallel : int, optional 
-            The verbosity level: if non zero, progress messages are printed.
-            Above 50, the output is sent to stdout. The frequency of the messages 
-            increases with the verbosity level. If it more than 10, all iterations are reported.
 
-        Returns
-        -------
-        None
-        """
-   
-        if n_jobs < 0 :
-            n_jobs = cpu_count()
-        elif n_jobs == 0 :
-            raise ValueError(' {} is not a valid value.'.format(n_jobs))
+    
+    def run_parallel (self, n_jobs = 1, size = '1G'):
+            """
+            Function under construction and used for tests 
+            Apply a function of idx [0] to an image with parallel mode using joblib.
+            Warning : this function does not write the results in an output. 
             
-        test = []
-        self.pb = ProgressBar(self.n_blocks, message=self.message)
-        
-        for i in range(0,self.n_blocks,n_jobs):
-            self.pb.add_position(self._position)
-           
-            if i <=self.n_blocks-n_jobs :
-                idx_blocks=[i for i in range(i,i+n_jobs)]
-            else :
-                idx_blocks = [i for i in range(i,self.n_blocks)]
-            
-            test.append(idx_blocks)
-            for idx,fun in enumerate(self.functions):
-
-                if self.functionsKwargs[idx] is not False:
-                    res=Parallel(n_jobs, verbose = verbose_Parallel)(delayed(fun)(self.get_block(i).data,**self.functionsKwargs[idx])for i in  idx_blocks)
-                else : 
-                    res=Parallel(n_jobs,verbose = verbose_Parallel)(delayed(fun)(self.get_block(i).data)for i in  idx_blocks)
-
-                self._write_few_blocks(idx_blocks , res ,idx)
+            Parameters
+            ----------
+            n_jobs : int, optional, ( default value : 1)
+                Numbers of workers or process that will work in parallel.
+            size : str, optional ( default value : '1G')
+                maximun size of ram the program can use to store temporary the results
                 
-            self._position += 1
-        self.outputs[idx] = None
-        self.pb.add_position(self.n_blocks)
-        
-        return test
+            Returns
+            -------
+            None
+            """
+            #create a list of all the blocks 
+            size_value=size[:-1]
+            if size[-1]=='M':
+                size_value=1048576*int(size_value)
+            elif size[-1]=='G':
+                size_value=1073741824*int(size_value)
+            elif size[-1]=='T':
+                size_value=1099511627776*int(size_value)
+            else : 
+                raise ValueError(' {} is not a valid value. use for example 100G, 10M, 1T '.format(size))
+            tmp=self.get_random_block()
+            length=int(size_value/tmp.size*tmp.itemsize)
+            
+            if length>self.n_blocks:
+                length=self.n_blocks
+           
+            
+            if n_jobs < 0 :
+                n_jobs = cpu_count()
+            elif n_jobs == 0 :
+                raise ValueError(' {} is not a valid value.'.ormat(n_jobs))
+      
+            self.pb = ProgressBar(self.n_blocks, message=self.message)
+
+            for i in range(0,self.n_blocks,length):
+                idx_masked=[]
+                idx_blocks=[]
+                if i <=self.n_blocks-length :
+                    for j in range(i,i+length):
+                        if not self.get_block(j).size ==0:
+                            idx_blocks+=[j]
+                        else:
+                            idx_masked+=[j]
+                else :
+                    for j in range(i,self.n_blocks):
+                        if not self.get_block(j).size ==0:
+                            idx_blocks+=[j]
+                        else:
+                            idx_masked+=[j]
     
-    def run_Parallel_short (self, n_jobs = 1, verbose_Parallel = 0):
-        """
-        Function under construction and used for tests 
-        Apply a function of idx [0] to an image with parallel mode using joblib.
-        Warning : this function does not write the results in an output. 
-        
-        Parameters
-        ----------
-        n_jobs : int, optional
-            Numbers of workers or process that will work in parallel.
-        verbose_Parallel : int, optional 
-            The verbosity level: if non zero, progress messages are printed.
-            Above 50, the output is sent to stdout. The frequency of the messages 
-            increases with the verbosity level. If it more than 10, all iterations are reported.
+                for idx,fun in enumerate(self.functions):
+                    self.pb.add_position(self._position)
 
-        Returns
-        -------
-        None
-        """
-        #create a list of all the blocks 
-        self.pb = ProgressBar(self.n_blocks, message=self.message)
-
-
-        idx_blocks = [i for i in range(self.n_blocks)]
-        for idx,fun in enumerate(self.functions):
-            self.pb.add_position(self._position)
-            #fun get the first function of the rastermath object
-            fun = self.functions[idx]
-            #Parallel function
-            res = Parallel(n_jobs, verbose = verbose_Parallel)(delayed(fun)(self.get_block(i).data) for i in idx_blocks)   
-            self._write_few_blocks(idx_blocks , res ,idx)
-            self._position += 1
-        del res
-        self.pb.add_position(self.n_blocks)
+                    #fun get the first function of the rastermath object
+                    fun = self.functions[idx]
+                    if self.functionsKwargs[idx] is not False:
+                        res=Parallel(n_jobs, verbose = self.verbose)(delayed(fun)(self.get_block(i).data,**self.functionsKwargs[idx])for i in  idx_blocks)
+                    else : 
+                        res=Parallel(n_jobs,verbose = self.verbose)(delayed(fun)(self.get_block(i).data)for i in  idx_blocks)
     
+                    self._write_few_blocks(idx_blocks , res ,idx)
+                    if len(idx_masked)!=0:
+                        self._write_few_blocks(idx_masked,[self.outputNoData[idx] for i in idx_masked] ,idx)
+                    self._position += 1
+
+            
+            for idx in range(len(self.outputs)):
+                self.outputs[idx] = None
+            self.pb.add_position(self.n_blocks)
+
     def _write_few_blocks (self, idx_blocks, tab_blocks, idx_func): 
         """
         Uses _write_block to write some blocks from a list to a raster
@@ -1481,7 +1473,7 @@ class RasterMath:
         """
 
         for i in range  (len(idx_blocks)):
-                    self._write_block( idx_blocks[i] ,tab_blocks[i] , idx_func)
+            self._write_block( idx_blocks[i] ,tab_blocks[i] , idx_func)
                     
                     
     def _write_block(self, idx_block, tab_block, idx_func):
@@ -1508,13 +1500,13 @@ class RasterMath:
             curBand = self.outputs[idx_func].GetRasterBand(indGdal)
     
             resToWrite = tab_block[..., ind]
+            coords = self.get_block_coords(idx_block) 
             if self.return_3d is False:
                 # need to reshape as block
-                coordos = self.get_coord_block(idx_block) 
-                tmparr = resToWrite.reshape(coordos[3], coordos[2])
+                tmparr = resToWrite.reshape(coords[3], coords[2])
                 resToWrite = self.reshape_ndim(tmparr)
     
-            curBand.WriteArray(resToWrite,coordos[0],coordos[1])
+            curBand.WriteArray(resToWrite,coords[0],coords[1])
             curBand.FlushCache()
         
             
