@@ -40,7 +40,7 @@ print(rM.get_random_block())
 
 x = rM.get_random_block()
 
-def modal_class(x):
+def modal_class(x):    
     tmp = stats.mode(x,axis=1)
     tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
     return tmpStack

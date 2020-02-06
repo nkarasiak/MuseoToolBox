@@ -952,8 +952,12 @@ class RasterMath:
                 col, row, width, height)
             if arr.ndim > 2:
                 arr = np.moveaxis(arr, 0, -1)
+            
             if not self.return_3d:
-                arr = arr.reshape(-1, arr.shape[-1])
+                if arr.ndim == 2:
+                    arr = arr.flatten()
+                else:
+                    arr = arr.reshape(-1, arr.shape[-1])                    
 
             arr = self._filter_nodata(arr, arrMask)
             arrs.append(arr)
@@ -987,7 +991,7 @@ class RasterMath:
             outArr = np.ma.masked_array(arr, tmpMask)
         else:
             tmpMask = np.zeros(arrShape, dtype=bool)
-            tmpMask[t, :] = True
+            tmpMask[t, ...] = True
             outArr = np.ma.masked_array(arr, tmpMask)
 
         return outArr
@@ -1018,15 +1022,6 @@ class RasterMath:
                     self.n_blocks))
         else:
             
-#            for col in range(0, self.n_columns, x_block_size):
-#                width = min(self.n_columns - col, x_block_size)
-#                height = min(self.n_lines - row, y_block_size)
-
-#            if get_block:
-#                X = self._generate_block_array(
-#                    col, row, width, height, self.mask)
-
-
             row = [l for l in range(0, self.n_lines, self.y_block_size)]
             col = [c for c in range(0, self.n_columns, self.x_block_size)]
             
@@ -1197,6 +1192,8 @@ class RasterMath:
                 pass
                 # no return
         else:
+            if X.ndim == 1:
+                X = self.reshape_ndim(X)
             mask = np.in1d(X.mask[:, 0], True)
             X = X[~mask, :].data
         return X
@@ -1286,9 +1283,12 @@ class RasterMath:
                 if not np.all(X.mask == 1):
                     # if all the block is not masked
                     if not self.return_3d:
-                        if isinstance(X_, list): #selon le nombre de bandes demandées 
-                            X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
+             X__ = [arr[~X.mask[:, 0], ...].data for arr in X_]
+            
+                        if isinstance(X_, list): # to manage several input raster
+                            X__ = [self.reshape_ndim(arr[~self.reshape_ndim(X).mask[:, 0], ...].data) for arr in X_]
                         else:
+                            X = self.reshape_ndim(X)
                             X__ = X[~X.mask[:, 0], ...].data
                     else:
                         X__ = np.ma.copy(X_)
@@ -1297,7 +1297,7 @@ class RasterMath:
                         resFun = fun(X__, **
                                      self.functionsKwargs[idx])
                     else:
-                        resFun = fun(X__)
+                        resFun = fun(np.ma.array(X__))
 
                     resFun = self.reshape_ndim(resFun)
 
@@ -1309,9 +1309,11 @@ class RasterMath:
 
                     if not np.all(X.mask == 0):
                         # if all the block is not unmasked add the nodata value
-
+    
                         resFun = self.reshape_ndim(resFun)
-                        mask = self.reshape_ndim(X.mask[..., 0])
+                        # double reshape_ndim to be sure to keep only first band
+                        mask = self.reshape_ndim(self.reshape_ndim(X.mask)[...,0] )
+                        
                         tmp = np.repeat(
                             mask,
                             maxBands,
