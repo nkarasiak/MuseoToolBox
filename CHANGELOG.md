@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- n_jobs for RasterMath
-- spatial filtering for RasterMath
+- n_jobs for RasterMath (thanks to Helene @HTDBD and Arthur@ArthurDfs, two great students)
 
 ## [0.12.1-beta.1] - 2020-01-16
 
