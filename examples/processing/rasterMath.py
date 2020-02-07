@@ -58,12 +58,12 @@ rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0,compress='high')
 #####################
 # Run the script
 
-rM.run()
+rM.run_parallel()
 print(time.time()-t)
 #######################
 # Plot result
 
-#from osgeo import gdal
-#from matplotlib import pyplot as plt 
-#src = gdal.Open('/tmp/sub.tif')
-#plt.imshow(src.ReadAsArray())
+from osgeo import gdal
+from matplotlib import pyplot as plt 
+src = gdal.Open('/tmp/sub.tif')
+plt.imshow(src.ReadAsArray())

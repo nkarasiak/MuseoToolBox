@@ -30,10 +30,13 @@ raster,vector = datasets.load_historical_data()
 
 image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
 
-for return_3d in [True,False]:
-    rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=return_3d)
+import time
+
+for return_3d in [False,True]:
+    t=time.time()
+    rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=return_3d,verbose=0)
     
-    rM.custom_block_size(128,128) # block of 200x200pixels
+    rM.custom_block_size(10,10) # block of 200x200pixels
     
 #    print(rM.get_random_block().shape)
     
@@ -49,8 +52,10 @@ for return_3d in [True,False]:
     rM.add_function(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
     rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
     
+#    rM.run_parallel(1)
     rM.run()
     
+    print(time.time()-t)
 from osgeo import gdal
 dst = gdal.Open('/tmp/x_flatten_False.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()

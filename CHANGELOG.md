@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.1-beta.1] - 2020-01-16
 
+### Added
+- new branch spatial added 
+
 ### Changed
 
 - SequentialFeatureSelection parameters order Changed. *scoring* is now before *standardize*.
@@ -96,3 +99,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update rasterMath to prevent bug if user has osgeo/gdal version is lower than 2.1.
 - prevent bug when in rasterMath if processor has only 1 core.
 - minor fixes and doc update
+

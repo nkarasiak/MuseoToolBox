@@ -44,7 +44,7 @@ x = rM.get_random_block()
 
 rM.add_function(np.mean,'/tmp/mean.tif',axis=2,out_np_dt=np.int16)
 
-rM.run()
+rM.run_parallel()
 
 from osgeo import gdal
 dst = gdal.Open('/tmp/mean.tif')
