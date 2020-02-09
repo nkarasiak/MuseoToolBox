@@ -26,7 +26,7 @@ from osgeo import gdal, ogr
 from joblib import Parallel, delayed
 
 from ..internal_tools import ProgressBar, push_feedback
-from numba import jit
+
 
 def image_mask_from_vector(
         in_vector, in_image, out_image, invert=False, gdt=gdal.GDT_Byte):
