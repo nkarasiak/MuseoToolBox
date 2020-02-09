@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb  7 21:43:15 2020
-
-@author: nicolas
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Using rasterMath with 3d block or 2d block
 ==================================================================
 

@@ -1013,13 +1013,14 @@ class RasterMath:
 
         Parameters
         -----------
-        block_number, int, optional (default=0).
+        block_number : int, optional (default=0).
             Position of the desired block.
+        return_with_mask : bool, optinal (default=False)
+            If True and if return_3d is True, will return a numpy masked array.
 
         Returns
         --------
-        Block : np.ndarray
-
+        Block : np.ndarray or np.ma.MaskedArray
         """
         
         if block_number > self.n_blocks:
@@ -1103,8 +1104,8 @@ class RasterMath:
         np.random.seed(random_state)
         rdm = np.random.permutation(np.arange(self.n_blocks))
         idx = 0
-
         size = 0
+        
         while size == 0:
             size = True
             tmp = self.get_block(block_number=rdm[idx])
@@ -1134,12 +1135,10 @@ class RasterMath:
         """
         if x.ndim == 0:
             x = x.reshape(-1, 1)
-        if self.return_3d:
-            if x.ndim == 2:
-                x = x.reshape(*x.shape, 1)
-        else:
-            if x.ndim == 1:
-                x = x.reshape(-1, 1)
+        
+        if x.ndim == self.return_3d+1:
+            x = x.reshape(*x.shape, 1)
+        
         return x
 
     def read_band_per_band(self):
@@ -1161,40 +1160,12 @@ class RasterMath:
                             band == self.nodata, True, False))
                 yield band
 
-    def read_block_per_block(self, x_block_size=False, y_block_size=False):
+    def read_block_per_block(self):
         """
         Yield each block.
         """
-        for X, col, line, cols, lines in self._iter_block(
-                get_block=True, y_block_size=y_block_size, x_block_size=x_block_size):
-            if isinstance(X, list):
-                mask = X[0].mask
-            else:
-                mask = X.mask
-            if not np.all(mask == 1):
-                yield X
-
-    def _return_unmasked_X(self, X):
-        if isinstance(X.mask, np.bool_):
-            if X.mask == False:
-                X = X.data
-            else:
-                pass
-                # no return
-        else:
-            if X.ndim == 1:
-                X = self.reshape_ndim(X)
-            mask = np.in1d(X.mask[:, 0], True)
-            X = X[~mask, :].data
-        return X
-
-    def _manage_2d_mask(self, X):
-        if len(self.opened_images) > 1:
-            X = [self._return_unmasked_X(x) for x in X]
-        else:
-            X = self._return_unmasked_X(X)
-
-        return X
+        for block in range(self.n_blocks):
+            yield self.get_block(block)
 
     def custom_block_size(self, x_block_size=False, y_block_size=False):
         """
@@ -1404,6 +1375,7 @@ class RasterMath:
                     
                 np_dtype :
                     
+                return_3d : 
                 
                 Returns
                 -------
@@ -1411,81 +1383,75 @@ class RasterMath:
                     The block to write
                     
                 """
-                res = True
+                tmp_arr = True
+                
                 if isinstance(block,list):
-                    test_block=block[0]
+                    mask_block=block[0].mask
                 else:
-                    test_block=block
+                    mask_block=block.mask
                     
-                if np.all(test_block.mask == True):
-                    res = False
-                if np.all(test_block.mask == False):
+                # if everything is masked
+                if np.all(mask_block == True):
+                    mask = True
+                    out_block = nodata
+                # if everything is not masked
+                elif np.all(mask_block == False):
                     mask = False
-                elif np.any(test_block.mask == False):
-                    if test_block.ndim == 1:
-                        out_block_shape  = [ test_block.shape[0] ]
-                    else:
-                        out_block_shape = list(test_block.shape[:-1])
-                    res = test_block.size
-                    if isinstance(block,list):
-                        if test_block.ndim == 1:
-                            mask = block[0].mask
+                
+                # if part masked, part unmasked
+                elif np.any(mask_block == False):
+                    tmp_arr = mask_block.size
+                    mask = mask_block[...,0]
+            
+                
+                if mask is not True:
+                    # if no mask, we send the np.ndarray only
+                    if mask is False:
+                        if isinstance(block,list):
+                            block = [b.data for b in block]
                         else:
-                            mask = block[0][...,0].mask
-                    else:
-                        mask = block[...,0].mask
-                    
-                # if 3d, array is given with mask
-                if res:
-                    if return_3d:
-                        if np.all(mask == False):
-                            if isinstance(block,list):
-                                block = [b.data for b in block]
-                            else:
-                                block = block.data
-                            mask = False
+                            block = block.data
                         if kwargs:
                             out_block = fun(block,**kwargs)
                         else:
                             out_block = fun(block)
-                        if out_block.ndim == 1:
-                            out_block = np.expand_dims(out_block,2)
-                        if mask is not False:
-                            out_block[mask,...] = nodata                        
-                    else:
-                        
-                        if np.all(mask == False):
-                            if isinstance(block,list):
-                                block = [b.data for b in block]
-                            else:
-                                block = block.data
+                    else:        
+                        # if 3d we send the np.ma.MaskedArray
+                        if return_3d:
                             if kwargs:
                                 out_block = fun(block,**kwargs)
                             else:
                                 out_block = fun(block)
-                        elif np.any(mask == False):
+                            if out_block.ndim == 1:
+                                out_block = np.expand_dims(out_block,2)
+                            out_block[mask,...] = nodata
+                        
+                        # if 2d, we send only the np.ndarray without masked data
+                        else:    
+                            # create empty array with nodata value
+                            if mask_block.ndim == 1:
+                                out_block_shape  = [ mask_block.shape[0] ]
+                            else:
+                                out_block_shape = list(mask_block.shape[:-1])
                             out_block_shape.append(n_bands)
                             out_block = np.full(out_block_shape,nodata,np_dtype)
-                            if res :
-                                if isinstance(block,list):
-                                    block = [b[~mask,...].data for b in block]
-                                    if kwargs:
-                                        res = fun(block,**kwargs)
-                                    else:
-                                        res = fun(block)
+                            
+                        
+                            if isinstance(block,list):
+                                block = [b[~mask,...].data for b in block]
+                                if kwargs:
+                                    tmp_arr = fun(block,**kwargs)
                                 else:
-                                    if kwargs:
-                                        res = fun(block[~mask].data,**kwargs)
-                                    else:
-                                        res = fun(block[~mask,...].data)
-                            if res.ndim == 1:
-                                res = res.reshape(-1,1)
+                                    tmp_arr = fun(block)
+                            else:
+                                if kwargs:
+                                    tmp_arr = fun(block[~mask].data,**kwargs)
+                                else:
+                                    tmp_arr = fun(block[~mask,...].data)
+                            if tmp_arr.ndim == 1:
+                                tmp_arr = tmp_arr.reshape(-1,1)
                             
-                            out_block[~mask,...] = res
-                    
-                else:
-                    out_block = nodata
-                            
+                            out_block[~mask,...] = tmp_arr                            
                     
                 return out_block
             
@@ -1503,8 +1469,9 @@ class RasterMath:
             else :
                 raise ValueError(' {} is not a valid value. Use for example 100M, 10G or 1T.'.format(size))
             
-            length = min(int(size_value/self.size*self.itemsize),self.n_blocks)
-
+            # to keep some memory space (because of outputs array, we multiply by 2 the input array memory)
+            length = min(int(size_value/self.size*self.itemsize/2),self.n_blocks)
+            
             if self.verbose:
                 self.pb = ProgressBar(self.n_blocks, message=self.message)
             
@@ -1530,7 +1497,7 @@ class RasterMath:
                             res.append(_process_block(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d))
                       
                     for idx_block, block in enumerate(res):
-                        self._write_block(idx_blocks[idx_block],block, idx_output)
+                        self.write_block(block, idx_blocks[idx_block], idx_output)
 
                 if self.verbose:
                     self._position += length
@@ -1548,7 +1515,7 @@ class RasterMath:
             if self.verbose:
                 self.pb.add_position(self.n_blocks)
 
-    def _write_block(self, idx_block, block, idx_func):
+    def write_block(self, block, idx_block, idx_func):
         """
         Write a block at a position on a output image
 
@@ -1573,26 +1540,19 @@ class RasterMath:
             
             curBand = self._outputs[idx_func]['gdal_object'].GetRasterBand(indGdal)
 
-            if isinstance(block,int):
-                resToWrite = np.full((coords[3],coords[2]),self._outputs[idx_func]['nodata'])
-                
-            elif self.return_3d is False:
-                # need to reshape as block
-                if block.ndim > 1:
-                    resToWrite = self.reshape_ndim(block)[..., ind]
-                else:
-                    resToWrite = self.reshape_ndim(block)
-                
-                resToWrite = self.reshape_ndim(resToWrite.reshape(coords[3], coords[2]))
-                
-                
+            # if int or float value, write it in each pixel of the block
+            if isinstance(block,(float,int)):
+                resToWrite = np.full((coords[3],coords[2]),block)
+            
             else:
-                if block.ndim > 2:
-                    resToWrite = block[..., ind]
-                else:
-                    resToWrite = block
+                # to be sure to have 2 or 3 dim
+                resToWrite = self.reshape_ndim(block)[..., ind]
+                if resToWrite.ndim <= 1:
+                    resToWrite = self.reshape_ndim(resToWrite).reshape(coords[3],coords[2])
                     
+            
             curBand.WriteArray(resToWrite,coords[0],coords[1])
+            
             curBand.FlushCache()
 
 

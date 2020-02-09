@@ -55,7 +55,7 @@ for return_3d in [True,False]:
     rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
     t=time.time()
     
-    rM.run()
+    rM.run(1)
 #    rM.run()
     
     print(time.time()-t)
