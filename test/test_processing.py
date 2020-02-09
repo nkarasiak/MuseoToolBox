@@ -68,18 +68,18 @@ class TestRaster(unittest.TestCase):
         
     
     def test_readPerBand(self):
-        for is_3d in [True, False]:
+        for is_3d in [True,False]:
             rM_band = processing.RasterMath(raster,return_3d=is_3d,in_image_mask=mask)
             for idx,band in enumerate(rM_band.read_band_per_band()):
-                pass
-            for block in rM_band.read_block_per_block():
-                assert(np.ma.isMaskedArray(block))
-                
-            assert(idx+1==rM_band.n_bands)
+                print(band.ndim)
+                if is_3d is True:
+                    assert(band.ndim == 2)
+                else:
+                    assert(band.ndim == 2)
             del rM_band
     
     def test_3d(self)            :
-        rM_3d = processing.RasterMath(raster,return_3d=True,block_size = False)
+        rM_3d = processing.RasterMath(raster,return_3d=True)
         self.assertRaises(ValueError,rM_3d.get_block,100)
         assert(rM_3d.get_random_block().ndim == 3)
         for block in rM.read_block_per_block():
@@ -99,7 +99,7 @@ class TestRaster(unittest.TestCase):
         
         rM.add_image(raster)
         
-        assert(np.all(rM.get_random_block(12))== np.all(rM.get_random_block(12)))
+        assert(np.all(rM.get_random_block(random_state=12))== np.all(rM.get_random_block(random_state=12)))
         
         
     def test_mask(self)            :

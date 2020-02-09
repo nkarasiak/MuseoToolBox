@@ -626,10 +626,10 @@ class RasterMath:
         self.geo_transform = self.opened_images[0].GetGeoTransform()
         self.projection = self.opened_images[0].GetProjection()
 
-        # Get block size
+        # Get block size and itemsize
         band = self.opened_images[0].GetRasterBand(1)
-        self.itemsize = band.ReadAsArray(0,0,1,1).itemsize*self.n_bands
         self.input_block_sizes = band.GetBlockSize()
+        self.itemsize = band.ReadAsArray(0,0,1,1).itemsize*self.n_bands
     
         # input block size
         if block_size is False:
@@ -661,9 +661,6 @@ class RasterMath:
         
         self._outputs = []
         self._raster_options = {}
-
-        # Initalize the run
-        self._position = 0
 
     def add_image(
             self,
@@ -1118,8 +1115,9 @@ class RasterMath:
                     if np.all(tmp.mask == True):
                         size = 0
             idx += 1
+        
         return tmp
-
+        
     def reshape_ndim(self, x):
         """
         Reshape array with at least one band.
@@ -1158,6 +1156,7 @@ class RasterMath:
                     band = np.ma.MaskedArray(
                         band, mask=np.where(
                             band == self.nodata, True, False))
+                
                 yield band
 
     def read_block_per_block(self):
@@ -1404,7 +1403,9 @@ class RasterMath:
                     mask = mask_block[...,0]
             
                 
+                # if not is fully masked
                 if mask is not True:
+                    
                     # if no mask, we send the np.ndarray only
                     if mask is False:
                         if isinstance(block,list):
@@ -1415,6 +1416,8 @@ class RasterMath:
                             out_block = fun(block,**kwargs)
                         else:
                             out_block = fun(block)
+                    
+                    # if part is masked
                     else:        
                         # if 3d we send the np.ma.MaskedArray
                         if return_3d:
@@ -1422,6 +1425,7 @@ class RasterMath:
                                 out_block = fun(block,**kwargs)
                             else:
                                 out_block = fun(block)
+                                
                             if out_block.ndim == 1:
                                 out_block = np.expand_dims(out_block,2)
                             out_block[mask,...] = nodata
@@ -1429,10 +1433,7 @@ class RasterMath:
                         # if 2d, we send only the np.ndarray without masked data
                         else:    
                             # create empty array with nodata value
-                            if mask_block.ndim == 1:
-                                out_block_shape  = [ mask_block.shape[0] ]
-                            else:
-                                out_block_shape = list(mask_block.shape[:-1])
+                            out_block_shape = list(mask_block.shape[:-1])
                             out_block_shape.append(n_bands)
                             out_block = np.full(out_block_shape,nodata,np_dtype)
                             
@@ -1448,6 +1449,7 @@ class RasterMath:
                                     tmp_arr = fun(block[~mask].data,**kwargs)
                                 else:
                                     tmp_arr = fun(block[~mask,...].data)
+                            
                             if tmp_arr.ndim == 1:
                                 tmp_arr = tmp_arr.reshape(-1,1)
                             
@@ -1458,7 +1460,8 @@ class RasterMath:
 # =============================================================================
 #           End of _process_block function
 # =============================================================================
-                
+            # Initalize the run
+            self._position = 0
             size_value=size[:-1]
             if size[-1]=='M':
                 size_value=1048576*int(size_value)
