@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb  7 21:43:15 2020
+
+@author: nicolas
+"""
+
 # -*- coding: utf-8 -*-
 """
 Using rasterMath with 3d block or 2d block
@@ -14,7 +22,6 @@ from museotoolbox.processing import RasterMath,image_mask_from_vector
 from museotoolbox import datasets
 from matplotlib import pyplot as plt
 import numpy as np
-
 
 ##############################################################################
 # Load HistoricalMap dataset
@@ -33,34 +40,46 @@ image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=True)
 
 import time
 
-tn = time.time()
+from numba import jit
 
-for return_3d in [True,False]:
+@jit(nopython=True)
+def loop_in_image(X):
+    x = np.full(X.shape,5)
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            x[i,j,...] = X[i,j,...]
+    
+    return x
 
-    rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=return_3d)
-    
-    rM.custom_block_size(10,10) # block of 200x200pixels
-    
+
+rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=True,verbose=0)
+from joblib import Parallel,delayed
+
+t0 = time.time()
+Parallel(-1)(delayed(loop_in_image)(rM.get_block(X)) for X in range(3))
+print(time.time()-t0)
+
+t0 = time.time()
+for X in range(3):
+    loop_in_image(rM.get_block(X))
+print(time.time()-t0)
 #    print(rM.get_random_block().shape)
-    
-    x = rM.get_block()
-    
-    # Returns with only 1 dimension
-    returnFlatten = lambda x : x[...,0]
-    
-    # Returns 3x the original last dimension
-    addOneBand = lambda x : np.repeat(x,3,axis=x.ndim-1)
-    # Add functions to rasterMath
-    rM.add_function(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
-    rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
-    t=time.time()
-    
-    rM.run()
-#    rM.run()
-    
-    print(time.time()-t)
 
+X = rM.get_random_block()
+
+# Returns with only 1 dimension
+returnFlatten = lambda x : x[...,0]
+
+# Returns 3x the original last dimension
+# Add functions to rasterMath
+rM.add_function(loop_in_image,'/tmp/loop.tif')
+t=time.time()
+
+rM.run()
+#rM.run()
+
+print(time.time()-t)
 from osgeo import gdal
-dst = gdal.Open('/tmp/x_flatten_True.tif')
+dst = gdal.Open('/tmp/loop.tif')
 arr = dst.GetRasterBand(1).ReadAsArray()
 plt.imshow(np.ma.masked_where(arr == np.min(arr), arr))

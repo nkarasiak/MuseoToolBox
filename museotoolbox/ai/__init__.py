@@ -325,13 +325,11 @@ class SuperLearner:
         Xpredict : np.ndarray (n_size,).
             The probability from 0 to 100.
         """
-        if hasattr(self, 'Xpredict_proba'):
-            Xpredict_proba = np.amax(self.Xpredict_proba, axis=1)
-        else:
-            Xpredict_proba = np.amax(
-                self.model.predict_proba(
-                    self._convert_array(
-                        X)) * 100, axis=1)
+        Xpredict_proba = np.amax(
+            self.model.predict_proba(
+                self._convert_array(
+                    X)) * 100, axis=1)
+        
         return Xpredict_proba
 
     def predict_image(

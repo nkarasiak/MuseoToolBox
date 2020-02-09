@@ -108,7 +108,7 @@ class TestCV(unittest.TestCase):
         # to keep same size of training by a random selection
 
             
-        as_loo= cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
+        as_loo = cross_validation._sample_selection._cv_manager(cross_validation._sample_selection.distanceCV,
                                                             distance_thresold=100,
                                                             distance_matrix=distance_matrix,
                                                             random_state=12,

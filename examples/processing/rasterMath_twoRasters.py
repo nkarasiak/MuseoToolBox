@@ -26,7 +26,7 @@ raster,vector = datasets.load_historical_data()
 ##############################################################################
 # If invert is set to True, it means polygons will be set to nodata
 
-image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=False)
+image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=True)
 rM = RasterMath(in_image = raster,in_image_mask='/tmp/mask.tif',return_3d=True)
 
 rM.add_image(raster)
@@ -37,12 +37,12 @@ print('Number of rasters : '+str(len(rM.get_random_block())))
 # Let's suppose you want compute the substraction between the blue and green band of two inputs
 # I suggest you to define type in numpy array to save space while creating the raster!
 
-x = rM.get_random_block()
+x = rM.get_block(0)
 
 def sub(x):
     firstBandOfFirstRaster = x[0][...,0]
     thirdBandOfSecondRaster = x[1][...,2]
-    difference = np.array(firstBandOfFirstRaster-thirdBandOfSecondRaster,dtype=np.uint8)
+    difference = np.subtract(firstBandOfFirstRaster,thirdBandOfSecondRaster)
     return difference
 
 rM.add_function(sub,out_image='/tmp/sub_2inputs.tif')
@@ -50,6 +50,7 @@ rM.add_function(sub,out_image='/tmp/sub_2inputs.tif')
 #####################
 # Run the script
 
+#rM.run()
 rM.run()
 
 #######################

@@ -54,33 +54,35 @@ SL = SuperLearner(classifier=classifier,param_grid = dict(n_estimators=[10]),n_j
 SL.fit(X,y,cv=SKF,scoring=kappa)
 
 
-##############################################################################
-# Read the model
-# -------------------
-print(SL.model)
-print(SL.model.cv_results_)
-print(SL.model.best_score_)
-
-##############################################################################
-# Get F1 for every class from best params
-# -----------------------------------------------
-
-for stats in SL.get_stats_from_cv(confusion_matrix=False,F1=True):
-    print(stats['F1'])
-    
-##############################################################################
-# Get each confusion matrix from folds
-# -----------------------------------------------
-
-for stats in SL.get_stats_from_cv(confusion_matrix=True):
-    print(stats['confusion_matrix'])
-    
-##############################################################################
-# Save each confusion matrix from folds
-# -----------------------------------------------
-
-SL.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
-
+# =============================================================================
+# ##############################################################################
+# # Read the model
+# # -------------------
+# print(SL.model)
+# print(SL.model.cv_results_)
+# print(SL.model.best_score_)
+# 
+# ##############################################################################
+# # Get F1 for every class from best params
+# # -----------------------------------------------
+# 
+# for stats in SL.get_stats_from_cv(confusion_matrix=False,F1=True):
+#     print(stats['F1'])
+#     
+# ##############################################################################
+# # Get each confusion matrix from folds
+# # -----------------------------------------------
+# 
+# for stats in SL.get_stats_from_cv(confusion_matrix=True):
+#     print(stats['confusion_matrix'])
+#     
+# ##############################################################################
+# # Save each confusion matrix from folds
+# # -----------------------------------------------
+# 
+# SL.save_cm_from_cv('/tmp/testMTB/',prefix='RS50_')
+# 
+# =============================================================================
 ##############################################################################
 # Predict map
 # ---------------------------

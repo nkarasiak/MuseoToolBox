@@ -193,7 +193,7 @@ class TestRaster(unittest.TestCase):
         assert(pixel_position.shape[0] == X.shape[0])
         
     def test_get_parameter(self):
-        assert(isinstance(rM.get_raster_parameters(),list))
+        assert(isinstance(rM.get_raster_parameters(),dict))
         rM.custom_raster_parameters(['TILED=NO'])
         assert(rM.get_raster_parameters() == ['TILED=NO'])
     

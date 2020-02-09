@@ -78,7 +78,7 @@ rM.custom_block_size(256,256) # custom for reading AND writing the output
 
 returnSameImage  = lambda x : x
 rM.add_function(returnSameImage,'/tmp/testcustomblock.tif')
-rM.run_parallel()
+rM.run()
 
 #####################
 # check block size of new raster

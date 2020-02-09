@@ -58,7 +58,7 @@ rM.add_function(sub,out_image='/tmp/sub.tif',band1=1,band2=0,compress='high')
 #####################
 # Run the script
 
-rM.run_parallel()
+rM.run()
 print(time.time()-t)
 #######################
 # Plot result

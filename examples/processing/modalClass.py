@@ -12,7 +12,8 @@ Create a raster with the modal class and the number of agreements.
 # -------------------------------------------
 
 import museotoolbox as mtb
-from scipy import stats
+from numba import jit
+from scipy.stats import mode
 import numpy as np
 ##############################################################################
 # Load HistoricalMap dataset
@@ -41,9 +42,10 @@ print(rM.get_random_block())
 x = rM.get_random_block()
 
 def modal_class(x):    
-    tmp = stats.mode(x,axis=1)
-    tmpStack = np.column_stack((tmp[0], tmp[1])).astype(np.int16)
+    tmpStack = np.column_stack(mode(x,axis=1)).astype(np.int16)
     return tmpStack
+
+modal_class(x)
 
 rM.add_function(modal_class,out_image='/tmp/modal.tif',out_nodata=0)
 

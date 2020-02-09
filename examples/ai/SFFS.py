@@ -36,7 +36,7 @@ LSGO = LeavePSubGroupOut(valid_size=0.8,n_repeats=2,
 
 classifier = RandomForestClassifier(random_state=12,n_jobs=1)
 
-kappa = metrics.make_scorer(metrics.cohen_kappa_score)
+f1 = metrics.make_scorer(metrics.f1_score)
 
 ##############################################################################
 # Set and fit the Sequentia Feature Selection
@@ -50,7 +50,7 @@ SFFS.fit(X.astype(np.float),y,g,cv=LSGO,max_features=2)
 # Show best features and score
 
 print('Best features are : '+str(SFFS.best_features_))
-print('Kappa are : '+str(SFFS.best_scores_))
+print('F1 are : '+str(SFFS.best_scores_))
 
 ##########################################################################
 # In order to predict every classification from the best feature
@@ -64,5 +64,5 @@ from matplotlib import pyplot as plt
 plt.plot(np.arange(1,len(SFFS.best_scores_)+1),SFFS.best_scores_)
 plt.xlabel('Number of features')
 plt.xticks(np.arange(1,len(SFFS.best_scores_)+1))
-plt.ylabel('Kappa')
+plt.ylabel('F1')
 plt.show()

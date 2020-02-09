@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- n_jobs for RasterMath (thanks to Helene @HTDBD and Arthur@ArthurDfs, two great students)
+- n_jobs for RasterMath (thanks to Helene @HTDBD and Arthur @ArthurDfs, two great students)
+- function write_block and generally a most intuitive way to use RasterMath (with the help of @HTDBD and @ArthurDfs)
 
 ## [0.12.1-beta.1] - 2020-01-16
 
