@@ -12,7 +12,6 @@ Create a raster with the modal class and the number of agreements.
 # -------------------------------------------
 
 import museotoolbox as mtb
-from numba import jit
 from scipy.stats import mode
 import numpy as np
 ##############################################################################
