@@ -612,6 +612,7 @@ class RasterMath:
         self.verbose = verbose
         self.message = message
         self.driver = gdal.GetDriverByName('GTiff')
+        self.itemsize = 0
 
         # Load raster
         self.opened_images = []
@@ -629,7 +630,6 @@ class RasterMath:
         # Get block size and itemsize
         band = self.opened_images[0].GetRasterBand(1)
         self.input_block_sizes = band.GetBlockSize()
-        self.itemsize = band.ReadAsArray(0,0,1,1).itemsize*self.n_bands
     
         # input block size
         if block_size is False:
@@ -677,7 +677,7 @@ class RasterMath:
         opened_raster = gdal.Open(in_image, gdal.GA_ReadOnly)
         if opened_raster is None:
             raise ReferenceError('Impossible to open image ' + in_image)
-
+        
         sameSize = True
 
         if len(self.opened_images) > 0:
@@ -686,6 +686,13 @@ class RasterMath:
                 sameSize = False
                 push_feedback("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
                       Museotoolbox can't add it as an input raster.".format(os.path.basename(in_image)))
+        n_bands = opened_raster.RasterCount
+        
+        band = opened_raster.GetRasterBand(1)
+        mem_size = band.ReadAsArray(0,0,1,1).itemsize*n_bands
+        self.itemsize += mem_size
+        del band
+#        self.itemsize += opened_raster.GetRasterBand(0).ReadAsArray(0,0,1,1).itemsize*n_bands 
 
         if sameSize:
             self.opened_images.append(opened_raster)
@@ -797,7 +804,8 @@ class RasterMath:
         self._outputs[-1]['n_bands'] = out_n_bands
         self._outputs[-1]['kwargs'] = kwargs
         self._outputs[-1]['nodata'] = out_nodata
-
+        self._outputs[-1]['itemsize'] = randomBlock.itemsize*out_n_bands
+        
     def _init_raster_parameters(self, compress=True):
 
         self._raster_options = []
@@ -1110,6 +1118,7 @@ class RasterMath:
                 if np.ma.is_masked(tmp[0]):
                     if np.all(tmp[0].mask == True):
                         size = 0
+                
             else:
                 if np.ma.is_masked(tmp):
                     if np.all(tmp.mask == True):
@@ -1224,7 +1233,7 @@ class RasterMath:
         -------
         None
         """
-
+        self._position = 0
         if self.verbose:
             self.pb = ProgressBar(self.n_blocks, message=self.message)
 
@@ -1354,112 +1363,6 @@ class RasterMath:
             -------
             None
             """
-# =============================================================================
-#           Begin_process_block function
-# =============================================================================        
-            def _process_block(fun,kwargs,block,n_bands,nodata,np_dtype,return_3d):
-                """
-                Private function to compute external function per block.
-                In order to save with the size as the input block, this function need the input mask.
-                
-                Parameters
-                ----------
-                fun : 
-                    
-                kwargs :
-                    
-                block :
-                    
-                nodata :
-                    
-                np_dtype :
-                    
-                return_3d : 
-                
-                Returns
-                -------
-                res : np.ndarray
-                    The block to write
-                    
-                """
-                tmp_arr = True
-                
-                if isinstance(block,list):
-                    mask_block=block[0].mask
-                else:
-                    mask_block=block.mask
-                    
-                # if everything is masked
-                if np.all(mask_block == True):
-                    mask = True
-                    out_block = nodata
-                # if everything is not masked
-                elif np.all(mask_block == False):
-                    mask = False
-                
-                # if part masked, part unmasked
-                elif np.any(mask_block == False):
-                    tmp_arr = mask_block.size
-                    mask = mask_block[...,0]
-            
-                
-                # if not is fully masked
-                if mask is not True:
-                    
-                    # if no mask, we send the np.ndarray only
-                    if mask is False:
-                        if isinstance(block,list):
-                            block = [b.data for b in block]
-                        else:
-                            block = block.data
-                        if kwargs:
-                            out_block = fun(block,**kwargs)
-                        else:
-                            out_block = fun(block)
-                    
-                    # if part is masked
-                    else:        
-                        # if 3d we send the np.ma.MaskedArray
-                        if return_3d:
-                            if kwargs:
-                                out_block = fun(block,**kwargs)
-                            else:
-                                out_block = fun(block)
-                                
-                            if out_block.ndim == 1:
-                                out_block = np.expand_dims(out_block,2)
-                            out_block[mask,...] = nodata
-                        
-                        # if 2d, we send only the np.ndarray without masked data
-                        else:    
-                            # create empty array with nodata value
-                            out_block_shape = list(mask_block.shape[:-1])
-                            out_block_shape.append(n_bands)
-                            out_block = np.full(out_block_shape,nodata,np_dtype)
-                            
-                        
-                            if isinstance(block,list):
-                                block = [b[~mask,...].data for b in block]
-                                if kwargs:
-                                    tmp_arr = fun(block,**kwargs)
-                                else:
-                                    tmp_arr = fun(block)
-                            else:
-                                if kwargs:
-                                    tmp_arr = fun(block[~mask].data,**kwargs)
-                                else:
-                                    tmp_arr = fun(block[~mask,...].data)
-                            
-                            if tmp_arr.ndim == 1:
-                                tmp_arr = tmp_arr.reshape(-1,1)
-                            
-                            out_block[~mask,...] = tmp_arr                            
-                    
-                return out_block
-            
-# =============================================================================
-#           End of _process_block function
-# =============================================================================
             # Initalize the run
             self._position = 0
             size_value=size[:-1]
@@ -1472,8 +1375,12 @@ class RasterMath:
             else :
                 raise ValueError(' {} is not a valid value. Use for example 100M, 10G or 1T.'.format(size))
             
-            # to keep some memory space (because of outputs array, we multiply by 2 the input array memory)
-            length = min(int(size_value/self.size*self.itemsize/2),self.n_blocks)
+            # Compute the size needed in memory for each output function and input block
+            
+            items_size = self.itemsize
+            for i in self._outputs:
+                items_size += i['itemsize']
+            length = min(int(size_value/self.size*items_size),self.n_blocks)
             
             if self.verbose:
                 self.pb = ProgressBar(self.n_blocks, message=self.message)
@@ -1493,11 +1400,11 @@ class RasterMath:
                     kwargs = output['kwargs']
                     
                     if n_jobs > 1 or n_jobs < 0:
-                        res = Parallel(n_jobs)(delayed(_process_block)(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d) for idx,idx_block in enumerate(idx_blocks))
+                        res = Parallel(n_jobs)(delayed(_process_block)(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d,idx_block) for idx,idx_block in enumerate(idx_blocks))
                     else:
                         res=[]
                         for idx,idx_block in enumerate(idx_blocks):
-                            res.append(_process_block(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d))
+                            res.append(_process_block(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d,idx_block))
                       
                     for idx_block, block in enumerate(res):
                         self.write_block(block, idx_blocks[idx_block], idx_output)
@@ -1518,6 +1425,7 @@ class RasterMath:
             if self.verbose:
                 self.pb.add_position(self.n_blocks)
 
+    
     def write_block(self, block, idx_block, idx_func):
         """
         Write a block at a position on a output image
@@ -1559,6 +1467,125 @@ class RasterMath:
             curBand.FlushCache()
 
 
+# =============================================================================
+#           Begin_process_block function for RasterMath
+#               Function is outside of class in order to be used with Parallel
+# =============================================================================        
+def _process_block(fun,kwargs,block,n_bands,nodata,np_dtype,return_3d,idx_block):
+    """
+    Private function to compute external function per block.
+    In order to save with the size as the input block, this function need the input mask.
+    
+    Parameters
+    ----------
+    fun : function
+        
+    kwargs : kwargs
+        False, or dict of kwargs.
+    block : np.ndarray or np.ma.MaskedArray
+        The function will compute using the given block
+    nodata : nodata, int or float
+        No Data value is some pixels are masked
+    np_dtype : numpy datatype
+        Numpy datatype for the output array
+    return_3d : boolean
+        2d-array or 3d-array.
+    
+    Returns
+    -------
+    res : np.ndarray
+        The block to write
+        
+    """
+    tmp_arr = True
+    
+    if isinstance(block,list):
+        mask_block=block[0].mask
+    else:
+        mask_block=block.mask
+        
+    # if everything is masked
+    if np.all(mask_block == True):
+        mask = True
+        out_block = nodata
+    # if everything is not masked
+    elif np.all(mask_block == False):
+        mask = False
+    
+    # if part masked, part unmasked
+    elif np.any(mask_block == False):
+        tmp_arr = mask_block.size
+        if return_3d:
+            if mask_block.ndim > 2:
+                mask = mask_block[...,0]
+        elif mask_block.ndim == 1:
+            mask = mask_block
+        else:
+            mask = mask_block[...,0]
+            
+    # if block is not fully masked
+    if mask is not True: 
+            
+        # if no mask, we send the np.ndarray only
+        if mask is False:
+            if isinstance(block,list):
+                block = [b.data for b in block]
+            else:
+                block = block.data
+            if kwargs:
+                out_block = fun(block,**kwargs)
+            else:
+                out_block = fun(block)
+        
+        # if part is masked
+        else:   
+            # if 3d we send the np.ma.MaskedArray
+            if return_3d:
+                if kwargs:
+                    out_block = fun(block,**kwargs)
+                else:
+                    out_block = fun(block)
+                    
+                if out_block.ndim == 1:
+                    out_block = np.expand_dims(out_block,2)
+                out_block[mask,...] = nodata
+            
+            # if 2d, we send only the np.ndarray without masked data
+            else:    
+                # create empty array with nodata value
+                if mask_block.ndim > 1:
+                    mbs = mask_block.shape[:-1]
+                else:
+                    mbs = mask_block.shape
+                    
+                out_block_shape = list(mbs)
+                out_block_shape.append(n_bands)
+                out_block = np.full(out_block_shape,nodata,np_dtype)
+                
+            
+                if isinstance(block,list):
+                    block = [b[~mask,...].data for b in block]
+                    if kwargs:
+                        tmp_arr = fun(block,**kwargs)
+                    else:
+                        tmp_arr = fun(block)
+                else:
+                    if kwargs:
+                        tmp_arr = fun(block[~mask].data,**kwargs)
+                    else:
+                        tmp_arr = fun(block[~mask,...].data)
+                
+                if tmp_arr.ndim == 1:
+                    tmp_arr = tmp_arr.reshape(-1,1)
+                
+                out_block[~mask,...] = tmp_arr                            
+                
+        
+    return out_block
+
+# =============================================================================
+#           End of _process_block function
+# =============================================================================
 
 
 

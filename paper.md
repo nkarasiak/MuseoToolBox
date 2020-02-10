@@ -26,8 +26,10 @@ bibliography: paper.bib
 # Summary
 
 `Museo ToolBox` is a python library dedicated to the processing of images in remote sensing.
-Based on the fact that a majority of the needs in machine learning requires knowledge on how to transform your data and since it uses a lot of similar lines of codes on various projects but for the same usage (e.g., for reading and writing the raster block per block, computing a spectral index, fitting a model...), we offer with this library a new approach to compute functions on a raster.
-For example, as in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute for example a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). Other modules help users to g generate stratified spatial or non-spatial cross-validation, or state-of-the-art learning methods with a automatic grid search and standardized data using algorithms from scikit-learn.
+
+This library was initially created to share scikit-learn compatible [spatial cross-validations](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html). Then, we implemented an ``ai`` module to help users to generate stratified spatial or non-spatial cross-validation, with state-of-the-art learning methods including an automatic grid search and standardized data using algorithms from scikit-learn.
+
+Another contribution is  ``RasterMath`` which connects your array-compatible function to your raster. For example, as in our field a recurrent usage is to fit a model and predict or to use some functions like one to compute a spectral index, `Museo ToolBox` automatically transforms the raster to match your needs (for learning a model, the user needs an array with one line per pixel and its features as columns). 
 
 Museo ToolBox's goal is to make working with raster data very easier for scientists or students and to promote the use of spatial cross-validation.
 
@@ -59,7 +61,7 @@ The question is simple : How can the transposition of array-compatible functions
 
 So, what does ``RasterMath`` really do ? The answer is as simple as the question : the user only works with the array, so he doesn't have to manage the reading and writing process, the no-data management, the compression or the projection.
 
-The objective of RasterMath is to **let the user only focus on his array-compatible function**, and to let RasterMath manage the raster part.
+The objective of ``RasterMath`` is to **let the user only focus on his array-compatible function**, and to let ``RasterMath`` manage the raster part.
 
 [Go to RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html)
 
@@ -96,7 +98,7 @@ criteria"*. For spatial cross-validation, see [@karasiak_2019] inspired from [@r
 
 # Acknowledgements
 
-I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hy Yousra Hamrouni !) and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/).
+I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey Yousra Hamrouni !) and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/).
 
 # Figures
 

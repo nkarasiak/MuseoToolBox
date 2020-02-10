@@ -37,7 +37,7 @@ for return_3d in [True,False]:
 
     rM = RasterMath(raster,in_image_mask='/tmp/mask.tif',return_3d=return_3d)
     
-    rM.custom_block_size(128,128) # block of  128x128
+    rM.custom_block_size(10,10) # block of  128x128
     
 #    print(rM.get_random_block().shape)
     
@@ -53,7 +53,7 @@ for return_3d in [True,False]:
     rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
     t=time.time()
     
-    rM.run(1)
+    rM.run(2)
 #    rM.run()
     
     print(time.time()-t)
