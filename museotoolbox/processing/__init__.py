@@ -23,7 +23,9 @@ import tempfile
 # spatial libraries
 from osgeo import __version__ as osgeo_version
 from osgeo import gdal, ogr
+
 from joblib import Parallel, delayed
+from numba import jit
 
 from ..internal_tools import ProgressBar, push_feedback
 
@@ -915,7 +917,7 @@ class RasterMath:
                     yield X, col, row, width, height
                 else:
                     yield col, row, width, height
-
+                    
     def _generate_block_array(self, col, row, width,
                               height, mask=False, offset=0):
         """
@@ -1425,7 +1427,7 @@ class RasterMath:
                         
                         res.append(
                                 self._process_spatial_block(
-                                        output,self.get_block(idx_block),*self.get_block_coords(idx_block)
+                                        output,*self.get_block_coords(idx_block)
                                         ))
                 else:
                     if n_jobs > 1 or n_jobs < 0:
@@ -1523,23 +1525,20 @@ class RasterMath:
             for id_row, row in enumerate(range(line, line + height)):
                 spatial_block = self._generate_block_array(
                     column, row, 1, 1, mask=self.mask, offset=offset)
-                yield id_col, id_row, spatial_block
-                
-    def _process_spatial_block(self,output_dict,block,col,line,cols,lines):
+                yield id_col,id_row, spatial_block
+    
+#    @jit(nopython=True)
+    def _process_spatial_block(self,output_dict,col,line,cols,lines):
         """
         
         Parameters
         -----------
         """
         
-#        resFun = np.zeros((col.shape[0],block.shape[1],output_dict['n_bands']))
-        resFun = Parallel(4)(delayed(output_dict['function'])(spatial_block) for a,b,spatial_block in self._iter_for_spatial_function(col, line, cols, lines, output_dict['offset']))
-        
-        out_block = np.zeros((lines,cols,output_dict['n_bands']))
-        for band in range(output_dict['n_bands']):
-            out_block[...,band] = np.asarray(resFun)[...,band].reshape(cols,lines).T
-            
-        del resFun
+        out_block = np.zeros((lines,cols,output_dict['n_bands']),dtype=output_dict['np_type'])
+
+        for col, row, spatial_block in self._iter_for_spatial_function(col, line, cols, lines, output_dict['offset']):
+            out_block[row,col,...] = output_dict['function'](spatial_block)
 
         return out_block
 

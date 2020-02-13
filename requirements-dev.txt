@@ -1,6 +1,7 @@
 -r requirements.txt
 
 # development specific requirements
+numba
 recommonmark
 sphinx
 sphinx-rtd-theme
