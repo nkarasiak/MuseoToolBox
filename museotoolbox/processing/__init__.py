@@ -995,6 +995,8 @@ class RasterMath:
             t = np.where(arrToCheck == self.nodata)
 
         if self.return_3d:
+            if arr.ndim == 2:
+                arr = np.expand_dims(arr,2)
             tmpMask = np.zeros(arrShape[:2], dtype=bool)
             tmpMask[t] = True
             tmpMask = np.repeat(tmpMask.reshape(*tmpMask.shape, 1), arr.shape[-1], axis=2)
