@@ -33,7 +33,6 @@ print(rM.get_random_block())
 # I suggest you to define type in numpy array to save space while creating the raster!
 
 X = rM.get_random_block()
-
  
 sub = lambda X : np.array((X[:,0]-X[:,1])).astype(np.int16) 
 

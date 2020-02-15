@@ -19,6 +19,7 @@ The :mod:`museotoolbox.processing` module gathers raster and vector tools.
 import os
 import numpy as np
 import tempfile
+from psutil import virtual_memory
 
 # spatial libraries
 from osgeo import __version__ as osgeo_version
@@ -587,6 +588,9 @@ class RasterMath:
         Define the reading and writing block size. First element is the number of columns, second element the number of lines per block.
         If False, will use the block size as defined in in_image.
         To define later the block_size, use `custom_block_size`.
+    n_jobs : int, optional, (default value : 1)
+        Numbers of workers or process that will work in parallel.
+        To use if your function are very time consumming.
     message : str, optional (default='rasterMath...').
         If str, the message will be displayed before the progress bar.
     verbose : bool or int, optional (default=True).
@@ -606,8 +610,8 @@ class RasterMath:
     Saved /tmp/test.tif using function mean
     """
 
-    def __init__(self, in_image, in_image_mask=False, return_3d=False, block_size=[256, 256],
-                 message='rasterMath...', verbose=True):
+    def __init__(self, in_image, in_image_mask=False, return_3d=False, block_size=[256, 256], 
+                 n_jobs=1, message='rasterMath...', verbose=True):
 
         self.verbose = verbose
         self.message = message
@@ -619,6 +623,7 @@ class RasterMath:
 
         self.add_image(in_image)
 
+        self.n_jobs = n_jobs
         self.n_bands = self.opened_images[0].RasterCount
         self.n_columns = self.opened_images[0].RasterXSize
         self.n_lines = self.opened_images[0].RasterYSize
@@ -630,7 +635,7 @@ class RasterMath:
         # Get block size and itemsize
         band = self.opened_images[0].GetRasterBand(1)
         self.input_block_sizes = band.GetBlockSize()
-    
+        
         # input block size
         if block_size is False:
             self.x_block_size = self.input_block_sizes[0]
@@ -811,14 +816,11 @@ class RasterMath:
         self._raster_options = []
 
         if compress:
-            n_jobs = os.cpu_count() - 1
-            if n_jobs < 1:
-                n_jobs = 1
 
             self._raster_options.append('BIGTIFF=IF_SAFER')
 
             if osgeo_version >= '2.1':
-                self._raster_options.append('NUM_THREADS={}'.format(n_jobs))
+                self._raster_options.append('NUM_THREADS={}'.format(self.n_jobs))
 
             if compress == 'high':
                 self._raster_options.append('COMPRESS=DEFLATE')
@@ -1348,7 +1350,7 @@ class RasterMath:
                             fun['function'].__name__)))
             fun['gdal_object'] = None
 
-    def run(self, n_jobs = 1, size = '1G'):
+    def run(self, memory_size = -1):
             """
             Function under construction and used for tests
             Apply a function of idx [0] to an image with parallel mode using joblib.
@@ -1356,9 +1358,7 @@ class RasterMath:
 
             Parameters
             ----------
-            n_jobs : int, optional, ( default value : 1)
-                Numbers of workers or process that will work in parallel.
-            size : str, optional ( default value : '1G')
+            memory_size : str, optional ( default value : '-1')
                 maximun size of ram the program can use to store temporary the results
 
             Returns
@@ -1367,22 +1367,25 @@ class RasterMath:
             """
             # Initalize the run
             self._position = 0
-            size_value=size[:-1]
-            if size[-1]=='M':
-                size_value=1048576*int(size_value)
-            elif size[-1]=='G':
-                size_value=1073741824*int(size_value)
-            elif size[-1]=='T':
-                size_value=1099511627776*int(size_value)
-            else :
-                raise ValueError(' {} is not a valid value. Use for example 100M, 10G or 1T.'.format(size))
+            if memory_size == -1:
+                memory_to_use = virtual_memory().available
+            else:
+                size_value=memory_size[:-1]
+                if memory_size[-1]=='M':
+                    memory_to_use=1048576*int(size_value)
+                elif memory_size[-1]=='G':
+                    memory_to_use=1073741824*int(size_value)
+                elif memory_size[-1]=='T':
+                    memory_to_use=1099511627776*int(size_value)
+                else :
+                    raise ValueError(' {} is not a valid value. Use for example 100M, 10G or 1T.'.format(memory_size))
             
             # Compute the size needed in memory for each output function and input block
             
             items_size = self.itemsize
             for i in self._outputs:
                 items_size += i['itemsize']
-            length = min(int(size_value/self.size*items_size),self.n_blocks)
+            length = min(int(memory_to_use/self.size*items_size),self.n_blocks)
             
             if self.verbose:
                 self.pb = ProgressBar(self.n_blocks, message=self.message)
@@ -1401,18 +1404,25 @@ class RasterMath:
                     function = output['function']
                     kwargs = output['kwargs']
                     
-                    if n_jobs > 1 or n_jobs < 0:
-                        res = Parallel(n_jobs)(delayed(_process_block)(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d,idx_block) for idx,idx_block in enumerate(idx_blocks))
+                    if self.n_jobs > 1 or self.n_jobs == -1:
+                        res = Parallel(self.n_jobs)(delayed(_process_block)(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d,idx_block) for idx,idx_block in enumerate(idx_blocks))
+                        if self.verbose:
+                                self._position += length/len(self._outputs)
+                                self.pb.add_position(self._position)
                     else:
                         res=[]
                         for idx,idx_block in enumerate(idx_blocks):
+                            
                             res.append(_process_block(function,kwargs,self.get_block(idx_block,return_with_mask=True),output['n_bands'],output['nodata'],output['np_type'],self.return_3d,idx_block))
-                      
+                        if self.verbose:
+                            self._position += length/len(self._outputs)
+                            self.pb.add_position(self._position)
+                            
+                                
                     for idx_block, block in enumerate(res):
                         self.write_block(block, idx_blocks[idx_block], idx_output)
 
-                if self.verbose:
-                    self._position += length
+                
             
             # delete output gdal object
             for fun in self._outputs :

@@ -39,8 +39,6 @@ for return_3d in [True,False]:
     
     rM.custom_block_size(10,10) # block of  128x128
     
-#    print(rM.get_random_block().shape)
-    
     x = rM.get_block()
     
     # Returns with only 1 dimension
@@ -53,8 +51,7 @@ for return_3d in [True,False]:
     rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
     t=time.time()
     
-    rM.run(2)
-#    rM.run()
+    rM.run()
     
     print(time.time()-t)
 
