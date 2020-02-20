@@ -43,6 +43,9 @@ I imagined Museo ToolBox as a tool to simplify raster processing and to promote 
 To contribute to this package, please read the instructions in [CONTRIBUTING.rst](CONTRIBUTING.rst).
 
 ## How do I install it ?
+
+To use Museo ToolBox, you need to install first gdal, then :
+
 A package is available on pip :
 ```python3
 python3 -m pip install museotoolbox --user
@@ -54,6 +57,7 @@ python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop
 ```
 
 Feel free to remove the `--user` if you like to install the library for every user on the machine.
+
 
 ## Who built Museo ToolBox ?
 

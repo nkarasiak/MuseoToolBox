@@ -27,7 +27,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='museotoolbox',
     version=__version__,
-    description='Raster and vector tools for Remote Sensing and Classification',
+    description='Raster and vector tools for Remote Sensing and Classification, built upon gdal library',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/nkarasiak/MuseoToolBox',
