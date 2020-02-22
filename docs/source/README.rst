@@ -88,6 +88,8 @@ To contribute to this package, please read the instructions in `CONTRIBUTING.rst
 How do I install it ?
 ---------------------
 
+To use Museo ToolBox, you need to install first gdal, then :
+
 A package is available on pip :
 
 .. code-block:: python3
