@@ -692,7 +692,7 @@ class RasterMath:
             if opened_raster.RasterXSize != self.opened_images[
                     0].RasterXSize or opened_raster.RasterYSize != self.opened_images[0].RasterYSize:
                 sameSize = False
-                push_feedback("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
+                raise ValueError("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
                       Museotoolbox can't add it as an input raster.".format(os.path.basename(in_image)))
         n_bands = opened_raster.RasterCount
         

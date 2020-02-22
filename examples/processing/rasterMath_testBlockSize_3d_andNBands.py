@@ -31,7 +31,6 @@ raster,vector = datasets.load_historical_data()
 
 image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=True)
 
-import time
 
 for return_3d in [True,False]:
 
@@ -49,11 +48,8 @@ for return_3d in [True,False]:
     # Add functions to rasterMath
     rM.add_function(addOneBand,'/tmp/x_repeat_{}.tif'.format(str(return_3d)))
     rM.add_function(returnFlatten,'/tmp/x_flatten_{}.tif'.format(str(return_3d)))
-    t=time.time()
     
     rM.run()
-    
-    print(time.time()-t)
 
 from osgeo import gdal
 dst = gdal.Open('/tmp/x_flatten_True.tif')
