@@ -1528,7 +1528,7 @@ class RasterMath:
                     total = self.n_blocks
                 else:
                     total = length
-                print('Working with {} blocks of {}x{} in memory.'.format(int(total),self.x_block_size,self.y_block_size))
+                print('Batch processing ({} blocks using {}Mo of ram)'.format(int(total),np.ceil(minimun_memory*total/1048576).astype(int)))
                 
                 self.pb = ProgressBar(self.n_blocks, message=self.message)
                 self._position = 0
