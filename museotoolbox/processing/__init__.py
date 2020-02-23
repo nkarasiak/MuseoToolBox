@@ -1477,18 +1477,17 @@ class RasterMath:
     # =============================================================================
     
 
-    def run(self, memory_size = False):
+    def run(self, memory_size = '256M'):
             """
-            Function under construction and used for tests
-            Apply a function of idx [0] to an image with parallel mode using joblib.
-            Warning : this function does not write the results in an output.
+            Execute and Write output according to given functions.
 
             Parameters
             ----------
-            memory_size : str, optional (default=False)
-                maximun size of ram the program can use to store temporary the results.
-                Support : M,G,T for Mo,Go, or To.
-                Example : '10M', '1G' or '1T'.
+            memory_size : str, optional (default='256M')
+                Maximun size of ram the program can use to store blocks and results in memory.
+                Support : M,G,T for Mo,Go, or To
+                Example : '256M', '1G', '8G' or '1T'.
+                Put -1 or False to use all the free memory.
 
             Returns
             -------
@@ -1529,8 +1528,7 @@ class RasterMath:
                     total = self.n_blocks
                 else:
                     total = length
-                    print('Batching {} blocks at once.'.format(int(total),self.n_blocks))
-#                    n_iter = int(np.ceil(self.n_blocks/total))
+                print('Working with {} blocks of {}x{} in memory.'.format(int(total),self.x_block_size,self.y_block_size))
                 
                 self.pb = ProgressBar(self.n_blocks, message=self.message)
                 self._position = 0
@@ -1565,7 +1563,7 @@ class RasterMath:
                     for idx_block, block in enumerate(res):
                         self.write_block(block, idx_blocks[idx_block], idx_output)
 
-                
+                    self._outputs[idx_output]['gdal_object'].FlushCache()
             
             # delete output gdal object
             for fun in self._outputs :
@@ -1619,7 +1617,8 @@ class RasterMath:
             
             curBand.WriteArray(resToWrite,coords[0],coords[1])
             
-            curBand.FlushCache()
+            # rm FlushCache to speed process           
+            # curBand.FlushCache()
 
 
 def sample_extraction(
