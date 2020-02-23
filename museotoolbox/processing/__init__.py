@@ -820,7 +820,7 @@ class RasterMath:
 
         if compress:
 
-            self._raster_options.append('BIGTIFF=IF_SAFER')
+            self._raster_options.append('BIGTIFF=YES')
 
             if osgeo_version >= '2.1':
                 self._raster_options.append('NUM_THREADS={}'.format(self.n_jobs))
