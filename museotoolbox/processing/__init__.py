@@ -226,9 +226,7 @@ def _convert_gdal_to_otb_dt(dt):
 def extract_ROI(in_image, in_vector, *fields, **kwargs):
     """
     Extract raster values from Regions Of Interest in a vector file.
-
     Initially written by Mathieu Fauvel, improved by Nicolas Karasiak.
-
     Parameters
     -----------
     in_image : str.
@@ -238,24 +236,15 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         It could be any file that GDAL/OGR can open.
     *fields : str.
         Each field to extract label/value from.
-
     **kwargs : list of kwargs.
         - get_pixel_position : bool, optional (default=False).
-
         If `get_pixel_position=True`, will return pixel position in the image for each point.
-
         - only_pixel_position : bool, optional (default=False).
-
         If `only_pixel_position=True`, with only return pixel position for each point.
-
-        - prefer_memory : bool, optional (default=True).
-
+        - prefer_memory : bool, optional (default=False).
         If `prefer_memory=False`, will write temporary raster on disk to extract ROI values.
-
         - verbose : bool or int, optional (default=True).
-
         The higher is the int verbose, the more it will returns informations.
-
     Returns
     --------
     X : np.ndarray, size of (n_samples,n_features).
@@ -264,11 +253,9 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
         Each line of the matrix is a pixel.
     y : np.ndarray, size of (n_samples,).
         The label of each pixel.
-
     See also
     ---------
     museotoolbox.processing.read_vector_values : read field values from vector file.
-
     Examples
     ---------
     >>> from museotoolbox.datasets import load_historical_data
@@ -306,7 +293,7 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
     if 'prefer_memory' in kwargs:
         prefer_memory = kwargs['prefer_memory']
     else:
-        prefer_memory = True
+        prefer_memory = False
     # Open Raster
     raster = gdal.Open(in_image, gdal.GA_ReadOnly)
     if raster is None:
@@ -488,12 +475,10 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
 
     return toReturn
 
-
 def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
               gdt=gdal.GDT_Int16, invert=False):
     """
     Rasterize vector to the size of data (raster)
-
     Parameters
     -----------
     in_image : str.
@@ -510,7 +495,6 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
         gdal datatype.
     invert : bool, optional (default=False).
         if invert is True, polygons will have 0 values in the out_image.
-
     Returns
     --------
      dst_ds : gdal object
@@ -562,7 +546,6 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
     data_src, shp, lyr = None, None, None
 
     return dst_ds
-
 
 class RasterMath:
     """
@@ -804,7 +787,7 @@ class RasterMath:
                 out_nodata = minValue
 
             if self.verbose:
-                push_feedback('No data is set to : ' + str(out_nodata))
+                push_feedback('No data is set to : {}.'.format(out_nodata))
         
         self._outputs[-1]['gdal_type'] = out_np_dt
         self._outputs[-1]['np_type'] = dtypeName 
@@ -820,12 +803,13 @@ class RasterMath:
 
         if compress:
 
-            self._raster_options.append('BIGTIFF=YES')
+            self._raster_options.append('BIGTIFF=IF_SAFER')
 
             if osgeo_version >= '2.1':
                 self._raster_options.append('NUM_THREADS={}'.format(self.n_jobs))
 
             if compress == 'high':
+
                 self._raster_options.append('COMPRESS=DEFLATE')
                 self._raster_options.append('PREDICTOR=2')
                 self._raster_options.append('ZLEVEL=9')

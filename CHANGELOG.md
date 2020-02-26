@@ -5,15 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED [0.12.1-beta.3]
-
-### Added
-
-- Spatial functions for RasterMath
+## UNRELEASED [0.12.1b3]
 
 ### Changed
 
 - Enhance mask management for RasterMath
+- Move FlushCache to optimize RasterMath
+- RasterMath use available memory to speed up process and to save several blocks at once
+
 
 ## [0.12.1-beta.2] - 2020-02-10
 
