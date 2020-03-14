@@ -13,6 +13,7 @@
 # @git:     www.github.com/nkarasiak/MuseoToolBox
 # =============================================================================
 
+
 def push_feedback(msg, feedback=None):
     # in order to convert in Qgis Processing
     # =============================================================================
@@ -27,7 +28,7 @@ def push_feedback(msg, feedback=None):
 
 
 class ProgressBar:
-    
+
     def __init__(self, total, message='', length=40):
         """
         total : int
@@ -54,10 +55,10 @@ class ProgressBar:
             If false, will add one.
         """
 
-        if value :
+        if value:
             inPercent = int(value / self.total * 100)
         else:
-    
+
             self.start += 1
             value = self.start
             inPercent = int(self.start / self.total * 100)
@@ -68,7 +69,7 @@ class ProgressBar:
             self.nPoints = int(self.length - int(self.nHash))
 
             self.printBar(inPercent)
-    
+
     def printBar(self, value):
         if value == 100:
             end = "\n"
@@ -77,4 +78,14 @@ class ProgressBar:
 
         # print(self.nHash)
         # print(self.nPoints)
-        print('\r' + self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end, flush=True)
+        print(
+            '\r' +
+            self.message +
+            ' [{}{}]{}%'.format(
+                self.nHash *
+                "#",
+                self.nPoints *
+                ".",
+                self.lastPosition),
+            end=end,
+            flush=True)

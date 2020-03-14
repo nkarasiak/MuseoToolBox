@@ -1,6 +1,8 @@
 -r requirements.txt
 
 # development specific requirements
+m2r
+autopep8
 recommonmark
 sphinx
 sphinx-rtd-theme

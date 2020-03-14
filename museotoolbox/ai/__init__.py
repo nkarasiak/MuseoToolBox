@@ -329,7 +329,7 @@ class SuperLearner:
             self.model.predict_proba(
                 self._convert_array(
                     X)) * 100, axis=1)
-        
+
         return Xpredict_proba
 
     def predict_image(
@@ -341,7 +341,7 @@ class SuperLearner:
             in_image_mask=False,
             out_nodata=0,
             compress=True,
-            n_jobs = 1):
+            n_jobs=1):
         """
         Predict label from raster using previous learned model.
         This function will call self.predictArray(X).
