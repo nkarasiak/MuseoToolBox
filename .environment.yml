@@ -1,12 +1,10 @@
-# Install env for building the doc via readthedocs
+# Conda environment for developpers
 
-name: museotoolbox
+name: museotoolbox-dev
 dependencies:
         - python=3.7
-        - GDAL
+        - pytest
+        - gdal
+        - pip 
         - pip:
-           - nbsphinx
-           - sphinx-rtd-theme
-           - sphinx-gallery
-           - joblib
-
+          - -r file:requirements-dev.txt
