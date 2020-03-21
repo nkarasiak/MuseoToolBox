@@ -9,7 +9,7 @@
 
 **Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
-One of the most meaningful contribution is, in my humble opinion, the [RasterMath](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html) class.
+One of the most meaningful contribution is, in my humble opinion, the [RasterMath](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html) class and the [spatial cross-validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html#module-museotoolbox.cross_validation).
 
 ### Using and citing the toolbox
 
@@ -44,9 +44,12 @@ To contribute to this package, please read the instructions in [CONTRIBUTING.rst
 
 ## How do I install it ?
 
-To use Museo ToolBox, you need to install first gdal, then :
+We recommend you to install Museo ToolBox via conda as it includes gdal dependency :
 
-A package is available on pip :
+`` conda install -c conda-forge museotoolbox`` 
+
+If you prefer to install it via pip, you need to install first gdal, then :
+
 ```python3
 python3 -m pip install museotoolbox --user
 ```
@@ -56,7 +59,7 @@ For early-adopters, you can install the latest development version directly from
 python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user
 ```
 
-Feel free to remove the `--user` if you like to install the library for every user on the machine.
+Feel free to remove the `--user` if you like to install the library for every user on the machine or if some dependencies need root access.
 
 
 ## Who built Museo ToolBox ?

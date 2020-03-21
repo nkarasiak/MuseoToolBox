@@ -1,3 +1,5 @@
+# Install env for building the doc via readthedocs
+
 name: museotoolbox
 dependencies:
         - python=3.7

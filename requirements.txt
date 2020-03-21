@@ -1,3 +1,6 @@
+# dependencies for end-user
+# Does not include GDAL, so you need to install it before
+
 numpy>=1.10
 scipy>=1.0
 scikit-learn>=0.16
