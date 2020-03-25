@@ -19,3 +19,4 @@ numpydoc
 ipykernel
 nbsphinx
 sphinx-gallery
+sphinx-copybutton

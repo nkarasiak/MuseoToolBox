@@ -66,9 +66,9 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     (12647, 3) (12647,)
     >>> raster,vector = load_historical_data()
     >>> raster
-    /mnt/DATA/lib/MuseoToolBox/museotoolbox/datasets/_historicalmap/map_compress.tif
+    /mnt/bigone/lib/MuseoToolBox/museotoolbox/datasets/_historicalmap/map_compress.tif
     >>> vector
-    /mnt/DATA/lib/MuseoToolBox/museotoolbox/datasets/_historicalmap/train.gpkg
+    /mnt/bigone/lib/MuseoToolBox/museotoolbox/datasets/_historicalmap/train.gpkg
     """
     toReturn = []
     if low_res:

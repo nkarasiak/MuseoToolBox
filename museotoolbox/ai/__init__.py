@@ -257,6 +257,8 @@ class SuperLearner:
 
         if self.standardize:
             if np.ma.is_masked(X):
+                if X.mask.ndim == 1:
+                    X = X.reshape(-1, 1)
                 tmpMask = X.mask[:, 0]
             X = _reshape_ndim(X)
             X = self.StandardScaler.transform(X)
