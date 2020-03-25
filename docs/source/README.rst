@@ -13,25 +13,31 @@
    :target: https://travis-ci.org/nkarasiak/MuseoToolBox
    :alt: Build status
 
+
 .. image:: https://readthedocs.org/projects/museotoolbox/badge/?version=latest
    :target: https://museotoolbox.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
+
 
 .. image:: https://codecov.io/gh/nkarasiak/MuseoToolBox/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/nkarasiak/MuseoToolBox
    :alt: codecov
 
+
 .. image:: https://badge.fury.io/py/museotoolbox.svg
    :target: https://badge.fury.io/py/museotoolbox
    :alt: PyPI version
+
 
 .. image:: https://camo.githubusercontent.com/074cca1cb04798ef7b05419795c800130e47273b/68747470733a2f2f696d672e736869656c64732e696f2f636f6e64612f766e2f636f6e64612d666f7267652f6d7573656f746f6f6c626f782e737667
    :target: https://anaconda.org/conda-forge/museotoolbox
    :alt: Conda version
 
+
 .. image:: https://pepy.tech/badge/museotoolbox
    :target: https://pepy.tech/project/museotoolbox
    :alt: Downloads
+
 
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg
    :target: https://doi.org/10.5281/zenodo.3404728
