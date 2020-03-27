@@ -8,12 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## UNRELEASED [0.12.1-rc.1]
 
 ### Added
+
 - RasterMath use available memory to speed up process and manage now several cores (n_jobs)
 
 ### Changed
+
 - Enhance mask management for RasterMath
 - Move FlushCache to optimize RasterMath
 - RasterMath get_random_block returns only block which are not totally unmasked
+- charts.PlotConfusionMatrix has a default argument (zero_is_min=True)
 
 ## [0.12.1-beta.2] - 2020-02-10
 

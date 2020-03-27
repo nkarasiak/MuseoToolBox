@@ -642,7 +642,7 @@ class RasterMath:
 
         self.nodata = band.GetNoDataValue()
         self.dtype = band.DataType
-        self.ndtype = convert_dt(band.DataType)
+        self.dtype_np = convert_dt(band.DataType)
         self.return_3d = return_3d
 
         del band  # for memory purposes
@@ -948,9 +948,9 @@ class RasterMath:
             nb = self.opened_images[nRaster].RasterCount
 
             if self.return_3d:
-                arr = np.empty((height, width, nb), dtype=self.ndtype)
+                arr = np.empty((height, width, nb), dtype=self.dtype_np)
             else:
-                arr = np.empty((height * width, nb), dtype=self.ndtype)
+                arr = np.empty((height * width, nb), dtype=self.dtype_np)
 #            for ind in range(nb):
             arr = self.opened_images[nRaster].ReadAsArray(
                 col, row, width, height)
@@ -978,7 +978,7 @@ class RasterMath:
         arrShape = arr.shape
         arrToCheck = np.copy(arr)[..., 0]
 
-        outArr = np.zeros((arrShape), dtype=self.ndtype)
+        outArr = np.zeros((arrShape), dtype=self.dtype_np)
         if self.nodata:
             outArr[:] = self.nodata
 

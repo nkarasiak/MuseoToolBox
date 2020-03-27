@@ -43,7 +43,7 @@ class PlotConfusionMatrix:
     """
 
     def __init__(self, cm, cmap=plt.cm.Greens,
-                 left=None, right=None, **kwargs):
+                 left=None, right=None, zero_is_min=True, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -59,7 +59,13 @@ class PlotConfusionMatrix:
             hspace=0.7 / self.cm.shape[0], right=right, left=left)
 
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
-        self.vmin = np.amin(self.cm)
+        self.zero_is_min = zero_is_min
+        
+        if zero_is_min is True:
+                       self.vmin = 0
+        else:
+            self.vmin = np.amin(self.cm)
+            
         self.vmax = np.amax(self.cm)
 
         self.xlabelsPos = 'bottom'
@@ -299,7 +305,12 @@ class PlotConfusionMatrix:
             FP = np.nansum(self.cm_[label, :]) - TP
 
             verticalPlot.append(2 * TP / (2 * TP + FP + FN) * 100)
-
+        
+        if self.font_size is not False:
+            font_size = self.font_size
+        else:
+            font_size = 12
+            
         verticalPlot = np.asarray(verticalPlot).reshape(-1, 1)
         self.ax1v.imshow(
             verticalPlot,
@@ -317,13 +328,15 @@ class PlotConfusionMatrix:
             self.ax1v.set_xticklabels(
                 ['F1'],
                 horizontalalignment='center',
-                rotation=self.xrotation)
+                rotation=self.xrotation,
+                size=font_size)
         else:
             self.ax1v.set_xticks([0])
             self.ax1v.set_xticklabels(
                 ['F1'],
                 horizontalalignment='left',
-                rotation=self.xrotation)
+                rotation=self.xrotation,
+                size=font_size)
         self.ax1v.set_yticks([])
 
         for i in range(self.cm.shape[0]):
@@ -333,6 +346,7 @@ class PlotConfusionMatrix:
                 0,
                 i,
                 txt,
+                size=font_size,
                 horizontalalignment="center",
                 color="white" if verticalPlot[i] > 50 else "black",
                 va='center')
@@ -351,6 +365,12 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_accuracy()
         """
+        
+        if self.font_size is not False:
+            font_size = self.font_size
+        else:
+            font_size = 12
+            
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
@@ -385,7 +405,7 @@ class PlotConfusionMatrix:
                 np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0], nan=0))
 
             self.ax1v.text(0, i, iVal, color="white" if iVal >
-                           thresold else 'black', ha='center', va='center')
+                           thresold else 'black',size=font_size,  ha='center', va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
@@ -393,13 +413,14 @@ class PlotConfusionMatrix:
                 np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0], nan=0))
 
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
-                           thresold else 'black', ha='center', va='center')
+                           thresold else 'black',size=font_size, ha='center', va='center')
 
         self.ax1h.set_yticklabels(
             ['Prod\'s acc.'],
             rotation=self.yrotation,
             ha='right',
-            va='center')
+            va='center',
+            size=font_size)
 
         self.ax1v.xaxis.set_ticks_position('top')  # THIS IS THE ONLY CHANGE
         self.ax1v.set_xticks([0])
@@ -411,7 +432,8 @@ class PlotConfusionMatrix:
             ['User\'s acc.'],
             horizontalalignment='left',
             rotation=self.xrotation,
-            ha=ha)
+            ha=ha,
+            size=font_size)
         self.axes.append([self.ax1v, self.ax1h])
 
     def color_diagonal(self, diag_color=plt.cm.Greens,
@@ -438,14 +460,18 @@ class PlotConfusionMatrix:
 
         self.cm2 = np.ma.masked_array(self.cm, mask=np.logical_not(mask))
         self.cm = np.ma.masked_array(self.cm, mask=mask)
-
+        if self.zero_is_min is True:
+            vmin = 0
+        else:
+            vmin=np.amin(
+                self.cm_),
+            
         self.ax.imshow(
             self.cm2,
             interpolation='nearest',
             aspect='equal',
             cmap=diag_color,
-            vmin=np.amin(
-                self.cm_),
+            vmin=vmin,
             vmax=np.amax(
                 self.cm_),
             alpha=1)
@@ -454,8 +480,7 @@ class PlotConfusionMatrix:
             interpolation='nearest',
             aspect='equal',
             cmap=matrix_color,
-            vmin=np.amin(
-                self.cm_),
+            vmin=vmin,
             vmax=np.amax(
                 self.cm_),
             alpha=1)
