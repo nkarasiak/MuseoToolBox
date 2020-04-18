@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr 18 13:37:27 2020
+Train test split with every kind of cross-validation
+======================================================
 
-@author: enka
+This example shows how to split between test and train according to
+every cross-validation method.
+
 """
 
 ##############################################################################
