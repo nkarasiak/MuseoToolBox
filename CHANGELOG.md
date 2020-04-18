@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - RasterMath use available memory to speed up process and manage now several cores (n_jobs)
+- train_test_split in cross_validation module
 
 ### Changed
 

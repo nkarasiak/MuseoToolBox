@@ -91,7 +91,10 @@ class PlotConfusionMatrix:
         self.kwargs = kwargs
         self.subplot = False
         self.axes.append(self.ax)
-
+    
+    def add_label(self,x_label=False,y_label=False):
+        self.ax.set(xlabel=x_label,ylabel=y_label)
+        
     def add_text(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
         Add value of each case on the matrix image.
@@ -108,6 +111,8 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_text(alpha_zero=0.5)
         """
+        plt.rcParams.update({'font.size': font_size})
+        
         self.font_size = font_size
         if thresold is False:
             thresold = int(np.amax(self.cm) / 2)
@@ -352,7 +357,7 @@ class PlotConfusionMatrix:
                 va='center')
         self.axes.append(self.ax1v)
 
-    def add_accuracy(self, thresold=50):
+    def add_accuracy(self, thresold=50,invert_PA_UA=False):
         """
         Add user and producer accuracy.
 
@@ -414,9 +419,13 @@ class PlotConfusionMatrix:
 
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
                            thresold else 'black',size=font_size, ha='center', va='center')
-
+        
+        y_label,x_label = ['Prod\'s acc.'],['User\'s acc.']
+        if invert_PA_UA :
+            x_label,y_label = y_label,x_label
+            
         self.ax1h.set_yticklabels(
-            ['Prod\'s acc.'],
+            y_label,
             rotation=self.yrotation,
             ha='right',
             va='center',
@@ -429,7 +438,7 @@ class PlotConfusionMatrix:
         else:
             ha = 'center'
         self.ax1v.set_xticklabels(
-            ['User\'s acc.'],
+            x_label,
             horizontalalignment='left',
             rotation=self.xrotation,
             ha=ha,
