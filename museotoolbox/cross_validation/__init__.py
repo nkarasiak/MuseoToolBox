@@ -18,12 +18,13 @@ The :mod:`museotoolbox.cross_validation` module gathers cross-validation classes
 import numpy as np
 from . import _sample_selection
 
-def train_test_split(cv,X,y,random_state=False,**kwargs):
+
+def train_test_split(cv, X, y, random_state=False, **kwargs):
     """
     Split arrays into random train and test subsets according to your choosen cross_validation method.
 
     Quick utility that wraps input validation and next(ShuffleSplit().split(X, y)) and application to input data into a single call for splitting (and optionally subsampling) data in a oneliner.
-    
+
     Parameters
     -----------
         Parameters
@@ -45,25 +46,26 @@ def train_test_split(cv,X,y,random_state=False,**kwargs):
     ---------
     import numpy as np
     import museotoolbox as mtb
-    
+
     X, y = np.arange(10).reshape((5, 2)), range(5)
     cv = mtb.cross_validation.LeaveOneOut
     X_train, y_train, X_test, y_test = mtb.cross_validation.train_test_split(cv,X,y,random_state=42)
-    
+
     """
     # X_train, X_test = [np.asarray([],dtype=X.dtype).reshape(-1,X.shape[-1])]*2 # empty X
     # y_train, y_test = [np.asarray([],dtype=np.int64)]*2 # empty y
     if y.ndim == 2:
-        y=y.flatten()
-        
-    for tr,vl in cv.split(X,y,**kwargs): 
-        X_train = X[tr,...]
+        y = y.flatten()
+
+    for tr, vl in cv.split(X, y, **kwargs):
+        X_train = X[tr, ...]
         y_train = y[tr]
-        X_test = X[vl,...]
+        X_test = X[vl, ...]
         y_test = y[vl]
-        
-        break # only the first fold is needed
+
+        break  # only the first fold is needed
     return X_train, X_test, y_train, y_test
+
 
 class LeaveOneOut(_sample_selection._cv_manager):
     """

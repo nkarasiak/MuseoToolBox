@@ -1087,8 +1087,8 @@ class RasterMath:
 
             return [col[col_number], row[row_number], width, height]
 
-    def _manage_block_mask(self,block):
-            
+    def _manage_block_mask(self, block):
+
         if isinstance(block, list):
             mask_block = block[0].mask
         else:
@@ -1117,7 +1117,7 @@ class RasterMath:
             if isinstance(block, list) and self.return_3d is False:
                 block = [b[~mask, ...].data for b in block]
         return block
-        
+
     def get_random_block(self, random_state=None):
         """
         Get a random block from the raster.
@@ -1268,7 +1268,6 @@ class RasterMath:
         if self.verbose:
             push_feedback('Total number of blocks : %s' % self.n_blocks)
 
-   
     # =============================================================================
     #           Begin_process_block function for RasterMath
     #               Function is outside of class in order to be used with Parallel

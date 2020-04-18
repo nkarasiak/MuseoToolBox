@@ -60,12 +60,12 @@ class PlotConfusionMatrix:
 
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.zero_is_min = zero_is_min
-        
+
         if zero_is_min is True:
-                       self.vmin = 0
+            self.vmin = 0
         else:
             self.vmin = np.amin(self.cm)
-            
+
         self.vmax = np.amax(self.cm)
 
         self.xlabelsPos = 'bottom'
@@ -91,10 +91,10 @@ class PlotConfusionMatrix:
         self.kwargs = kwargs
         self.subplot = False
         self.axes.append(self.ax)
-    
-    def add_label(self,x_label=False,y_label=False):
-        self.ax.set(xlabel=x_label,ylabel=y_label)
-        
+
+    def add_label(self, x_label=False, y_label=False):
+        self.ax.set(xlabel=x_label, ylabel=y_label)
+
     def add_text(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
         Add value of each case on the matrix image.
@@ -112,7 +112,7 @@ class PlotConfusionMatrix:
         >>> plot.add_text(alpha_zero=0.5)
         """
         plt.rcParams.update({'font.size': font_size})
-        
+
         self.font_size = font_size
         if thresold is False:
             thresold = int(np.amax(self.cm) / 2)
@@ -310,12 +310,12 @@ class PlotConfusionMatrix:
             FP = np.nansum(self.cm_[label, :]) - TP
 
             verticalPlot.append(2 * TP / (2 * TP + FP + FN) * 100)
-        
+
         if self.font_size is not False:
             font_size = self.font_size
         else:
             font_size = 12
-            
+
         verticalPlot = np.asarray(verticalPlot).reshape(-1, 1)
         self.ax1v.imshow(
             verticalPlot,
@@ -357,7 +357,7 @@ class PlotConfusionMatrix:
                 va='center')
         self.axes.append(self.ax1v)
 
-    def add_accuracy(self, thresold=50,invert_PA_UA=False):
+    def add_accuracy(self, thresold=50, invert_PA_UA=False):
         """
         Add user and producer accuracy.
 
@@ -370,12 +370,12 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_accuracy()
         """
-        
+
         if self.font_size is not False:
             font_size = self.font_size
         else:
             font_size = 12
-            
+
         if self.subplot is not False:
             raise Warning(
                 'You can\'t add two subplots. You already had ' + str(self.subplot))
@@ -410,7 +410,7 @@ class PlotConfusionMatrix:
                 np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0], nan=0))
 
             self.ax1v.text(0, i, iVal, color="white" if iVal >
-                           thresold else 'black',size=font_size,  ha='center', va='center')
+                           thresold else 'black', size=font_size, ha='center', va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
@@ -418,12 +418,12 @@ class PlotConfusionMatrix:
                 np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0], nan=0))
 
             self.ax1h.text(j, 0, jVal, color="white" if jVal >
-                           thresold else 'black',size=font_size, ha='center', va='center')
-        
-        y_label,x_label = ['Prod\'s acc.'],['User\'s acc.']
-        if invert_PA_UA :
-            x_label,y_label = y_label,x_label
-            
+                           thresold else 'black', size=font_size, ha='center', va='center')
+
+        y_label, x_label = ['Prod\'s acc.'], ['User\'s acc.']
+        if invert_PA_UA:
+            x_label, y_label = y_label, x_label
+
         self.ax1h.set_yticklabels(
             y_label,
             rotation=self.yrotation,
@@ -472,9 +472,9 @@ class PlotConfusionMatrix:
         if self.zero_is_min is True:
             vmin = 0
         else:
-            vmin=np.amin(
+            vmin = np.amin(
                 self.cm_),
-            
+
         self.ax.imshow(
             self.cm2,
             interpolation='nearest',
