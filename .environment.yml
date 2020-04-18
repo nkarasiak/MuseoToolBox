@@ -1,17 +1,12 @@
 # Conda environment for developpers
 
 name: museotoolbox-dev
-channels:
-- conda-forge
-- defaults
 
 dependencies:
-	# ReadTheDoc dependencies
 	- mock
 	- pillow
 	- sphinx==2.2.1
 	- sphinx_rtd_theme
-	# other dependencies
         - python=3.7
         - pytest
         - gdal
