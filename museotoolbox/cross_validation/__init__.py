@@ -15,8 +15,55 @@
 """
 The :mod:`museotoolbox.cross_validation` module gathers cross-validation classes.
 """
+import numpy as np
 from . import _sample_selection
 
+def train_test_split(cv,X,y,random_state=False,**kwargs):
+    """
+    Split arrays into random train and test subsets according to your choosen cross_validation method.
+
+    Quick utility that wraps input validation and next(ShuffleSplit().split(X, y)) and application to input data into a single call for splitting (and optionally subsampling) data in a oneliner.
+    
+    Parameters
+    -----------
+        Parameters
+    ----------
+    cv : cross-validation function.
+        Allowed function from museotoolbox as scikit-learn.
+    X : array-like, shape (n_samples, n_features), optional
+        Training data, where n_samples is the number of samples
+        and n_features is the number of features.
+    y : array-like, of length n_samples
+        The target variable for supervised learning problems.
+    random_state : int, RandomState instance or None, optional (default=None)
+        If int, random_state is the seed used by the random number generator;
+        If RandomState instance, random_state is the random number generator;
+        If None, the random number generator is the RandomState instance used
+        by `np.random`.
+
+    Examples
+    ---------
+    import numpy as np
+    import museotoolbox as mtb
+    
+    X, y = np.arange(10).reshape((5, 2)), range(5)
+    cv = mtb.cross_validation.LeaveOneOut
+    X_train, y_train, X_test, y_test = mtb.cross_validation.train_test_split(cv,X,y,random_state=42)
+    
+    """
+    # X_train, X_test = [np.asarray([],dtype=X.dtype).reshape(-1,X.shape[-1])]*2 # empty X
+    # y_train, y_test = [np.asarray([],dtype=np.int64)]*2 # empty y
+    if y.ndim == 2:
+        y=y.flatten()
+        
+    for tr,vl in cv.split(X,y,**kwargs): 
+        X_train = X[tr,...]
+        y_train = y[tr]
+        X_test = X[vl,...]
+        y_test = y[vl]
+        
+        break # only the first fold is needed
+    return X_train, X_test, y_train, y_test
 
 class LeaveOneOut(_sample_selection._cv_manager):
     """

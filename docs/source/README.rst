@@ -29,6 +29,11 @@
    :alt: PyPI version
 
 
+.. image:: https://camo.githubusercontent.com/074cca1cb04798ef7b05419795c800130e47273b/68747470733a2f2f696d672e736869656c64732e696f2f636f6e64612f766e2f636f6e64612d666f7267652f6d7573656f746f6f6c626f782e737667
+   :target: https://anaconda.org/conda-forge/museotoolbox
+   :alt: Conda version
+
+
 .. image:: https://pepy.tech/badge/museotoolbox
    :target: https://pepy.tech/project/museotoolbox
    :alt: Downloads
@@ -41,22 +46,7 @@
 
 **Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
 
-One of the most meaningful contribution is, in my humble opinion, the `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html>`_.
-
-Using and citing the toolbox
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you use Museo ToolBox in your research and find it useful, please cite this library using the following bibtex reference:
-
-.. code-block:: bib
-
-   @misc{karasiak2019mtb,
-   title={Museo ToolBox : a python library for remote sensing},
-   author={Karasiak Nicolas},
-   url={https://github.com/nkarasiak/museotoolbox},
-   year={2019},
-   doi={10.5281/zenodo.3404728}
-   }
+One of the most meaningful contribution is, in my humble opinion, the `RasterMath <https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html>`_ class and the `spatial cross-validation <https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html#module-museotoolbox.cross_validation>`_.
 
 What's the point ?
 ------------------
@@ -80,15 +70,14 @@ That seems cool, but is there some help to use this ?
 
 I imagined Museo ToolBox as a tool to simplify raster processing and to promote spatial cross-validation, so of course there is some help : `a complete documentation with a lot of examples is available on readthedocs <https://museotoolbox.readthedocs.org/>`_.
 
-I want to improve Museo ToolBox, how can I contribute ?
--------------------------------------------------------
+How do I install Museo ToolBox ?
+--------------------------------
 
-To contribute to this package, please read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
+We recommend you to install Museo ToolBox via conda as it includes gdal dependency :
 
-How do I install it ?
----------------------
+``conda install -c conda-forge museotoolbox`` 
 
-A package is available on pip :
+However, if you prefer to install this library via pip, you need to install first gdal, then :
 
 .. code-block:: python3
 
@@ -100,7 +89,27 @@ For early-adopters, you can install the latest development version directly from
 
    python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user
 
-Feel free to remove the ``--user`` if you like to install the library for every user on the machine.
+Feel free to remove the ``--user`` if you like to install the library for every user on the machine or if some dependencies need root access.
+
+Using and citing the toolbox
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you use Museo ToolBox in your research and find it useful, please cite this library using the following bibtex reference:
+
+.. code-block:: bib
+
+   @misc{karasiak2019mtb,
+   title={Museo ToolBox : a python library for remote sensing},
+   author={Karasiak Nicolas},
+   url={https://github.com/nkarasiak/museotoolbox},
+   year={2019},
+   doi={10.5281/zenodo.3404728}
+   }
+
+I want to improve Museo ToolBox, how can I contribute ?
+-------------------------------------------------------
+
+To contribute to this package, please read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
 
 Who built Museo ToolBox ?
 -------------------------

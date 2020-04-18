@@ -1,6 +1,17 @@
--r requirements.txt
+# dependencies to install for Museo ToolBox developpers
 
-# development specific requirements
+# Museo ToolBox end-user depencies
+# same as requirements.txt
+numpy>=1.10
+scipy>=1.0
+scikit-learn>=0.16
+matplotlib
+joblib
+psutil
+
+# Development specific requirements
+m2r
+autopep8
 recommonmark
 sphinx
 sphinx-rtd-theme
@@ -8,3 +19,4 @@ numpydoc
 ipykernel
 nbsphinx
 sphinx-gallery
+sphinx-copybutton

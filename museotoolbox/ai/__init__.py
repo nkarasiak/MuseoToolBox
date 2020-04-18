@@ -257,6 +257,8 @@ class SuperLearner:
 
         if self.standardize:
             if np.ma.is_masked(X):
+                if X.mask.ndim == 1:
+                    X = X.reshape(-1, 1)
                 tmpMask = X.mask[:, 0]
             X = _reshape_ndim(X)
             X = self.StandardScaler.transform(X)
@@ -329,7 +331,7 @@ class SuperLearner:
             self.model.predict_proba(
                 self._convert_array(
                     X)) * 100, axis=1)
-        
+
         return Xpredict_proba
 
     def predict_image(
@@ -341,7 +343,7 @@ class SuperLearner:
             in_image_mask=False,
             out_nodata=0,
             compress=True,
-            n_jobs = 1):
+            n_jobs=1):
         """
         Predict label from raster using previous learned model.
         This function will call self.predictArray(X).

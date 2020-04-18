@@ -5,9 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased : 0.12.1-beta.2]
+## UNRELEASED [0.12.1-rc.1]
+
+### Added
+
+- RasterMath use available memory to speed up process and manage now several cores (n_jobs)
+- train_test_split in cross_validation module
 
 ### Changed
+
+- Enhance mask management for RasterMath
+- Move FlushCache to optimize RasterMath
+- RasterMath get_random_block returns only block which are not totally unmasked
+- charts.PlotConfusionMatrix has a default argument (zero_is_min=True)
+
+## [0.12.1-beta.2] - 2020-02-10
+
+### Fixed
 
 - Fix bug when in RasterMath when input is only one band
 - Fix bug in RasterMath with mask and list
@@ -22,11 +36,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - new branch spatial added 
 
+### Added
+
+- Added this line
+
 ### Changed
 
 - SequentialFeatureSelection parameters order Changed. *scoring* is now before *standardize*.
-- Fix bug in get_block() and get_random_block() which returned the same block each time due to new method.
 - Update doc for load_historical_data()
+
+### Fixed
+
+- Fix bug in get_block() and get_random_block() which returned the same block each time due to new method.
 - Fix bug with nodata in RasterMath when output is of float type
 
 ## [0.12] - 2019-12-13
@@ -45,7 +66,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - learnAndPredict to SuperLearner
     - rasterMath to RasterMath
     - sequentialFeatureSelection to SequentialFeatureSelection 
-- Fix bug #7 : getSamplesFromROI (nowd extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
+
+### Fixed
+
+- bug #7 : getSamplesFromROI (nowd extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
 
 ### Removed
 
@@ -98,5 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update rasterMath to generate by default a 256*256 raster block size.
 - update rasterMath to prevent bug if user has osgeo/gdal version is lower than 2.1.
 - prevent bug when in rasterMath if processor has only 1 core.
-- minor fixes and doc update
+
+### Fixed
+- minor fixes
 

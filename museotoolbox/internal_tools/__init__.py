@@ -28,6 +28,7 @@ def push_feedback(msg, feedback=None):
 
 
 class ProgressBar:
+
     def __init__(self, total, message='', length=40):
         """
         total : int
@@ -54,13 +55,14 @@ class ProgressBar:
             If false, will add one.
         """
 
-        if value is False:
+        if value:
+            inPercent = int(value / self.total * 100)
+        else:
+
             self.start += 1
             value = self.start
             inPercent = int(self.start / self.total * 100)
 
-        else:
-            inPercent = int(value / self.total * 100)
         if inPercent != self.lastPosition:
             self.lastPosition = inPercent
             self.nHash = int(self.length * (value / self.total))
@@ -76,4 +78,14 @@ class ProgressBar:
 
         # print(self.nHash)
         # print(self.nPoints)
-        print('\r' + self.message + ' [{}{}]{}%'.format(self.nHash * "#", self.nPoints * ".", self.lastPosition), end=end, flush=True)
+        print(
+            '\r' +
+            self.message +
+            ' [{}{}]{}%'.format(
+                self.nHash *
+                "#",
+                self.nPoints *
+                ".",
+                self.lastPosition),
+            end=end,
+            flush=True)

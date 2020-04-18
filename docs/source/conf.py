@@ -48,8 +48,10 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_gallery.gen_gallery',
-    'nbsphinx'
+    'nbsphinx',
+    'sphinx_copybutton'
     ]
+
 
 autosummary_generate = True
 # numpydoc_show_class_members=False 

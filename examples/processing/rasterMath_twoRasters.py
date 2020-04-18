@@ -28,7 +28,6 @@ raster,vector = datasets.load_historical_data()
 
 image_mask_from_vector(vector,raster,'/tmp/mask.tif',invert=True)
 rM = RasterMath(in_image = raster,in_image_mask='/tmp/mask.tif',return_3d=True)
-
 rM.add_image(raster)
 
 print('Number of rasters : '+str(len(rM.get_random_block())))

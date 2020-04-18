@@ -7,6 +7,18 @@ This document describes how to edit the package, run the tests, build the docs, 
 Editing the project
 ---------------------
 
+Developpment environnement
++++++++++++++++++++++++++++
+
+We're using conda environment to install all dependencies needed for Museo ToolBox developpement.
+
+-  ``conda env create -f .environment.yml``
+
+This will create an environnement called ``museotoolbox-dev``, to activate it, just type :
+
+-  ``conda active museotoolbox-dev``
+
+
 Package structure
 ++++++++++++++++++
 - Package code is in `museotoolbox <museotoolbox>`_ folder.
@@ -41,9 +53,9 @@ Conceptual descriptions of changes should also be tracked in the CHANGELOG_.
 
 Adding dependencies
 +++++++++++++++++++++
-When you add code that uses a new package that is not in the standard python library, you should add it to the dependencies specified under the `install_requires` option in `setup.py <setup.py>`_.
+When you add code that uses a new package that is not in the standard python library, you should add it to the dependencies specified under the ``install_requires`` option in `setup.py <setup.py>`_.
 `See here <https://packaging.python.org/discussions/install-requires-vs-requirements/>`_ for information on how to do this, and how to specify minimal required versions.
-As described in the above link, you should **not** pin exact versions in `install_requires` in `setup.py <setup.py>`_ unless absolutely necessary.
+As described in the above link, you should **not** pin exact versions in ``install_requires`` in `setup.py <setup.py>`_ unless absolutely necessary.
 
 
 Testing
@@ -62,14 +74,19 @@ Running the tests locally
 ++++++++++++++++++++++++++
 After you make changes, you should run two sets of tests.
 To run the tests, go to the top-level package directory.
-Then make sure that you have installed the packages listed in `requirements-dev.txt <requirements-dev.txt>`_.
-If these are not installed, install them with::
 
-    pip install -r requirements-dev.txt
+Then run the tests with pytest_ under the ``museotoolbox-dev`` conda environnement by running :
 
-Then run the tests with pytest_ by running::
+-  ``make pytest``
 
-    make pytest
+
+Building the documentation
++++++++++++++++++++++++++++
+The documentation will be built for each new commit in the ``master`` branch.
+However, you can build your own documentation in order by typing under the ``museotoolbox-dev`` conda environnement :
+
+-  ``make ddoc``
+
 
 Automated testing on Travis
 +++++++++++++++++++++++++++
