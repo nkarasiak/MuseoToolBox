@@ -67,7 +67,7 @@ So, what does ``RasterMath`` really do? The user only works with an array an con
 
 The objective is to **allow the user to focus solely on the array-compatible function** while ``RasterMath`` manages the raster part.
 
-[See RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html)
+[See RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 
 ![RasterMath under the hood](metadata/RasterMath_schema.png)
 
@@ -75,7 +75,7 @@ The objective is to **allow the user to focus solely on the array-compatible fun
 
 The artificial intelligence  (`ai`) module is natively built to implement ``scikit-learn`` algorithms and uses state of the art methods (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process using a grid search to fix the parameters of the classifier. There is also a Sequential Feature Selection protocol which supports a number of components (e.g.  a single-date image is composed of four bands, i.e. 4 features, so a user may select 4 features at once).
 
-[See the SuperLearner documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html)
+[See the SuperLearner documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html).
 
 ## Cross-validation
 
@@ -99,7 +99,7 @@ criteria"*. For spatial cross-validation, see @karasiak_2019 inspired by @robert
 - Spatial Leave-Aside-Out.
 - Spatial Leave-One-SubGroup-Out (using centroids to select one subgroup and remove other subgroups for the same class inside a specified distance buffer).
 
-[See the cross-validation documentation and examples](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation)
+[See the cross-validation documentation and examples](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation).
 
 # Acknowledgements
 
