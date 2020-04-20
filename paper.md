@@ -25,9 +25,9 @@ bibliography: paper.bib
 
 # Summary
 
-`Museo ToolBox` is a python library dedicated to the processing of images in remote sensing. Images, also known as rasters, are georeferenced arrays.
+`Museo ToolBox` is a python library dedicated to the processing of georeferenced arrays, also known as rasters or images in remote sensing.
 
-In remote sensing, classifying land cover type is a common and sometimes complex task, regardless of your level of expertise. Recurring procedures such as extracting Regions Of Interest (raster values from your polygon), computing spectral indices or validating a model with a cross-validation can be difficult to implement.
+In this domain, classifying land cover type is a common and sometimes complex task, regardless of your level of expertise. Recurring procedures such as extracting Regions Of Interest (raster values from your polygon), computing spectral indices or validating a model with a cross-validation can be difficult to implement.
 
 `Museo ToolBox` aims at simplifying the whole process by making the main treatments more accessible (extracting of Region Of Interests, fitting a model by using cross-validation, computing Normalized Difference Vegetation Index (NDVI) or various spectral indices, performing any kind of array function to the raster, etc).
 
@@ -103,7 +103,7 @@ criteria"*. For spatial cross-validation, see @karasiak_2019 inspired by @robert
 
 # Acknowledgements
 
-I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey Yousra Hamrouni !), and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/). Many thanks to Marie for proofreading.
+I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey [Yousra Hamrouni](https://github.com/yousraH)), and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/). Many thanks to Marie for proofreading.
 Many thanks to Sigma students : [Hélène Ternisien de Boiville](https://github.com/HTDBD), [Arthur Duflos](https://github.com/ArthurDfs), [Sam Antonetti](https://github.com/santonetti) and [Anne-Sophie Tronc](https://github.com/AnneSophieTronc) for their implication in RasterMath improvements in early 2020.
 
 # References
