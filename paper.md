@@ -1,5 +1,5 @@
 ---
-title: 'Museo ToolBox : a python library for remote sensing including a new way to handle rasters.'
+title: 'Museo ToolBox: a python library for remote sensing including a new way to handle rasters.'
 
 tags:
   - Python
@@ -37,19 +37,19 @@ To make `Museo ToolBox` easier to get started with, a [full documentation with l
 
 # Museo ToolBox in details
 
-`Museo ToolBox` is organized into several modules (Figure 1) :
+`Museo ToolBox` is organized into several modules (Figure 1):
 
-- [processing](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.processing.html) : raster and vector processing.
-- [cross-validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html) : stratified cross-validation compatible with scikit-learn.
-- [ai](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.ai.html) : artificial intelligence module built upon scikit-learn [@scikitlearn_2011].
-- [charts](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.charts.html) : plot confusion matrix with F1 score or producer/user's accuracy.
-- [stats](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.stats.html) : compute statistics (such as Moran's Index [@moran_notes_1950], confusion matrix, commision/omission) or extracting truth and predicted label from a confusion matrix.
+- [processing](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.processing.html): raster and vector processing.
+- [cross-validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html): stratified cross-validation compatible with scikit-learn.
+- [ai](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.ai.html): artificial intelligence module built upon scikit-learn [@scikitlearn_2011].
+- [charts](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.charts.html): plot confusion matrix with F1 score or producer/user's accuracy.
+- [stats](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.stats.html): compute statistics (such as Moran's Index [@moran_notes_1950], confusion matrix, commision/omission) or extracting truth and predicted label from a confusion matrix.
 
 ![Museo ToolBox schema.](metadata/schema.png)
 
 
 
-Here are some of the main usages of `Museo ToolBox` :
+Here are some of the main usages of `Museo ToolBox`:
 
 1. [Reading and writing a raster block per block using your own function](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 2. [Generating cross-validation, including spatial cross-validation](https://museotoolbox.readthedocs.io/en/latest/auto_examples/index.html#cross-validation).
@@ -61,7 +61,7 @@ Here are some of the main usages of `Museo ToolBox` :
 
 Available in `museotoolbox.processing`, `RasterMath` class is the keystone of ``Museo ToolBox``.
 
-The question I asked myself is : How can we make it as easy as possible to implement array-like functions on images? The idea behind ``RasterMath`` is that if the function is intended to operate with an array, it should be easy to use it with your raster using as few lines as possible.
+The question I asked myself is: How can we make it as easy as possible to implement array-like functions on images? The idea behind ``RasterMath`` is that if the function is intended to operate with an array, it should be easy to use it with your raster using as few lines as possible.
 
 So, what does ``RasterMath`` really do? The user only works with an array and confirms with a sample that the process is doing well, and lets `RasterMath` generalize it to the whole image. The user doesn't need to manage the raster reading and writing process, the no-data management, the compression, the number of bands, or the projection. Figure 2 explains how `RasterMath` reads a raster, performs the function, and writes it to a new raster.
 
@@ -84,7 +84,7 @@ For example the Leave-One-Out method will keep one sample of validation per clas
 basic accuracy assessment objectives and most of the desirable design
 criteria"*. For spatial cross-validation, see @karasiak_2019 inspired by @roberts_2017.
 
-``Museo ToolBox`` offers two different kinds of cross-validation :
+``Museo ToolBox`` offers two different kinds of cross-validation:
 
 ### Non-spatial cross-validation
 
@@ -103,7 +103,7 @@ criteria"*. For spatial cross-validation, see @karasiak_2019 inspired by @robert
 
 # Acknowledgements
 
-I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey [Yousra Hamrouni](https://github.com/yousraH)), and my thesis advisors : Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/). Many thanks to Marie for proofreading.
-Many thanks to Sigma students : [Hélène Ternisien de Boiville](https://github.com/HTDBD), [Arthur Duflos](https://github.com/ArthurDfs), [Sam Antonetti](https://github.com/santonetti) and [Anne-Sophie Tronc](https://github.com/AnneSophieTronc) for their implication in RasterMath improvements in early 2020.
+I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey [Yousra Hamrouni](https://github.com/yousraH)), and my thesis advisors: Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/). Many thanks to Marie for proofreading.
+Many thanks to Sigma students: [Hélène Ternisien de Boiville](https://github.com/HTDBD), [Arthur Duflos](https://github.com/ArthurDfs), [Sam Antonetti](https://github.com/santonetti) and [Anne-Sophie Tronc](https://github.com/AnneSophieTronc) for their implication in RasterMath improvements in early 2020.
 
 # References
