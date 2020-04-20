@@ -41,7 +41,7 @@ To make `Museo ToolBox` easier to get started with, a [full documentation with l
 
 - [processing](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.processing.html) : raster and vector processing.
 - [cross-validation](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.cross_validation.html) : stratified cross-validation compatible with scikit-learn.
-- [ai](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.ai.html) :  artificial intelligence module built upon scikit-learn [@scikitlearn_2011].
+- [ai](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.ai.html) : artificial intelligence module built upon scikit-learn [@scikitlearn_2011].
 - [charts](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.charts.html) : plot confusion matrix with F1 score or producer/user's accuracy.
 - [stats](https://museotoolbox.readthedocs.io/en/latest/modules/museotoolbox.stats.html) : compute statistics (such as Moran's Index [@moran_notes_1950], confusion matrix, commision/omission) or extracting truth and predicted label from a confusion matrix.
 
@@ -61,9 +61,9 @@ Here are some of the main usages of `Museo ToolBox` :
 
 Available in `museotoolbox.processing`, `RasterMath` class is the keystone of ``Museo ToolBox``.
 
-The question I asked myself is : How can we make it as easy as possible to implement array-like functions  to images? The idea behind ``RasterMath`` is that if the function is intended to operate with an array, it should be easy to use it with your raster using as few lines as possible.
+The question I asked myself is : How can we make it as easy as possible to implement array-like functions on images? The idea behind ``RasterMath`` is that if the function is intended to operate with an array, it should be easy to use it with your raster using as few lines as possible.
 
-So, what does ``RasterMath`` really do? The user only works with an array an confirms with a sample that the process is doing well, and lets `RasterMath` generalize it to the whole image. The user doesn't need to manage the raster reading and writing process, the no-data management, the compression, the number of bands, or the projection. Figure 2 explains how `RasterMath` reads a raster, performs the function, and writes it to a new raster.
+So, what does ``RasterMath`` really do? The user only works with an array and confirms with a sample that the process is doing well, and lets `RasterMath` generalize it to the whole image. The user doesn't need to manage the raster reading and writing process, the no-data management, the compression, the number of bands, or the projection. Figure 2 explains how `RasterMath` reads a raster, performs the function, and writes it to a new raster.
 
 The objective is to **allow the user to focus solely on the array-compatible function** while ``RasterMath`` manages the raster part.
 
@@ -73,7 +73,7 @@ The objective is to **allow the user to focus solely on the array-compatible fun
 
 ## Artificial Intelligence
 
-The artificial intelligence  (`ai`) module is natively built to implement ``scikit-learn`` algorithms and uses state of the art methods (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process using a grid search to fix the parameters of the classifier. There is also a Sequential Feature Selection protocol which supports a number of components (e.g.  a single-date image is composed of four bands, i.e. 4 features, so a user may select 4 features at once).
+The artificial intelligence (`ai`) module is natively built to implement ``scikit-learn`` algorithms and uses state of the art methods (such as standardizing the input data). ``SuperLearner`` class optimizes the fit process using a grid search to fix the parameters of the classifier. There is also a Sequential Feature Selection protocol which supports a number of components (e.g. a single-date image is composed of four bands, i.e. 4 features, so a user may select 4 features at once).
 
 [See the SuperLearner documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/ai/museotoolbox.ai.SuperLearner.html).
 
