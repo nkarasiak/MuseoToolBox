@@ -27,7 +27,7 @@ bibliography: paper.bib
 
 `Museo ToolBox` is a Python library dedicated to the processing of georeferenced arrays, also known as rasters or images in remote sensing.
 
-In this domain, classifying land cover type is a common and sometimes complex task, regardless of your level of expertise. Recurring procedures such as extracting Regions Of Interest (ROIs, raster values from a polygon), computing spectral indices or validating a model with a cross-validation can be difficult to implement.
+In this domain, classifying land cover type is a common and sometimes complex task, regardless of your level of expertise. Recurring procedures such as extracting Regions Of Interest (ROIs, or raster values from a polygon), computing spectral indices or validating a model with a cross-validation can be difficult to implement.
 
 `Museo ToolBox` aims at simplifying the whole process by making the main treatments more accessible (extracting of ROIs, fitting a model with cross-validation, computing Normalized Difference Vegetation Index (NDVI) or various spectral indices, performing any kind of array function to the raster, etc).
 
@@ -65,9 +65,9 @@ So, what does ``RasterMath`` really do? The user only works with an array and co
 
 The objective is to **allow the user to focus solely on the array-compatible function** while ``RasterMath`` manages the raster part.
 
-[See RasterMath documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
+[See ``RasterMath`` documentation and examples](https://museotoolbox.readthedocs.io/en/latest/modules/processing/museotoolbox.processing.RasterMath.html).
 
-![RasterMath under the hood](metadata/RasterMath_schema.png)
+![``RasterMath`` under the hood](metadata/RasterMath_schema.png)
 
 ## Artificial Intelligence
 
