@@ -63,4 +63,3 @@ aautopep8 :
 
 pytest :
 	pytest-3 -v  --cov=museotoolbox
-

@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED [0.12.1]
+## [0.13.0] - 2020-04-21
+
+### Changed
+
+- Final version for JOSS (paper.md and paper.bib updated thanks to @kbarnhart)
 
 ## [0.12.1-rc.1] - 2020-04-18
 
@@ -36,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.12.1-beta.1] - 2020-01-16
 
 ### Added
-- new branch spatial added 
+- new branch spatial added
 
 ### Added
 
@@ -60,25 +64,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Some folders have Changed name :
 	- raster_tools and vector_tools to processing
 	- learn_tools to ai
-- some functions have Changed name : 
+- some functions have Changed name :
 	- getSamplesFromROI to extract_values
 	- historicalMap to load_historical_data
 	- getDistanceMatrix to get_distance_matrix
-- classes now always begin with a capital case : 
+- classes now always begin with a capital case :
     - learnAndPredict to SuperLearner
     - rasterMath to RasterMath
-    - sequentialFeatureSelection to SequentialFeatureSelection 
+    - sequentialFeatureSelection to SequentialFeatureSelection
 
 ### Fixed
 
-- bug #7 : getSamplesFromROI (nowd extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished. 
+- bug #7 : getSamplesFromROI (nowd extract_ROI) now extracts ROI values using by default memory. If it fails, it will create a temporary raster on disk then delete it when finished.
 
 ### Removed
 
 - Remove command lines (cli)
 
 ## [0.12rc5] - 2019-11-11
-	
+
 ### Changed
 
 - getSamplesFromROI return list of available fields if wrong field given.
@@ -127,4 +131,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - minor fixes
-

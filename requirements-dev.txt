@@ -20,3 +20,6 @@ ipykernel
 nbsphinx
 sphinx-gallery
 sphinx-copybutton
+pytest
+pytest-cov
+

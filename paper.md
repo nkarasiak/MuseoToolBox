@@ -102,6 +102,6 @@ criteria"*. For spatial cross-validation, see @karasiak_2019 inspired by @robert
 # Acknowledgements
 
 I acknowledge contributions from [Mathieu Fauvel](http://fauvel.mathieu.free.fr/), beta-testers (hey [Yousra Hamrouni](https://github.com/yousraH)), and my thesis advisors: Jean-François Dejoux, Claude Monteil and [David Sheeren](https://dsheeren.github.io/). Many thanks to Marie for proofreading.
-Many thanks to Sigma students: [Hélène Ternisien de Boiville](https://github.com/HTDBD), [Arthur Duflos](https://github.com/ArthurDfs), [Sam Antonetti](https://github.com/santonetti) and [Anne-Sophie Tronc](https://github.com/AnneSophieTronc) for their implication in ``RasterMath`` improvements in early 2020.
+Many thanks to Sigma students: [Hélène Ternisien de Boiville](https://github.com/HTDBD), [Arthur Duflos](https://github.com/ArthurDfs), [Sam Antonetti](https://github.com/santonetti) and [Anne-Sophie Tronc](https://github.com/AnneSophieTronc) for their involvement in ``RasterMath`` improvements in early 2020.
 
 # References
