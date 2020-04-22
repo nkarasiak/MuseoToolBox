@@ -25,8 +25,9 @@ smallest_class = np.min(np.unique(y,return_counts=True)[1])
 class TestCV(unittest.TestCase):
     def test_train_split(self):
         np.random.seed(42)
-        y = np.random.randint(1,3,10)
+        y = np.random.randint(1,3,10).reshape(-1,1)
         X = np.random.randint(1,255,[10,3],dtype=np.uint8)
+        g = np.random.randint(1,3,10).reshape(-1,1)
 
         cv = cross_validation.LeaveOneOut(random_state=42)
 
@@ -34,7 +35,11 @@ class TestCV(unittest.TestCase):
         assert ( X_train.shape[0]+X_test.shape[0] == X.shape[0] )
         assert ( y_train.shape[0]+y_test.shape[0] == y.shape[0] )
         assert ( np.all( np.equal(y_test,np.array([1,2]) ) ) )
-
+        
+        X_train, X_test, y_train, y_test, g_train, g_test = cross_validation.train_test_split(cv,X,y,groups=g)
+        assert (X_train.shape[0] == y_train.shape[0] == g_train.shape[0])
+        assert (X_test.shape[0] == y_test.shape[0] == g_test.shape[0])
+        
     def test_loo(self):
         for split in [False,1,2,5]:
             

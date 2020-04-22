@@ -27,8 +27,6 @@ def train_test_split(cv, X, y, random_state=False, **kwargs):
 
     Parameters
     -----------
-        Parameters
-    ----------
     cv : cross-validation function.
         Allowed function from museotoolbox as scikit-learn.
     X : array-like, shape (n_samples, n_features), optional
@@ -48,9 +46,8 @@ def train_test_split(cv, X, y, random_state=False, **kwargs):
     import museotoolbox as mtb
 
     X, y = np.arange(10).reshape((5, 2)), range(5)
-    cv = mtb.cross_validation.LeaveOneOut
-    X_train, y_train, X_test, y_test = mtb.cross_validation.train_test_split(cv,X,y,random_state=42)
-
+    cv = mtb.cross_validation.LeaveOneOut(random_state=42)
+    X_train, y_train, X_test, y_test = mtb.cross_validation.train_test_split(cv,X,y)
     """
     # X_train, X_test = [np.asarray([],dtype=X.dtype).reshape(-1,X.shape[-1])]*2 # empty X
     # y_train, y_test = [np.asarray([],dtype=np.int64)]*2 # empty y
