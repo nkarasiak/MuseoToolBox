@@ -44,4 +44,4 @@ groups = np.array([1, 1, 2, 3, 4, 2, 1, 1, 2, 3],dtype=int)
 
 cv = mtb.cross_validation.LeaveOneSubGroupOut(random_state=42)
 
-X_train, X_test, y_train, y_test = mtb.cross_validation.train_test_split(cv,X,y,groups=groups)
+X_train, X_test, y_train, y_test, g_train, g_test = mtb.cross_validation.train_test_split(cv,X,y,groups=groups)

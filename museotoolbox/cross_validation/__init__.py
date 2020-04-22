@@ -62,9 +62,18 @@ def train_test_split(cv, X, y, random_state=False, **kwargs):
         y_train = y[tr]
         X_test = X[vl, ...]
         y_test = y[vl]
-
+        if 'groups' in kwargs:
+            g = kwargs['groups']
+            if g.ndim == 2:
+                g = y.flatten()
+            g_train = g[tr,...]
+            g_test = g[vl,...]
         break  # only the first fold is needed
-    return X_train, X_test, y_train, y_test
+        
+    if 'groups' in kwargs :
+        return X_train, X_test, y_train, y_test, g_train, g_test
+    else:
+        return X_train, X_test, y_train, y_test
 
 
 class LeaveOneOut(_sample_selection._cv_manager):
