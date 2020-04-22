@@ -39,9 +39,9 @@
    :alt: Downloads
 
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.3404729.svg
-   :target: https://doi.org/10.5281/zenodo.3404728
-   :alt: DOI
+.. image:: https://joss.theoj.org/papers/1f4762d9910093a08034e8f4de441930/status.svg
+   :target: https://joss.theoj.org/papers/1f4762d9910093a08034e8f4de441930
+   :alt: status
 
 
 **Museo ToolBox** is a python library to simplify the use of raster/vector, especially for machine learning and remote sensing. It is now easy to extract raster values from vector polygons and to do some spatial/unspatial cross-validation for scikit-learn from raster.
@@ -75,21 +75,23 @@ How do I install Museo ToolBox ?
 
 We recommend you to install Museo ToolBox via conda as it includes gdal dependency :
 
-``conda install -c conda-forge museotoolbox`` 
+.. code-block:: shell
+
+   conda install -c conda-forge museotoolbox
 
 However, if you prefer to install this library via pip, you need to install first gdal, then :
 
-.. code-block:: python3
+.. code-block:: shell
 
    python3 -m pip install museotoolbox --user
 
 For early-adopters, you can install the latest development version directly from git :
 
-.. code-block:: python3
+.. code-block:: shell
 
-   python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user
+   python3 -m pip install https://github.com/nkarasiak/museotoolbox/archive/develop.zip --user -U
 
-Feel free to remove the ``--user`` if you like to install the library for every user on the machine or if some dependencies need root access.
+Feel free to remove the ``--user`` if you like to install the library for every user on the machine or if some dependencies need root access. ``-U`` is for update if a newer version exists.
 
 Using and citing the toolbox
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -98,13 +100,25 @@ If you use Museo ToolBox in your research and find it useful, please cite this l
 
 .. code-block:: bib
 
-   @misc{karasiak2019mtb,
-   title={Museo ToolBox : a python library for remote sensing},
-   author={Karasiak Nicolas},
-   url={https://github.com/nkarasiak/museotoolbox},
-   year={2019},
-   doi={10.5281/zenodo.3404728}
+   @article{Karasiak2020,
+     doi = {10.21105/joss.01978},
+     url = {https://doi.org/10.21105/joss.01978},
+     year = {2020},
+     publisher = {The Open Journal},
+     volume = {5},
+     number = {48},
+     pages = {1978},
+     author = {Nicolas Karasiak},
+     title = {Museo ToolBox: A Python library for remote sensing including a new way to handle rasters.},
+     journal = {Journal of Open Source Software}
    }
+
+Or copy this citation :
+
+..
+
+   Karasiak, N., (2020). Museo ToolBox: A Python library for remote sensing including a new way to handle rasters.. Journal of Open Source Software, 5(48), 1978, https://doi.org/10.21105/joss.01978
+
 
 I want to improve Museo ToolBox, how can I contribute ?
 -------------------------------------------------------

@@ -2,13 +2,13 @@
 
 MuseoToolBox documentation
 =============================
-    
+
 .. sidebar:: About MuseoToolBox
-        
+
     .. image:: https://github.com/nkarasiak.png?size=100
        :alt: Nicolas Karasiak avatar
-       :class: avatar       
-      
+       :class: avatar
+
     :Author: `Nicolas Karasiak <http://www.karasiak.net>`_
     :Source code: `github.com project <https://github.com/nkarasiak/MuseoToolBox>`_
     :Bug tracker: `github.com issues <https://github.com/nkarasiak/MuseoToolBox/issues>`_
@@ -23,19 +23,19 @@ MuseoToolBox documentation
    :maxdepth: 2
 
    self
-   
+
 .. toctree::
    :maxdepth: 3
    :caption: Examples gallery
 
    auto_examples/index
-  
+
 .. toctree::
    :maxdepth: 3
    :caption: Documentation API
-   
+
    api
-      
+
 Indices and tables
 ==================
 
