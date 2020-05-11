@@ -120,14 +120,29 @@ class PlotConfusionMatrix:
                 range(self.cm.shape[0]), range(self.cm.shape[1])):
             if not np.ma.is_masked(self.cm[i, j]):
                 # print(cm[i,j])
-                self.ax.text(j, i, str(self.cm[i, j]),
+                self.ax.text(j,
+                             i,
+                             str(self.cm[i,
+                                         j]),
                              horizontalalignment="center",
-                             color="white" if self.cm[i, j] > thresold else 'black', fontsize=font_size, va='center', alpha=alpha_zero if self.cm[i, j] == 0 else alpha)
+                             color="white" if self.cm[i,
+                                                      j] > thresold else 'black',
+                             fontsize=font_size,
+                             va='center',
+                             alpha=alpha_zero if self.cm[i,
+                                                         j] == 0 else alpha)
             else:
                 #                print(self.cm2[i, j])
-                self.ax.text(j, i, str(self.cm2[i, j]),
+                self.ax.text(j,
+                             i,
+                             str(self.cm2[i,
+                                          j]),
                              horizontalalignment="center",
-                             color="white" if self.cm2[i, j] > thresold else "black", va='center', fontsize=font_size, )
+                             color="white" if self.cm2[i,
+                                                       j] > thresold else "black",
+                             va='center',
+                             fontsize=font_size,
+                             )
 
     def add_x_labels(self, labels=None, rotation=90, position='top'):
         """
@@ -231,15 +246,27 @@ class PlotConfusionMatrix:
 
             iVal = np.int(np.mean(self.cm_, axis=1)[i])
 
-            self.ax1v.text(0, i, iVal, color="white" if iVal >
-                           thresold else 'black', ha='center', va='center', fontsize=self.font_size)
+            self.ax1v.text(
+                0,
+                i,
+                iVal,
+                color="white" if iVal > thresold else 'black',
+                ha='center',
+                va='center',
+                fontsize=self.font_size)
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
             jVal = np.int(np.mean(self.cm_, axis=0)[j])
 
-            self.ax1h.text(j, 0, jVal, color="white" if jVal >
-                           thresold else 'black', ha='center', va='center', fontsize=self.font_size)
+            self.ax1h.text(
+                j,
+                0,
+                jVal,
+                color="white" if jVal > thresold else 'black',
+                ha='center',
+                va='center',
+                fontsize=self.font_size)
 
         self.ax1h.set_yticklabels(
             [yLabel],
@@ -406,19 +433,31 @@ class PlotConfusionMatrix:
         self.ax1h.set_xticks([])
 
         for i in range(self.cm.shape[0]):
-            iVal = np.int(_nan_to_num(np.array(
-                np.diag(self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0], nan=0))
+            iVal = np.int(_nan_to_num(np.array(np.diag(
+                self.cm_) / np.nansum(self.cm_, axis=1) * 100).reshape(-1, 1)[i][0], nan=0))
 
-            self.ax1v.text(0, i, iVal, color="white" if iVal >
-                           thresold else 'black', size=font_size, ha='center', va='center')
+            self.ax1v.text(
+                0,
+                i,
+                iVal,
+                color="white" if iVal > thresold else 'black',
+                size=font_size,
+                ha='center',
+                va='center')
 
         self.ax1v.set_yticklabels([])
         for j in range(self.cm.shape[1]):
-            jVal = np.int(_nan_to_num(np.array(
-                np.diag(self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0], nan=0))
+            jVal = np.int(_nan_to_num(np.array(np.diag(
+                self.cm_) / np.nansum(self.cm_, axis=0) * 100).reshape(-1, 1)[j][0], nan=0))
 
-            self.ax1h.text(j, 0, jVal, color="white" if jVal >
-                           thresold else 'black', size=font_size, ha='center', va='center')
+            self.ax1h.text(
+                j,
+                0,
+                jVal,
+                color="white" if jVal > thresold else 'black',
+                size=font_size,
+                ha='center',
+                va='center')
 
         y_label, x_label = ['Prod\'s acc.'], ['User\'s acc.']
         if invert_PA_UA:

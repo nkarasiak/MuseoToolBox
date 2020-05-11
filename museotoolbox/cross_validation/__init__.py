@@ -63,11 +63,11 @@ def train_test_split(cv, X, y, random_state=False, **kwargs):
             g = kwargs['groups']
             if g.ndim == 2:
                 g = y.flatten()
-            g_train = g[tr,...]
-            g_test = g[vl,...]
+            g_train = g[tr, ...]
+            g_test = g[vl, ...]
         break  # only the first fold is needed
-        
-    if 'groups' in kwargs :
+
+    if 'groups' in kwargs:
         return X_train, X_test, y_train, y_test, g_train, g_test
     else:
         return X_train, X_test, y_train, y_test
@@ -95,8 +95,12 @@ class LeaveOneOut(_sample_selection._cv_manager):
                  random_state=False,
                  verbose=False):
 
-        super().__init__(_sample_selection.randomPerClass, valid_size=1,
-                         n_repeats=n_repeats, random_state=random_state, verbose=verbose)
+        super().__init__(
+            _sample_selection.randomPerClass,
+            valid_size=1,
+            n_repeats=n_repeats,
+            random_state=random_state,
+            verbose=verbose)
 
 
 class LeavePSubGroupOut(_sample_selection._cv_manager):
@@ -129,11 +133,15 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
         else:
             raise ValueError(
                 'Percent must be between 0 and 1 and must be a float')
-        if n_repeats == False:
+        if not n_repeats:
             n_repeats = int(1 / valid_size)
 
-        super().__init__(_sample_selection.groupCV, valid_size=valid_size,
-                         n_repeats=n_repeats, random_state=random_state, verbose=verbose)
+        super().__init__(
+            _sample_selection.groupCV,
+            valid_size=valid_size,
+            n_repeats=n_repeats,
+            random_state=random_state,
+            verbose=verbose)
 
 
 class LeaveOneSubGroupOut(_sample_selection._cv_manager):
@@ -157,8 +165,12 @@ class LeaveOneSubGroupOut(_sample_selection._cv_manager):
                  random_state=False,
                  verbose=False):
 
-        super().__init__(_sample_selection.groupCV, valid_size=1, n_repeats=n_repeats,
-                         random_state=random_state, verbose=verbose)
+        super().__init__(
+            _sample_selection.groupCV,
+            valid_size=1,
+            n_repeats=n_repeats,
+            random_state=random_state,
+            verbose=verbose)
 
 
 class SpatialLeaveAsideOut(_sample_selection._cv_manager):
@@ -193,8 +205,13 @@ class SpatialLeaveAsideOut(_sample_selection._cv_manager):
                  random_state=False,
                  verbose=False):
 
-        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
-                         valid_size=valid_size, n_repeats=n_repeats, random_state=random_state, verbose=verbose)
+        super().__init__(
+            _sample_selection.distanceCV,
+            distance_matrix=distance_matrix,
+            valid_size=valid_size,
+            n_repeats=n_repeats,
+            random_state=random_state,
+            verbose=verbose)
 
 
 class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
@@ -227,10 +244,13 @@ class SpatialLeaveOneSubGroupOut(_sample_selection._cv_manager):
                  random_state=False,
                  verbose=False):
 
-        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
-                         distance_thresold=distance_thresold,
-                         distance_label=distance_label,
-                         random_state=random_state, verbose=verbose)
+        super().__init__(
+            _sample_selection.distanceCV,
+            distance_matrix=distance_matrix,
+            distance_thresold=distance_thresold,
+            distance_label=distance_label,
+            random_state=random_state,
+            verbose=verbose)
 
 
 class SpatialLeaveOneOut(_sample_selection._cv_manager):
@@ -272,15 +292,17 @@ class SpatialLeaveOneOut(_sample_selection._cv_manager):
                  verbose=False,
                  **kwargs):
 
-        super().__init__(_sample_selection.distanceCV, distance_matrix=distance_matrix,
-                         distance_thresold=distance_thresold,
-                         distance_label=False,
-                         valid_size=1,
-                         n_repeats=n_repeats,
-                         n_splits=n_splits,
-                         random_state=random_state,
-                         verbose=verbose,
-                         **kwargs)
+        super().__init__(
+            _sample_selection.distanceCV,
+            distance_matrix=distance_matrix,
+            distance_thresold=distance_thresold,
+            distance_label=False,
+            valid_size=1,
+            n_repeats=n_repeats,
+            n_splits=n_splits,
+            random_state=random_state,
+            verbose=verbose,
+            **kwargs)
 
 
 class RandomStratifiedKFold(_sample_selection._cv_manager):
@@ -328,6 +350,9 @@ class RandomStratifiedKFold(_sample_selection._cv_manager):
         else:
             n_repeats = n_splits * n_repeats
 
-        super().__init__(_sample_selection.randomPerClass, valid_size=valid_size,
-                         random_state=random_state,
-                         n_repeats=n_repeats, verbose=verbose)
+        super().__init__(
+            _sample_selection.randomPerClass,
+            valid_size=valid_size,
+            random_state=random_state,
+            n_repeats=n_repeats,
+            verbose=verbose)

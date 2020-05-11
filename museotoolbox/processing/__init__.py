@@ -323,8 +323,9 @@ def extract_ROI(in_image, in_vector, *fields, **kwargs):
                     fdefn = ldefn.GetFieldDefn(n)
                     if fdefn.name is not listFields:
                         listFields.append('"' + fdefn.name + '"')
-                raise ValueError('Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(
-                    f, ', '.join(listFields)))
+                raise ValueError(
+                    'Sorry, field "{}" is not available.\nThese fields are available : {}.'.format(
+                        f, ', '.join(listFields)))
 
             fdefn = ldefn.GetFieldDefn(idx)
             fdefn_type = fdefn.type
@@ -534,7 +535,7 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
     dst_ds.SetProjection(data_src.GetProjection())
 
     if in_field is False or in_field is None:
-        if invert == True:
+        if invert:
             try:
                 options = gdal.RasterizeOptions(inverse=invert)
                 gdal.Rasterize(dst_ds, in_vector, options=options)
@@ -601,8 +602,17 @@ class RasterMath:
     Saved /tmp/test.tif using function mean
     """
 
-    def __init__(self, in_image, in_image_mask=False, return_3d=False, block_size=[256, 256],
-                 n_jobs=1, message='rasterMath...', verbose=True):
+    def __init__(
+            self,
+            in_image,
+            in_image_mask=False,
+            return_3d=False,
+            block_size=[
+                256,
+                256],
+            n_jobs=1,
+            message='rasterMath...',
+            verbose=True):
 
         self.verbose = verbose
         self.message = message
@@ -683,8 +693,10 @@ class RasterMath:
             if opened_raster.RasterXSize != self.opened_images[
                     0].RasterXSize or opened_raster.RasterYSize != self.opened_images[0].RasterYSize:
                 sameSize = False
-                raise ValueError("raster {} doesn't have the same size (X and Y) as the initial raster.\n \
-                      Museotoolbox can't add it as an input raster.".format(os.path.basename(in_image)))
+                raise ValueError(
+                    "raster {} doesn't have the same size (X and Y) as the initial raster.\n \
+                      Museotoolbox can't add it as an input raster.".format(
+                        os.path.basename(in_image)))
         n_bands = opened_raster.RasterCount
 
         band = opened_raster.GetRasterBand(1)
@@ -1095,7 +1107,7 @@ class RasterMath:
             mask_block = block.mask
 
         # if everything is masked
-        if np.all(mask_block == True):
+        if np.all(mask_block):
             size = 0
         # if everything is not masked
         elif np.all(mask_block == False):
@@ -1144,7 +1156,7 @@ class RasterMath:
                 mask_block = tmp.mask
 
             # if everything is masked
-            if np.all(mask_block == True):
+            if np.all(mask_block):
                 size = 0
             # if everything is not masked
             elif np.all(mask_block == False):
@@ -1254,8 +1266,8 @@ class RasterMath:
         else:
             self.x_block_size = self.block_sizes[0]
 
-        self.n_blocks = np.ceil(self.n_lines / self.y_block_size).astype(int) * np.ceil(self.n_columns /
-                                                                                        self.x_block_size).astype(int)
+        self.n_blocks = np.ceil(self.n_lines / self.y_block_size).astype(
+            int) * np.ceil(self.n_columns / self.x_block_size).astype(int)
         self.block_sizes = [self.x_block_size, self.y_block_size]
 
         self.n_y_blocks = len(
@@ -1308,7 +1320,7 @@ class RasterMath:
             mask_block = block.mask
 
         # if everything is masked
-        if np.all(mask_block == True):
+        if np.all(mask_block):
             mask = True
             out_block = nodata
         # if everything is not masked
@@ -1850,7 +1862,12 @@ def get_distance_matrix(in_image, in_vector, field=False, verbose=False):
         only_pixel_position = True
 
     coords = extract_ROI(
-        in_image, in_vector, field, get_pixel_position=True, only_pixel_position=only_pixel_position, verbose=verbose)
+        in_image,
+        in_vector,
+        field,
+        get_pixel_position=True,
+        only_pixel_position=only_pixel_position,
+        verbose=verbose)
     from scipy.spatial import distance
     if field:
         label = coords[1]

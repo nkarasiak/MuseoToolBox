@@ -127,7 +127,7 @@ class Moran:
                 n = arr.count()
                 arr = arr.astype(np.float64)
                 # convert masked to nan for generic_filter
-                np.where(arr.mask == True, np.nan, arr.data)
+                np.where(arr.mask, np.nan, arr.data)
 
                 x_ = np.nanmean(arr)
 
@@ -282,8 +282,8 @@ class ComputeConfusionMatrix:
         if kappa:
             nl = np.sum(self.confusion_matrix, axis=1)
             nc = np.sum(self.confusion_matrix, axis=0)
-            self.Kappa = ((n**2) * np.sum(np.diag(self.confusion_matrix)) / n - np.sum(nc * nl)) / \
-                (n**2 - np.sum(nc * nl))
+            self.Kappa = ((n**2) * np.sum(np.diag(self.confusion_matrix)
+                                          ) / n - np.sum(nc * nl)) / (n**2 - np.sum(nc * nl))
 
         #
         if F1:

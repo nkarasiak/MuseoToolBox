@@ -167,11 +167,11 @@ class distanceCV:
                             standPos = np.argwhere(
                                 self.groups[self.ROI] == self.distance_label)[0][0]
                             distanceROI = (self.distance_matrix[standPos, :])
-                            tmpValid = np.where(
-                                self.groups == self.groups[self.ROI])[0].astype(np.int64)
+                            tmpValid = np.where(self.groups == self.groups[self.ROI])[
+                                0].astype(np.int64)
 
-                            tmpTrainGroup = np.unique(
-                                self.distance_label[np.where(distanceROI >= self.distance_thresold)[0]])
+                            tmpTrainGroup = np.unique(self.distance_label[np.where(
+                                distanceROI >= self.distance_thresold)[0]])
                             tmpTrainGroup = tmpTrainGroup[np.isin(
                                 tmpTrainGroup, self.groups[CT])]
                             tmpTrain = np.where(np.in1d(self.groups, tmpTrainGroup))[
@@ -552,7 +552,11 @@ class _cv_manager:
 
         else:
             n_splits = self.cv_type(
-                X=X, y=y, groups=groups, verbose=self.verbose, **self.params).n_splits
+                X=X,
+                y=y,
+                groups=groups,
+                verbose=self.verbose,
+                **self.params).n_splits
 
         if n_splits == 0:
             raise ValueError(
@@ -619,7 +623,8 @@ class _cv_manager:
         srcLyr = src.GetLayerByIndex()
         self.wkbType = srcLyr.GetGeomType()
         if self.wkbType != 1:
-            print("""Warning : This function generates vector files according to your vector.
+            print(
+                """Warning : This function generates vector files according to your vector.
         The number of features may differ from the number of pixels used in classification.
         If you want to save every ROI pixels in the vector, please use processing.sample_extraction before.""")
         del src, srcLyr
@@ -628,7 +633,8 @@ class _cv_manager:
 
         if self.__ext[1:] not in self.__extensions:
             print(
-                'Your extension {} is not recognized as a valid extension for saving shape.'.format(self.__ext))
+                'Your extension {} is not recognized as a valid extension for saving shape.'.format(
+                    self.__ext))
             self.get_supported_extensions()
             raise Exception(
                 'We recommend you to use gpkg or sqlite extension.')

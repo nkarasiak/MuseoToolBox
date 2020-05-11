@@ -20,6 +20,7 @@ from osgeo import gdal,osr
 # -------------------------------------------
 raster = '/tmp/autocorrelated_moran.tif'
 mask = '/tmp/mask.tif'
+
 def create_false_image(array,path):
     # from https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html
     driver = gdal.GetDriverByName('GTiff')
@@ -40,14 +41,28 @@ create_false_image(x,raster)
 x_mask = np.random.randint(0,2,[100,100])
 create_false_image(x_mask,mask)
 
-plt.imshow(x,cmap='gray', aspect='equal',interpolation='none')
+################################
+# Random mask
+plt.title('Random mask')
 plt.imshow(x_mask,cmap='gray', aspect='equal',interpolation='none')
 
 ################################
-# Compute Moran's I for lag 1
+# Spatially autocorrelated image
+plt.title('Highly autocorrelated image')
+plt.imshow(x,cmap='gray', aspect='equal',interpolation='none')
+
+#####################################################
+# Compute Moran's I for lag 1 on autocorrelated image
 lags =  [1,3,5]
 
 MoransI = Moran(raster,lag=lags,in_image_mask=mask)
+print(MoransI.scores)
+
+####################################################
+# Compute Moran's I for lag 1 on totally random image
+lags =  [1,3,5]
+
+MoransI = Moran(mask,lag=lags)
 print(MoransI.scores)
 
 #######################

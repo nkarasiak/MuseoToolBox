@@ -175,18 +175,29 @@ class SuperLearner:
             refit,
             **gridSearchCVParams)
 
-    def _fit(self, X, y, groups, classifier,
-             param_grid, cv, scoring='accuracy', refit=True, **gridSearchCVParams):
+    def _fit(
+            self,
+            X,
+            y,
+            groups,
+            classifier,
+            param_grid,
+            cv,
+            scoring='accuracy',
+            refit=True,
+            **gridSearchCVParams):
 
-        if isinstance(cv, int) and cv != False:
+        if isinstance(cv, int) and cv:
             from ..cross_validation import RandomStratifiedKFold
             cv = RandomStratifiedKFold(n_splits=cv)
 
         if cv is not None and cv is not False:
-            self.CV = []
-            for tr, vl in (cv for cv in cv.split(
-                    X, y, groups) if cv is not None):
-                self.CV.append((tr, vl))
+            if isinstance(cv,list):
+                self.CV = cv
+            else:
+                for tr, vl in (cv for cv in cv.split(
+                        X, y, groups) if cv is not None):
+                    self.CV.append((tr, vl))
 
         from sklearn.model_selection import GridSearchCV
 
@@ -212,7 +223,8 @@ class SuperLearner:
                     push_feedback(message)
         else:
             if cv is not False or param_grid is not False:
-                raise ValueError('Cannot fit model because a CV or a param_grid is given and and no param_grid was defined?\
+                raise ValueError(
+                    'Cannot fit model because a CV or a param_grid is given and and no param_grid was defined?\
                               If you want to fit your mode with no param_grid, please set cv=False and param_grid=False.')
             self.model = self.classifier.fit(X, y, groups)
 
@@ -598,8 +610,8 @@ class SequentialFeatureSelection:
         The higher it is the more sequential will show progression.
     """
 
-    def __init__(self, classifier, param_grid, path_to_save_models=False,
-                 n_comp=1, verbose=False):
+    def __init__(self, classifier, param_grid,
+                 path_to_save_models=False, n_comp=1, verbose=False):
         # share args
         self.n_comp = n_comp
         self.classifier = classifier
@@ -690,22 +702,30 @@ class SequentialFeatureSelection:
                     else:
                         all_scores = scores[:, 1]
                         best_candidate = np.argmax(scores[:, 1])
-                    SL = SuperLearner(classifier=self.classifier,
-                                      param_grid=self.param_grid, n_jobs=n_jobs, verbose=self.verbose_gridsearch)
+                    SL = SuperLearner(
+                        classifier=self.classifier,
+                        param_grid=self.param_grid,
+                        n_jobs=n_jobs,
+                        verbose=self.verbose_gridsearch)
                     SL.load_model(
                         os.path.join(
                             self.path_to_save_models,
                             'model_{}.npz'.format(j)))
                     self.models_path_.append(
-                        os.path.join(self.path_to_save_models, 'model_{}.npz'.format(j)))
+                        os.path.join(
+                            self.path_to_save_models,
+                            'model_{}.npz'.format(j)))
 
             if need_fit is True:
                 for idx in range(
                         n_features_to_test):  # at each loop, remove best candidate
                     if self.verbose:
                         pB.add_position()
-                    SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
-                                      n_jobs=n_jobs, verbose=self.verbose_gridsearch)
+                    SL = SuperLearner(
+                        classifier=self.classifier,
+                        param_grid=self.param_grid,
+                        n_jobs=n_jobs,
+                        verbose=self.verbose_gridsearch)
                     curX = self._transform_in_fit(self.X, idx)
                     if standardize is False:
                         scale = False
@@ -757,7 +777,9 @@ class SequentialFeatureSelection:
                 if self.path_to_save_models:
                     np.savetxt(all_scores_file, scoreWithIdx, fmt='%0.d,%.4f')
                     self.models_path_.append(
-                        os.path.join(self.path_to_save_models, 'model_{}.npz'.format(j)))
+                        os.path.join(
+                            self.path_to_save_models,
+                            'model_{}.npz'.format(j)))
                 else:
                     self.models_.append(resPerFeatures[best_candidate])
 
@@ -774,11 +796,13 @@ class SequentialFeatureSelection:
                     (j + 1, best_feature_id))
                 push_feedback('Best mean score : %s' % np.amax(all_scores))
 
-            self.subsets_[str(j)] = dict(avg_score=np.amax(all_scores),
-                                         feature_idx=self.best_features_.copy(),
-                                         cv_score=SL.model.cv_results_,
-                                         best_score_=np.amax(all_scores),
-                                         best_feature_=best_feature_id)
+            self.subsets_[
+                str(j)] = dict(
+                avg_score=np.amax(all_scores),
+                feature_idx=self.best_features_.copy(),
+                cv_score=SL.model.cv_results_,
+                best_score_=np.amax(all_scores),
+                best_feature_=best_feature_id)
             self._maskIdx(best_candidate)
 
     def predict(self, X, idx):
@@ -800,8 +824,11 @@ class SequentialFeatureSelection:
         if self.path_to_save_models is False:
             SL = self.models_[idx]
         else:
-            SL = SuperLearner(classifier=self.classifier, param_grid=self.param_grid,
-                              n_jobs=1, verbose=self.verbose_gridsearch)
+            SL = SuperLearner(
+                classifier=self.classifier,
+                param_grid=self.param_grid,
+                n_jobs=1,
+                verbose=self.verbose_gridsearch)
             SL.load_model(self.models_path_[idx])
 
         SL.customize_array(self.transform, idx=idx, customizeX=True)
@@ -809,7 +836,11 @@ class SequentialFeatureSelection:
         return SL.predict_array(X)
 
     def predict_best_combination(
-            self, in_image, out_image, in_image_mask=False, higher_confidence=False):
+            self,
+            in_image,
+            out_image,
+            in_image_mask=False,
+            higher_confidence=False):
         """
         Predict in raster using the best features.
 
@@ -872,8 +903,11 @@ class SequentialFeatureSelection:
 
             out_image = out_image_prefix + str(idx) + '.tif'
 
-            SL.predict_image(in_image, out_image,
-                             higher_confidence=higher_confidence, in_image_mask=in_image_mask)
+            SL.predict_image(
+                in_image,
+                out_image,
+                higher_confidence=higher_confidence,
+                in_image_mask=in_image_mask)
 
     def customize_array(self, xFunction, **kwargs):
         self.xFunction = xFunction
