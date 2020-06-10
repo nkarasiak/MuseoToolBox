@@ -388,7 +388,9 @@ class PlotConfusionMatrix:
                 va='center')
         self.axes.append(self.ax1v)
 
-    def add_accuracy(self, thresold=50, invert_PA_UA=False):
+    def add_accuracy(self, thresold=50, invert_PA_UA=False,
+                     user_acc_label='User\'s acc.',
+                     prod_acc_label='Prod\'s acc.'):
         """
         Add user and producer accuracy.
 
@@ -396,6 +398,13 @@ class PlotConfusionMatrix:
         ----------
         thresold : int, default 50
             The thresold value where text will be in white instead of black.
+        invert_PA_UA : bool, default False
+            If True, user and producer accuracy labels are switched (note that
+            it does not reverse the confusion matrix though).
+        user_acc_label: str
+            The user accuracy label to display. Defautl to 'User's acc.'
+        prod_acc_label: str
+            The user accuracy label to display. Defautl to 'Prod's acc.'
 
         Examples
         --------
@@ -463,7 +472,7 @@ class PlotConfusionMatrix:
                 ha='center',
                 va='center')
 
-        y_label, x_label = ['Prod\'s acc.'], ['User\'s acc.']
+        y_label, x_label = [prod_acc_label], [user_acc_label]
         if invert_PA_UA:
             x_label, y_label = y_label, x_label
 
