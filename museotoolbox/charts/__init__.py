@@ -87,7 +87,7 @@ class PlotConfusionMatrix:
             **kwargs)
 
         self.kwargs = kwargs
-        self.subplot = False
+        self.subplot_ax1v = False
         self.axes.append(self.ax)
 
     def _init_gridspec(self):
@@ -218,11 +218,13 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_mean(xLabel='all species',yLabel='all years')
         """
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
-        else:
-            self.subplot = 'Mean'
+
+        if self.subplot_ax1v is not False:
+            self._init_gridspec()
+            if self.subplot_ax1v == 'F1':
+                self.subplot_ax1v = 'Mean'
+                self.add_f1()
+        self.subplot_ax1v = 'Mean'
 
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
@@ -332,14 +334,16 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_f1()
         """
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Warning('Number of lines and columns must be equal')
 
-        self.subplot = 'F1'
-        self.ax1v = plt.subplot(self.gs[0, 1])
+        if self.subplot_ax1v is False or self.subplot_ax1v == 'F1':
+            self.ax1v = plt.subplot(self.gs[0, 1])
+            current_ax = self.ax1v
+            self.subplot_ax1v = 'F1'
+        else:
+            self.ax2v = plt.subplot(self.gs[0, 2])
+            current_ax = self.ax2v
 
         verticalPlot = []
 
@@ -357,7 +361,7 @@ class PlotConfusionMatrix:
             font_size = 12
 
         verticalPlot = np.asarray(verticalPlot).reshape(-1, 1)
-        self.ax1v.imshow(
+        current_ax.imshow(
             verticalPlot,
             cmap=self.diag_color,
             interpolation='nearest',
@@ -366,28 +370,28 @@ class PlotConfusionMatrix:
             vmax=100)
 
         if self.xlabelsPos == 'top':
-            self.ax1v.xaxis.tick_top()
-            self.ax1v.xaxis.set_ticks_position(
+            current_ax.xaxis.tick_top()
+            current_ax.xaxis.set_ticks_position(
                 'top')  # THIS IS THE ONLY CHANGE
-            self.ax1v.set_xticks([0])
-            self.ax1v.set_xticklabels(
+            current_ax.set_xticks([0])
+            current_ax.set_xticklabels(
                 ['F1'],
                 horizontalalignment='center',
                 rotation=self.xrotation,
                 size=font_size)
         else:
-            self.ax1v.set_xticks([0])
-            self.ax1v.set_xticklabels(
+            current_ax.set_xticks([0])
+            current_ax.set_xticklabels(
                 ['F1'],
                 horizontalalignment='left',
                 rotation=self.xrotation,
                 size=font_size)
-        self.ax1v.set_yticks([])
+        current_ax.set_yticks([])
 
         for i in range(self.cm.shape[0]):
             txt = str(int(_nan_to_num(verticalPlot[i])))
 
-            self.ax1v.text(
+            current_ax.text(
                 0,
                 i,
                 txt,
@@ -395,7 +399,7 @@ class PlotConfusionMatrix:
                 horizontalalignment="center",
                 color="white" if verticalPlot[i] > 50 else "black",
                 va='center')
-        self.axes.append(self.ax1v)
+        self.axes.append(current_ax)
 
     def add_accuracy(self, thresold=50, invert_PA_UA=False,
                      user_acc_label='User\'s acc.',
@@ -425,13 +429,16 @@ class PlotConfusionMatrix:
         else:
             font_size = 12
 
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
+        if self.subplot_ax1v is not False:
+            self._init_gridspec()
+            
+            if self.subplot_ax1v == 'F1':
+                self.subplot_ax1v = 'accuracy'
+                self.add_f1()
+        self.subplot_ax1v = 'accuracy'
+
         if self.cm_.shape[0] != self.cm_.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-
-        self.subplot = 'F1'
 
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
