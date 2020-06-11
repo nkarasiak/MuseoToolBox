@@ -9,13 +9,13 @@ matrix:
   - name: "Python 3.x on Windows"
       os: windows
       language: shell
-    - os: linux
+  - os: linux
       python: 3.6
-    - os: linux
+  - os: linux
       python: 3.7
-
-    - os: linux
+  - os: linux
       python: 3.8
+
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update          ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew outdated | grep -q gdal && brew upgrade gdal; fi
