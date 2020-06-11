@@ -7,3 +7,4 @@ scikit-learn>=0.16
 matplotlib
 joblib
 psutil
+tempfile

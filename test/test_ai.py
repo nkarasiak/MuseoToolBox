@@ -51,7 +51,6 @@ class TestStats(unittest.TestCase):
         assert(model._array_is_customized == True)
         assert(model._array_is_customized)
         assert(model.xFunction)
-        assert(np.all(model.standardize_array(X) != X))
         model.predict_image(raster,out_image=os.path.join(tempdir,'class.tif'),in_image_mask=os.path.join(tempdir,'mask.tif'),confidence_per_class=os.path.join(tempdir,'confclass.tif'),higher_confidence=os.path.join(tempdir,'higherconf.tif'))
         assert(gdal.Open(os.path.join(tempdir,'class.tif')).RasterCount == 1)
         assert(gdal.Open(os.path.join(tempdir,'higherconf.tif')).RasterCount == 1)
