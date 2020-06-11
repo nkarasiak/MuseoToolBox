@@ -131,28 +131,26 @@ class PlotConfusionMatrix:
             thresold = int(np.amax(self.cm) / 2)
         for i, j in itertools.product(
                 range(self.cm.shape[0]), range(self.cm.shape[1])):
-            if not np.ma.is_masked(self.cm[i, j]):
+            cm_value = self.cm[i, j]
+            txt_displayed = str(cm_value) if isinstance(cm_value, (int, np.integer)) \
+                else '{:.1f}'.format(cm_value)
+            if not np.ma.is_masked(cm_value):
                 # print(cm[i,j])
                 self.ax.text(j,
                              i,
-                             str(self.cm[i,
-                                         j]),
+                             txt_displayed,
                              horizontalalignment="center",
-                             color="white" if self.cm[i,
-                                                      j] > thresold else 'black',
+                             color="white" if cm_value > thresold else 'black',
                              fontsize=font_size,
                              va='center',
-                             alpha=alpha_zero if self.cm[i,
-                                                         j] == 0 else alpha)
+                             alpha=alpha_zero if cm_value == 0 else alpha)
             else:
                 #                print(self.cm2[i, j])
                 self.ax.text(j,
                              i,
-                             str(self.cm2[i,
-                                          j]),
+                             txt_displayed,
                              horizontalalignment="center",
-                             color="white" if self.cm2[i,
-                                                       j] > thresold else "black",
+                             color="white" if cm_value > thresold else "black",
                              va='center',
                              fontsize=font_size,
                              )
@@ -511,6 +509,7 @@ class PlotConfusionMatrix:
             rotation=self.xrotation,
             ha=ha,
             size=font_size)
+        # TOFIX not extend ?
         self.axes.append([self.ax1v, self.ax1h])
 
     def color_diagonal(self, diag_color=plt.cm.Greens,
