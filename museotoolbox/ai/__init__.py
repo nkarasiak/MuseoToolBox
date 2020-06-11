@@ -195,6 +195,7 @@ class SuperLearner:
             if isinstance(cv,list):
                 self.CV = cv
             else:
+                self.CV = []
                 for tr, vl in (cv for cv in cv.split(
                         X, y, groups) if cv is not None):
                     self.CV.append((tr, vl))

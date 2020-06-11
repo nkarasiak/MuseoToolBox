@@ -43,7 +43,7 @@ class PlotConfusionMatrix:
     """
 
     def __init__(self, cm, cmap=plt.cm.Greens,
-                 left=None, right=None, zero_is_min=True, **kwargs):
+                 left=None, right=None, zero_is_min=True, max_is_max=True, **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -66,7 +66,10 @@ class PlotConfusionMatrix:
         else:
             self.vmin = np.amin(self.cm)
 
-        self.vmax = np.amax(self.cm)
+        if max_is_max is True:
+            self.vmax = np.amax(self.cm)
+        else:
+            self.vmax = max_is_max
 
         self.xlabelsPos = 'bottom'
         self.xrotation = 0
@@ -92,8 +95,9 @@ class PlotConfusionMatrix:
         self.subplot = False
         self.axes.append(self.ax)
 
-    def add_label(self, x_label=False, y_label=False):
+    def add_label(self, x_label=False, y_label=False,x_position='top'):
         self.ax.set(xlabel=x_label, ylabel=y_label)
+        self.ax.xaxis.set_label_position(x_position) 
 
     def add_text(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
