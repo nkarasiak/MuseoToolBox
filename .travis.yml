@@ -24,7 +24,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt install --yes libgdal-dev gdal-bin ; fi
 
 install:
-  - pip install gdal==`gdal-config --version`
+  - pip install gdal -U
   - pip install -r requirements.txt
   - pip install .
   - pip install codecov
