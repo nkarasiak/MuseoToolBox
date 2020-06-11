@@ -47,16 +47,11 @@ class PlotConfusionMatrix:
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
-        self.gs = gridspec.GridSpec(
-            2, 2, width_ratios=[
-                self.cm.shape[1], 1], height_ratios=[
-                self.cm.shape[0], 1])
 
-        self.gs.update(
-            bottom=0,
-            top=1,
-            wspace=0,
-            hspace=0.7 / self.cm.shape[0], right=right, left=left)
+        # init gridspec
+        self._left_grisdspec = left
+        self._right_grisdspec = right
+        self._init_gridspec()
 
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.zero_is_min = zero_is_min
@@ -94,6 +89,20 @@ class PlotConfusionMatrix:
         self.kwargs = kwargs
         self.subplot = False
         self.axes.append(self.ax)
+
+    def _init_gridspec(self):
+        self.gs = gridspec.GridSpec(
+            2, 3, width_ratios=[
+                self.cm.shape[1], 1, 1], height_ratios=[
+                self.cm.shape[0], 1])
+
+        self.gs.update(
+            bottom=0,
+            top=1,
+            wspace=0,
+            hspace=0.7 / self.cm.shape[0],
+            right=self._right_grisdspec,
+            left=self._left_grisdspec)
 
     def add_label(self, x_label=False, y_label=False,x_position='top'):
         self.ax.set(xlabel=x_label, ylabel=y_label)
