@@ -1,10 +1,8 @@
 language: python
 
+# in the future, it would be great to test on mac and windows
 jobs:
   include:
-    - os: osx
-      osx_image: xcode10
-
     - os: linux
       python: 3.6
 
@@ -14,11 +12,8 @@ jobs:
     - os: linux
       python: 3.8
 
-    - os: osx
-      osx_image: xcode10
-
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update          ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update          ; fi 
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew outdated | grep -q gdal && brew upgrade gdal; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository --yes ppa:ubuntugis/ppa ; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt --quiet update ; fi
