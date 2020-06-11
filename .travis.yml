@@ -21,17 +21,13 @@ matrix:
       language: generic
       env: PYTHON=38
 
-addons:
-   apt:
-     packages: libgdal-dev
-   homebrew:
-     packages: libgdal-dev
-
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
   - sudo apt-get --quiet update
   - sudo apt-get install --yes libgdal-dev gdal-bin
+
 install:
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install lidgdal-dev; else brew install libgdal-dev; fi
   - pip install gdal==`gdal-config --version`
   - pip install -r requirements.txt
   - pip install .

@@ -2,11 +2,15 @@
 import unittest
 
 import os
+import tempfile
 import numpy as np
 from museotoolbox import charts
 confusion_matrix = np.random.randint(5,20,[5,5])
 confusion_matrix[-1,-1] = 0
 confusion_matrix[-1,:] = 0
+
+tmp_dir = tempfile.mkdtemp()
+
 class TestCharts(unittest.TestCase):
     def test_Plot(self):
         for hide_ticks in [True,False]:
@@ -22,13 +26,14 @@ class TestCharts(unittest.TestCase):
         pcm.add_text()
         pcm.add_x_labels([1,2,3,4,5],position='top',rotation=90)
         pcm.add_f1()
-        self.assertRaises(Warning,pcm.add_accuracy)
+        
         pcm.add_y_labels(['one','two','three','four','five'])
-        pcm.save_to('/tmp/test.pdf')
-        os.remove('/tmp/test.pdf')
+        pcm.save_to(os.path.join(tmp_dir,'test.pdf'))
+        os.remove(os.path.join(tmp_dir,'test.pdf'))
         
     def test_f1_nonsquarematrix(self):
         pcm = charts.PlotConfusionMatrix(confusion_matrix[:,:-2])
+
         self.assertRaises(Warning,pcm.add_f1)
         self.assertRaises(Warning,pcm.color_diagonal)
         self.assertRaises(Warning,pcm.add_accuracy)
@@ -41,8 +46,7 @@ class TestCharts(unittest.TestCase):
             pcm.add_x_labels([1,2,3,4,5],position='top',rotation=90)
             pcm.add_y_labels(['one','two','three','four','five'])
             pcm.add_accuracy()
-        self.assertRaises(Warning,pcm.add_f1)
-        self.assertRaises(Warning,pcm.add_mean)
+        
 if __name__ == "__main__":
     unittest.main()
     
