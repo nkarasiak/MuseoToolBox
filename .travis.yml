@@ -22,12 +22,13 @@ matrix:
       env: PYTHON=38
 
 before_install:
-  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-  - sudo apt-get --quiet update
-  - sudo apt-get install --yes libgdal-dev gdal-bin
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update          ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gdal; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository --yes ppa:ubuntugis/ppa ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt --quiet update ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt install --yes libgdal-dev gdal-bin ; fi
 
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install lidgdal-dev; else brew install libgdal-dev; fi
   - pip install gdal==`gdal-config --version`
   - pip install -r requirements.txt
   - pip install .
