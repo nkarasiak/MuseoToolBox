@@ -44,7 +44,7 @@ f1 = metrics.make_scorer(metrics.f1_score)
 #
 SFFS = SequentialFeatureSelection(classifier=classifier,param_grid=dict(n_estimators=[10,20]),verbose=False)
 
-SFFS.fit(X.astype(np.float),y,g,cv=LSGO,max_features=2)
+SFFS.fit(X.astype(np.float),y,g,cv=LSGO,max_features=3)
 
 ##############################################
 # Show best features and score

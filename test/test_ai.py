@@ -8,6 +8,8 @@ from museotoolbox.processing import image_mask_from_vector
 from osgeo import gdal
 
 import os
+import tempfile
+tempdir = tempfile.mkdtemp()
 import shutil
 
 from sklearn.ensemble import RandomForestClassifier
@@ -16,7 +18,7 @@ raster,vector = load_historical_data(low_res=True)
 X,y,g = load_historical_data(return_X_y_g=True,low_res=True)
 param_grid = dict(n_estimators=[1,10])
 classifier = RandomForestClassifier()
-image_mask_from_vector(vector,raster,'/tmp/mask.tif')
+image_mask_from_vector(vector,raster,os.path.join(tempdir,'mask.tif'))
 
 class TestStats(unittest.TestCase):
     def test_superLearner(self):
@@ -30,7 +32,7 @@ class TestStats(unittest.TestCase):
             len(model.CV) == n_cv
             assert(np.all(model.group == g))
             
-            model.predict_image(raster,'/tmp/SuperLearner/class.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
+            model.predict_image(raster,os.path.join(tempdir,'class.tif'),confidence_per_class=os.path.join(tempdir,'confclass.tif'),higher_confidence=os.path.join(tempdir,'higherconf.tif'))
             assert(model._is_standardized == tf)
         
         # test masked return if X is totally masked
@@ -50,19 +52,19 @@ class TestStats(unittest.TestCase):
         assert(model._array_is_customized)
         assert(model.xFunction)
         assert(np.all(model.standardize_array(X) != X))
-        model.predict_image(raster,out_image='/tmp/SuperLearner/class.tif',in_image_mask='/tmp/mask.tif',confidence_per_class='/tmp/SuperLearner/confclass.tif',higher_confidence='/tmp/SuperLearner/higherconf.tif')
-        assert(gdal.Open('/tmp/SuperLearner/class.tif').RasterCount == 1)
-        assert(gdal.Open('/tmp/SuperLearner/higherconf.tif').RasterCount == 1)
-        assert(gdal.Open('/tmp/SuperLearner/confclass.tif').RasterCount == len(np.unique(y)))
+        model.predict_image(raster,out_image=os.path.join(tempdir,'class.tif'),in_image_mask=os.path.join(tempdir,'mask.tif'),confidence_per_class=os.path.join(tempdir,'confclass.tif'),higher_confidence=os.path.join(tempdir,'higherconf.tif'))
+        assert(gdal.Open(os.path.join(tempdir,'class.tif')).RasterCount == 1)
+        assert(gdal.Open(os.path.join(tempdir,'higherconf.tif')).RasterCount == 1)
+        assert(gdal.Open(os.path.join(tempdir,'confclass.tif')).RasterCount == len(np.unique(y)))
         cms = model.get_stats_from_cv()
         
         assert(len(cms) == 2)
-        model.save_cm_from_cv('/tmp/empty/',prefix='coco',header=False)
-        shutil.rmtree('/tmp/empty/')
-        model.save_model('/tmp/SuperLearner/model')
-        assert(os.path.exists('/tmp/SuperLearner/model.npz'))
-        model.load_model('/tmp/SuperLearner/model')
-        shutil.rmtree('/tmp/SuperLearner/')
+        model.save_cm_from_cv(tempdir,prefix='coco',header=False)
+        
+        model.save_model(os.path.join(tempdir,'model'))
+        assert(os.path.exists(os.path.join(tempdir,'model.npz')))
+        model.load_model(os.path.join(tempdir,'model'))
+        
 
         with self.assertRaises(ValueError):
             model.fit(X,y,cv=False)
@@ -73,8 +75,8 @@ class TestStats(unittest.TestCase):
         sfs.fit(X,y,cv=2)
         sfs.predict(X,idx=0)
         assert(not np.all(sfs.predict(X,idx=0) == sfs.predict(X,idx=1)))
-        sfs.predict_best_combination(raster,'/tmp/class.tif')
-        sfs.predict_images(raster,'/tmp/class')
+        sfs.predict_best_combination(raster,os.path.join(tempdir,'class'))
+        sfs.predict_images(raster,os.path.join(tempdir,'class'))
         assert(sfs.get_best_model())
         assert(sfs.transform(X,idx='best').shape[1] == sfs.best_idx_+1)
 
@@ -90,12 +92,11 @@ class TestStats(unittest.TestCase):
         assert(sfs.transform(X,idx=0).shape[1] == n_comp)
         assert(sfs.X.shape[1] == X.shape[1]*2)
         assert(len(sfs.best_features_) == 2)
-        sfs.predict_images(raster,'/tmp/sfs_models/')
-        sfs.predict_best_combination(raster,'/tmp/sfs_models/best.tif')
+        sfs.predict_images(raster,tempdir)
+        sfs.predict_best_combination(raster,os.path.join(tempdir,'best.tif'))
         assert(sfs.get_best_model().X.shape[1] == n_comp*(sfs.best_idx_+1) )
         sfs.predict(X,0)
-        shutil.rmtree('/tmp/sfs_models/')
         
 if __name__ == "__main__":
     unittest.main()
-    
+    shutil.rmtree(tempdir)
