@@ -47,16 +47,11 @@ class PlotConfusionMatrix:
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
-        self.gs = gridspec.GridSpec(
-            2, 2, width_ratios=[
-                self.cm.shape[1], 1], height_ratios=[
-                self.cm.shape[0], 1])
 
-        self.gs.update(
-            bottom=0,
-            top=1,
-            wspace=0,
-            hspace=0.7 / self.cm.shape[0], right=right, left=left)
+        # init gridspec
+        self._left_grisdspec = left
+        self._right_grisdspec = right
+        self._init_gridspec()
 
         self.ax = plt.subplot(self.gs[0, 0])  # place it where it should be.
         self.zero_is_min = zero_is_min
@@ -92,8 +87,22 @@ class PlotConfusionMatrix:
             **kwargs)
 
         self.kwargs = kwargs
-        self.subplot = False
+        self.subplot_ax1v = False
         self.axes.append(self.ax)
+
+    def _init_gridspec(self):
+        self.gs = gridspec.GridSpec(
+            2, 3, width_ratios=[
+                self.cm.shape[1], 1, 1], height_ratios=[
+                self.cm.shape[0], 1])
+
+        self.gs.update(
+            bottom=0,
+            top=1,
+            wspace=0,
+            hspace=0.7 / self.cm.shape[0],
+            right=self._right_grisdspec,
+            left=self._left_grisdspec)
 
     def add_label(self, x_label=False, y_label=False,x_position='top'):
         self.ax.set(xlabel=x_label, ylabel=y_label)
@@ -122,28 +131,26 @@ class PlotConfusionMatrix:
             thresold = int(np.amax(self.cm) / 2)
         for i, j in itertools.product(
                 range(self.cm.shape[0]), range(self.cm.shape[1])):
-            if not np.ma.is_masked(self.cm[i, j]):
+            cm_value = self.cm[i, j]
+            txt_displayed = str(cm_value) if isinstance(cm_value, (int, np.integer)) \
+                else '{:.1f}'.format(cm_value)
+            if not np.ma.is_masked(cm_value):
                 # print(cm[i,j])
                 self.ax.text(j,
                              i,
-                             str(self.cm[i,
-                                         j]),
+                             txt_displayed,
                              horizontalalignment="center",
-                             color="white" if self.cm[i,
-                                                      j] > thresold else 'black',
+                             color="white" if cm_value > thresold else 'black',
                              fontsize=font_size,
                              va='center',
-                             alpha=alpha_zero if self.cm[i,
-                                                         j] == 0 else alpha)
+                             alpha=alpha_zero if cm_value == 0 else alpha)
             else:
                 #                print(self.cm2[i, j])
                 self.ax.text(j,
                              i,
-                             str(self.cm2[i,
-                                          j]),
+                             txt_displayed,
                              horizontalalignment="center",
-                             color="white" if self.cm2[i,
-                                                       j] > thresold else "black",
+                             color="white" if cm_value > thresold else "black",
                              va='center',
                              fontsize=font_size,
                              )
@@ -209,11 +216,13 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_mean(xLabel='all species',yLabel='all years')
         """
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
-        else:
-            self.subplot = 'Mean'
+
+        if self.subplot_ax1v is not False:
+            self._init_gridspec()
+            if self.subplot_ax1v == 'F1':
+                self.subplot_ax1v = 'Mean'
+                self.add_f1()
+        self.subplot_ax1v = 'Mean'
 
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
@@ -323,14 +332,16 @@ class PlotConfusionMatrix:
         --------
         >>> plot.add_f1()
         """
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
         if self.cm.shape[0] != self.cm.shape[1]:
             raise Warning('Number of lines and columns must be equal')
 
-        self.subplot = 'F1'
-        self.ax1v = plt.subplot(self.gs[0, 1])
+        if self.subplot_ax1v is False or self.subplot_ax1v == 'F1':
+            self.ax1v = plt.subplot(self.gs[0, 1])
+            current_ax = self.ax1v
+            self.subplot_ax1v = 'F1'
+        else:
+            self.ax2v = plt.subplot(self.gs[0, 2])
+            current_ax = self.ax2v
 
         verticalPlot = []
 
@@ -348,7 +359,7 @@ class PlotConfusionMatrix:
             font_size = 12
 
         verticalPlot = np.asarray(verticalPlot).reshape(-1, 1)
-        self.ax1v.imshow(
+        current_ax.imshow(
             verticalPlot,
             cmap=self.diag_color,
             interpolation='nearest',
@@ -357,28 +368,28 @@ class PlotConfusionMatrix:
             vmax=100)
 
         if self.xlabelsPos == 'top':
-            self.ax1v.xaxis.tick_top()
-            self.ax1v.xaxis.set_ticks_position(
+            current_ax.xaxis.tick_top()
+            current_ax.xaxis.set_ticks_position(
                 'top')  # THIS IS THE ONLY CHANGE
-            self.ax1v.set_xticks([0])
-            self.ax1v.set_xticklabels(
+            current_ax.set_xticks([0])
+            current_ax.set_xticklabels(
                 ['F1'],
                 horizontalalignment='center',
                 rotation=self.xrotation,
                 size=font_size)
         else:
-            self.ax1v.set_xticks([0])
-            self.ax1v.set_xticklabels(
+            current_ax.set_xticks([0])
+            current_ax.set_xticklabels(
                 ['F1'],
                 horizontalalignment='left',
                 rotation=self.xrotation,
                 size=font_size)
-        self.ax1v.set_yticks([])
+        current_ax.set_yticks([])
 
         for i in range(self.cm.shape[0]):
             txt = str(int(_nan_to_num(verticalPlot[i])))
 
-            self.ax1v.text(
+            current_ax.text(
                 0,
                 i,
                 txt,
@@ -386,9 +397,11 @@ class PlotConfusionMatrix:
                 horizontalalignment="center",
                 color="white" if verticalPlot[i] > 50 else "black",
                 va='center')
-        self.axes.append(self.ax1v)
+        self.axes.append(current_ax)
 
-    def add_accuracy(self, thresold=50, invert_PA_UA=False):
+    def add_accuracy(self, thresold=50, invert_PA_UA=False,
+                     user_acc_label='User\'s acc.',
+                     prod_acc_label='Prod\'s acc.'):
         """
         Add user and producer accuracy.
 
@@ -396,6 +409,13 @@ class PlotConfusionMatrix:
         ----------
         thresold : int, default 50
             The thresold value where text will be in white instead of black.
+        invert_PA_UA : bool, default False
+            If True, user and producer accuracy labels are switched (note that
+            it does not reverse the confusion matrix though).
+        user_acc_label: str
+            The user accuracy label to display. Defautl to 'User's acc.'
+        prod_acc_label: str
+            The user accuracy label to display. Defautl to 'Prod's acc.'
 
         Examples
         --------
@@ -407,13 +427,16 @@ class PlotConfusionMatrix:
         else:
             font_size = 12
 
-        if self.subplot is not False:
-            raise Warning(
-                'You can\'t add two subplots. You already had ' + str(self.subplot))
+        if self.subplot_ax1v is not False:
+            self._init_gridspec()
+            
+            if self.subplot_ax1v == 'F1':
+                self.subplot_ax1v = 'accuracy'
+                self.add_f1()
+        self.subplot_ax1v = 'accuracy'
+
         if self.cm_.shape[0] != self.cm_.shape[1]:
             raise Warning('Number of lines and columns must be equal')
-
-        self.subplot = 'F1'
 
         self.ax1v = plt.subplot(self.gs[0, 1])
         self.ax1h = plt.subplot(self.gs[1, 0])
@@ -463,7 +486,7 @@ class PlotConfusionMatrix:
                 ha='center',
                 va='center')
 
-        y_label, x_label = ['Prod\'s acc.'], ['User\'s acc.']
+        y_label, x_label = [prod_acc_label], [user_acc_label]
         if invert_PA_UA:
             x_label, y_label = y_label, x_label
 
@@ -486,6 +509,7 @@ class PlotConfusionMatrix:
             rotation=self.xrotation,
             ha=ha,
             size=font_size)
+        # TOFIX not extend ?
         self.axes.append([self.ax1v, self.ax1h])
 
     def color_diagonal(self, diag_color=plt.cm.Greens,
