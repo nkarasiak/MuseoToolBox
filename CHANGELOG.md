@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support list for cross-validation in order to give an unready unfolded cv.
 
+New features provided by @marclang for the charts module :
+
+- Allows to display both F1 and accuracy or mean metrics
+- Allows to display accuracy after have been displaying mean (and vice versa)
+- Allows to display float matrix
+
 ### Changed
 
 - Fix path separator to access tutorial dataset
