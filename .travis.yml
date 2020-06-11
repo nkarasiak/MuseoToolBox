@@ -23,8 +23,9 @@ matrix:
 
 addons:
    apt:
-     packages:
-     - libgdal-dev
+     packages: libgdal-dev
+   homebrew:
+     packages: libgdal-dev
 
 before_install:
   - sudo add-apt-repository --yes ppa:ubuntugis/ppa
