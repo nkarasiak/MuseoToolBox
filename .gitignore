@@ -17,6 +17,7 @@ MuseoToolBox.egg-info/
 cv_*.sqlite
 
 # sphinx-gallery temp files
+
 # Sphinx documentation
 docs/source/_build/
 docs/build/
