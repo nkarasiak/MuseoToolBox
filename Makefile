@@ -59,7 +59,7 @@ autopep8 :
 	autopep8 -ir museotoolbox --jobs -1
 
 aautopep8 :
-	autopep8 -air -a museotoolbox --jobs -1
+	autopep8 -air -a -a -a -a  museotoolbox --jobs -1
 
 pytest :
 	pytest-3 -v  --cov=museotoolbox

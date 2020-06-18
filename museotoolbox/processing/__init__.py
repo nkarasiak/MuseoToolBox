@@ -647,6 +647,7 @@ class RasterMath:
         else:
             self.x_block_size = block_size[0]
             self.y_block_size = block_size[1]
+
         self.block_sizes = [self.x_block_size, self.y_block_size]
         self.custom_block_size()  # set block size
 
@@ -687,12 +688,12 @@ class RasterMath:
         if opened_raster is None:
             raise ReferenceError('Impossible to open image ' + in_image)
 
-        sameSize = True
+        is_same_size = True
 
         if len(self.opened_images) > 0:
             if opened_raster.RasterXSize != self.opened_images[
                     0].RasterXSize or opened_raster.RasterYSize != self.opened_images[0].RasterYSize:
-                sameSize = False
+                is_same_size = False
                 raise ValueError(
                     "raster {} doesn't have the same size (X and Y) as the initial raster.\n \
                       Museotoolbox can't add it as an input raster.".format(
@@ -703,9 +704,8 @@ class RasterMath:
         mem_size = band.ReadAsArray(0, 0, 1, 1).itemsize * n_bands
         self.itemsize += mem_size
         del band
-#        self.itemsize += opened_raster.GetRasterBand(0).ReadAsArray(0,0,1,1).itemsize*n_bands
 
-        if sameSize:
+        if is_same_size:
             self.opened_images.append(opened_raster)
 
     def add_function(
@@ -819,20 +819,23 @@ class RasterMath:
         self._raster_options = []
 
         if compress:
-
-            self._raster_options.append('BIGTIFF=IF_SAFER')
-
-            if osgeo_version >= '2.1':
-                self._raster_options.append(
-                    'NUM_THREADS={}'.format(self.n_jobs))
-
-            if compress == 'high':
-
-                self._raster_options.append('COMPRESS=DEFLATE')
-                self._raster_options.append('PREDICTOR=2')
-                self._raster_options.append('ZLEVEL=9')
+            if compress == 'jpg':
+                self._raster_options.append('COMPRESS=JPEG')
+                self._raster_options.append('JPEG_QUALITY=80')
             else:
-                self._raster_options.append('COMPRESS=PACKBITS')
+                self._raster_options.append('BIGTIFF=IF_SAFER')
+    
+                if osgeo_version >= '2.1':
+                    self._raster_options.append(
+                        'NUM_THREADS={}'.format(self.n_jobs))
+    
+                if compress == 'high':
+    
+                    self._raster_options.append('COMPRESS=DEFLATE')
+                    self._raster_options.append('PREDICTOR=2')
+                    self._raster_options.append('ZLEVEL=9')
+                else:
+                    self._raster_options.append('COMPRESS=PACKBITS')
         else:
             self._raster_options = ['BIGTIFF=IF_NEEDED']
 
@@ -1014,7 +1017,27 @@ class RasterMath:
             outArr = np.ma.masked_array(arr, tmpMask)
 
         return outArr
-
+    
+    def get_image_as_array(self):
+        """
+        Return the input image(s) as an array. Be careful it can be huge to load in memory.
+        """
+        arr_images = []
+        
+        for image in self.opened_images:
+            np_dt = image.ReadAsArray(0,0,1,1).dtype
+            arr = np.empty([self.n_lines,self.n_columns,image.RasterCount],dtype=np_dt)
+            
+            for band, arr_band in enumerate( self.read_band_per_band() ) :
+                arr[...,band] = arr_band
+            
+            if self.return_3d is False: # flatten in 2d
+                arr = arr.reshape(-1,self.n_bands)
+            arr_images.append(arr)
+        if len(self.opened_images) == 1: # if only one input image, return the array, not list
+            arr_images = arr_images[0]
+            
+        return arr_images
     def get_block(self, block_number=0, return_with_mask=False):
         """
         Get a block by its position, ordered as follow :
@@ -1266,6 +1289,11 @@ class RasterMath:
         else:
             self.x_block_size = self.block_sizes[0]
 
+        if self.x_block_size == -1:
+            self.x_block_size = self.n_columns
+        if self.y_block_size == -1:
+            self.y_block_size = self.n_lines
+            
         self.n_blocks = np.ceil(self.n_lines / self.y_block_size).astype(
             int) * np.ceil(self.n_columns / self.x_block_size).astype(int)
         self.block_sizes = [self.x_block_size, self.y_block_size]

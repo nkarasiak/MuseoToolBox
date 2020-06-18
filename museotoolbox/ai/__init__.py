@@ -192,7 +192,7 @@ class SuperLearner:
             cv = RandomStratifiedKFold(n_splits=cv)
 
         if cv is not None and cv is not False:
-            if isinstance(cv,list):
+            if isinstance(cv, list):
                 self.CV = cv
             else:
                 self.CV = []

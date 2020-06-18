@@ -42,8 +42,15 @@ class PlotConfusionMatrix:
     >>> plot.add_f1()
     """
 
-    def __init__(self, cm, cmap=plt.cm.Greens,
-                 left=None, right=None, zero_is_min=True, max_is_max=True, **kwargs):
+    def __init__(
+            self,
+            cm,
+            cmap=plt.cm.Greens,
+            left=None,
+            right=None,
+            zero_is_min=True,
+            max_is_max=True,
+            **kwargs):
         self.cm = np.array(cm)
         self.cm_ = np.copy(cm)
         self.axes = []
@@ -104,9 +111,9 @@ class PlotConfusionMatrix:
             right=self._right_grisdspec,
             left=self._left_grisdspec)
 
-    def add_label(self, x_label=False, y_label=False,x_position='top'):
+    def add_label(self, x_label=False, y_label=False, x_position='top'):
         self.ax.set(xlabel=x_label, ylabel=y_label)
-        self.ax.xaxis.set_label_position(x_position) 
+        self.ax.xaxis.set_label_position(x_position)
 
     def add_text(self, thresold=False, font_size=12, alpha=1, alpha_zero=1):
         """
@@ -132,8 +139,8 @@ class PlotConfusionMatrix:
         for i, j in itertools.product(
                 range(self.cm.shape[0]), range(self.cm.shape[1])):
             cm_value = self.cm[i, j]
-            txt_displayed = str(cm_value) if isinstance(cm_value, (int, np.integer)) \
-                else '{:.1f}'.format(cm_value)
+            txt_displayed = str(cm_value) if isinstance(
+                cm_value, (int, np.integer)) else '{:.1f}'.format(cm_value)
             if not np.ma.is_masked(cm_value):
                 # print(cm[i,j])
                 self.ax.text(j,
@@ -429,7 +436,7 @@ class PlotConfusionMatrix:
 
         if self.subplot_ax1v is not False:
             self._init_gridspec()
-            
+
             if self.subplot_ax1v == 'F1':
                 self.subplot_ax1v = 'accuracy'
                 self.add_f1()

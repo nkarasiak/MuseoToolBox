@@ -54,20 +54,27 @@ def train_test_split(cv, X, y, random_state=False, **kwargs):
     if y.ndim == 2:
         y = y.flatten()
 
+    groups = False
+
     for tr, vl in cv.split(X, y, **kwargs):
         X_train = X[tr, ...]
         y_train = y[tr]
         X_test = X[vl, ...]
         y_test = y[vl]
+
         if 'groups' in kwargs:
+
             g = kwargs['groups']
-            if g.ndim == 2:
-                g = y.flatten()
-            g_train = g[tr, ...]
-            g_test = g[vl, ...]
+
+            if g is not None:
+                groups = True
+                if g.ndim == 2:
+                    g = y.flatten()
+                g_train = g[tr, ...]
+                g_test = g[vl, ...]
         break  # only the first fold is needed
 
-    if 'groups' in kwargs:
+    if groups is True:
         return X_train, X_test, y_train, y_test, g_train, g_test
     else:
         return X_train, X_test, y_train, y_test
@@ -121,11 +128,7 @@ class LeavePSubGroupOut(_sample_selection._cv_manager):
         Controls the verbosity: the higher the value is, the more the messages are detailed.
     """
 
-    def __init__(self,
-                 valid_size=0.5,
-                 n_repeats=False,
-                 random_state=False,
-                 verbose=False):
+    def __init__(self, valid_size=0.5, n_repeats=False, random_state=False, verbose=False):
 
         if isinstance(valid_size, float):
             if valid_size > 1 or valid_size < 0:
@@ -160,10 +163,7 @@ class LeaveOneSubGroupOut(_sample_selection._cv_manager):
         Controls the verbosity: the higher the value is, the more the messages are detailed.
     """
 
-    def __init__(self,
-                 n_repeats=False,
-                 random_state=False,
-                 verbose=False):
+    def __init__(self, n_repeats=False, random_state=False, verbose=False):
 
         super().__init__(
             _sample_selection.groupCV,

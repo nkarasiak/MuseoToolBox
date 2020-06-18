@@ -72,16 +72,27 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     """
     toReturn = []
     if low_res:
-        raster = os.path.join(__pathFile, '_historicalmap{}map_lowres.tif'.format(os.path.sep))
+        raster = os.path.join(
+            __pathFile,
+            '_historicalmap{}map_lowres.tif'.format(
+                os.path.sep))
     else:
-        raster = os.path.join(__pathFile, '_historicalmap{}map_compress.tif'.format(os.path.sep))
-    vector = os.path.join(__pathFile, '_historicalmap{}train.gpkg'.format(os.path.sep))
+        raster = os.path.join(
+            __pathFile,
+            '_historicalmap{}map_compress.tif'.format(
+                os.path.sep))
+    vector = os.path.join(
+        __pathFile,
+        '_historicalmap{}train.gpkg'.format(
+            os.path.sep))
 
     if return_X_y or return_X_y_g:
         from ..processing import extract_ROI
         if centroid:
             vector = os.path.join(
-                __pathFile, '_historicalmap{}train_centroid.gpkg'.format(os.path.sep))
+                __pathFile,
+                '_historicalmap{}train_centroid.gpkg'.format(
+                    os.path.sep))
         if return_X_y_g:
             X, y, g = extract_ROI(raster, vector, 'Class', 'uniquefid')
             toReturn = (X, y, g)
@@ -92,7 +103,9 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
         toReturn.append(raster)
         if centroid:
             vectorCentroid = os.path.join(
-                __pathFile, '_historicalmap{}train_centroid.gpkg'.format(os.path.sep))
+                __pathFile,
+                '_historicalmap{}train_centroid.gpkg'.format(
+                    os.path.sep))
             toReturn.append(vectorCentroid)
         else:
             toReturn.append(vector)
