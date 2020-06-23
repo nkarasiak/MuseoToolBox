@@ -23,6 +23,17 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+install_requires = []
+
+with open('./requirements.txt') as requirements_txt:
+    requirements = requirements_txt.read().strip().splitlines()
+    for requirement in requirements:
+        if requirement.startswith('#') or requirement == (''):
+            continue
+        else:
+            install_requires.append(requirement)
+
+
 
 setuptools.setup(
     name='museotoolbox',
@@ -34,7 +45,7 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=["numpy","scipy","matplotlib","scikit-learn",'joblib'],
+    install_requires=install_requires,
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",

@@ -13,7 +13,7 @@ psutil
 m2r
 autopep8
 recommonmark
-sphinx==2.2.1 # due to rtd bug on 20200418
+sphinx
 sphinx-rtd-theme
 numpydoc
 ipykernel
