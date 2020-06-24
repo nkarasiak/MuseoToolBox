@@ -20,12 +20,12 @@ __version__ = re.search(
 
 import setuptools
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 install_requires = []
 
-with open('./requirements.txt') as requirements_txt:
+with open('requirements.txt','r') as requirements_txt:
     requirements = requirements_txt.read().strip().splitlines()
     for requirement in requirements:
         if requirement.startswith('#') or requirement == (''):
