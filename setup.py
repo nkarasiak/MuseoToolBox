@@ -23,16 +23,6 @@ import setuptools
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
-install_requires = []
-
-with open('requirements.txt','r') as requirements_txt:
-    requirements = requirements_txt.read().strip().splitlines()
-    for requirement in requirements:
-        if requirement.startswith('#') or requirement == (''):
-            continue
-        else:
-            install_requires.append(requirement)
-
 
 
 setuptools.setup(
@@ -45,7 +35,12 @@ setuptools.setup(
     author='Nicolas Karasiak',
     author_email='karasiak.nicolas@gmail.com',
     license='GPLv3',
-    install_requires=install_requires,
+    install_requires=['numpy>=1.10',
+                      'scipy>=1.0',
+                      'scikit-learn>=0.16',
+                      'matplotlib',
+                      'joblib',
+                      'psutil'],
     packages=setuptools.find_packages(),
     classifiers=[
             "Topic :: Scientific/Engineering :: Artificial Intelligence",
