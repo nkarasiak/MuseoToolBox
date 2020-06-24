@@ -14,4 +14,4 @@
 # =============================================================================
 from . import ai, processing, cross_validation, datasets, stats
 
-__version__ = "0.13.5"
+__version__ = "0.13.6"
