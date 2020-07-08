@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.13.6] - Unreleased
 
+### Added
+
+- RasterMath get_image_as_array() now suppots mask.
+
+### Fixed
+
+- Update groups management for sklearn>=0.25
 
 ## [0.13.5] - 2020-06-24
 

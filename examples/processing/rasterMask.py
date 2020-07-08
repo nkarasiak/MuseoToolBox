@@ -51,5 +51,6 @@ plt.imshow(src.ReadAsArray(),cmap='Greys')
 # invert mask (invert=True)
 # -----------------------------------
 # white is nodata, black is 255
+
 src = gdal.Open('/tmp/maskInvert.tif')
 plt.imshow(src.ReadAsArray(),cmap='Greys')

@@ -186,7 +186,7 @@ class SuperLearner:
             scoring='accuracy',
             refit=True,
             **gridSearchCVParams):
-
+        
         if isinstance(cv, int) and cv:
             from ..cross_validation import RandomStratifiedKFold
             cv = RandomStratifiedKFold(n_splits=cv)
@@ -196,14 +196,31 @@ class SuperLearner:
                 self.CV = cv
             else:
                 self.CV = []
-                for tr, vl in (cv for cv in cv.split(
+                
+                if groups is None:
+                    for tr, vl in (cv for cv in cv.split(
+                            X, y) if cv is not None):
+                        self.CV.append((tr, vl))
+                else:
+                    for tr, vl in (cv for cv in cv.split(
                         X, y, groups) if cv is not None):
-                    self.CV.append((tr, vl))
+                        self.CV.append((tr, vl))
+                    
 
         from sklearn.model_selection import GridSearchCV
 
         if isinstance(param_grid, dict) and cv is not False:
-            self.model = GridSearchCV(
+            if gridSearchCVParams == {}:
+                self.model = GridSearchCV(
+                    self.classifier,
+                    param_grid=param_grid,
+                    cv=cv,
+                    scoring=scoring,
+                    refit=refit,
+                    n_jobs=self.n_jobs,
+                    verbose=self.verbose)
+            else:
+                self.model = GridSearchCV(
                 self.classifier,
                 param_grid=param_grid,
                 cv=cv,
@@ -212,7 +229,10 @@ class SuperLearner:
                 n_jobs=self.n_jobs,
                 verbose=self.verbose,
                 **gridSearchCVParams)
-            self.model.fit(X, y, groups)
+            if groups is None:
+                self.model.fit(X, y)
+            else:
+                self.model.fit(X, y, groups=groups)
             # self.model = self.gS.best_estimator_
             self.cloneModel = clone(self.model.best_estimator_)
             #self.model.fit(X, y, groups)
@@ -227,7 +247,10 @@ class SuperLearner:
                 raise ValueError(
                     'Cannot fit model because a CV or a param_grid is given and and no param_grid was defined?\
                               If you want to fit your mode with no param_grid, please set cv=False and param_grid=False.')
-            self.model = self.classifier.fit(X, y, groups)
+            if groups is None:
+                self.model = self.classifier.fit(X, y)
+            else:
+                self.model = self.classifier.fit(X, y, groups)
 
     def save_model(self, path):
         """
@@ -245,7 +268,7 @@ class SuperLearner:
         """
         if not path.endswith('npz'):
             path += '.npz'
-
+            
         np.savez_compressed(path, SL=self.__dict__)
 
         return path

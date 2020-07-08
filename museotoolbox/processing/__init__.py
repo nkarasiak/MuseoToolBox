@@ -990,54 +990,61 @@ class RasterMath:
         """
         Filter no data according to a mask and to nodata value set in the raster.
         """
-        arrShape = arr.shape
-        arrToCheck = np.copy(arr)[..., 0]
-
-        outArr = np.zeros((arrShape), dtype=self.dtype_np)
+        arr = self.reshape_ndim(arr)
+        if mask is not None:
+            mask = self.reshape_ndim(mask)
+            
+        arr_to_check = np.copy(arr)           
+        arr_shape = arr.shape
+        
+        out_arr = np.zeros((arr_shape), dtype=self.dtype_np)
         if self.nodata:
-            outArr[:] = self.nodata
+            out_arr[:] = self.nodata
 
         if self.mask:
             t = np.logical_or((mask == False),
-                              arrToCheck == self.nodata)
+                              arr_to_check == self.nodata)
         else:
-            t = np.where(arrToCheck == self.nodata)
-
+            t = np.where(arr_to_check == self.nodata)
+        
+        
         if self.return_3d:
             if arr.ndim == 2:
                 arr = np.expand_dims(arr, 2)
-            tmpMask = np.zeros(arrShape[:2], dtype=bool)
-            tmpMask[t] = True
-            tmpMask = np.repeat(tmpMask.reshape(
-                *tmpMask.shape, 1), arr.shape[-1], axis=2)
-            outArr = np.ma.masked_array(arr, tmpMask)
+            tmp_mask = np.zeros(arr_shape[:2], dtype=bool)
+            if self.mask:
+                t = t[...,0]
+            else:
+                t = t[:2]
+            tmp_mask[t] = True
+            tmp_mask  = np.repeat(tmp_mask.reshape(
+                *tmp_mask.shape, 1), arr.shape[-1], axis=2)
+            out_arr = np.ma.masked_array(arr, tmp_mask)
         else:
-            tmpMask = np.zeros(arrShape, dtype=bool)
-            tmpMask[t, ...] = True
-            outArr = np.ma.masked_array(arr, tmpMask)
+            tmp_mask = np.zeros(arr_shape, dtype=bool)
+            tmp_mask[t, ...] = True
+            out_arr = np.ma.masked_array(arr, tmp_mask)
 
-        return outArr
+        return out_arr
     
     def get_image_as_array(self):
         """
         Return the input image(s) as an array. Be careful it can be huge to load in memory.
         """
-        arr_images = []
-        
-        for image in self.opened_images:
-            np_dt = image.ReadAsArray(0,0,1,1).dtype
-            arr = np.empty([self.n_lines,self.n_columns,image.RasterCount],dtype=np_dt)
-            
-            for band, arr_band in enumerate( self.read_band_per_band() ) :
-                arr[...,band] = arr_band
-            
-            if self.return_3d is False: # flatten in 2d
-                arr = arr.reshape(-1,self.n_bands)
-            arr_images.append(arr)
-        if len(self.opened_images) == 1: # if only one input image, return the array, not list
-            arr_images = arr_images[0]
-            
-        return arr_images
+
+        arr = self._generate_block_array(0,0,self.n_columns,self.n_lines,mask=self.mask)
+
+        if self.return_3d is False:
+            if len(self.opened_images) == 1:
+                arr = arr[~arr.mask].data
+            else:
+                arr = [tmp_arr[~tmp_arr.mask].data for tmp_arr in arr]
+        if len(self.opened_images) > 1:
+            arr = [self.reshape_ndim(tmp_arr) for tmp_arr in arr]
+        else:
+            arr = self.reshape_ndim(arr)
+        return arr
+
     def get_block(self, block_number=0, return_with_mask=False):
         """
         Get a block by its position, ordered as follow :
@@ -1224,7 +1231,7 @@ class RasterMath:
 
         if x.ndim == self.return_3d + 1:
             x = x.reshape(*x.shape, 1)
-
+        
         return x
 
     def read_band_per_band(self):
