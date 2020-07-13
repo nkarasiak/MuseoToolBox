@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Update groups management for sklearn>=0.25
+- Fixed bug with path to datasets on windows (thanks @obernardoff)
 
 ## [0.13.5] - 2020-06-24
 
