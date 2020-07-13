@@ -1036,9 +1036,9 @@ class RasterMath:
 
         if self.return_3d is False:
             if len(self.opened_images) == 1:
-                arr = arr[~arr.mask].data
+                arr = arr[~arr.mask[:,0],...].data
             else:
-                arr = [tmp_arr[~tmp_arr.mask].data for tmp_arr in arr]
+                arr = [tmp_arr[~arr.mask[:,0],...].data for tmp_arr in arr]
         if len(self.opened_images) > 1:
             arr = [self.reshape_ndim(tmp_arr) for tmp_arr in arr]
         else:
