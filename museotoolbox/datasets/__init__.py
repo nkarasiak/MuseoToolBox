@@ -71,28 +71,19 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     /mnt/bigone/lib/MuseoToolBox/museotoolbox/datasets/_historicalmap/train.gpkg
     """
     toReturn = []
+    separator = '/'
     if low_res:
-        raster = os.path.join(
-            __pathFile,
-            '_historicalmap{}map_lowres.tif'.format(
-                os.path.sep))
+        raster = __pathFile+'{0}_historicalmap{0}map_lowres.tif'.format(separator)
     else:
-        raster = os.path.join(
-            __pathFile,
-            '_historicalmap{}map_compress.tif'.format(
-                os.path.sep))
-    vector = os.path.join(
-        __pathFile,
-        '_historicalmap{}train.gpkg'.format(
-            os.path.sep))
-
+        raster = __pathFile+'{0}_historicalmap{0}map_compress.tif'.format(separator)
+                
+    vector = __pathFile+'{0}_historicalmap{0}train.gpkg'.format('/')
+    
     if return_X_y or return_X_y_g:
         from ..processing import extract_ROI
         if centroid:
-            vector = os.path.join(
-                __pathFile,
-                '_historicalmap{}train_centroid.gpkg'.format(
-                    os.path.sep))
+            vector = __pathFile+'{0}_historicalmap{0}train_centroid.gpkg'.format(separator)
+            
         if return_X_y_g:
             X, y, g = extract_ROI(raster, vector, 'Class', 'uniquefid')
             toReturn = (X, y, g)
@@ -102,10 +93,7 @@ def load_historical_data(return_X_y=False, return_X_y_g=False,
     else:
         toReturn.append(raster)
         if centroid:
-            vectorCentroid = os.path.join(
-                __pathFile,
-                '_historicalmap{}train_centroid.gpkg'.format(
-                    os.path.sep))
+            vectorCentroid = __pathFile+'{0}_historicalmap{0}train_centroid.gpkg'.format(separator)
             toReturn.append(vectorCentroid)
         else:
             toReturn.append(vector)
