@@ -148,7 +148,7 @@ class TestRaster(unittest.TestCase):
             rM_band = processing.RasterMath(raster,return_3d=is_3d)
             for idx,band in enumerate(rM_band.read_band_per_band()):
                 pass
-            rM_band.add_function(np.mean,axis=1,out_image='/tmp/mean.tif')
+            rM_band.add_function(np.mean,axis=is_3d+1,out_image='/tmp/mean.tif')
             rM_band.run()
             
             self.assertRaises(MemoryError,rM_band.run,'1K')
@@ -186,11 +186,11 @@ class TestRaster(unittest.TestCase):
             if is_3d is False:
                 # test without compression with reading/writing pixel per pixel, very slow...
                 rM.custom_block_size(10,10) # to have full masked block
-                rM.add_function(np.mean,'/tmp/mean.tif',axis=1,dtype=np.int16)
+                rM.add_function(np.mean,'/tmp/mean.tif',axis=is_3d+1,dtype=np.int16)
                 rM.run()
             else:
                 # test using default block size and high compressio of raster
-                rM.add_function(np.mean,'/tmp/mean.tif',axis=1,dtype=np.int16,compress='high')
+                rM.add_function(np.mean,'/tmp/mean.tif',axis=is_3d+1,dtype=np.int16,compress='high')
                 rM.run()
             assert(gdal.Open('/tmp/mean.tif').RasterCount == 1)
             assert(gdal.Open('/tmp/mean.tif').RasterXSize == rM.n_columns)

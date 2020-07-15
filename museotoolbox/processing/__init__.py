@@ -522,7 +522,7 @@ def rasterize(in_image, in_vector, in_field=False, out_image='MEM',
     else:
 
         driver = gdal.GetDriverByName('GTiff')
-        options = ['COMPRESS=PACKBITS', 'BIGTIFF=IF_SAFER']
+        options = ['BIGTIFF=IF_SAFER']
 
     dst_ds = driver.Create(
         out_image,
