@@ -17,8 +17,8 @@ The :mod:`museotoolbox.datasets` module gathers available datasets for testing
 `MuseoToolBox`.
 """
 import os
-__pathFile = os.path.dirname(os.path.realpath(__file__)).replace("\\","/")
 
+__pathFile = os.path.dirname(os.path.realpath(__file__)).replace("\\","/")
 
 def load_historical_data(return_X_y=False, return_X_y_g=False,
                          centroid=False, low_res=False):
