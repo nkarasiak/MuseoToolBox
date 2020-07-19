@@ -1,6 +1,6 @@
 ![Museo ToolBox logo](https://github.com/nkarasiak/MuseoToolBox/raw/master/metadata/museoToolBox_logo_128.png)
 
-[![Build status](https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master)](https://travis-ci.org/nkarasiak/MuseoToolBox)
+[![Build status](https://api.travis-ci.com/nkarasiak/MuseoToolBox.svg?branch=master)](https://travis-ci.com/nkarasiak/MuseoToolBox)
 [![Documentation status](https://readthedocs.org/projects/museotoolbox/badge/?version=latest)](https://museotoolbox.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/nkarasiak/MuseoToolBox/branch/master/graph/badge.svg)](https://codecov.io/gh/nkarasiak/MuseoToolBox)
 [![PyPI version](https://badge.fury.io/py/museotoolbox.svg)](https://badge.fury.io/py/museotoolbox)

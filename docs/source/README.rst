@@ -9,8 +9,8 @@
 
 
 
-.. image:: https://api.travis-ci.org/nkarasiak/MuseoToolBox.svg?branch=master
-   :target: https://travis-ci.org/nkarasiak/MuseoToolBox
+.. image:: https://api.travis-ci.com/nkarasiak/MuseoToolBox.svg?branch=master
+   :target: https://travis-ci.com/nkarasiak/MuseoToolBox
    :alt: Build status
 
 
