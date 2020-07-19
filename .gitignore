@@ -1,3 +1,6 @@
+# ignore datasets to avoid modification
+museotoolbox/datasets/_historicalmap/*
+
 # Files to ignore
 .coverage.*
 .coverage

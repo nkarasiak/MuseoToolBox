@@ -5,16 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.13.6] - Unreleased
+## [0.13.6] - 2020-07-19
 
 ### Added
 
-- RasterMath get_image_as_array() now suppots mask.
+- RasterMath get_image_as_array() now supports mask.
 
 ### Fixed
 
 - Update groups management for sklearn>=0.25
 - Fixed bug with raster/vector datasets (mtb.datasets.load_historical_data())
+- Fixed bug with get_image_as_array() from RasterMath (completely rewrite this part)
 
 ## [0.13.5] - 2020-06-24
 

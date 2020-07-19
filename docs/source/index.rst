@@ -35,6 +35,8 @@ MuseoToolBox documentation
    :caption: Documentation API
 
    api
+   CHANGELOG
+   CONTRIBUTING
 
 Indices and tables
 ==================

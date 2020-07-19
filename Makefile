@@ -43,13 +43,13 @@ uploadpypi :
 	twine upload dist/*
 
 doc :
-	m2r README.md
-	mv README.rst docs/source/
+	m2r README.md CHANGELOG.md
+	mv README.rst CHANGELOG.rst docs/source/
 	cd docs/ && make html
 
 doc_full :
-	m2r README.md
-	mv README.rst docs/source/
+	m2r README.md CHANGELOG.md
+	mv README.rst CHANGELOG.rst docs/source/
 	rm -rf docs/source/auto_examples/
 	rm -rf docs/source/modules/
 	rm -rf docs/build/
