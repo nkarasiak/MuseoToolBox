@@ -19,6 +19,11 @@
    :alt: Documentation status
 
 
+.. image:: https://img.shields.io/github/license/nkarasiak/museotoolbox.svg
+   :target: https://github.com/nkarasiak/MuseoToolBox/blob/master/license.txt
+   :alt: Museo ToolBox License
+
+
 .. image:: https://codecov.io/gh/nkarasiak/MuseoToolBox/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/nkarasiak/MuseoToolBox
    :alt: codecov
