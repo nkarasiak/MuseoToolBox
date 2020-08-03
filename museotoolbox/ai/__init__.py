@@ -221,14 +221,14 @@ class SuperLearner:
                     verbose=self.verbose)
             else:
                 self.model = GridSearchCV(
-                self.classifier,
-                param_grid=param_grid,
-                cv=cv,
-                scoring=scoring,
-                refit=refit,
-                n_jobs=self.n_jobs,
-                verbose=self.verbose,
-                **gridSearchCVParams)
+                    self.classifier,
+                    param_grid=param_grid,
+                    cv=cv,
+                    scoring=scoring,
+                    refit=refit,
+                    n_jobs=self.n_jobs,
+                    verbose=self.verbose,
+                    **gridSearchCVParams)
             if groups is None:
                 self.model.fit(X, y)
             else:
@@ -435,17 +435,21 @@ class SuperLearner:
                 compress=compress)
         rM.run()
 
-    def _get_stats_from_each_cv(self, statsidx, trvl, confusion_matrix=True,
-                                kappa=False, OA=False, F1=False, nTrain=False):
+    def _get_stats_from_each_cv(self, trvl, confusion_matrix=True,
+                                kappa=False, OA=False, F1=False, nTrain=False, resampler = False):
         """
         Compute stats per each fold
         """
         X_train, X_test = self.X[trvl[0]], self.X[trvl[1]]
         Y_train, Y_test = self.y[trvl[0]], self.y[trvl[1]]
-
-        self.cloneModel.fit(X_train, Y_train)
-
-        X_pred = self.cloneModel.predict(X_test)
+        
+        if resampler : 
+            X_train, Y_train = resampler.fit_resample(X_train,Y_train)    
+        
+        empty_model = clone(self.model.best_estimator_)
+        empty_model.fit(X_train, Y_train)
+        
+        X_pred = empty_model.predict(X_test)
 
         accuracies = {}
         if confusion_matrix:
@@ -462,7 +466,7 @@ class SuperLearner:
 
         return accuracies
 
-    def save_cm_from_cv(self, savePath, prefix='', header=True, n_jobs=1):
+    def save_cm_from_cv(self, savePath, prefix='', header=True, resampler = False, n_jobs=1):
         """
         Save each confusion matrix (csv format) from cross-validation.
 
@@ -502,6 +506,9 @@ class SuperLearner:
         header : boolean, default True.
             If True, will save F1, OA, Kappa and number of training samples.
             If False, will only save confusion matrix
+        resampler : imblearn class or False, optional
+                Default is False
+            If class is given, each fold will be retreated resampler.fit_resample(X,y) method.
 
         Returns
         -------
@@ -518,10 +525,9 @@ class SuperLearner:
         array([[85,  5],
         [10, 70]])
         """
-        def _compute_stats_per_cv(statsidx, trvl, savePath, prefix, header):
+        def _compute_stats_per_cv(statsidx, trvl, savePath, prefix, header, resampler = False):
             outFile = savePath + '/' + prefix + str(statsidx) + '.csv'
-            dictStats = self._get_stats_from_each_cv(
-                statsidx, trvl, True, header, header, header, header)
+            dictStats = self._get_stats_from_each_cv(trvl, True, header, header, header, header, resampler = resampler)
 
             if header:
                 np_header = 'Training samples : ' + ','.join(str(tr) for tr in dictStats['nTrain']) +\
@@ -540,14 +546,31 @@ class SuperLearner:
 
         if not os.path.exists(savePath):
             os.makedirs(savePath)
+# =============================================================================
+#         Parallel(n_jobs=n_jobs,
+#                   verbose=self.verbose + 1)(delayed(_compute_stats_per_cv)(statsidx,
+#                                                                           trvl,
+#                                                                           savePath,
+#                                                                           prefix,
+#                                                                           header,
+#                                                                           resampler=resampler) for statsidx,
+#                                             trvl in enumerate(self.CV))
+# 
+#                                                                           
+# =============================================================================
+        from sklearn.model_selection import cross_val_score
+        
+        
 
-        Parallel(n_jobs=n_jobs,
-                 verbose=self.verbose + 1)(delayed(_compute_stats_per_cv)(statsidx,
-                                                                          trvl,
-                                                                          savePath,
-                                                                          prefix,
-                                                                          header) for statsidx,
-                                           trvl in enumerate(self.CV))
+        for statsidx,trvl in enumerate(self.CV) : 
+            _compute_stats_per_cv(
+                statsidx,
+                trvl,
+                savePath,
+                prefix,
+                header,
+                resampler=resampler)
+
 
     def get_stats_from_cv(
             self,
@@ -555,7 +578,8 @@ class SuperLearner:
             kappa=False,
             OA=False,
             F1=False,
-            nTrain=False):
+            nTrain=False,
+            resampler=False):
         """
         Extract statistics from the Cross-Validation.
         If Cross-Validation is 5-fold, getStatsFromCV will return 5 confusion matrix, 5 kappas...
@@ -572,7 +596,10 @@ class SuperLearner:
             If True, will return F1 Score per class.
         nTrain : bool, default False.
             If True, will return number of train samples ordered asc. per label.
-
+        resampler : imblearn class or False, optional
+            Default is False
+            If class is given, each fold will be retreated resampler.fit_resample(X,y) method.
+            
         Returns
         -------
         Accuracies : dict
@@ -591,7 +618,7 @@ class SuperLearner:
         """
 
         def _computeStatsPerCV(statsidx, trvl, **kwargs):
-            dictStats = self._get_stats_from_each_cv(statsidx, trvl, **kwargs)
+            dictStats = self._get_stats_from_each_cv(trvl, **kwargs)
             return dictStats
 
         statsCV = Parallel(
@@ -604,9 +631,11 @@ class SuperLearner:
                 kappa=kappa,
                 OA=OA,
                 F1=F1,
-                nTrain=nTrain) for statsidx,
+                nTrain=nTrain,
+                resampler=resampler) for statsidx,
             trvl in enumerate(
                 self.CV))
+        
         return statsCV
 
     def customize_array(self, xFunction, **kwargs):
@@ -652,7 +681,7 @@ class SequentialFeatureSelection:
         self.path_to_save_models = path_to_save_models
 
     def fit(self, X, y, group=None, cv=5, scoring='accuracy', standardize=True,
-            max_features=False, n_jobs=1, **kwargs):
+            max_features=False, resampler = False, recompute_best = False, n_jobs=1, **kwargs):
         """
         Parameters
         ----------
@@ -670,6 +699,12 @@ class SequentialFeatureSelection:
             Default True.
         max_features : int or bool.
             Default False, if value int.
+        resampler : imblearn class or False, optional
+            Default is False
+            If class is given, each fold will be retreated resampler.fit_resample(X,y) method.
+        recompute_best : bool, default : False.
+            If True, will recompute the model with the best already found variables.
+            This can be usefull if you changed algorithms, parameters, cross-validation...
         n_jobs : int.
             Number of job to compute cross-validation.
         """
@@ -739,7 +774,18 @@ class SequentialFeatureSelection:
                         os.path.join(
                             self.path_to_save_models,
                             'model_{}.npz'.format(j)))
-
+                    SL.scoring = scoring
+                    """
+                    if recompute_best is True:
+                        SL.save_cm_from_cv(
+                            os.path.join(
+                            self.path_to_save_models,
+                            str(j)),
+                            resampler=resampler,
+                            n_jobs=n_jobs
+                        )
+                    """
+                        
             if need_fit is True:
                 for idx in range(
                         n_features_to_test):  # at each loop, remove best candidate
@@ -785,6 +831,7 @@ class SequentialFeatureSelection:
                         os.path.join(
                             self.path_to_save_models,
                             str(j)),
+                        resampler=resampler,
                         n_jobs=n_jobs)
 
                 if self.n_comp == 1:
@@ -940,9 +987,6 @@ class SequentialFeatureSelection:
     def _transform_in_fit(self, X, idx=0, customizeX=False):
         mask = np.copy(self.mask)
 
-#        if self.xFunction:
-#                X = self.xFunction(X, **self.xKwargs)
-#
         if customizeX is False:
             fieldsToKeep = self._convertIdxToNComp(idx)
             mask[fieldsToKeep] = 0

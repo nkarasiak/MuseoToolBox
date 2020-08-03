@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.13.7] - Unreleased
 
+### Added
+- add resampler arg for SuperLearner().fit() in order to compute stats from each fold in the CV if Pipeline with imblearn
+
 ### Fixed
 
 
